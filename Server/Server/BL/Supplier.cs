@@ -1,4 +1,6 @@
-﻿namespace Server.BL
+﻿using Server.DAL;
+
+namespace Server.BL
 {
     public class Supplier
     {
@@ -142,5 +144,15 @@
             get { return _userType; }
             set { _userType = value; }
         }
+
+        public static List<Supplier> GetTopVenues()
+        {
+
+            DBServicesSupplier dbs = new DBServicesSupplier();
+            return dbs.GetTopVenuesPerRegion();
+
+        }
     }
+
+
 }

@@ -15,14 +15,23 @@ namespace Server.Controllers
         {
             try
             {
+
+
                 // Accessing the properties of the JSON data using JsonElement
                 JsonElement coupleElement = dataForPackage.GetProperty("couple");
-                Couple coupleDetails = JsonSerializer.Deserialize<Couple>(coupleElement.GetRawText());
+                Couple coupleDetails = JsonSerializer.Deserialize<Couple>(coupleElement.GetRawText()); // leshanot? 
                 JsonElement questionnaireElement = dataForPackage.GetProperty("questionnaireAnswers");
                 int[] questionnaireAnswers = JsonSerializer.Deserialize<int[]>(questionnaireElement.GetRawText());
 
+                //var customObject = new
+                //{
+                //    category = "Shoes",
+                //    product = "Adidas",
+                //    amount = 1500
+                //};
+
                 // Generate the package
-                var package = Package.getPackage(coupleDetails, questionnaireAnswers);
+                var package = Package.GetPackage(coupleDetails, questionnaireAnswers);
 
                 return Ok(package);
             }

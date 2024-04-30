@@ -1,5 +1,7 @@
 ﻿namespace Server.BL
 {
+
+    // No touchy touchy
     public abstract class User
     {
         // Private fields

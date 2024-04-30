@@ -95,7 +95,7 @@ namespace Server.DAL
                 using (SqlConnection con = Connect())
                 {
                     // Create a SqlCommand to execute the stored procedure.
-                    using (SqlCommand cmd = CreateReadTopSuppliersWithSP(con, "SPGetTopRankedSuppliers", couple))
+                    using (SqlCommand cmd = CreateReadTopSuppliersWithSP(con, "SPGetSuppliersForPackage", couple))
                     {
                         // Execute the SqlCommand and obtain a SqlDataReader.
                         using (SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection))

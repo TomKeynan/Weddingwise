@@ -1,4 +1,5 @@
 ﻿using Server.BL;
+using System.Data;
 using System.Data.SqlClient;
 
 
@@ -22,6 +23,66 @@ namespace Server.DAL
             con.Open();
             return con;
         }
+
+
+
+
+        //-------------------------------------------------------
+        // This method retrieves the top venues from each region
+        //-------------------------------------------------------
+
+        public List<Supplier> GetTopVenuesPerRegion()
+        {
+            // List to store the retrieved suppliers.
+            List<Supplier> suppliers = new List<Supplier>();
+
+            try
+            {
+                // Open a database connection.
+                using (SqlConnection con = Connect())
+                {
+                    // Create a SqlCommand to execute the stored procedure.
+                    using (SqlCommand cmd = CreateReadTopVenuesPerRegion(con, "SPGetTopRatedVenuesPerRegion"))
+                    {
+                        // Execute the SqlCommand and obtain a SqlDataReader.
+                        using (SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                        {
+                            // Construct suppliers using dataReader.
+                            DBServicesSupplier dbs = new DBServicesSupplier();
+                            suppliers = dbs.BuildSuppliers(dataReader);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Throw a new exception with the desired error message.
+                throw new Exception("An error occurred while retrieving top-rated venues in the GetTopVenuesPerRegion method" + ex.Message);
+            }
+
+            // Return the retrieved suppliers.
+            return suppliers;
+        }
+
+
+        private SqlCommand CreateReadTopVenuesPerRegion(SqlConnection con, String spName)
+        {
+            SqlCommand cmd = new SqlCommand(); // create the command object
+
+            cmd.Connection = con;              // assign the connection to the command object
+
+            cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
+
+            cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
+
+            cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
+
+
+
+            return cmd;
+        }
+
+
 
 
 
@@ -69,7 +130,7 @@ namespace Server.DAL
             catch (Exception ex)
             {
                 // Throw a new exception with the desired error message.
-                throw new Exception("An error occurred while building a supplier in method BuildSuppliers: " + ex.Message);
+                throw new Exception("An error occurred while building a supplier in the BuildSuppliers method." + ex.Message);
             }
 
             // Return the list of constructed suppliers.
@@ -110,7 +171,7 @@ namespace Server.DAL
             catch (Exception ex)
             {
                 // Throw a new exception with the desired error message.
-                throw new Exception("An error occurred while retrieving dates for the supplier in method GetDatesForSupplier: " + ex.Message);
+                throw new Exception("An error occurred while retrieving dates for the supplier in the GetDatesForSupplier method." + ex.Message);
             }
 
             // Return the retrieved dates.
