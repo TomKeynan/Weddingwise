@@ -15,25 +15,30 @@ namespace Server.Controllers
         {
             try
             {
+                // Check if dataForPackage is null
+                if (dataForPackage.ValueKind == JsonValueKind.Null)
+                {
+                    throw new ArgumentNullException(nameof(dataForPackage), "The JSON data for the package is null.");
+                }
+                else
+                {
+                    // Accessing the properties of the JSON data using JsonElement
+                    JsonElement coupleElement = dataForPackage.GetProperty("couple");
+                    Couple couple = JsonSerializer.Deserialize<Couple>(coupleElement.GetRawText()); // leshanot? 
+                    JsonElement questionnaireElement = dataForPackage.GetProperty("questionnaireAnswers");
+                    int[] questionnaireAnswers = JsonSerializer.Deserialize<int[]>(questionnaireElement.GetRawText());
+
+                    // Generate the package
+
+                    Couple coupleWithPackage = Package.GetPackage(couple, questionnaireAnswers);
 
 
-                // Accessing the properties of the JSON data using JsonElement
-                JsonElement coupleElement = dataForPackage.GetProperty("couple");
-                Couple coupleDetails = JsonSerializer.Deserialize<Couple>(coupleElement.GetRawText()); // leshanot? 
-                JsonElement questionnaireElement = dataForPackage.GetProperty("questionnaireAnswers");
-                int[] questionnaireAnswers = JsonSerializer.Deserialize<int[]>(questionnaireElement.GetRawText());
-
-                //var customObject = new
-                //{
-                //    category = "Shoes",
-                //    product = "Adidas",
-                //    amount = 1500
-                //};
-
-                // Generate the package
-                var package = Package.GetPackage(coupleDetails, questionnaireAnswers);
-
-                return Ok(package);
+                    return Ok(coupleWithPackage);
+                }
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
@@ -42,4 +47,3 @@ namespace Server.Controllers
         }
     }
 }
-

@@ -110,10 +110,11 @@ namespace Server.BL
         }
 
         // Generates a package for the couple based on their details and questionnaire answers.
-        public static Package GetPackage(Couple coupleDetails, int[] questionnaireAnswers)
+        public static Couple GetPackage(Couple couple, int[] questionnaireAnswers)
         {
-            coupleDetails.TypeWeights = PackageService.CalculateVendorWeights(questionnaireAnswers);
-            return PackageService.GeneratePackage(coupleDetails);
+            couple.TypeWeights = PackageService.CalculateVendorWeights(questionnaireAnswers);
+            couple.Package = PackageService.GeneratePackage(couple);
+            return couple;
         }
     }
 }
