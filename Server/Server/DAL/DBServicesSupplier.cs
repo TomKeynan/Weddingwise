@@ -7,8 +7,6 @@ namespace Server.DAL
 {
     public class DBServicesSupplier
     {
-
-
         //--------------------------------------------------------------------------------------------------
         // This method creates a connection to the database according to the connectionString name in the web.config 
         //--------------------------------------------------------------------------------------------------
@@ -47,9 +45,7 @@ namespace Server.DAL
                         // Execute the SqlCommand and obtain a SqlDataReader.
                         using (SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                         {
-                            // Construct suppliers using dataReader.
-                            DBServicesSupplier dbs = new DBServicesSupplier();
-                            suppliers = dbs.BuildSuppliers(dataReader);
+                            suppliers = BuildSuppliers(dataReader);
                         }
                     }
                 }
@@ -77,8 +73,6 @@ namespace Server.DAL
 
             cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
 
-
-
             return cmd;
         }
 
@@ -87,10 +81,10 @@ namespace Server.DAL
 
 
 
-        //--------------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------------------
         // This method retrieves suppliers based on a specific stored procedure and constructs supplier objects.
         // It is accessible for use by all classes for various purposes.
-        //--------------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------------------
 
         public List<Supplier> BuildSuppliers(SqlDataReader dataReader)
         {

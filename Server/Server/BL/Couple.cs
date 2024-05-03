@@ -1,4 +1,6 @@
-﻿namespace Server.BL
+﻿using Server.DAL;
+
+namespace Server.BL
 {
     public class Couple
     {
@@ -12,10 +14,9 @@
         private string _desiredRegion;
         private int _budget;
         private int _numberOfInvitees;
-        private Dictionary<string, double>? _typeWeights;
-        private Package? _package;
-        private string _userType;
-        private bool _isActive;
+        private Dictionary<string, double> _typeWeights;
+        private Package _package;
+
 
         // Constructors
         public Couple() { }
@@ -33,9 +34,7 @@
             Package? package,
             string email,
             string password,
-            string phoneNumber,
-            string userType,
-            bool isActive
+            string phoneNumber
         )
         {
             _partner1Name = partner1Name;
@@ -49,8 +48,7 @@
             _email = email;
             _password = password;
             _phoneNumber = phoneNumber;
-            _userType = userType;
-            _isActive = isActive;
+
         }
 
         // Properties
@@ -81,13 +79,27 @@
         public int Budget
         {
             get { return _budget; }
-            set { _budget = value; }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentOutOfRangeException("Budget cannot be negative.");
+                }
+                _budget = value;
+            }
         }
 
         public int NumberOfInvitees
         {
             get { return _numberOfInvitees; }
-            set { _numberOfInvitees = value; }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentOutOfRangeException("NumberOfInvitees cannot be negative.");
+                }
+                _numberOfInvitees = value;
+            }
         }
 
         public Dictionary<string, double>? TypeWeights
@@ -120,16 +132,23 @@
             set { _phoneNumber = value; }
         }
 
-        public string UserType
+
+        public int InsertCouple()
         {
-            get { return _userType; }
-            set { _userType = value; }
+            DBServicesCouple dBServicesCouple = new DBServicesCouple();
+            return dBServicesCouple.InsertCouple(this);
+
         }
 
-        public bool IsActive
+        public static Couple FindCouple(string email, string password)
         {
-            get { return _isActive; }
-            set { _isActive = value; }
+            DBServicesCouple dBServicesCouple = new DBServicesCouple();
+
+
+            return dBServicesCouple.GetCouple(email, password);
+
         }
+
+
     }
 }

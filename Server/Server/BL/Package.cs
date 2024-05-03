@@ -1,4 +1,5 @@
-﻿using Server.Services;
+﻿using Server.DAL;
+using Server.Services;
 
 namespace Server.BL
 {
@@ -13,13 +14,13 @@ namespace Server.BL
         private int _totalCost;
         private double _totalScore;
         private List<Supplier> _selectedSuppliers;
-        private Dictionary<string, List<Supplier>> _secondarySuppliers;
+        private Dictionary<string, List<Supplier>> _alternativeSuppliers;
 
         // Default constructor
         public Package() { }
 
         // Parameterized constructor
-        public Package(int packageId, string coupleEmail, DateTime date, string region, int totalCost, double totalScore, List<Supplier> selectedSuppliers, Dictionary<string, List<Supplier>> secondarySuppliers)
+        public Package(int packageId, string coupleEmail, DateTime date, string region, int totalCost, double totalScore, List<Supplier> selectedSuppliers, Dictionary<string, List<Supplier>> alternativeSuppliers)
         {
             _packageId = packageId;
             _coupleEmail = coupleEmail;
@@ -28,7 +29,7 @@ namespace Server.BL
             _totalCost = totalCost;
             _totalScore = totalScore;
             _selectedSuppliers = selectedSuppliers;
-            _secondarySuppliers = secondarySuppliers;
+            _alternativeSuppliers = alternativeSuppliers;
         }
 
         // Properties
@@ -102,19 +103,28 @@ namespace Server.BL
             set { _selectedSuppliers = value; }
         }
 
-        // Gets or sets the dictionary of secondary suppliers for the package.
-        public Dictionary<string, List<Supplier>> SecondarySuppliers
+        // Gets or sets the dictionary of alternative suppliers for the package.
+        public Dictionary<string, List<Supplier>> AlternativeSuppliers
         {
-            get { return _secondarySuppliers; }
-            set { _secondarySuppliers = value; }
+            get { return _alternativeSuppliers; }
+            set { _alternativeSuppliers = value; }
         }
 
-        // Generates a package for the couple based on their details and questionnaire answers.
-        public static Couple GetPackage(Couple couple, int[] questionnaireAnswers)
+
+        public static int InsertOrUpdatePackage(PackageApprovalData packageApprovalData, string actionString)
         {
-            couple.TypeWeights = PackageService.CalculateVendorWeights(questionnaireAnswers);
-            couple.Package = PackageService.GeneratePackage(couple);
-            return couple;
+
+            DBServicesPackage dBServicesPackage = new DBServicesPackage();
+            return dBServicesPackage.InsertPackageToDB(packageApprovalData, actionString);
+        }
+
+
+        // Generates a package for the couple based on their details and questionnaire answers.
+        public static Couple GetPackage(Couple coupleWithData, int[] questionnaireAnswers)
+        {
+            coupleWithData.TypeWeights = PackageService.CalculateVendorWeights(questionnaireAnswers);
+            coupleWithData.Package = PackageService.GeneratePackage(coupleWithData);
+            return coupleWithData;
         }
     }
 }

@@ -9,6 +9,7 @@ namespace Server.Controllers
     [ApiController]
     public class SuppliersController : Controller
     {
+
         [HttpGet("getTopVenues")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

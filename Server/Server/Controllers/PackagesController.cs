@@ -8,10 +8,75 @@ namespace Server.Controllers
     [ApiController]
     public class PackagesController : ControllerBase
     {
-        [HttpPost("getPackage")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Package))]
+
+        [HttpPut("updatePackage")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult Post([FromBody] JsonElement dataForPackage)
+        public ActionResult PutPackage([FromBody] PackageApprovalData packageApprovalData)
+        {
+            try
+            {
+                string actionString = "Update"; // Changed action to "Update" for a PUT request
+                if (packageApprovalData == null)
+                {
+                    throw new ArgumentNullException(nameof(packageApprovalData), "The JSON data is null.");
+                }
+
+                if (Package.InsertOrUpdatePackage(packageApprovalData, actionString) == 4)
+                {
+                    return NoContent(); // Return 204 NoContent for successful update
+                }
+                else
+                {
+                    throw new Exception("Not all operations were successful");
+                }
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest($"Error: {e.Message}");
+            }
+        }
+
+        [HttpPost("insertPackage")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult PostPackage([FromBody] PackageApprovalData packageApprovalData)
+        {
+            try
+            {
+                string actionString = "Insert";
+                if (packageApprovalData == null)
+                {
+                    throw new ArgumentNullException(nameof(packageApprovalData), "The JSON data  is null.");
+                }
+
+                if (Package.InsertOrUpdatePackage(packageApprovalData, actionString) == 4)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    throw new Exception("Not all operations were successfuL");
+                }
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest($"Error: {e.Message}");
+            }
+        }
+
+        [HttpPost("getPackage")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Couple))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult GetPackage([FromBody] JsonElement dataForPackage)
         {
             try
             {
@@ -24,13 +89,13 @@ namespace Server.Controllers
                 {
                     // Accessing the properties of the JSON data using JsonElement
                     JsonElement coupleElement = dataForPackage.GetProperty("couple");
-                    Couple couple = JsonSerializer.Deserialize<Couple>(coupleElement.GetRawText()); // leshanot? 
+                    Couple coupleWithData = JsonSerializer.Deserialize<Couple>(coupleElement.GetRawText());
                     JsonElement questionnaireElement = dataForPackage.GetProperty("questionnaireAnswers");
                     int[] questionnaireAnswers = JsonSerializer.Deserialize<int[]>(questionnaireElement.GetRawText());
 
                     // Generate the package
 
-                    Couple coupleWithPackage = Package.GetPackage(couple, questionnaireAnswers);
+                    Couple coupleWithPackage = Package.GetPackage(coupleWithData, questionnaireAnswers);
 
 
                     return Ok(coupleWithPackage);

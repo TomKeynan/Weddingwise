@@ -153,20 +153,20 @@ namespace Server.Services
         // ┃  📦 This section generates the best combination of suppliers based on budget and ratings. 📦  ┃
         // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-        public static Package GeneratePackage(Couple coupleDetails)
+        public static Package GeneratePackage(Couple coupleWithData)
         {
 
             try
             {
                 // Step 1: Retrieve suppliers from the database
                 DBServicesPackage dbs = new DBServicesPackage();
-                List<Supplier> suppliers = dbs.GetSuppliersForPackage(coupleDetails);
+                List<Supplier> suppliers = dbs.GetSuppliersForPackage(coupleWithData);
 
                 // Step 2: Create a dictionary to hold the top suppliers for each type
                 Dictionary<string, List<Supplier>> topSuppliers = new Dictionary<string, List<Supplier>>();
 
                 // Step 3: Insert suppliers into the topSuppliers dictionary based on their type
-                foreach (var type in coupleDetails.TypeWeights.Keys)
+                foreach (var type in coupleWithData.TypeWeights.Keys)
                 {
                     // Insert suppliers directly as you already have the top 10 suppliers for each type
                     topSuppliers[type] = suppliers
@@ -177,28 +177,28 @@ namespace Server.Services
                 // Step 4: Find the best combination of suppliers
                 List<Supplier> bestCombination = FindBestCombination(
                     topSuppliers.Values.SelectMany(list => list).ToList(),
-                    coupleDetails.TypeWeights,
-                    coupleDetails.Budget
+                    coupleWithData.TypeWeights,
+                    coupleWithData.Budget
                 );
 
                 // Step 5: Calculate total cost and total score of the best combination
                 int totalCost = CalculateTotalCost(bestCombination);
-                double totalScore = CalculateTotalScore(bestCombination, coupleDetails.TypeWeights);
+                double totalScore = CalculateTotalScore(bestCombination, coupleWithData.TypeWeights);
 
                 // Step 6: Create and populate the Package object
                 Package suppliersPackage = new Package
                 {
-                    Region = coupleDetails.DesiredRegion,
-                    Date = coupleDetails.DesiredDate,
+                    Region = coupleWithData.DesiredRegion,
+                    Date = coupleWithData.DesiredDate,
                     SelectedSuppliers = bestCombination,
                     TotalCost = totalCost,
                     TotalScore = totalScore,
-                    CoupleEmail = coupleDetails.Email,
-                    SecondarySuppliers = new Dictionary<string, List<Supplier>>() // Initialize the dictionary
+                    CoupleEmail = coupleWithData.Email,
+                    AlternativeSuppliers = new Dictionary<string, List<Supplier>>() // Initialize the dictionary
                 };
 
                 // Step 7: Populate the top 3 highest-rated suppliers for each type in the Package object
-                foreach (var type in coupleDetails.TypeWeights.Keys)
+                foreach (var type in coupleWithData.TypeWeights.Keys)
                 {
                     // Get the top 3 rated suppliers for the current type
                     var topRated = topSuppliers[type]
@@ -208,7 +208,7 @@ namespace Server.Services
                         .ToList();
 
                     // Add the top rated suppliers to the dictionary
-                    suppliersPackage.SecondarySuppliers[type] = topRated;
+                    suppliersPackage.AlternativeSuppliers[type] = topRated;
                 }
 
                 // Step 8: Return the Package
@@ -297,9 +297,5 @@ namespace Server.Services
 
             return totalScore;
         }
-
-
-
-
     }
 }

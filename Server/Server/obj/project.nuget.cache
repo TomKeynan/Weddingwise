@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "arcI71Ox32jRlPqoGQFq+yIV78Fv9qiiki5p237tU5LbezkQcvfGEyUWhvTkJOTwY0rSh4fPNW5z8agaNHZyTw==",
+  "dgSpecHash": "uYBnqlBQxHKITW3GUfZdM/ENW862f30AuSMyNDzODG5x1dBq0BR9lgh5v9ccTBxbjEw0xlvqYN2FNhH2zZFKsg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\Server.csproj",
   "expectedPackageFiles": [
@@ -8,6 +8,7 @@
     "C:\\Users\\Adam\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\Adam\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
     "C:\\Users\\Adam\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
+    "C:\\Users\\Adam\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
     "C:\\Users\\Adam\\.nuget\\packages\\runtime.native.system.data.sqlclient.sni\\4.7.0\\runtime.native.system.data.sqlclient.sni.4.7.0.nupkg.sha512",
     "C:\\Users\\Adam\\.nuget\\packages\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "C:\\Users\\Adam\\.nuget\\packages\\runtime.win-x64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
