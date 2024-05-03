@@ -2,37 +2,34 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.suppliers-sticker{
+  width: 120px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+@media screen and (max-width: 800px) {
+  .suppliers-sticker {
+    width: 90px;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.w-icon{
+  width: 50px;
 }
 
-.App-link {
-  color: #61dafb;
+.supplier-card-image{
+  width: 100%;
+  aspect-ratio: 1/1.25;
+  object-fit: cover;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.supplier-card-sticker{
+  width: 30px;
+}
+
+.type-card-image{
+  width: 100px;
+}
+
+.hero-graphics{
+  height: fit-content;
 }

@@ -1,0 +1,18 @@
+.navLink:hover,
+.active {
+  text-decoration: underline;
+  font-size: 22px;
+  font-weight: bold;
+  transform: translateY(-10px) scale(1.2);
+  transition: transform 0.2s ease-in;
+  color: #DAD4FB;
+}
+
+.navLink {
+  text-decoration: none;
+  font-family: sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+  color: #DAD4FB;
+}
+
