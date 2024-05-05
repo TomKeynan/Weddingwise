@@ -16,7 +16,7 @@ namespace Server.BL
         private int _numberOfInvitees;
         private Dictionary<string, double> _typeWeights;
         private Package _package;
-
+        private bool _isActive = true;
 
         // Constructors
         public Couple() { }
@@ -30,8 +30,8 @@ namespace Server.BL
             string desiredRegion,
             int budget,
             int numberOfInvitees,
-            Dictionary<string, double>? typeWeights,
-            Package? package,
+            Dictionary<string, double> typeWeights,
+            Package package,
             string email,
             string password,
             string phoneNumber
@@ -132,6 +132,7 @@ namespace Server.BL
             set { _phoneNumber = value; }
         }
 
+        public bool IsActive { get => _isActive; set => _isActive = value; }
 
         public int InsertCouple()
         {

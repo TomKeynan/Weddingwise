@@ -51,7 +51,10 @@ namespace Server.DAL
                                     PackageId = Convert.ToInt32(dataReader["package_id"]),
                                     TotalCost = Convert.ToInt32(dataReader["total_cost"]),
                                     TotalScore = Convert.ToDouble(dataReader["total_score"]),
-                                    CoupleEmail = email
+                                    Region = dataReader["region_name"].ToString(),
+                                    Date = (DateTime)dataReader["desired_date"],
+                                    CoupleEmail = email,
+
                                 };
                             }
                         }
@@ -67,7 +70,7 @@ namespace Server.DAL
                         using (SqlCommand selectedCmd = CreateReadPackageSuppliersEmailsWithSP(con, "SPGetSelectedPackageSuppliers", package.PackageId))
                         {
                             // Execute the SqlCommand and obtain a SqlDataReader.
-                            using (SqlDataReader selectedReader = selectedCmd.ExecuteReader(CommandBehavior.CloseConnection))
+                            using (SqlDataReader selectedReader = selectedCmd.ExecuteReader())
                             {
                                 // Construct selected suppliers using dataReader.
                                 DBServicesSupplier dBServicesSupplier = new DBServicesSupplier();
@@ -109,7 +112,7 @@ namespace Server.DAL
             catch (Exception ex)
             {
                 // Throw a new exception with the desired error message.
-                throw new Exception("An error occurred while retrieving package details in the GetPackage method: " + ex.Message);
+                throw new Exception("An error occurred while retrieving package details in the GetPackageFromDB method: " + ex.Message);
             }
 
             // Return the retrieved package object.
@@ -270,7 +273,7 @@ namespace Server.DAL
                     {
                         foreach (var supplier in typeList.Value)
                         {
-                            using (SqlCommand cmd2 = CreateInsertPackageSuppliersSP("SPInsertPackageSupplier", con2, supplier.SupplierEmail, coupleEmail, true))
+                            using (SqlCommand cmd2 = CreateInsertPackageSuppliersSP("SPInsertPackageSupplier", con2, supplier.SupplierEmail, coupleEmail, false))
                             {
                                 suppliersInsertResult += cmd2.ExecuteNonQuery();
                             }

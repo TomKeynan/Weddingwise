@@ -9,7 +9,9 @@ namespace Server.Controllers
     [ApiController]
     public class SuppliersController : Controller
     {
-
+        //--------------------------------------------------------------------
+        // Retrieves a list of top venues from the database.
+        //--------------------------------------------------------------------
         [HttpGet("getTopVenues")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

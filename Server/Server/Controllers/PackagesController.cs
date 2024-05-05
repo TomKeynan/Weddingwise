@@ -9,6 +9,9 @@ namespace Server.Controllers
     public class PackagesController : ControllerBase
     {
 
+        //--------------------------------------------------------------------
+        // In case of a new package, it updates the previous one to a new one
+        //--------------------------------------------------------------------
         [HttpPut("updatePackage")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -41,6 +44,9 @@ namespace Server.Controllers
             }
         }
 
+        //--------------------------------------------------------------------
+        // Inserts a new package into the database.
+        //--------------------------------------------------------------------
         [HttpPost("insertPackage")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -72,6 +78,10 @@ namespace Server.Controllers
                 return BadRequest($"Error: {e.Message}");
             }
         }
+
+        //--------------------------------------------------------------------
+        // Retrieves a package  provided couple data and questionnaire answers
+        //--------------------------------------------------------------------
 
         [HttpPost("getPackage")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Couple))]

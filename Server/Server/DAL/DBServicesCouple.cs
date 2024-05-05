@@ -37,7 +37,7 @@ namespace Server.DAL
                 using (SqlConnection con = Connect())
                 {
                     // Create a SqlCommand to execute the stored procedure.
-                    using (SqlCommand cmd = CreateInsertCoupleWithSP("SPInsertCouple", con, couple))
+                    using (SqlCommand cmd = CreateInsertCoupleWithSP("SPInsertCoupleDetails", con, couple))
                     {
                         // Execute the SqlCommand and return the number of rows affected.
                         return cmd.ExecuteNonQuery();
@@ -116,7 +116,7 @@ namespace Server.DAL
                                     Budget = Convert.ToInt32(dataReader["budget"]),
                                     NumberOfInvitees = Convert.ToInt32(dataReader["number_of_invitees"]),
                                     DesiredDate = (DateTime)dataReader["desired_date"],
-
+                                    IsActive = Convert.ToBoolean(dataReader["is_active"]),
                                 };
 
                                 // Close the current connection and open a new one to retrieve type weights.
@@ -130,7 +130,7 @@ namespace Server.DAL
                                     using (SqlDataReader weightReader = weightCmd.ExecuteReader(CommandBehavior.CloseConnection))
                                     {
                                         // Create a dictionary to store type weights.
-                                        Dictionary<string, double> typeWeights = null;
+                                        Dictionary<string, double> typeWeights = new Dictionary<string, double>();
 
                                         // Iterate through the dataReader and populate the dictionary.
                                         while (weightReader.Read())
