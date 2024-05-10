@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Server.BL;
+using System.Data.SqlClient;
 using System.Text.Json;
 
 namespace Server.Controllers
@@ -9,6 +10,70 @@ namespace Server.Controllers
     public class CouplesController : ControllerBase
     {
 
+        //-------------------------------------------
+        // Inserts a couple object into the database
+        //-------------------------------------------
+        [HttpPost("registerCouple")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Couple))] // Response type for a successful insertion
+        [ProducesResponseType(StatusCodes.Status409Conflict)] // Response type for a primary key violation
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // Response type for a bad request
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // Response type for an internal server error
+        public ActionResult<Couple> PostCouple([FromBody] Couple couple)
+        {
+            try
+            {
+                // Check if couple object is null
+                if (couple == null)
+                {
+                    return BadRequest("Couple data is null.");
+                }
+
+                // Attempt to insert the couple into the database
+                int rowsAffected = couple.InsertCouple();
+
+                // When creating a new couple, it also creates an empty package so two tables are affected
+                if (rowsAffected == 1)
+                {
+                    // Create a new anonymous object with necessary data for logging in
+                    var coupleData = new
+                    {
+                        Email = couple.Email,
+                        Password = couple.Password
+                    };
+
+                    // Create a JsonElement from the anonymous object
+                    JsonElement jsonCoupleData = JsonDocument.Parse(JsonSerializer.Serialize(coupleData)).RootElement;
+
+                    // Call GetCouple to retrieve the newly inserted couple
+                    return GetCouple(jsonCoupleData);
+                }
+                else
+                {
+                    // If insertion failed, return a BadRequest response
+                    return BadRequest("Failed to register couple.");
+                }
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Number == 2627) // Primary key violation error number
+                {
+                    // Handle primary key violation error
+                    return Conflict("Duplicate primary key value. Please provide a unique primary key.");
+                }
+                else
+                {
+                    // Handle other types of SQL exceptions
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+                }
+            }
+
+            catch (Exception ex)
+            {
+                // Handle other types of exceptions
+                throw new Exception("An error occurred while inserting a new couple in the InsertCouple method" + ex.Message);
+            }
+
+        }
 
         //------------------------------------------------
         // Retrieves the couple's object from the database
@@ -54,54 +119,40 @@ namespace Server.Controllers
 
 
 
-        //-------------------------------------------
-        // Inserts a couple object into the database
-        //-------------------------------------------
-        [HttpPost("insertCouple")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Couple))] // Response type for a successful insertion
-        [ProducesResponseType(StatusCodes.Status400BadRequest)] // Response type for a bad request
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // Response type for an internal server error
-        public ActionResult<Couple> InsertCouple([FromBody] Couple couple)
+        //--------------------------------------------------------------------
+        // You can guess what this method does.
+        //--------------------------------------------------------------------
+        [HttpPut("updateCouple")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult PutCouple([FromBody] Couple couple)
         {
             try
             {
-                // Check if couple object is null
+                // Check if the received couple data is null
                 if (couple == null)
                 {
-                    return BadRequest("Couple data is null.");
+                    throw new ArgumentNullException(nameof(couple), "The JSON data is null.");
                 }
 
-                // Attempt to insert the couple into the database
-                int rowsAffected = couple.InsertCouple();
-
-                // When creating a new couple, it also creates an empty package so two tables are affected
-                if (rowsAffected == 1)
+                // Attempt to update the couple in the database
+                if (couple.UpdateCouple() == 1)
                 {
-                    // Create a new anonymous object with necessary data for logging in
-                    var coupleData = new
-                    {
-                        Email = couple.Email,
-                        Password = couple.Password
-                    };
-
-                    // Create a JsonElement from the anonymous object
-                    JsonElement jsonCoupleData = JsonDocument.Parse(JsonSerializer.Serialize(coupleData)).RootElement;
-
-                    // Call GetCouple to retrieve the newly inserted couple
-                    return GetCouple(jsonCoupleData);
+                    return NoContent(); // Return 204 NoContent for successful update
                 }
                 else
                 {
-                    // If insertion failed, return a BadRequest response
-                    return BadRequest("Failed to register couple.");
+                    // Throw an exception if the update operation was not successful
+                    throw new Exception("The update wasn't successful");
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                // Return a 500 Internal Server Error response with the error message
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while registering couple: " + ex.Message);
+                // Return a BadRequest response with the error message
+                return BadRequest($"Error: {e.Message}");
             }
         }
+
 
 
 

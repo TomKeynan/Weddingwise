@@ -120,13 +120,13 @@ namespace Server.BL
             set { _email = value; }
         }
 
-        public string Password
+        public string? Password
         {
             get { return _password; }
             set { _password = value; }
         }
 
-        public string PhoneNumber
+        public string? PhoneNumber
         {
             get { return _phoneNumber; }
             set { _phoneNumber = value; }
@@ -138,17 +138,21 @@ namespace Server.BL
         {
             DBServicesCouple dBServicesCouple = new DBServicesCouple();
             return dBServicesCouple.InsertCouple(this);
-
         }
 
         public static Couple FindCouple(string email, string password)
         {
             DBServicesCouple dBServicesCouple = new DBServicesCouple();
-
-
             return dBServicesCouple.GetCouple(email, password);
-
         }
+
+        public int UpdateCouple()
+        {
+            DBServicesCouple dBServicesCouple = new DBServicesCouple();
+            return dBServicesCouple.UpdateCouple(this);
+        }
+
+
 
 
     }

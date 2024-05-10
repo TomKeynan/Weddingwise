@@ -168,10 +168,10 @@ namespace Server.Services
                 // Step 3: Insert suppliers into the topSuppliers dictionary based on their type
                 foreach (var type in coupleWithData.TypeWeights.Keys)
                 {
-                    // Insert suppliers directly as you already have the top 10 suppliers for each type
+                    // 
                     topSuppliers[type] = suppliers
                         .Where(supplier => supplier.SupplierType == type)
-                        .ToList(); // No need for further ordering or limiting since you have the top 10 already
+                        .ToList(); //
                 }
 
                 // Step 4: Find the best combination of suppliers
@@ -188,8 +188,7 @@ namespace Server.Services
                 // Step 6: Create and populate the Package object
                 Package suppliersPackage = new Package
                 {
-                    Region = coupleWithData.DesiredRegion,
-                    Date = coupleWithData.DesiredDate,
+
                     SelectedSuppliers = bestCombination,
                     TotalCost = totalCost,
                     TotalScore = totalScore,

@@ -51,10 +51,7 @@ namespace Server.DAL
                                     PackageId = Convert.ToInt32(dataReader["package_id"]),
                                     TotalCost = Convert.ToInt32(dataReader["total_cost"]),
                                     TotalScore = Convert.ToDouble(dataReader["total_score"]),
-                                    Region = dataReader["region_name"].ToString(),
-                                    Date = (DateTime)dataReader["desired_date"],
                                     CoupleEmail = email,
-
                                 };
                             }
                         }
@@ -159,7 +156,7 @@ namespace Server.DAL
         //--------------------------------------------------------------------------------------------------------------------
         public int InsertPackageToDB(PackageApprovalData packageApprovalData, string actionString)
         {
-
+            int successIndicator = 0;
             try
             {
 
@@ -179,7 +176,7 @@ namespace Server.DAL
                 }
 
 
-                int successIndicator = 0;
+                // Extract the package from the data
                 Package package = packageApprovalData.Package;
 
                 using (SqlConnection con = Connect())
@@ -208,7 +205,7 @@ namespace Server.DAL
                         if (successIndicator == 3)
                         {
                             // Step four: Updating the type replacements counts in the database
-                            successIndicator += UpdateTypeReplacementsCounts(packageApprovalData.TypeReplacments);
+                            successIndicator += UpdateTypeReplacementsCounts(packageApprovalData.TypeReplacements);
                         }
                     }
                 }
@@ -217,7 +214,7 @@ namespace Server.DAL
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while inserting package details in the InsertPackageToDB method: " + ex.Message);
+                throw new Exception("An error occurred while inserting package details in the InsertPackageToDB method in step  " + successIndicator + " " + ex.Message);
             }
         }
 
@@ -383,29 +380,29 @@ namespace Server.DAL
         //--------------------------------------------------------------------------------------------------------------------
         // This method updates the counts of type replacements for various vendors in the database
         //--------------------------------------------------------------------------------------------------------------------
-        private int UpdateTypeReplacementsCounts(int[] typesReplacements)
+        private int UpdateTypeReplacementsCounts(string[] typesReplacements)
         {
             try
             {
                 int successIndicator = 0;
                 string[] vendors = { "venue", "dj", "photographer", "dress", "rabbi", "hair and makeup" };
 
-                // Create a dictionary to store the vendor names and their counts
-                Dictionary<string, int> vendorCounts = new Dictionary<string, int>();
+                //// Create a dictionary to store the vendor names and their counts
+                //Dictionary<string, int> vendorCounts = new Dictionary<string, int>();
 
-                // Iterate over the vendors array and typesReplacements array simultaneously
-                for (int i = 0; i < vendors.Length; i++)
-                {
-                    if (typesReplacements[i] == 1)
-                    {
-                        vendorCounts[vendors[i]] = typesReplacements[i];
-                    }
-                }
+                //// Iterate over the vendors array and typesReplacements array simultaneously
+                //for (int i = 0; i < vendors.Length; i++)
+                //{
+                //    if (typesReplacements[i] == 1)
+                //    {
+                //        vendorCounts[vendors[i]] = typesReplacements[i];
+                //    }
+                //}
 
                 using (SqlConnection con3 = Connect())
                 {
                     // Update counts in the database
-                    foreach (string vendor in vendorCounts.Keys)
+                    foreach (string vendor in typesReplacements)
                     {
                         using (SqlCommand cmd3 = CreateUpdateTypeCountsSP("SPUpdateTypeCount", con3, vendor))
                         {
@@ -415,7 +412,7 @@ namespace Server.DAL
                 }
 
                 // Return 1 if all type replacement counts were successfully updated; otherwise, return 0
-                return successIndicator == typesReplacements.Sum() ? 1 : 0;
+                return successIndicator == typesReplacements.Length ? 1 : 0;
             }
             catch (Exception ex)
             {

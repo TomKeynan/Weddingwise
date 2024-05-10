@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "uYBnqlBQxHKITW3GUfZdM/ENW862f30AuSMyNDzODG5x1dBq0BR9lgh5v9ccTBxbjEw0xlvqYN2FNhH2zZFKsg==",
+  "dgSpecHash": "adYcVE/1cNQ1avk4kEAi7Tf2dgZDkKmqXvn7Dwp6EkHTpDsVb8ZzhQzkyMWaPeuIklTg7ZkvTtzqBhmuVS5vSw==",
   "success": true,
   "projectFilePath": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\Server.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Adam\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\Adam\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\Adam\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\Adam\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",

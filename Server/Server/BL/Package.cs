@@ -9,8 +9,6 @@ namespace Server.BL
         // Private fields
         private int _packageId;
         private string _coupleEmail;
-        private DateTime _date;
-        private string _region;
         private int _totalCost;
         private double _totalScore;
         private List<Supplier> _selectedSuppliers;
@@ -20,12 +18,10 @@ namespace Server.BL
         public Package() { }
 
         // Parameterized constructor
-        public Package(int packageId, string coupleEmail, DateTime date, string region, int totalCost, double totalScore, List<Supplier> selectedSuppliers, Dictionary<string, List<Supplier>> alternativeSuppliers)
+        public Package(int packageId, string coupleEmail, int totalCost, double totalScore, List<Supplier> selectedSuppliers, Dictionary<string, List<Supplier>> alternativeSuppliers)
         {
             _packageId = packageId;
             _coupleEmail = coupleEmail;
-            _date = date;
-            _region = region;
             _totalCost = totalCost;
             _totalScore = totalScore;
             _selectedSuppliers = selectedSuppliers;
@@ -48,19 +44,7 @@ namespace Server.BL
             set { _coupleEmail = value; }
         }
 
-        // Gets or sets the date of the package.
-        public DateTime Date
-        {
-            get { return _date; }
-            set { _date = value; }
-        }
 
-        // Gets or sets the region of the package.
-        public string Region
-        {
-            get { return _region; }
-            set { _region = value; }
-        }
 
         // Gets or sets the total cost of the package.
         public int TotalCost

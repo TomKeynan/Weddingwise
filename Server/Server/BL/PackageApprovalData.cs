@@ -5,7 +5,7 @@
         // Private fields
         private Package _package;
         private Dictionary<string, double> _typeWeights;
-        private int[] _typeReplacments;
+        private string[] _typeReplacements;
 
         // Constructors
         public PackageApprovalData()
@@ -13,11 +13,11 @@
             // Default constructor
         }
 
-        public PackageApprovalData(Package package, Dictionary<string, double> typeWeights, int[] typeReplacments)
+        public PackageApprovalData(Package package, Dictionary<string, double> typeWeights, string[] typeReplacements)
         {
             _package = package;
             _typeWeights = typeWeights;
-            _typeReplacments = typeReplacments;
+            _typeReplacements = typeReplacements;
         }
 
         // Properties
@@ -33,10 +33,10 @@
             set { _typeWeights = value; }
         }
 
-        public int[] TypeReplacments
+        public string[] TypeReplacements
         {
-            get { return _typeReplacments; }
-            set { _typeReplacments = value; }
+            get { return _typeReplacements; }
+            set { _typeReplacements = value; }
         }
     }
 }
