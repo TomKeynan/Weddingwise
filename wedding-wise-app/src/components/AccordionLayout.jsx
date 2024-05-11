@@ -1,8 +1,10 @@
 import React from "react";
-import Accordion from "@mui/material/Accordion";
-import AccordionActions from "@mui/material/AccordionActions";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
+import {
+  Accordion,
+  AccordionActions,
+  AccordionDetails,
+  AccordionSummary,
+} from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Button from "@mui/material/Button";
 import { customTheme } from "../store/Theme";
@@ -16,7 +18,7 @@ export default function AccordionLayout({ title, btnValue, children }) {
     navigate(`${e.target.value}`);
   }
   return (
-    <Box sx={{ mb:5}}>
+    <Box sx={{ mb: 5 }}>
       <Accordion defaultExpanded>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
