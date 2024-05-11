@@ -46,6 +46,7 @@ export const signupResponse = Object.freeze({
   400: "אופס! משהו השתבש , נסה שנית.",
   401: "משתמש זה אינו פעיל",
   404: "סיסמא או אימייל אינם נכונים.",
+  409: "כתובת המייל שהזנת כבר רשומה במערכת. אנא הזן כתובת חדשה",
   500: "אופס! משהו השתבש , נסה שנית.",
 });
 
@@ -308,16 +309,16 @@ export const stickers = [
     stickerAlt: "צלם",
   },
   {
-    stickerSrc: "assets/graphics/makeup/makeup-gray.png",
-    stickerAlt: "איפור",
-  },
-  {
-    stickerSrc: "assets/graphics/dress/dress-orange.png",
+    stickerSrc: "assets/graphics/dress/dress-gray.png",
     stickerAlt: "שמלה",
   },
   {
-    stickerSrc: "assets/graphics/rabbi/rabbi-gray.png",
+    stickerSrc: "assets/graphics/rabbi/rabbi-orange.png",
     stickerAlt: "עורכי טקסים",
+  },
+  {
+    stickerSrc: "assets/graphics/makeup/makeup-gray.png",
+    stickerAlt: "איפור",
   },
 ];
 export const taskListDefault = [

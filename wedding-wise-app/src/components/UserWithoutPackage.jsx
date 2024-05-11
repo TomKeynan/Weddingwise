@@ -1,11 +1,13 @@
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
 import { customTheme } from "../store/Theme";
 import { useNavigate } from "react-router-dom";
 import OutlinedButton from "./OutlinedButton";
+import { AppContext } from "../store/AppContext";
 function UserWithoutPackage() {
   const navigate = useNavigate();
 
+  const { userData } = useContext(AppContext);
   function handleClick() {
     navigate("/questionnaire");
   }
@@ -21,7 +23,8 @@ function UserWithoutPackage() {
     >
       <Stack spacing={3} alignItems="center" sx={{ px: 5 }}>
         <Typography variant="h3">
-          שלום (שם משתמש), כאן מתחיל החלק המעניין!
+          שלום {userData.partner1Name} ו{userData.partner2Name}, כאן מתחיל החלק
+          המעניין!
         </Typography>
         <Typography variant="h5">
           לפני שעוברים להשיב על השאלון, מומלץ לקרוא את ההוראות

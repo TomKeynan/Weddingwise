@@ -1,20 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import { customTheme } from "../store/Theme";
+import { stickers } from "../utilities/collections";
 
 function SupplierCard({ props, showActionBtn = false }) {
   const {
     imageSrc,
     imageAlt,
-    stickerSrc,
-    stickerAlt,
-    name,
-    phone,
-    email,
+    businessName,
+    phoneNumber,
+    supplierEmail,
     price,
+    supplierType,
   } = props;
+
+  const [sticker, setSticker] = useState({});
+
+  useEffect(() => {
+    const cardSticker = stickers.filter((sticker) => {
+      if (sticker.stickerSrc.includes("makeup")) return sticker;
+      else return sticker.stickerSrc.includes(supplierType);
+    });
+    setSticker({ ...cardSticker[0] });
+  }, []);
+
   return (
     <Grid item xs={12} sm={6} md={4} lg={2} sx={cardContainerSX}>
       <Stack
@@ -41,12 +52,12 @@ function SupplierCard({ props, showActionBtn = false }) {
             alignItems="center"
           >
             <img
-              src={stickerSrc}
-              alt={stickerAlt}
+              src={sticker.stickerSrc}
+              alt={sticker.stickerAlt}
               className="supplier-card-sticker"
             />
             <Typography variant="body1" sx={{ textAlign: "center" }}>
-              {name}
+              {businessName}
             </Typography>
           </Stack>
           <Stack
@@ -57,7 +68,7 @@ function SupplierCard({ props, showActionBtn = false }) {
           >
             <PhoneIcon sx={{ fontSize: 25 }} />
             <Typography variant="body1" sx={{ textAlign: "center" }}>
-              {phone}
+              {phoneNumber}
             </Typography>
           </Stack>
           <Stack
@@ -68,7 +79,7 @@ function SupplierCard({ props, showActionBtn = false }) {
           >
             <AlternateEmailIcon sx={{ fontSize: 25 }} />
             <Typography variant="body1" sx={{ textAlign: "center" }}>
-              {email}
+              {supplierEmail}
             </Typography>
           </Stack>
           <Stack direction="row" alignItems="center" justifyContent="center">

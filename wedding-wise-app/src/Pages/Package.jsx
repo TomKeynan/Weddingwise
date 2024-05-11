@@ -1,15 +1,20 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import RandomPackage from "../components/RandomPackage";
 import UserWithoutPackage from "../components/UserWithoutPackage";
 import UserPackage from "../components/UserPackage";
 import { Box } from "@mui/material";
+import { AppContext } from "../store/AppContext";
 function Package() {
-  const [userStatus, setUserStatus] = useState(2);
+  const [userStatus, setUserStatus] = useState(null);
+  // console.log(JSON.parse(sessionStorage.getItem("currentUser")).package)
+  const { userData } = useContext(AppContext)
+
+
   return (
     <Box sx={{ display: "block", width: "100%" }}>
-      {userStatus === 0 ? (
+      {userData === null ? (
         <RandomPackage />
-      ) : userStatus === 1 ? (
+      ) : userData.package === null ? (
         <UserWithoutPackage />
       ) : (
         <UserPackage />

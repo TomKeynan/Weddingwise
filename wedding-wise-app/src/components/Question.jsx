@@ -10,10 +10,10 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 const Question = ({ activePage, onUserSelection }) => {
   const screenAboveSM = useMediaQuery("(min-width: 500px)");
-  const { userAnswers, onSelectOption } = useContext(QuestionsContext);
+  const { coupleAnswers, onSelectOption } = useContext(QuestionsContext);
 
   useEffect(() => {
-    setSelectedOption(userAnswers[activePage]);
+    setSelectedOption(coupleAnswers[activePage]);
   }, []);
 
   const [selectedOption, setSelectedOption] = useState(0);
