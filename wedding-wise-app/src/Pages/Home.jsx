@@ -7,6 +7,7 @@ import SuppliersCarousel from "../components/HomePage/SuppliersCarousel";
 import MapSection from "../components/HomePage/MapSection";
 import Description from "../components/HomePage/Description";
 import Footer from "../components/Footer";
+//import Gmap from "../components/HomePage/Gmap";
 function Home() {
   const navigate = useNavigate();
 
