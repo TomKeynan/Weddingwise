@@ -35,32 +35,7 @@ function useFetch() {
     }
   }
 
-  // async function sendData(endpoint, method = "GET", bodyData = undefined) {
-  //   try {
-  //     setLoading(true);
-  //     const response = await fetch(`${url}${endpoint}`, {
-  //       method: method,
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(bodyData),
-  //     });
-  //     if (!response.ok) {
-  //       setError({ isError: true, status: response.status });
-  //       return;
-  //     }
-  //     const responseData = await response.json();
-  //     setResData(responseData);
-  //   } catch (error) {
-  //     console.log(error);
-  //     setError(prev => {return {...prev, isError}});
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
-  async function sendData(endpoint, method, bodyData = undefined) {
-    if (bodyData === undefined)
-      console.log("you forgot to pass the data to useFetch hook!!");
+  async function sendData(endpoint, method, bodyData) {
     try {
       setLoading(true);
       const response = await fetch(`${baseUrl}${endpoint}`, {

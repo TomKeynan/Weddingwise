@@ -9,7 +9,6 @@ function Package() {
   // console.log(JSON.parse(sessionStorage.getItem("currentUser")).package)
   const { userData } = useContext(AppContext)
 
-
   return (
     <Box sx={{ display: "block", width: "100%" }}>
       {userData === null ? (
