@@ -6,7 +6,7 @@ function TypeWeightCard({ props }) {
   const decimalWeight = weight.toFixed(2) * 100;
   return (
     <Grid item xs={12} sm={6} md={2} sx={cardContainerSX}>
-      <Typography variant="h6" sx={{fontWeight: "bold"}}>{name}</Typography>
+      <Typography variant="h6" sx={{fontWeight: "bold"}}>{stickerAlt}</Typography>
       <Box>
         <img className="type-card-image" src={stickerSrc} alt={stickerAlt} />
       </Box>

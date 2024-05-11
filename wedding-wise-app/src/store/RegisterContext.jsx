@@ -94,7 +94,6 @@ export default function RegisterContextProvider({ children }) {
 
   function handleSubmit() {
     delete userDetails.Relationship;
-    console.log(userDetails);
     sendData("/Couples/registerCouple", "POST", userDetails);
   }
 

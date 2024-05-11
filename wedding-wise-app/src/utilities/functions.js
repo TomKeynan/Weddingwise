@@ -34,3 +34,40 @@ function addZero(number) {
   }
   return number;
 }
+
+export function capitalizeKeys(obj) {
+  const newObj = {};
+  for (let key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+      newObj[capitalizedKey] = obj[key];
+    }
+  }
+  return newObj;
+}
+
+// get executed at UserPackage Component
+export function buildTypeWeightsCard(typeWeightsObj, stickersArray) {
+  const typeWeightsArray = Object.entries(typeWeightsObj).map(
+    ([type, weight]) => {
+      if (type === "hair and makeup") {
+        type = "makeup";
+      }
+      return {
+        type,
+        weight,
+      };
+    }
+  );
+  const typeWeightCardsArray = typeWeightsArray.map((item) => {
+    stickersArray.map((sticker) => {
+      if (sticker.stickerSrc.includes(item.type)) {
+        item.stickerSrc = sticker.stickerSrc;
+        item.stickerAlt = sticker.stickerAlt;
+        return;
+      }
+    });
+    return { ...item };
+  });
+  return typeWeightCardsArray;
+}

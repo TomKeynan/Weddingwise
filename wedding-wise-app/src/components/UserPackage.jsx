@@ -1,12 +1,13 @@
 import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 import React from "react";
-import { supplierCards, typeWeights } from "../utilities/collections";
+import { supplierCards, typeWeights, stickers } from "../utilities/collections";
 import TypeWeightCard from "./TypeWeightCard";
 import { useNavigate } from "react-router-dom";
 import OutlinedButton from "./OutlinedButton";
 import SupplierCard from "./SupplierCard";
 import { customTheme } from "../store/Theme";
 import useFetch from "../utilities/useFetch";
+import { buildTypeWeightsCard } from "../utilities/functions";
 
 function UserPackage() {
   const { sendData } = useFetch();
@@ -17,16 +18,17 @@ function UserPackage() {
     navigate("/questionnaire");
   }
 
-  const suppliers = JSON.parse(sessionStorage.getItem("offeredCouple")).package;
-  const typeWeight = JSON.parse(
-    sessionStorage.getItem("offeredCouple")
+  const suppliers = JSON.parse(sessionStorage.getItem("currentUser")).package;
+
+  const typeWeights = JSON.parse(
+    sessionStorage.getItem("currentUser")
   ).typeWeights;
-  
+
   //במקרה של החלפת ספק או חבילה שלמה יש לעדכן את האובייקט הזה ורק אז לשלוח אותו
   let packageData = {
     Package: suppliers,
-    TypeReplacments: [1, 0, 0, 1, 0, 1],
-    TypeWeights: typeWeight,
+    TypeReplacements: [1, 0, 0, 1, 0, 1],
+    TypeWeights: typeWeights,
   };
 
   return (
@@ -52,7 +54,7 @@ function UserPackage() {
           sx={{ width: "100%" }}
         >
           <Grid container sx={cardsContainer}>
-            {typeWeights.map((type, index) => (
+            {buildTypeWeightsCard(typeWeights, stickers).map((type, index) => (
               <TypeWeightCard key={index} props={type} />
             ))}
           </Grid>
@@ -67,7 +69,7 @@ function UserPackage() {
         </Typography>
         <Stack sx={{ width: "90%" }}>
           <Grid container sx={cardsContainer}>
-            {supplierCards.map((supplier, index) => (
+            {suppliers['selectedSuppliers'].map((supplier, index) => (
               <SupplierCard key={index} props={supplier} showActionBtn={true} />
             ))}
           </Grid>
