@@ -1,0 +1,50 @@
+.App {
+  text-align: center;
+}
+
+.suppliers-sticker{
+  width: 120px;
+}
+
+
+@media screen and (max-width: 800px) {
+  .suppliers-sticker {
+    width: 90px;
+  }
+}
+
+.w-icon{
+  width: 50px;
+}
+
+.supplier-card-image{
+  width: 100%;
+  aspect-ratio: 1/1.25;
+  object-fit: cover;
+}
+
+.supplier-card-sticker{
+  width: 30px;
+}
+
+.type-card-image{
+  width: 100px;
+}
+
+.hero-graphics{
+  height: 200px;
+}
+
+@media screen and (max-width: 600px) {
+  
+  .hero-graphics{
+    height: 130px;
+  }
+}
+
+@media screen and (min-width: 1027px) {
+  
+  .hero-graphics{
+    height: 240px;
+  }
+}

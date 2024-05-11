@@ -1,0 +1,30 @@
+.step1-img {
+  width: 140px;
+}
+
+
+@media screen and (max-width: 900px) {
+  .step1-img {
+    width: 120px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .step1-img {
+    width: 90px;
+  }
+}
+
+/* #datePicker::-webkit-calendar-picker-indicator {
+position: absolute;
+left: 20px;
+bottom: 3px;
+width: 100%;
+}
+
+#datePicker::-webkit-datetime-edit-fields-wrapper {
+  position: absolute;
+  right: 60px;
+  bottom: 3px;
+  
+} */
