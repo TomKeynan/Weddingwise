@@ -321,3 +321,83 @@ export const stickers = [
     stickerAlt: "איפור",
   },
 ];
+export const taskListDefault = [
+  {
+    title:"יצירת רשימת מוזמנים",
+    notes:"",
+    completed:false,
+    subtasks:[
+      {
+        title:"הוספת משפחה",
+        completed:false
+      },
+      {
+        title:"הוספת חברים",
+        completed:false
+      }
+    ]
+  },
+  {
+    title:"בחירת תאריך",
+    notes:"",
+    completed:false,
+    subtasks:[
+
+    ]
+  },
+  {
+    "title": "פתיחת חשבון בנק משותף",
+    "notes": "",
+    "completed": false,
+    "subtasks": []
+  },
+  {
+    "title": "בחירת ספקים",
+    "notes": "",
+    "completed": false,
+    "subtasks": [ {
+      title:"מילוי שאלון העדפות",
+      completed:false
+    }, 
+    {
+      title:" מילוי שאלון העדפות",
+      completed:false
+    },
+    {
+      title:" אישור חבילה מוצעת",
+      completed:false
+    },
+  ]
+  },
+  {
+    "title": "יצירת סידור הושבה",
+    "notes": "",
+    "completed": false,
+    "subtasks": []
+  },
+  {
+    "title": "שליחת שמרו את התאריך",
+    "notes": "",
+    "completed": false,
+    "subtasks": []
+  },
+  {
+    "title": "עיצוב הזמנות לחתונה",
+    "notes": "",
+    "completed": false,
+    "subtasks": []
+  },
+  
+  {
+    "title": "ניהול אישורי הגעה",
+    "notes": "",
+    "completed": false,
+    "subtasks": []
+  },
+  {
+    "title": "מתן ביקורות ספקים",
+    "notes": "יכולים לעשות רק אחרי האירוע",
+    "completed": false,
+    "subtasks": []
+  }
+];
