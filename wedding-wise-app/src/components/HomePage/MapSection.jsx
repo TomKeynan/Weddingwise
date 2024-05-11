@@ -54,9 +54,7 @@ function MapSection() {
           <Typography sx={StickersTextSX}>
             כאן תוכלו לראות היכן נמצאים אולמות האירועים
           </Typography>
-          <Box sx={{ fontSize: 40, border: 1, px: 1, py: 40 }}>
-            כאן תוצג המפה של האולמות
-          </Box>
+          <Gmap/>
         </Stack>
       </Stack>
     );
