@@ -1,13 +1,17 @@
 import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 import React from "react";
-import { supplierCards, typeWeights, stickers } from "../utilities/collections";
+import {
+  supplierCards,
+  typeWeights,
+  stickers,
+} from "../../utilities/collections";
 import TypeWeightCard from "./TypeWeightCard";
 import { useNavigate } from "react-router-dom";
-import OutlinedButton from "./OutlinedButton";
-import SupplierCard from "./SupplierCard";
-import { customTheme } from "../store/Theme";
-import useFetch from "../utilities/useFetch";
-import { buildTypeWeightsCard } from "../utilities/functions";
+import OutlinedButton from "../OutlinedButton";
+import SupplierCard from "../SupplierCard";
+import { customTheme } from "../../store/Theme";
+import useFetch from "../../utilities/useFetch";
+import { buildTypeWeightsCard } from "../../utilities/functions";
 
 function UserPackage() {
   const { sendData } = useFetch();
@@ -35,7 +39,7 @@ function UserPackage() {
     <Stack
       justifyContent="space-around"
       alignItems="center"
-      sx={{ textAlign: "center", mb: 20 }}
+      sx={{ textAlign: "center", pb: 8, width: "95%", margin: "0 auto" }}
       spacing={5}
     >
       <Stack
@@ -69,7 +73,7 @@ function UserPackage() {
         </Typography>
         <Stack sx={{ width: "90%" }}>
           <Grid container sx={cardsContainer}>
-            {suppliers['selectedSuppliers'].map((supplier, index) => (
+            {suppliers["selectedSuppliers"].map((supplier, index) => (
               <SupplierCard key={index} props={supplier} showActionBtn={true} />
             ))}
           </Grid>
@@ -107,8 +111,7 @@ function UserPackage() {
         </Box>
       </Stack>
       <Stack
-        spacing={3}
-        justifyContent="space-around"
+        spacing={5}
         alignItems="center"
         sx={{ width: "90%", px: { xs: 1, sm: 5 } }}
       >

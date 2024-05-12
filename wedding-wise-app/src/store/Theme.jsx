@@ -41,6 +41,9 @@ export const customTheme = createTheme(
       strong: "0px 25px 15px 5px rgba(0,0,0,0.2)",
       footer: "inset 0px 15px 35px -3px rgba(0,0,0,0.1);",
     },
+    font: {
+      main: "Varela Round",
+    },
   },
   heIL
 );

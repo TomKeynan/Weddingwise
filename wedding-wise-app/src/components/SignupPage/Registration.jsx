@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
-import { RegisterContext } from "../store/RegisterContext";
-import { customTheme } from "../store/Theme";
+import { RegisterContext } from "../../store/RegisterContext";
+import { customTheme } from "../../store/Theme";
 import {
   Box,
   Stack,
@@ -14,12 +14,12 @@ import {
 import ListIcon from "@mui/icons-material/List";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
-import StepOne from "./SignUp-Steps/StepOne";
-import StepThree from "./SignUp-Steps/StepThree";
-import StepTwo from "./SignUp-Steps/StepTwo";
-import Loading from "./Loading";
-import { signupResponse } from "../utilities/collections";
-import DialogMessage from "./DialogMessage";
+import StepOne from "./StepOne";
+import StepThree from "./StepThree";
+import StepTwo from "./StepTwo";
+import Loading from "../Loading";
+import { signupResponse } from "../../utilities/collections";
+import DialogMessage from "../DialogMessage";
 
 const steps = [
   {

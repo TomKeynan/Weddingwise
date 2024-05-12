@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
-import { QuestionsContext } from "../store/QuestionsContext";
-import { AppContext } from "../store/AppContext";
+import { QuestionsContext } from "../../store/QuestionsContext";
+import { AppContext } from "../../store/AppContext";
 import {
   Button,
   Typography,
@@ -11,13 +11,12 @@ import {
 import Question from "./Question";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import useFetch from "../utilities/useFetch";
+import useFetch from "../../utilities/useFetch";
+import Loading from "../Loading";
 
 export default function Questions() {
-  const { coupleAnswers, handleCreateNewPackage } =
+  const { isLoading, coupleAnswers, handleCreateNewPackage } =
     useContext(QuestionsContext);
-
-  const { data, loading, error, sendData } = useFetch();
 
   // useEffect(() => {
   //   sessionStorage.setItem("offeredCouple", JSON.stringify(data));
@@ -57,6 +56,7 @@ export default function Questions() {
 
   return (
     <Stack spacing={4} justifyContent="center" alignItems="center" px={4}>
+      {isLoading && <Loading />}
       {/* <Typography>Page: {page}</Typography> */}
       {screenAboveSM && (
         <Pagination

@@ -2,26 +2,27 @@ import React, { useState, createContext, useContext, useEffect } from "react";
 import useFetch from "../utilities/useFetch";
 import { AppContext } from "./AppContext";
 import { capitalizeKeys } from "../utilities/functions";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const QuestionsContext = createContext({
+  isLoading: false,
   coupleAnswers: [],
   onSelectOption: () => {},
   handleCreateNewPackage: () => {},
 });
 
-const initialArray = Array.from({ length: 15 }, () => 1);
+const initialArray = Array.from({ length: 15 }, () => 0);
 
 export default function QuestionsContextProvider({ children }) {
-  const { sendData, resData } = useFetch();
+  const { sendData, resData, loading } = useFetch();
   const { userData, updateUserData } = useContext(AppContext);
   const [coupleAnswers, setCoupleAnswers] = useState(initialArray);
-  // const navigate = useNavigate();
-  
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (resData) {
-      // console.log(resData);
       updateUserData(resData);
+      navigate("/package");
     }
   }, [resData]);
 
@@ -57,6 +58,7 @@ export default function QuestionsContextProvider({ children }) {
   // }
 
   const questionsCtx = {
+    isLoading: loading,
     coupleAnswers,
     onSelectOption,
     handleCreateNewPackage,

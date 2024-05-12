@@ -1,9 +1,9 @@
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 import React, { useContext } from "react";
-import { customTheme } from "../store/Theme";
+import { customTheme } from "../../store/Theme";
 import { useNavigate } from "react-router-dom";
-import OutlinedButton from "./OutlinedButton";
-import { AppContext } from "../store/AppContext";
+import OutlinedButton from "../OutlinedButton";
+import { AppContext } from "../../store/AppContext";
 function UserWithoutPackage() {
   const navigate = useNavigate();
 
@@ -19,6 +19,7 @@ function UserWithoutPackage() {
         rowGap: 7,
         mt: 6,
         textAlign: "center",
+        pb: 8,
       }}
     >
       <Stack spacing={3} alignItems="center" sx={{ px: 5 }}>

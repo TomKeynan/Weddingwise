@@ -3,7 +3,7 @@ import { stickers } from "../../utilities/collections";
 import { Box, Grid, Paper, Stack, Typography } from "@mui/material";
 import { customTheme } from "../../store/Theme";
 import { useMediaQuery } from "@mui/material";
-// import Gmap from "../Gmap";
+import Gmap from "./Gmap";
 
 function MapSection() {
   const screenAboveMD = useMediaQuery("(min-width: 1460px)");
@@ -54,7 +54,7 @@ function MapSection() {
           <Typography sx={StickersTextSX}>
             כאן תוכלו לראות היכן נמצאים אולמות האירועים
           </Typography>
-          {/* <Gmap /> */}
+          <Gmap />
         </Stack>
       </Stack>
     );
@@ -71,7 +71,7 @@ function MapSection() {
             elevation={screenAboveMD ? 4 : 0}
             sx={paperSX}
           >
-            <Stack rowGap={4} >
+            <Stack rowGap={4}>
               <Typography sx={StickersTextSX}>
                 נרשמים, מספרים לנו מה חשוב לכם והמערכת שלנו תמליץ לכם על חבילה
                 של נותני שירות.
@@ -84,7 +84,6 @@ function MapSection() {
                     xs={12}
                     sm={6}
                     md={4}
-                   
                     sx={stickerGridItemSX}
                   >
                     <Typography variant="h6">{item.stickerAlt}</Typography>
@@ -106,7 +105,7 @@ function MapSection() {
             <Typography sx={StickersTextSX}>
               כאן תוכלו לראות היכן נמצאים אולמות האירועים
             </Typography>
-            {/* <Gmap/> */}
+            <Gmap />
           </Stack>
         </Stack>
       </Paper>
