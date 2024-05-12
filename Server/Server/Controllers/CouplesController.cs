@@ -27,7 +27,6 @@ namespace Server.Controllers
                 {
                     return BadRequest("Couple data is null.");
                 }
-
                 // Attempt to insert the couple into the database
                 int rowsAffected = couple.InsertCouple();
 
@@ -43,6 +42,8 @@ namespace Server.Controllers
 
                     // Create a JsonElement from the anonymous object
                     JsonElement jsonCoupleData = JsonDocument.Parse(JsonSerializer.Serialize(coupleData)).RootElement;
+
+                    // After successfuly registered the couple will automatically log in
 
                     // Call GetCouple to retrieve the newly inserted couple
                     return GetCouple(jsonCoupleData);
@@ -66,13 +67,11 @@ namespace Server.Controllers
                     return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
                 }
             }
-
             catch (Exception ex)
             {
-                // Handle other types of exceptions
-                throw new Exception("An error occurred while inserting a new couple in the InsertCouple method" + ex.Message);
+                // Return a BadRequest response with the exception message in case of an error
+                return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
             }
-
         }
 
         //------------------------------------------------
@@ -87,18 +86,28 @@ namespace Server.Controllers
         {
             try
             {
+
+
+                // Check if the received couple data is null
+                if (coupleData.ValueKind == JsonValueKind.Null)
+                {
+                    throw new ArgumentNullException(nameof(coupleData), "The JSON data for the couple is null.");
+                }
+
                 // Extract email and password from the JSON data
                 string email = coupleData.GetProperty("Email").GetString();
                 string password = coupleData.GetProperty("Password").GetString();
 
+                if (email == null || password == null)
+                {
+                    throw new ArgumentNullException("The email or the password that were sent are empty");
+                }
+
+
                 // Call a method to find the couple based on email and password
                 Couple couple = Couple.FindCouple(email, password);
 
-                // Check if couple is not found, return NotFound response
-                if (couple == null)
-                {
-                    return NotFound();
-                }
+
                 // Check if couple is inactive, return Unauthorized response
                 if (couple.IsActive == false)
                 {
@@ -109,6 +118,10 @@ namespace Server.Controllers
                 {
                     return Ok(couple);
                 }
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
@@ -146,18 +159,13 @@ namespace Server.Controllers
                     throw new Exception("The update wasn't successful");
                 }
             }
+
             catch (Exception e)
             {
                 // Return a BadRequest response with the error message
                 return BadRequest($"Error: {e.Message}");
             }
         }
-
-
-
-
-
-
 
     }
 }

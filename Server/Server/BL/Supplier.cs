@@ -7,18 +7,18 @@ namespace Server.BL
         // Private fields
         private string _businessName;
         private string _supplierEmail;
-        private string _password;
+        private string? _password;
         private string _phoneNumber;
         private int _price;
-        private double _rating;
-        private int _capacity;
+        private double? _rating;
+        private int? _capacity;
         private string _availableRegion;
-        private double _latitude;
-        private double _longitude;
+        private double? _latitude;
+        private double? _longitude;
         private string _supplierType;
-        private List<DateTime> _availableDates;
+        private List<DateTime>? _availableDates;
         private bool _isActive;
-        private string _userType;
+
 
         // Constructors
         public Supplier()
@@ -40,8 +40,7 @@ namespace Server.BL
             double longitude,
             string supplierType,
             bool isActive,
-            List<DateTime> availableDates,
-            string userType
+            List<DateTime> availableDates
         )
         {
             _businessName = businessName;
@@ -57,7 +56,7 @@ namespace Server.BL
             _supplierType = supplierType;
             _isActive = isActive;
             _availableDates = availableDates;
-            _userType = userType;
+
         }
 
         // Properties
@@ -73,7 +72,7 @@ namespace Server.BL
             set { _supplierEmail = value; }
         }
 
-        public string Password
+        public string? Password
         {
             get { return _password; }
             set { _password = value; }
@@ -91,13 +90,13 @@ namespace Server.BL
             set { _price = value; }
         }
 
-        public double Rating
+        public double? Rating
         {
             get { return _rating; }
             set { _rating = value; }
         }
 
-        public int Capacity
+        public int? Capacity
         {
             get { return _capacity; }
             set { _capacity = value; }
@@ -109,13 +108,13 @@ namespace Server.BL
             set { _availableRegion = value; }
         }
 
-        public double Latitude
+        public double? Latitude
         {
             get { return _latitude; }
             set { _latitude = value; }
         }
 
-        public double Longitude
+        public double? Longitude
         {
             get { return _longitude; }
             set { _longitude = value; }
@@ -133,26 +132,26 @@ namespace Server.BL
             set { _isActive = value; }
         }
 
-        public List<DateTime> AvailableDates
+        public List<DateTime>? AvailableDates
         {
             get { return _availableDates; }
             set { _availableDates = value; }
         }
 
-        public string UserType
-        {
-            get { return _userType; }
-            set { _userType = value; }
-        }
+
 
         public static List<Supplier> GetTopVenues()
         {
-
             DBServicesSupplier dbs = new DBServicesSupplier();
             return dbs.GetTopVenuesPerRegion();
-
         }
+
+
+        public int InsertSupplier()
+        {
+            DBServicesSupplier dBServicesSupplier = new DBServicesSupplier();
+            return dBServicesSupplier.InsertSupplier(this);
+        }
+
     }
-
-
 }
