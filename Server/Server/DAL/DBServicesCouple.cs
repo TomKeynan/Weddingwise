@@ -177,11 +177,11 @@ namespace Server.DAL
                 // Open a database connection.
                 using (SqlConnection con = Connect())
                 {
-                    // Create a SqlCommand to execute the stored procedure.
-                    using (SqlCommand cmd = CreateReadCoupleWithSP(con, "SPGetCoupleDetails1", email, enteredPassword))
+                    // Create a SqlCommand to execute the stored procedure for retrieving couple details.
+                    using (SqlCommand cmd = CreateReadCoupleWithSP(con, "SPGetCoupleDetails", email, enteredPassword))
                     {
                         // Execute the SqlCommand and obtain a SqlDataReader.
-                        using (SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                        using (SqlDataReader dataReader = cmd.ExecuteReader())
                         {
                             // Check if dataReader has any rows.
                             if (dataReader.Read())
@@ -200,73 +200,65 @@ namespace Server.DAL
                                     IsActive = Convert.ToBoolean(dataReader["is_active"]),
                                 };
 
-                                // Retrieve hashed password from the database based on the user's email
+                                // Retrieve hashed password from the database based on the user's email.
                                 string hashedPasswordFromDatabase = dataReader["password_hash"].ToString();
 
-                                // Log the retrieved hashed password to ensure it matches the expected value
+                                // Log the retrieved hashed password to ensure it matches the expected value.
                                 Console.WriteLine("Retrieved hashed password from database: " + hashedPasswordFromDatabase);
 
-                                // Compare the entered password with the retrieved hashed password
-
+                                // Compare the entered password with the retrieved hashed password.
                                 bool passwordsMatch = BCrypt.Net.BCrypt.EnhancedVerify(enteredPassword, hashedPasswordFromDatabase);
-                                // Log the result of password verification
-                                Console.WriteLine("Passwords match: " + passwordsMatch);
 
                                 if (!passwordsMatch)
                                 {
-                                    throw new Exception("The password is not matched!");
+                                    return null; // Passwords don't match, return null indicating unsuccessful authentication.
                                 }
-
-
-
-
-                                // Close the current connection and open a new one to retrieve type weights.
-                                con.Close();
-                                con.Open();
-
-                                // Create a new SqlCommand to execute the stored procedure.
-                                using (SqlCommand weightCmd = CreateReadCoupleWeightsWithSP(con, "SPGetCoupleTypeWeights", email))
-                                {
-                                    // Execute the SqlCommand and obtain a SqlDataReader.
-                                    using (SqlDataReader weightReader = weightCmd.ExecuteReader(CommandBehavior.CloseConnection))
-                                    {
-                                        // Create a dictionary to store type weights.
-                                        Dictionary<string, double> typeWeights = new Dictionary<string, double>();
-
-                                        // Iterate through the dataReader and populate the dictionary.
-                                        while (weightReader.Read())
-                                        {
-                                            string supplierType = weightReader["supplier_type_name"].ToString();
-                                            double weight = Convert.ToDouble(weightReader["type_weight"]);
-                                            typeWeights[supplierType] = weight;
-                                        }
-
-                                        // Assign the type weights to the couple object.
-                                        couple.TypeWeights = typeWeights;
-                                    }
-                                }
-
-                                // Retrieve the package for the couple.
-                                DBServicesPackage dBServicesPackage = new DBServicesPackage();
-                                couple.Package = dBServicesPackage.GetPackageFromDB(email);
                             }
                             else
                             {
-                                return couple;
+                                return couple; // No couple found, return null indicating unsuccessful authentication.
                             }
                         }
                     }
-                }
-            }
 
+                    // Create a SqlCommand to execute the stored procedure for retrieving couple type weights.
+                    using (SqlCommand weightCmd = CreateReadCoupleWeightsWithSP(con, "SPGetCoupleTypeWeights", email))
+                    {
+                        // Execute the SqlCommand and obtain a SqlDataReader.
+                        using (SqlDataReader weightReader = weightCmd.ExecuteReader(CommandBehavior.CloseConnection))
+                        {
+                            // Create a dictionary to store type weights.
+                            Dictionary<string, double> typeWeights = new Dictionary<string, double>();
+
+                            // Iterate through the weightReader and populate the dictionary.
+                            while (weightReader.Read())
+                            {
+                                string supplierType = weightReader["supplier_type_name"].ToString();
+                                double weight = Convert.ToDouble(weightReader["type_weight"]);
+                                typeWeights[supplierType] = weight;
+                            }
+
+                            // Assign the type weights to the couple object.
+                            couple.TypeWeights = typeWeights;
+                        }
+                    }
+
+                }
+
+                // Retrieve the package for the couple.
+                DBServicesPackage dBServicesPackage = new DBServicesPackage();
+                couple.Package = dBServicesPackage.GetPackageFromDB(email);
+            }
             catch (Exception ex)
             {
+                // Handle any exceptions that occur during the process.
                 throw new Exception("An error occurred while retrieving couple details in the GetCouple method" + ex.Message);
             }
 
             // Return the retrieved couple object.
             return couple;
         }
+
 
 
 
@@ -304,7 +296,5 @@ namespace Server.DAL
 
             return cmd;
         }
-
-
     }
 }

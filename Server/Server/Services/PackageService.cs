@@ -291,7 +291,7 @@ namespace Server.Services
 
             foreach (var supplier in suppliers)
             {
-                totalScore += supplier.Rating * typeWeights[supplier.SupplierType];
+                totalScore += (double)supplier.Rating * typeWeights[supplier.SupplierType];
             }
 
             return totalScore;
