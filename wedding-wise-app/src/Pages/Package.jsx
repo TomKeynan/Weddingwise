@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import RandomPackage from "../components/RandomPackage";
-import UserWithoutPackage from "../components/UserWithoutPackage";
-import UserPackage from "../components/UserPackage";
+import RandomPackage from "../components/PackagePage/RandomPackage";
+import UserWithoutPackage from "../components/PackagePage/UserWithoutPackage";
+import UserPackage from "../components/PackagePage/UserPackage";
 import { Box } from "@mui/material";
 import { AppContext } from "../store/AppContext";
 

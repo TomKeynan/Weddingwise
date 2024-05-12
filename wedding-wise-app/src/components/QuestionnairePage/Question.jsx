@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
-import { questionsArray } from "../utilities/collections";
+import { questionsArray } from "../../utilities/collections";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import { QuestionsContext } from "../store/QuestionsContext";
+import { QuestionsContext } from "../../store/QuestionsContext";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 const Question = ({ activePage, onUserSelection }) => {
@@ -34,7 +34,9 @@ const Question = ({ activePage, onUserSelection }) => {
         // mt={1}
         px={2}
       >
-        <Typography sx={{fontSize: { xs: 18, sm: 20, md: 22 }, fontWeight: "bold"}}>
+        <Typography
+          sx={{ fontSize: { xs: 18, sm: 20, md: 22 }, fontWeight: "bold" }}
+        >
           {`מה חשוב יותר לחתונה שלכם, ${currentQ.title} ?`}
         </Typography>
         {!screenAboveSM && (

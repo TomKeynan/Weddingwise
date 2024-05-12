@@ -1,5 +1,5 @@
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
-import { customTheme } from "../store/Theme";
+import { customTheme } from "../../store/Theme";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
 
@@ -12,12 +12,13 @@ function RandomPackage() {
   }
 
   return (
-    <Container maxWidth="xxl">
-      <Box mt={3} py={3}>
+    <Container maxWidth="xxl" sx={{ pb: 8 }}>
+      <Box mt={3} pb={3}>
         <Typography
           variant="h2"
           sx={{
             px: { xs: 4, sm: 10 },
+
             textAlign: "center",
             fontSize: { xs: 24, sm: 32 },
             lineHeight: 1.5,

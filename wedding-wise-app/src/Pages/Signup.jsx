@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Stack, Typography } from "@mui/material";
-import Registration from "../components/Registration";
+import Registration from "../components/SignupPage/Registration";
 import RegisterContextProvider from "../store/RegisterContext";
 import { customTheme } from "../store/Theme";
 
@@ -15,7 +15,6 @@ const Signup = () => {
         sx={{
           width: { xs: "90%", sm: "70%", lg: "50%" },
           margin: "auto",
-          height: "100vh",
         }}
       >
         <Typography sx={{ fontSize: { xs: 30, sm: 36, md: 40 } }}>

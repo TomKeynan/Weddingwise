@@ -3,14 +3,18 @@ import React from "react";
 
 function TypeWeightCard({ props }) {
   const { name, stickerSrc, stickerAlt, weight } = props;
-  const decimalWeight = weight.toFixed(2) * 100;
+  const decimalWeight = Math.floor(weight.toFixed(2) * 100);
   return (
     <Grid item xs={12} sm={6} md={2} sx={cardContainerSX}>
-      <Typography variant="h6" sx={{fontWeight: "bold"}}>{stickerAlt}</Typography>
+      <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+        {stickerAlt}
+      </Typography>
       <Box>
         <img className="type-card-image" src={stickerSrc} alt={stickerAlt} />
       </Box>
-      <Typography variant="h6" sx={{fontWeight: "bold"}}>{decimalWeight}%</Typography>
+      <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+        {decimalWeight}%
+      </Typography>
     </Grid>
   );
 }
