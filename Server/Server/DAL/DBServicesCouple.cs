@@ -203,8 +203,6 @@ namespace Server.DAL
                                 // Retrieve hashed password from the database based on the user's email.
                                 string hashedPasswordFromDatabase = dataReader["password_hash"].ToString();
 
-                                // Log the retrieved hashed password to ensure it matches the expected value.
-                                Console.WriteLine("Retrieved hashed password from database: " + hashedPasswordFromDatabase);
 
                                 // Compare the entered password with the retrieved hashed password.
                                 bool passwordsMatch = BCrypt.Net.BCrypt.EnhancedVerify(enteredPassword, hashedPasswordFromDatabase);

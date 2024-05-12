@@ -107,6 +107,10 @@ namespace Server.Controllers
                 // Call a method to find the couple based on email and password
                 Couple couple = Couple.FindCouple(email, password);
 
+                if (couple == null)
+                {
+                    return NotFound("User wasn't found. Check your email or password");
+                }
 
                 // Check if couple is inactive, return Unauthorized response
                 if (couple.IsActive == false)
