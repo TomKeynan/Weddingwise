@@ -164,6 +164,10 @@ namespace Server.Controllers
                 }
             }
 
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch (Exception e)
             {
                 // Return a BadRequest response with the error message
