@@ -1,5 +1,5 @@
 // ============= LAST UPDATED =================
-// =============   11-5-2024  =================
+// =============   13-5-2024  =================
 // ============= LAST UPDATED =================
 
 import "./App.css";
@@ -17,6 +17,7 @@ import Questionnaire from "./Pages/Questionnaire";
 import Package from "./Pages/Package";
 import { useEffect } from "react";
 import Finance from "./Pages/Finance";
+import EditDetails from "./Pages/EditDetails";
 
 const router = createBrowserRouter([
   { path: "/", element: <Home /> },
@@ -28,8 +29,9 @@ const router = createBrowserRouter([
       { path: "/sign-up", element: <Signup /> },
       { path: "/questionnaire", element: <Questionnaire /> },
       { path: "/package", element: <Package /> },
-      {path: "/tasks", element: <Tasks />},
-      {path: "/finance",element: <Finance />},
+      { path: "/tasks", element: <Tasks /> },
+      { path: "/finance", element: <Finance /> },
+      { path: "/edit", element: <EditDetails /> },
     ],
   },
   { path: "/login", element: <Login /> },

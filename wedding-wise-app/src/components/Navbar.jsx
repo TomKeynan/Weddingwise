@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
-import { Box, Stack, useMediaQuery } from "@mui/material/";
+import { Box, Button, Stack, useMediaQuery } from "@mui/material/";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -13,12 +13,14 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
 import { customTheme } from "../store/Theme";
+import { AppContext } from "../store/AppContext";
 
 function Navbar() {
   const screenAboveMD = useMediaQuery("(min-width: 900px)");
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const { coupleData, setCoupleData } = useContext(AppContext);
 
   const pages = [
     { route: "/", text: "דף הבית" },
@@ -29,6 +31,10 @@ function Navbar() {
   const settings = [
     { route: "/login", text: "התחבר" },
     { route: "/sign-up", text: "צור חשבון" },
+  ];
+  const userSettings = [
+    { route: "/edit", text: "עדכן פרטים" },
+    { route: "/", text: "התנתק" },
   ];
 
   const handleOpenNavMenu = (event) => {
@@ -46,6 +52,12 @@ function Navbar() {
     setAnchorElUser(null);
   };
 
+  function handleClick(linkText) {
+    if (linkText === "התנתק") {
+      sessionStorage.clear();
+      setCoupleData(null);
+    }
+  }
   // isActive = boolean property which destructured form the NavLink component.
   function navLinkStyles({ isActive }) {
     return {
@@ -101,6 +113,7 @@ function Navbar() {
                 <Menu
                   sx={{
                     mt: "45px",
+                    textAlign: "right",
                     "& .MuiBackdrop-root": {
                       background: "rgba(0, 0, 0, 0.4)",
                       height: "100%",
@@ -151,6 +164,34 @@ function Navbar() {
                       </Link>
                     </MenuItem>
                   ))}
+                  {coupleData &&
+                    userSettings.map((item) => (
+                      <MenuItem
+                        key={item.text}
+                        onClick={handleCloseUserMenu}
+                        sx={{
+                          ":hover": {
+                            bgcolor: customTheme.palette.primary.light,
+                          },
+                        }}
+                      >
+                        <Link
+                          to={item.route}
+                          onClick={() => handleClick(item.text)}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <Typography
+                            sx={{
+                              fontWeight: "bold",
+                              fontSize: 16,
+                              color: "#000",
+                            }}
+                          >
+                            {item.text}
+                          </Typography>
+                        </Link>
+                      </MenuItem>
+                    ))}
                 </Menu>
               </Box>
 
@@ -228,6 +269,8 @@ function Navbar() {
                     />
                   </IconButton>
                 </Tooltip>
+
+                {/* Setting Menu- Popup */}
                 <Menu
                   sx={{
                     mt: "45px",
@@ -281,8 +324,37 @@ function Navbar() {
                       </Link>
                     </MenuItem>
                   ))}
+                  {coupleData &&
+                    userSettings.map((item) => (
+                      <MenuItem
+                        key={item.text}
+                        onClick={handleCloseUserMenu}
+                        sx={{
+                          ":hover": {
+                            bgcolor: customTheme.palette.primary.light,
+                          },
+                        }}
+                      >
+                        <Link
+                          to={item.route}
+                          onClick={() => handleClick(item.text)}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <Typography
+                            sx={{
+                              fontWeight: "bold",
+                              fontSize: 16,
+                              color: "#000",
+                            }}
+                          >
+                            {item.text}
+                          </Typography>
+                        </Link>
+                      </MenuItem>
+                    ))}
                 </Menu>
               </Box>
+
               <CardGiftcardIcon
                 sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
               />

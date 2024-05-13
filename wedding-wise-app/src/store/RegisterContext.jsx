@@ -7,17 +7,20 @@ import { AppContext } from "./AppContext";
 
 export const RegisterContext = createContext({
   userDetails: {},
+  editValue: {},
   date: "",
   error: null,
   loading: false,
   updateUserDetails: () => {},
+  updateEditValue: () => {},
   saveDateValue: () => {},
   isFormCompleted: () => {},
   isFormValid: () => {},
   handleSubmit: () => {},
 });
-
 export default function RegisterContextProvider({ children }) {
+  const initialValues = JSON.parse(sessionStorage.getItem("currentUser"));
+
   const navigate = useNavigate();
 
   const { sendData, resData, error, loading } = useFetch();
@@ -32,17 +35,19 @@ export default function RegisterContextProvider({ children }) {
   }, [resData]);
 
   const [userDetails, setUserDetails] = useState({
-    Email: "",
-    Password: "",
-    Partner1Name: "",
-    Partner2Name: "",
+    email: "",
+    password: "",
+    partner1Name: "",
+    partner2Name: "",
     PhoneNumber: "000",
-    DesiredDate: "",
-    DesiredRegion: null,
-    Budget: "",
-    NumberOfInvitees: "",
-    Relationship: "",
+    desiredDate: "",
+    desiredRegion: "",
+    budget: "",
+    numberOfInvitees: "",
+    relationship: "",
   });
+
+  const [editValue, setEditValue] = useState(initialValues);
 
   const todayDate = new Date().toLocaleDateString();
   const [dateValue, setDateValue] = useState(todayDate);
@@ -53,14 +58,18 @@ export default function RegisterContextProvider({ children }) {
     });
   }
 
+  function updateEditValue(currentInput) {
+    setEditValue((prevData) => {
+      return { ...prevData, ...currentInput };
+    });
+  }
 
   //checks if all fields has been filled by the user.
   function isFormCompleted(userDetails) {
     const keys = Object.keys(userDetails);
     //result is counting how many fields still empty
     const result = keys.reduce((acc, currentKey) => {
-      if (userDetails[currentKey] === "" || userDetails[currentKey] === null)
-        return (acc += 1);
+      if (userDetails[currentKey] === "") return (acc += 1);
       else return acc;
     }, 0);
 
@@ -99,10 +108,12 @@ export default function RegisterContextProvider({ children }) {
 
   const registerCtx = {
     userDetails,
+    editValue,
     date: dateValue,
     error,
     loading,
     updateUserDetails,
+    updateEditValue,
     saveDateValue,
     isFormCompleted,
     isFormValid,

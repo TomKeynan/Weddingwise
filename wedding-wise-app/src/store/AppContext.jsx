@@ -1,37 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { createContext } from "react";
-import { handleDataTimeFormat } from "../utilities/functions";
-import useFetch from "../utilities/useFetch";
+import { DateClientFormat } from "../utilities/functions";
 
 export const AppContext = createContext({
-  userData: {},
-  updateUserData: () => { },
+  coupleData: {},
+  setCoupleData: () => {},
+  updateCoupleData: () => {},
 });
 
-// const INITIAL_STATE = JSON.parse(sessionStorage.getItem("currentUser"));
 export default function AppContextProvider({ children }) {
-  
-  const [userData, setUserData] = useState(null);
-  
-  useEffect(() => {
-    setUserData(JSON.parse(sessionStorage.getItem("currentUser")));
-  }, []);
-  // console.log(userData);
+  const [coupleData, setCoupleData] = useState(null);
 
-  function updateUserData(data) {
+  useEffect(() => {
+    setCoupleData(JSON.parse(sessionStorage.getItem("currentUser")));
+  }, []);
+
+  function updateCoupleData(data) {
     if (data) {
-      const formattedDate = handleDataTimeFormat(data.desiredDate);
+      const formattedDate = DateClientFormat(data.desiredDate);
       data.desiredDate = formattedDate;
       delete data.password;
       sessionStorage.setItem("currentUser", JSON.stringify(data));
-      setUserData({ ...data });
+      setCoupleData({ ...data });
     }
   }
 
-
   const appContext = {
-    userData,
-    updateUserData,
+    coupleData,
+    updateCoupleData,
+    setCoupleData,
   };
 
   return (

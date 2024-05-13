@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   GoogleMap,
   LoadScript,
-  Marker,
+  MarkerF,
   InfoWindow,
 } from "@react-google-maps/api";
 
@@ -55,7 +55,7 @@ function Gmap() {
           zoom={8}
         >
           {venues.map((venue) => (
-            <Marker
+            <MarkerF
               key={venue.supplierEmail}
               position={{ lat: venue.latitude, lng: venue.longitude }}
               onClick={() => setSelectedVenue(venue)}

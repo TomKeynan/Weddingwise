@@ -12,7 +12,7 @@ import "./steps.css";
 import TextInput from "../TextInput";
 import { getFullDate } from "../../utilities/functions";
 
-const StepTow = () => {
+const StepTwo = () => {
   const { userDetails, date, updateUserDetails, saveDateValue } =
     useContext(RegisterContext);
 
@@ -34,8 +34,8 @@ const StepTow = () => {
         <TextInput
           variant="standard"
           type="text"
-          value={userDetails.NumberOfInvitees}
-          name="NumberOfInvitees"
+          value={userDetails.numberOfInvitees}
+          name="numberOfInvitees"
           label="כמות מוזמנים"
           textFieldSX={textFieldSX}
         />
@@ -44,8 +44,8 @@ const StepTow = () => {
         <TextInput
           variant="standard"
           type="text"
-          value={userDetails.Budget}
-          name="Budget"
+          value={userDetails.budget}
+          name="budget"
           label="תקציב"
           textFieldSX={textFieldSX}
         />
@@ -54,9 +54,9 @@ const StepTow = () => {
         <Autocomplete
           options={regions}
           freeSolo={false}
-          value={userDetails.DesiredRegion}
+          value={userDetails.desiredRegion}
           onChange={(event, newValue) => {
-            updateUserDetails({ DesiredRegion: newValue });
+            updateUserDetails({ desiredRegion: newValue });
           }}
           renderInput={(params) => (
             <TextField
@@ -92,7 +92,7 @@ const StepTow = () => {
   );
 };
 
-export default StepTow;
+export default StepTwo;
 
 // ============================== styles ==============================
 

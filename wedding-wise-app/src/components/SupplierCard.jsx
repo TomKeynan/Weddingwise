@@ -3,7 +3,8 @@ import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import { customTheme } from "../store/Theme";
-import { stickers } from "../utilities/collections";
+import { stickers, suppliersImage } from "../utilities/collections";
+import { getRandomSupplierImage } from "../utilities/functions";
 
 function SupplierCard({ props, showActionBtn = false }) {
   const {
@@ -18,14 +19,18 @@ function SupplierCard({ props, showActionBtn = false }) {
 
   const [sticker, setSticker] = useState({});
 
+  const [supplierImage, setSupplierImage] = useState("");
+
   useEffect(() => {
     const cardSticker = stickers.filter((sticker) => {
       if (sticker.stickerSrc.includes("makeup")) return sticker;
       else return sticker.stickerSrc.includes(supplierType);
     });
     setSticker({ ...cardSticker[0] });
-  }, []);
 
+    setSupplierImage(getRandomSupplierImage(suppliersImage, supplierType))
+  }, []);
+  
   return (
     <Grid item xs={12} sm={6} md={4} lg={2} sx={cardContainerSX}>
       <Stack
@@ -35,7 +40,7 @@ function SupplierCard({ props, showActionBtn = false }) {
         sx={{ width: "90%", margin: "0 auto" }}
       >
         <Box>
-          <img src={imageSrc} alt={imageAlt} className="supplier-card-image" />
+          <img src={supplierImage} alt={imageAlt} className="supplier-card-image" />
         </Box>
         <Stack
           spacing={1}

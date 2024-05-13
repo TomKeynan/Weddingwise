@@ -105,16 +105,6 @@ export default function Questions() {
           צור חבילה
         </Button>
       )}
-      {/* {!userAnswers.includes(0) && (
-        <Button
-          variant="contained"
-          onClick={handleCreatePackage}
-          sx={{ width: "90%", fontSize: 24, fontWeight: "bold" }}
-        >
-          צור חבילה
-        </Button>
-      )} */}
-
       <Question key={page} activePage={page - 1} />
     </Stack>
   );

@@ -6,12 +6,12 @@ import { Box } from "@mui/material";
 import { AppContext } from "../store/AppContext";
 
 function Package() {
-  const { userData } = useContext(AppContext);
+  const { coupleData } = useContext(AppContext);
   return (
     <Box sx={{ display: "block", width: "100%" }}>
-      {userData === null ? (
+      {coupleData === null ? (
         <RandomPackage />
-      ) : userData.package === null ? (
+      ) : coupleData.package === null ? (
         <UserWithoutPackage />
       ) : (
         <UserPackage />
