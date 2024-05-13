@@ -4,7 +4,6 @@ import { Box, Grid, Paper, Stack, Typography } from "@mui/material";
 import { customTheme } from "../../store/Theme";
 import { useMediaQuery } from "@mui/material";
 import Gmap from "./Gmap";
-import {LoadScript} from "@react-google-maps/api";
 
 function MapSection() {
   const screenAboveMD = useMediaQuery("(min-width: 1460px)");
