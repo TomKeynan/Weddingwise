@@ -1,5 +1,6 @@
 // ============= LAST UPDATED =================
 // =============   13-5-2024  =================
+// " version - 1 - map loading issue resolved"
 // ============= LAST UPDATED =================
 
 import "./App.css";
@@ -18,6 +19,9 @@ import Package from "./Pages/Package";
 import { useEffect } from "react";
 import Finance from "./Pages/Finance";
 import EditDetails from "./Pages/EditDetails";
+import { LoadScript } from "@react-google-maps/api";
+
+const googleMapsApiKey = "AIzaSyCSXv1ZziH2SJEcGQIp8EJMytapWnPjytQ";
 
 const router = createBrowserRouter([
   { path: "/", element: <Home /> },
@@ -32,6 +36,7 @@ const router = createBrowserRouter([
       { path: "/tasks", element: <Tasks /> },
       { path: "/finance", element: <Finance /> },
       { path: "/edit", element: <EditDetails /> },
+      
     ],
   },
   { path: "/login", element: <Login /> },
@@ -39,6 +44,7 @@ const router = createBrowserRouter([
 
 function App() {
   return (
+    <LoadScript googleMapsApiKey={googleMapsApiKey} libraries={["places"]} preventGoogleLibraries>
     <AppContextProvider>
       <RtlProvider>
         <CustomThemeProvider>
@@ -46,6 +52,7 @@ function App() {
         </CustomThemeProvider>
       </RtlProvider>
     </AppContextProvider>
+  </LoadScript>
   );
 }
 

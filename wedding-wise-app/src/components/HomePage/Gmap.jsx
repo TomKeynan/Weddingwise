@@ -1,43 +1,35 @@
 import React, { useState, useEffect } from "react";
 import {
   GoogleMap,
-  LoadScript,
   MarkerF,
   InfoWindow,
 } from "@react-google-maps/api";
 
 const mapContainerStyle = {
-  // Map's size
   width: "100%",
   height: "80vh",
 };
 
 const center = {
-  // Coordinates for map's initial position
   lat: 31.6,
   lng: 34.61,
 };
+const libraries = ["places"];
 
 function Gmap() {
   const [venues, setVenues] = useState([]);
   const [selectedVenue, setSelectedVenue] = useState(null);
 
   useEffect(() => {
-    fetch("https://localhost:44359/api/Suppliers/getTopVenues")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        debugger
-        setVenues(data);
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the venues!", error);
-      });
+    fetchVenues();
   }, []);
+
+  const fetchVenues = () => {
+    fetch("https://localhost:44359/api/Suppliers/getTopVenues")
+      .then(response => response.json())
+      .then(data => setVenues(data))
+      .catch(error => console.error("There was an error fetching the venues!", error));
+  };
 
   return (
     <div
@@ -49,7 +41,7 @@ function Gmap() {
         border: "1px solid black",
       }}
     >
-      <LoadScript googleMapsApiKey="AIzaSyCSXv1ZziH2SJEcGQIp8EJMytapWnPjytQ">
+    
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
           center={center}
@@ -80,7 +72,7 @@ function Gmap() {
             </InfoWindow>
           )}
         </GoogleMap>
-      </LoadScript>
+  
     </div>
   );
 }
