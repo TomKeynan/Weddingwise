@@ -6,9 +6,13 @@ import { customTheme } from "../store/Theme";
 import { stickers, suppliersImage } from "../utilities/collections";
 import { getRandomSupplierImage } from "../utilities/functions";
 
-function SupplierCard({ props, showActionBtn = false }) {
+function SupplierCard({
+  props,
+  showActionBtn = false,
+  cardBg = "white",
+  onReplacement,
+}) {
   const {
-    imageSrc,
     imageAlt,
     businessName,
     phoneNumber,
@@ -28,96 +32,209 @@ function SupplierCard({ props, showActionBtn = false }) {
     });
     setSticker({ ...cardSticker[0] });
 
-    setSupplierImage(getRandomSupplierImage(suppliersImage, supplierType))
+    setSupplierImage(getRandomSupplierImage(suppliersImage, supplierType));
   }, []);
-  
+
   return (
-    <Grid item xs={12} sm={6} md={4} lg={2} sx={cardContainerSX}>
-      <Stack
-        direction="column"
-        justifyContent="center"
-        alignItems="center"
-        sx={{ width: "90%", margin: "0 auto" }}
+    <Stack
+      direction="column"
+      justifyContent="center"
+      alignItems="center"
+      sx={{
+        bgcolor: cardBg,
+
+        pb: 1,
+        borderBottomLeftRadius: 8,
+        borderBottomRightRadius: 8,
+      }}
+    >
+      {/* care-image */}
+      <Box
+        sx={{
+          width: "100%",
+          height: "250px",
+          margin: "0 auto",
+        }}
       >
-        <Box>
-          <img src={supplierImage} alt={imageAlt} className="supplier-card-image" />
-        </Box>
+        <img
+          src={supplierImage}
+          alt={imageAlt}
+          className="supplier-card-image"
+        />
+      </Box>
+
+      {/* card-content */}
+      <Stack
+        spacing={1}
+        sx={{
+          width: "100%",
+          textAlign: "center",
+          mt: 1,
+        }}
+      >
         <Stack
-          spacing={1}
-          sx={{
-            width: { xs: "50%", sm: "60%", md: "85%", lg: "50%" },
-            textAlign: "center",
-            px: 4,
-          }}
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{ px: 1 }}
         >
-          <Stack
-            direction="row"
-            // justifyContent="start"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <img
-              src={sticker.stickerSrc}
-              alt={sticker.stickerAlt}
-              className="supplier-card-sticker"
-            />
-            <Typography variant="body1" sx={{ textAlign: "center" }}>
-              {businessName}
-            </Typography>
-          </Stack>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            // justifyContent="start"
-            alignItems="center"
-          >
-            <PhoneIcon sx={{ fontSize: 25 }} />
-            <Typography variant="body1" sx={{ textAlign: "center" }}>
-              {phoneNumber}
-            </Typography>
-          </Stack>
-          <Stack
-            direction="row"
-            // justifyContent="start"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <AlternateEmailIcon sx={{ fontSize: 25 }} />
-            <Typography variant="body1" sx={{ textAlign: "center" }}>
-              {supplierEmail}
-            </Typography>
-          </Stack>
-          <Stack direction="row" alignItems="center" justifyContent="center">
-            <Typography
-              sx={{
-                textAlign: "center",
-                my: 1,
-                fontSize: 22,
-                color: customTheme.palette.primary.dark,
-              }}
-              variant="body1"
-            >
-              מחיר: {price} $
-            </Typography>
-          </Stack>
-          {showActionBtn && (
-            <Stack
-              direction="row"
-              justifyContent="space-around"
-              sx={{ height: "100%" }}
-            >
-              <Button variant="outlined" sx={actionBtnSX}>
-                החלף ספק
-              </Button>
-              <Button variant="contained" sx={actionBtnSX}>
-                מידע נוסף
-              </Button>
-            </Stack>
-          )}
+          <Typography variant="body1" sx={{ textAlign: "center" }}>
+            {businessName}
+          </Typography>
+          <img
+            src={sticker.stickerSrc}
+            alt={sticker.stickerAlt}
+            className="supplier-card-sticker"
+          />
         </Stack>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{ px: 1 }}
+        >
+          <Typography variant="body1" sx={{ textAlign: "center" }}>
+            {phoneNumber}
+          </Typography>
+          <PhoneIcon sx={{ fontSize: 20 }} />
+        </Stack>
+        <Stack
+          direction="row"
+          // justifyContent="start"
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ px: 1 }}
+        >
+          <Typography variant="body2" sx={{ textAlign: "center" }}>
+            {supplierEmail}
+          </Typography>
+          <AlternateEmailIcon sx={{ fontSize: 20 }} />
+        </Stack>
+        <Stack direction="row" alignItems="center" justifyContent="center">
+          <Typography
+            sx={{
+              textAlign: "center",
+              my: 1,
+              fontSize: 22,
+              color: customTheme.palette.primary.dark,
+            }}
+            variant="body1"
+          >
+            מחיר: {price} $
+          </Typography>
+        </Stack>
+        {showActionBtn && (
+          <Stack
+            direction="row"
+            justifyContent="space-around"
+            sx={{ height: "100%" }}
+          >
+            <Button
+              variant="outlined"
+              sx={actionBtnSX}
+              onClick={() => onReplacement(supplierType)}
+            >
+              החלף ספק
+            </Button>
+            <Button variant="contained" sx={actionBtnSX}>
+              מידע נוסף
+            </Button>
+          </Stack>
+        )}
       </Stack>
-    </Grid>
+    </Stack>
   );
+  // return (
+  //   <Grid item sx={cardContainerSX}>
+  //     <Stack
+  //       direction="column"
+  //       justifyContent="center"
+  //       alignItems="center"
+  //       sx={{  px: 4, width: "100%", margin: "0 auto", border: 1, }}
+
+  //     >
+  //       {/* care-image */}
+  //       <Box sx={{width: "200px", height:"250px"}}>
+  //         <img src={supplierImage} alt={imageAlt} className="supplier-card-image" />
+  //       </Box>
+
+  //       {/* card-content */}
+  //       <Stack
+  //         spacing={1}
+  //         sx={{
+  //           width: "100%",
+  //           textAlign: "center",
+
+  //         }}
+  //       >
+  //         <Stack
+  //           direction="row"
+  //           // justifyContent="start"
+  //           justifyContent="space-between"
+  //           alignItems="center"
+  //         >
+  //           <img
+  //             src={sticker.stickerSrc}
+  //             alt={sticker.stickerAlt}
+  //             className="supplier-card-sticker"
+  //           />
+  //           <Typography variant="body1" sx={{ textAlign: "center" }}>
+  //             {businessName}
+  //           </Typography>
+  //         </Stack>
+  //         <Stack
+  //           direction="row"
+  //           justifyContent="space-between"
+  //           // justifyContent="start"
+  //           alignItems="center"
+  //         >
+  //           <PhoneIcon sx={{ fontSize: 25 }} />
+  //           <Typography variant="body1" sx={{ textAlign: "center" }}>
+  //             {phoneNumber}
+  //           </Typography>
+  //         </Stack>
+  //         <Stack
+  //           direction="row"
+  //           // justifyContent="start"
+  //           alignItems="center"
+  //           justifyContent="space-between"
+  //         >
+  //           <AlternateEmailIcon sx={{ fontSize: 25 }} />
+  //           <Typography variant="body1" sx={{ textAlign: "center" }}>
+  //             {supplierEmail}
+  //           </Typography>
+  //         </Stack>
+  //         <Stack direction="row" alignItems="center" justifyContent="center">
+  //           <Typography
+  //             sx={{
+  //               textAlign: "center",
+  //               my: 1,
+  //               fontSize: 22,
+  //               color: customTheme.palette.primary.dark,
+  //             }}
+  //             variant="body1"
+  //           >
+  //             מחיר: {price} $
+  //           </Typography>
+  //         </Stack>
+  //         {showActionBtn && (
+  //           <Stack
+  //             direction="row"
+  //             justifyContent="space-around"
+  //             sx={{ height: "100%" }}
+  //           >
+  //             <Button variant="outlined" sx={actionBtnSX}>
+  //               החלף ספק
+  //             </Button>
+  //             <Button variant="contained" sx={actionBtnSX}>
+  //               מידע נוסף
+  //             </Button>
+  //           </Stack>
+  //         )}
+  //       </Stack>
+  //     </Stack>
+  //   </Grid>
+  // );
 }
 
 export default SupplierCard;

@@ -1,5 +1,5 @@
 import { Box, Button, Grid, Stack, Typography } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import {
   supplierCards,
   typeWeights,
@@ -12,17 +12,25 @@ import SupplierCard from "../SupplierCard";
 import { customTheme } from "../../store/Theme";
 import useFetch from "../../utilities/useFetch";
 import { buildTypeWeightsCard } from "../../utilities/functions";
+import DialogMessage from "../DialogMessage";
 
 function UserPackage() {
   const { sendData } = useFetch();
 
   const navigate = useNavigate();
 
+  const [open, setOpen] = useState(false);
+  const [currentType, setCurrentType] = useState("");
+
   function handleClick() {
     navigate("/questionnaire");
   }
 
-  const suppliers = JSON.parse(sessionStorage.getItem("currentUser")).package;
+  const currentCouple = JSON.parse(sessionStorage.getItem("currentUser"));
+
+  const alterativeSuppliers = JSON.parse(sessionStorage.getItem("currentUser"))
+    .package.alternativeSuppliers;
+  // console.log(alterativeSuppliers);
 
   const typeWeights = JSON.parse(
     sessionStorage.getItem("currentUser")
@@ -30,11 +38,19 @@ function UserPackage() {
 
   //במקרה של החלפת ספק או חבילה שלמה יש לעדכן את האובייקט הזה ורק אז לשלוח אותו
   let packageData = {
-    Package: suppliers,
+    Package: currentCouple.package,
     TypeReplacements: [1, 0, 0, 1, 0, 1],
     TypeWeights: typeWeights,
   };
 
+  function startReplaceSupplier(supplierType) {
+    setOpen(true);
+    setCurrentType(supplierType);
+  }
+
+  function handleSupplierReplacement() {
+    setOpen(false);
+  }
   return (
     <Stack
       justifyContent="space-around"
@@ -42,6 +58,36 @@ function UserPackage() {
       sx={{ textAlign: "center", pb: 8, width: "95%", margin: "0 auto" }}
       spacing={5}
     >
+      {open && (
+        <DialogMessage
+          title="נותני שירות חלופיים"
+          open={open}
+          btnValue="החלף ספק"
+          onClose={handleSupplierReplacement}
+        >
+          {
+            <Stack
+              direction="row"
+              justifyContent="center"
+              alignContent="space-around"
+              flexWrap="wrap"
+              rowGap={3}
+              columnGap={2}
+            >
+              {alterativeSuppliers[currentType].map(
+                (supplier, index) => (
+                  <SupplierCard
+                    key={index}
+                    props={supplier}
+                    showActionBtn={true}
+                    onReplacement={startReplaceSupplier}
+                  />
+                )
+              )}
+            </Stack>
+          }
+        </DialogMessage>
+      )}
       <Stack
         spacing={5}
         justifyContent="space-around"
@@ -64,21 +110,42 @@ function UserPackage() {
           </Grid>
         </Stack>
       </Stack>
-      <Stack spacing={3} justifyContent="space-around" alignItems="center">
+      <Stack
+        spacing={3}
+        sx={{ width: "100%" }}
+        justifyContent="space-around"
+        alignItems="center"
+      >
         <Typography
           variant="h4"
           sx={{ fontWeight: "bold", width: "90%", px: { xs: 1, sm: 5 } }}
         >
           חבילת נותני השירות המתאימים במיוחד אליכם
         </Typography>
-        <Stack sx={{ width: "90%" }}>
-          <Grid container sx={cardsContainer}>
-            {suppliers["selectedSuppliers"].map((supplier, index) => (
-              <SupplierCard key={index} props={supplier} showActionBtn={true} />
-            ))}
-          </Grid>
+        <Stack
+          direction="row"
+          justifyContent="center"
+          alignContent="space-around"
+          flexWrap="wrap"
+          rowGap={3}
+          columnGap={2}
+        >
+          {currentCouple["package"]["selectedSuppliers"].map(
+            (supplier, index) => (
+              <SupplierCard
+                key={index}
+                props={supplier}
+                showActionBtn={true}
+                onReplacement={startReplaceSupplier}
+              />
+            )
+          )}
         </Stack>
-        <Box>
+        <Stack spacing={3}>
+          <Typography sx={{ typography: { xs: "body1", sm: "h5", md: "h4" } }}>
+            חבילה זו מתאימה עבורכם ב-{" "}
+            {currentCouple.package.totalScore.toFixed(2)} אחוזי התאמה
+          </Typography>
           <Button
             variant="contained"
             sx={{
@@ -108,7 +175,7 @@ function UserPackage() {
           >
             אשר חבילה
           </Button> */}
-        </Box>
+        </Stack>
       </Stack>
       <Stack
         spacing={5}
@@ -128,7 +195,10 @@ function UserPackage() {
 export default UserPackage;
 
 const cardsContainer = {
-  maxWidth: "100%",
+  gridTemplateRows: "repeat( auto-fill, minmax(200px, 1fr) );",
+  // gridTemplateRows: 'repeat(3, 1fr)',
+  margin: "0 auto",
+  width: "100%",
   p: 1,
   rowGap: 3,
 };

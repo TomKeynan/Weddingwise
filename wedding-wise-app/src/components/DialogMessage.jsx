@@ -8,10 +8,10 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 export default function DialogMessage({
   title,
-  content,
   btnValue,
   open,
   onClose,
+  children
 }) {
   return (
     <Fragment>
@@ -20,15 +20,15 @@ export default function DialogMessage({
         onClose={onClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-        sx={{ "& .MuiPaper-root": { px: 5, py: 3 } }}
+        sx={{ "& .MuiPaper-root": { px: 2, py: 3 } }}
       >
         <DialogTitle id="alert-dialog-title" sx={{ p: 0 }}>
           {title}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {content}
-          </DialogContentText>
+            {children}
+          {/* <DialogContentText id="alert-dialog-description">
+          </DialogContentText> */}
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose} autoFocus variant="contained">

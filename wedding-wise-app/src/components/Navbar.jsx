@@ -252,7 +252,91 @@ function Navbar() {
                 height: 80,
               }}
             >
-              <Box sx={{ flexGrow: 1 }}>
+              <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleOpenNavMenu}
+                  color="inherit"
+                >
+                  <MenuIcon />
+                </IconButton>
+                <Menu
+                  sx={{
+                    display: { xs: "block", md: "none" },
+                    "& .MuiBackdrop-root": {
+                      background: "rgba(0, 0, 0, 0.4)",
+                      height: "100%",
+                    },
+                    "& .MuiMenu-paper": {
+                      py: 3,
+                      px: 5,
+                    },
+                  }}
+                  id="menu-appbar"
+                  anchorEl={anchorElNav}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "left",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
+                  }}
+                  open={Boolean(anchorElNav)}
+                  onClose={handleCloseNavMenu}
+                >
+                  {pages.map((page) => (
+                    <MenuItem
+                      key={page.text}
+                      onClick={handleCloseNavMenu}
+                      sx={{
+                        ":hover": {
+                          bgcolor: customTheme.palette.primary.light,
+                        },
+                      }}
+                    >
+                      <Link to={page.route} style={{ textDecoration: "none" }}>
+                        <Typography
+                          textAlign="center"
+                          sx={{
+                            fontWeight: "bold",
+                            fontSize: 16,
+                            color: "#000",
+                          }}
+                        >
+                          {page.text}
+                        </Typography>
+                      </Link>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </Box>
+              <CardGiftcardIcon
+                sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
+              />
+              <Typography
+                variant="h5"
+                noWrap
+                component="a"
+                href="#"
+                sx={{
+                  display: { xs: "flex", md: "none" },
+                  flexGrow: 1,
+                  fontSize: { xs: 24, sm: 28 },
+                  fontFamily: customTheme.font.main,
+                  fontWeight: 700,
+                  letterSpacing: { xs: 0, sm: 5 },
+                  color: "inherit",
+                  textDecoration: "none",
+                }}
+              >
+                WeddingWise
+              </Typography>
+              <Box >
                 <Tooltip title="התחברות / הרשמה">
                   <IconButton
                     onClick={handleOpenUserMenu}
@@ -352,92 +436,6 @@ function Navbar() {
                         </Link>
                       </MenuItem>
                     ))}
-                </Menu>
-              </Box>
-
-              <CardGiftcardIcon
-                sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
-              />
-              <Typography
-                variant="h5"
-                noWrap
-                component="a"
-                href="#"
-                sx={{
-                  display: { xs: "flex", md: "none" },
-                  flexGrow: 1,
-                  fontSize: { xs: 24, sm: 28 },
-                  fontFamily: customTheme.font.main,
-                  fontWeight: 700,
-                  letterSpacing: { xs: 0, sm: 5 },
-                  color: "inherit",
-                  textDecoration: "none",
-                }}
-              >
-                WeddingWise
-              </Typography>
-
-              <Box sx={{ flexGrow: 0, display: { xs: "flex", md: "none" } }}>
-                <IconButton
-                  size="large"
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleOpenNavMenu}
-                  color="inherit"
-                >
-                  <MenuIcon />
-                </IconButton>
-                <Menu
-                  sx={{
-                    display: { xs: "block", md: "none" },
-                    "& .MuiBackdrop-root": {
-                      background: "rgba(0, 0, 0, 0.4)",
-                      height: "100%",
-                    },
-                    "& .MuiMenu-paper": {
-                      py: 3,
-                      px: 5,
-                    },
-                  }}
-                  id="menu-appbar"
-                  anchorEl={anchorElNav}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                  open={Boolean(anchorElNav)}
-                  onClose={handleCloseNavMenu}
-                >
-                  {pages.map((page) => (
-                    <MenuItem
-                      key={page.text}
-                      onClick={handleCloseNavMenu}
-                      sx={{
-                        ":hover": {
-                          bgcolor: customTheme.palette.primary.light,
-                        },
-                      }}
-                    >
-                      <Link to={page.route} style={{ textDecoration: "none" }}>
-                        <Typography
-                          textAlign="center"
-                          sx={{
-                            fontWeight: "bold",
-                            fontSize: 16,
-                            color: "#000",
-                          }}
-                        >
-                          {page.text}
-                        </Typography>
-                      </Link>
-                    </MenuItem>
-                  ))}
                 </Menu>
               </Box>
             </Stack>

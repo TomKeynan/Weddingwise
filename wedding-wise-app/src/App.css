@@ -2,10 +2,9 @@
   text-align: center;
 }
 
-.suppliers-sticker{
+.suppliers-sticker {
   width: 120px;
 }
-
 
 @media screen and (max-width: 800px) {
   .suppliers-sticker {
@@ -13,41 +12,38 @@
   }
 }
 
-.w-icon{
+.w-icon {
   width: 50px;
 }
 
-.supplier-card-image{
-  max-width: 200px;
-  /*
-  height: 250px; */
-  
+.supplier-card-image {
+  max-width: 100%;
+  height: 100%;
   aspect-ratio: 1/1.25;
   object-fit: cover;
+
 }
 
-.supplier-card-sticker{
-  width: 30px;
+.supplier-card-sticker {
+  width: 25px;
 }
 
-.type-card-image{
+.type-card-image {
   width: 100px;
 }
 
-.hero-graphics{
+.hero-graphics {
   height: 200px;
 }
 
 @media screen and (max-width: 600px) {
-  
-  .hero-graphics{
+  .hero-graphics {
     height: 130px;
   }
 }
 
 @media screen and (min-width: 1027px) {
-  
-  .hero-graphics{
+  .hero-graphics {
     height: 240px;
   }
 }

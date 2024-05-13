@@ -11,7 +11,7 @@ export const QuestionsContext = createContext({
   handleCreateNewPackage: () => {},
 });
 
-const initialArray = Array.from({ length: 15 }, () => 1);
+const initialArray = Array.from({ length: 15 }, () => 0);
 
 export default function QuestionsContextProvider({ children }) {
   const { sendData, resData, loading } = useFetch();

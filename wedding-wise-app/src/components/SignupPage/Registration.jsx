@@ -75,11 +75,12 @@ export default function Registration() {
       {error && (
         <DialogMessage
           title="שגיאה!"
-          content={signupResponse[error]}
           btnValue="אוקיי!"
           open={open}
           onClose={() => setOpen(false)}
-        />
+        >
+          <Typography variant="body1" color="grey">{signupResponse[error]}</Typography>
+        </DialogMessage>
       )}
       <Stepper nonLinear={true} activeStep={activeStep} sx={stepStyle}>
         {steps.map((step, index) => (

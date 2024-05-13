@@ -1,6 +1,6 @@
 import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { test } from "../utilities/collections";
 import { customTheme } from "../store/Theme";
 import AccordionLayout from "../components/AccordionLayout";
@@ -11,6 +11,8 @@ import ProfileBanner from "../components/ProfilePage/ProfileBanner";
 
 function Profile() {
   const [currentUser, setCurrentUser] = useState(null);
+
+  const suppliers = JSON.parse(sessionStorage.getItem("currentUser")).package;
 
   useEffect(() => {
     setCurrentUser(JSON.parse(sessionStorage.getItem("currentUser")));
@@ -30,11 +32,34 @@ function Profile() {
       </Button>
       <Box sx={{ width: "90%" }}>
         <AccordionLayout title="חבילת נותני שירות" btnValue="/package">
-          <Grid container sx={cardsContainer}>
-            {supplierCards.map((supplier, index) => (
-              <SupplierCard key={index} props={supplier} />
-            ))}
-          </Grid>
+          {suppliers ? (
+            <Stack
+              direction="row"
+              justifyContent="center"
+              alignContent="space-around"
+              flexWrap="wrap"
+              rowGap={3}
+              columnGap={2}
+            >
+              {suppliers["selectedSuppliers"].map((supplier, index) => (
+                <SupplierCard
+                  key={index}
+                  props={supplier}
+                  cardBg={customTheme.palette.secondary.light}
+                />
+              ))}
+            </Stack>
+          ) : (
+            <Box sx={{ textAlign: "center" }}>
+              <Box>
+                עדיין לא המלצנו לכם על חבילה??{" "}
+                <Link to="/package" style={{ color: "#FF9500" }}>
+                  לחצו כאן
+                </Link>{" "}
+                למעבר לשאלון
+              </Box>
+            </Box>
+          )}
         </AccordionLayout>
         <AccordionLayout title="מעקב אחר הוצאות" btnValue="/package">
           {/* <CostsChart /> */}

@@ -1,6 +1,7 @@
 // ============= LAST UPDATED =================
 // =============   13-5-2024  =================
-// " version - 1 - map loading issue resolved"
+// version - 1 - map loading issue resolved
+// version - 2 - UserPackage component is Completed! 
 // ============= LAST UPDATED =================
 
 import "./App.css";
@@ -16,7 +17,6 @@ import CustomThemeProvider from "./store/Theme";
 import RtlProvider from "./store/RtlProvider";
 import Questionnaire from "./Pages/Questionnaire";
 import Package from "./Pages/Package";
-import { useEffect } from "react";
 import Finance from "./Pages/Finance";
 import EditDetails from "./Pages/EditDetails";
 import { LoadScript } from "@react-google-maps/api";
