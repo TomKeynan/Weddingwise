@@ -30,7 +30,7 @@ function Finance() {
             <TableHead>
               <TableRow>
                 <TableCell>סכום</TableCell>
-                <TableCell align="right">מקור הכסף</TableCell>
+                <TableCell align="right">שם הוצאה</TableCell>
                 <TableCell align="right">הלוואה?</TableCell>
                 <TableCell align="right">הערות</TableCell>
               </TableRow>

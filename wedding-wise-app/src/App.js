@@ -17,6 +17,9 @@ import Questionnaire from "./Pages/Questionnaire";
 import Package from "./Pages/Package";
 import { useEffect } from "react";
 import Finance from "./Pages/Finance";
+import { LoadScript } from "@react-google-maps/api";
+
+const googleMapsApiKey = "AIzaSyCSXv1ZziH2SJEcGQIp8EJMytapWnPjytQ";
 
 const router = createBrowserRouter([
   { path: "/", element: <Home /> },
@@ -37,13 +40,15 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <AppContextProvider>
-      <RtlProvider>
-        <CustomThemeProvider>
-          <RouterProvider router={router} />
-        </CustomThemeProvider>
-      </RtlProvider>
-    </AppContextProvider>
+    <LoadScript googleMapsApiKey={googleMapsApiKey} libraries={["places"]} preventGoogleLibraries>
+      <AppContextProvider>
+        <RtlProvider>
+          <CustomThemeProvider>
+            <RouterProvider router={router} />
+          </CustomThemeProvider>
+        </RtlProvider>
+      </AppContextProvider>
+    </LoadScript>
   );
 }
 
