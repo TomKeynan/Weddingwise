@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  GoogleMap,
-  MarkerF,
-  InfoWindow,
-} from "@react-google-maps/api";
+import { GoogleMap, MarkerF, InfoWindow } from "@react-google-maps/api";
 
 const mapContainerStyle = {
   width: "100%",
@@ -26,9 +22,11 @@ function Gmap() {
 
   const fetchVenues = () => {
     fetch("https://localhost:44359/api/Suppliers/getTopVenues")
-      .then(response => response.json())
-      .then(data => setVenues(data))
-      .catch(error => console.error("There was an error fetching the venues!", error));
+      .then((response) => response.json())
+      .then((data) => setVenues(data))
+      .catch((error) =>
+        console.error("There was an error fetching the venues!", error)
+      );
   };
 
   return (
@@ -41,38 +39,32 @@ function Gmap() {
         border: "1px solid black",
       }}
     >
-    
-        <GoogleMap
-          mapContainerStyle={mapContainerStyle}
-          center={center}
-          zoom={8}
-        >
-          {venues.map((venue) => (
-            <MarkerF
-              key={venue.supplierEmail}
-              position={{ lat: venue.latitude, lng: venue.longitude }}
-              onClick={() => setSelectedVenue(venue)}
-            />
-          ))}
+      <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={8}>
+        {venues.map((venue) => (
+          <MarkerF
+            key={venue.supplierEmail}
+            position={{ lat: venue.latitude, lng: venue.longitude }}
+            onClick={() => setSelectedVenue(venue)}
+          />
+        ))}
 
-          {selectedVenue && (
-            <InfoWindow
-              position={{
-                lat: selectedVenue.latitude,
-                lng: selectedVenue.longitude,
-              }}
-              onCloseClick={() => setSelectedVenue(null)}
-            >
-              <div>
-                <h2>{selectedVenue.businessName}</h2>
-                <p>דירוג: {selectedVenue.rating.toFixed(2)}</p>
-                <p>מתאים ל: {selectedVenue.capacity}</p>
-                <p>Phone: {selectedVenue.phoneNumber}</p>
-              </div>
-            </InfoWindow>
-          )}
-        </GoogleMap>
-  
+        {selectedVenue && (
+          <InfoWindow
+            position={{
+              lat: selectedVenue.latitude,
+              lng: selectedVenue.longitude,
+            }}
+            onCloseClick={() => setSelectedVenue(null)}
+          >
+            <div>
+              <h2>{selectedVenue.businessName}</h2>
+              <p>דירוג: {selectedVenue.rating.toFixed(2)}</p>
+              <p>מתאים ל: {selectedVenue.capacity}</p>
+              <p>מס' טלפון: {selectedVenue.phoneNumber}</p>
+            </div>
+          </InfoWindow>
+        )}
+      </GoogleMap>
     </div>
   );
 }
