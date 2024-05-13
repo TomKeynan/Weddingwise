@@ -7,7 +7,7 @@ import { AppContext } from "../../store/AppContext";
 function UserWithoutPackage() {
   const navigate = useNavigate();
 
-  const { userData } = useContext(AppContext);
+  const { coupleData } = useContext(AppContext);
   function handleClick() {
     navigate("/questionnaire");
   }
@@ -24,8 +24,8 @@ function UserWithoutPackage() {
     >
       <Stack spacing={3} alignItems="center" sx={{ px: 5 }}>
         <Typography variant="h3">
-          שלום {userData.partner1Name} ו{userData.partner2Name}, כאן מתחיל החלק
-          המעניין!
+          שלום {coupleData.partner1Name} ו{coupleData.partner2Name}, כאן מתחיל
+          החלק המעניין!
         </Typography>
         <Typography variant="h5">
           לפני שעוברים להשיב על השאלון, מומלץ לקרוא את ההוראות
@@ -101,7 +101,11 @@ function UserWithoutPackage() {
               תאריך, תקציב, מיקום וכמות מוזמנים. במידת הצורך מומלץ לעדכנם לפני
               המענה על השאלון.
             </Typography>
-            <Button variant="contained" sx={{ width: "50%" }}>
+            <Button
+              variant="contained"
+              sx={{ width: "50%" }}
+              onClick={() => navigate("/edit")}
+            >
               עדכן פרטים
             </Button>
           </Stack>

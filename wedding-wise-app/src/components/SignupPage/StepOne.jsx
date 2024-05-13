@@ -18,9 +18,9 @@ const StepOne = () => {
   return (
     <FormControl>
       <RadioGroup
-        name="Relationship"
+        name="relationship"
         onChange={handleChange}
-        value={userDetails.Relationship}
+        value={userDetails.relationship}
       >
         <Stack
           direction={{ xs: "column", md: "row" }}

@@ -28,11 +28,11 @@ import Loading from "../components/Loading";
 
 function Login() {
   const { sendData, resData, error, loading } = useFetch();
-  const { updateUserData } = useContext(AppContext);
+  const { updateCoupleData } = useContext(AppContext);
 
   useEffect(() => {
     if (resData) {
-      updateUserData(resData);
+      updateCoupleData(resData);
       navigate("/profile");
     }
   }, [resData]);

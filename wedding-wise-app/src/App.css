@@ -18,7 +18,10 @@
 }
 
 .supplier-card-image{
-  width: 100%;
+  max-width: 200px;
+  /*
+  height: 250px; */
+  
   aspect-ratio: 1/1.25;
   object-fit: cover;
 }

@@ -11,27 +11,41 @@ namespace Server.Controllers
     [ApiController]
     public class SuppliersController : Controller
     {
+
+
         //--------------------------------------------------------------------
         // Retrieves a list of top venues from the database.
         //--------------------------------------------------------------------
+        // GET: api/Supplier/getTopVenues
         [HttpGet("getTopVenues")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Supplier>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<List<Supplier>> Get()
+        public ActionResult<List<Supplier>> GetTopVenues()
         {
             try
             {
-                // Retrieve list of suppliers synchronously
+                // Retrieve list of top venues synchronously
                 List<Supplier> suppliers = Supplier.GetTopVenues();
 
-                return Ok(suppliers); // Return the list of suppliers
+                if (suppliers == null)
+                {
+                    // No venues found, return 404 Not Found status code
+                    return NotFound();
+                }
+
+                // Return the list of top venues with 200 OK status code
+                return Ok(suppliers);
             }
             catch (Exception e)
             {
+                // Handle internal server error and return 500 Internal Server Error status code
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
+
+
+        //  ****************   Currently not in use   ****************  \\
 
         //-------------------------------------------
         // Inserts a supplier object into the database
@@ -76,6 +90,11 @@ namespace Server.Controllers
                     return BadRequest("Failed to register couple.");
                 }
             }
+
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch (SqlException ex)
             {
                 if (ex.Number == 2627) // Primary key violation error number
@@ -97,8 +116,6 @@ namespace Server.Controllers
             }
 
         }
-
-
 
     }
 }

@@ -1,7 +1,7 @@
 import React, { useState, createContext, useContext, useEffect } from "react";
 import useFetch from "../utilities/useFetch";
 import { AppContext } from "./AppContext";
-import { capitalizeKeys } from "../utilities/functions";
+import { capitalizeKeys, dateTimeServerFormat } from "../utilities/functions";
 import { useNavigate } from "react-router-dom";
 
 export const QuestionsContext = createContext({
@@ -11,17 +11,17 @@ export const QuestionsContext = createContext({
   handleCreateNewPackage: () => {},
 });
 
-const initialArray = Array.from({ length: 15 }, () => 0);
+const initialArray = Array.from({ length: 15 }, () => 1);
 
 export default function QuestionsContextProvider({ children }) {
   const { sendData, resData, loading } = useFetch();
-  const { userData, updateUserData } = useContext(AppContext);
+  const { coupleData, updateCoupleData } = useContext(AppContext);
   const [coupleAnswers, setCoupleAnswers] = useState(initialArray);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (resData) {
-      updateUserData(resData);
+      updateCoupleData(resData);
       navigate("/package");
     }
   }, [resData]);
@@ -33,29 +33,14 @@ export default function QuestionsContextProvider({ children }) {
   }
 
   function handleCreateNewPackage() {
-    const newUserData = capitalizeKeys(userData);
+    let newUserData = capitalizeKeys(coupleData);
+    newUserData.DesiredDate = dateTimeServerFormat(newUserData.DesiredDate);
     console.log(newUserData);
     sendData("/Packages/getPackage", "POST", {
-      couple: {
-        Email: "eti@gmail.com",
-        Partner1Name: "אתי",
-        Partner2Name: "יוסי",
-        DesiredDate: "2024-08-10",
-        DesiredRegion: "חדרה",
-        Budget: 200000,
-        NumberOfInvitees: 300,
-      },
+      couple: newUserData,
       questionnaireAnswers: coupleAnswers,
     });
   }
-  // function handleCreateNewPackage() {
-  //   const newUserData = capitalizeKeys(userData);
-  //   console.log(newUserData);
-  //   sendData("/Packages/getPackage", "POST", {
-  //     couple: userData,
-  //     questionnaireAnswers: coupleAnswers,
-  //   });
-  // }
 
   const questionsCtx = {
     isLoading: loading,
