@@ -7,9 +7,9 @@ namespace Server.DAL
 {
     public class DBServicesSupplier
     {
-        //--------------------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------------------------
         // This method creates a connection to the database according to the connectionString name in the web.config 
-        //--------------------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------------------------
         public static SqlConnection Connect()
         {
 
@@ -22,146 +22,9 @@ namespace Server.DAL
             return con;
         }
 
-
-
-
-
-
-        //-------------------------------------------------------
-        // This method retrieves the top venues from each region
-        //-------------------------------------------------------
-
-        public int InsertSupplier(Supplier supplier)
-        {
-
-
-            int successIndicator = 0;
-            try
-            {
-
-
-                // Open a database connection.
-                using (SqlConnection con = Connect())
-                {
-                    // Create a SqlCommand to execute the stored procedure.
-                    using (SqlCommand cmd = CreateInsertSupplierWithSP(con, "SPInsertSupplierDetails", supplier))
-                    {
-                        successIndicator = cmd.ExecuteNonQuery();
-                    }
-
-                    if (supplier.AvailableDates != null && successIndicator == 1)
-                    {
-
-                        foreach (var date in supplier.AvailableDates)
-                        {
-
-
-                            // Needs to rethink if the supplier registering includes dates already. *******
-                            using (SqlCommand cmd = CreateInsertSupplierDateWithSP(con, "SPInsertSupplierDates", date, supplier.SupplierEmail))
-                            {
-                                successIndicator += cmd.ExecuteNonQuery();
-                            }
-                        }
-
-                    }
-                    else
-                    {
-                        return successIndicator;
-                    }
-
-                }
-
-            }
-            catch (SqlException ex)
-            {
-                // Handle SQL-specific exceptions.
-                // You can check specific error codes or messages here to provide more tailored error handling.
-                // For example, you can check if the exception indicates a primary key violation.
-                if (ex.Number == 2627) // Primary key violation error number
-                {
-                    // Handle primary key violation error
-                    throw;
-                }
-                else
-                {
-                    // Handle other SQL exceptions
-                    throw new Exception("An error occurred while inserting a new couple in the InsertCouple method, sql related" + ex.Message);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Handle other types of exceptions
-                throw new Exception("An error occurred while inserting a new couple in the InsertCouple method" + ex.Message);
-            }
-            if (successIndicator == 1 + supplier.AvailableDates.Count())
-            {
-                return 1;
-            }
-            else
-                return 0;
-
-        }
-
-
-        private SqlCommand CreateInsertSupplierWithSP(SqlConnection con, String spName, Supplier supplier)
-        {
-            SqlCommand cmd = new SqlCommand(); // create the command object
-
-            cmd.Connection = con;              // assign the connection to the command object
-
-            cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
-
-            cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
-
-            cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
-
-            cmd.Parameters.AddWithValue("@supplier_email", supplier.SupplierEmail);
-            cmd.Parameters.AddWithValue("@business_name", supplier.BusinessName);
-            string hashedPassword = BCrypt.Net.BCrypt.EnhancedHashPassword(supplier.Password, 10);
-            cmd.Parameters.AddWithValue("@password_hash", hashedPassword);
-            cmd.Parameters.AddWithValue("@phone_number", supplier.PhoneNumber);
-            cmd.Parameters.AddWithValue("@price", supplier.Price);
-            cmd.Parameters.AddWithValue("@capacity", supplier.Capacity);
-            cmd.Parameters.AddWithValue("@region_name", supplier.AvailableRegion);
-            cmd.Parameters.AddWithValue("@latitude", supplier.Latitude);
-            cmd.Parameters.AddWithValue("@longitude", supplier.Longitude);
-            cmd.Parameters.AddWithValue("@supplier_type_name", supplier.SupplierType);
-
-            return cmd;
-        }
-
-
-
-
-
-        private SqlCommand CreateInsertSupplierDateWithSP(SqlConnection con, String spName, DateTime date, String supplierEmail)
-        {
-            SqlCommand cmd = new SqlCommand(); // create the command object
-
-            cmd.Connection = con;              // assign the connection to the command object
-
-            cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
-
-            cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
-
-            cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
-
-            cmd.Parameters.AddWithValue("@supplier_email", supplierEmail);
-
-            cmd.Parameters.AddWithValue("@available_date", date);
-
-            return cmd;
-        }
-
-
-
-
-
-
-
-
-
-
+        //---------------------------------------------------------------------------------------------------------|
+        //---------------------------------------------------------------------------------------------------------|
+        //---------------------------------------------------------------------------------------------------------|
 
 
 
@@ -257,9 +120,6 @@ namespace Server.DAL
                         Longitude = dataReader["longitude"] != DBNull.Value ? Convert.ToDouble(dataReader["longitude"]) : null
                     };
 
-                    // Call GetDatesForSupplier to retrieve available dates for the supplier.
-                    //supplier.AvailableDates = GetDatesForSupplier(supplier.SupplierEmail);
-
                     // Add the constructed supplier to the list.
                     suppliers.Add(supplier);
                 }
@@ -273,6 +133,12 @@ namespace Server.DAL
             // Return the list of constructed suppliers.
             return suppliers;
         }
+
+
+
+
+
+        //  ****************   Currently not in use   ****************  \\
 
         //--------------------------------------------------------------------------------------------------
         // This method retrieves dates for each supplier object from the database.
@@ -328,6 +194,124 @@ namespace Server.DAL
             cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
 
             cmd.Parameters.AddWithValue("@SupplierEmail", supplierEmail);
+
+            return cmd;
+        }
+
+
+        //-------------------------------------------------------
+        // This method retrieves the top venues from each region
+        //-------------------------------------------------------
+
+        public int InsertSupplier(Supplier supplier)
+        {
+
+
+            int successIndicator = 0;
+            try
+            {
+
+                // Open a database connection.
+                using (SqlConnection con = Connect())
+                {
+                    // Create a SqlCommand to execute the stored procedure.
+                    using (SqlCommand cmd = CreateInsertSupplierWithSP(con, "SPInsertSupplierDetails", supplier))
+                    {
+                        successIndicator = cmd.ExecuteNonQuery();
+                    }
+
+                    if (supplier.AvailableDates != null && successIndicator == 1)
+                    {
+
+                        foreach (var date in supplier.AvailableDates)
+                        {
+
+
+                            // Needs to rethink if the supplier registering includes dates already. *******
+                            using (SqlCommand cmd = CreateInsertSupplierDateWithSP(con, "SPInsertSupplierDates", date, supplier.SupplierEmail))
+                            {
+                                successIndicator += cmd.ExecuteNonQuery();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return successIndicator;
+                    }
+
+                }
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Number == 2627) // Primary key violation error number
+                {
+                    // Handle primary key violation error
+                    throw;
+                }
+                else
+                {
+                    // Handle other SQL exceptions
+                    throw new Exception("An error occurred while inserting a new couple in the InsertCouple method, sql related" + ex.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle other types of exceptions
+                throw new Exception("An error occurred while inserting a new couple in the InsertCouple method" + ex.Message);
+            }
+            if (successIndicator == 1 + supplier.AvailableDates.Count())
+            {
+                return 1;
+            }
+            else
+                return 0;
+
+        }
+
+
+        private SqlCommand CreateInsertSupplierWithSP(SqlConnection con, String spName, Supplier supplier)
+        {
+            SqlCommand cmd = new SqlCommand(); // create the command object
+
+            cmd.Connection = con;              // assign the connection to the command object
+
+            cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
+
+            cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
+
+            cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
+
+            cmd.Parameters.AddWithValue("@supplier_email", supplier.SupplierEmail);
+            cmd.Parameters.AddWithValue("@business_name", supplier.BusinessName);
+            string hashedPassword = BCrypt.Net.BCrypt.EnhancedHashPassword(supplier.Password, 10);
+            cmd.Parameters.AddWithValue("@password_hash", hashedPassword);
+            cmd.Parameters.AddWithValue("@phone_number", supplier.PhoneNumber);
+            cmd.Parameters.AddWithValue("@price", supplier.Price);
+            cmd.Parameters.AddWithValue("@capacity", supplier.Capacity);
+            cmd.Parameters.AddWithValue("@region_name", supplier.AvailableRegion);
+            cmd.Parameters.AddWithValue("@latitude", supplier.Latitude);
+            cmd.Parameters.AddWithValue("@longitude", supplier.Longitude);
+            cmd.Parameters.AddWithValue("@supplier_type_name", supplier.SupplierType);
+
+            return cmd;
+        }
+
+
+        private SqlCommand CreateInsertSupplierDateWithSP(SqlConnection con, String spName, DateTime date, String supplierEmail)
+        {
+            SqlCommand cmd = new SqlCommand(); // create the command object
+
+            cmd.Connection = con;              // assign the connection to the command object
+
+            cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
+
+            cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
+
+            cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
+
+            cmd.Parameters.AddWithValue("@supplier_email", supplierEmail);
+
+            cmd.Parameters.AddWithValue("@available_date", date);
 
             return cmd;
         }

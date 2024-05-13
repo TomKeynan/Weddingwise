@@ -985,19 +985,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\omric\\.nuget\\packages\\": {}
+    "C:\\Users\\Adam\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\omric\\Documents\\GitHub\\Weddingwise\\Server\\Server\\Server.csproj",
+      "projectUniqueName": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\Server.csproj",
       "projectName": "Server",
-      "projectPath": "C:\\Users\\omric\\Documents\\GitHub\\Weddingwise\\Server\\Server\\Server.csproj",
-      "packagesPath": "C:\\Users\\omric\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\omric\\Documents\\GitHub\\Weddingwise\\Server\\Server\\obj\\",
+      "projectPath": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\Server.csproj",
+      "packagesPath": "C:\\Users\\Adam\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\omric\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Adam\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -1017,6 +1017,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -1059,7 +1064,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204\\RuntimeIdentifierGraph.json"
       }
     }
   }

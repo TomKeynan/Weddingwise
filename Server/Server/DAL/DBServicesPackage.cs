@@ -6,9 +6,9 @@ namespace Server.DAL
 {
     public class DBServicesPackage
     {
-        //--------------------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------------------------
         // This method creates a connection to the database according to the connectionString name in the web.config 
-        //--------------------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------------------------
         public static SqlConnection Connect()
         {
 
@@ -21,15 +21,103 @@ namespace Server.DAL
             return con;
         }
 
+        //---------------------------------------------------------------------------------------------------------|
+        //---------------------------------------------------------------------------------------------------------|
+        //---------------------------------------------------------------------------------------------------------|
 
-        //-------------------------------------------------------
-        // This method retrieves package details from the database.
-        //-------------------------------------------------------
-        public Package GetPackageFromDB(string email)
+
+        //--------------------------------------------------------------------------------------------------------------------
+        // This method manages the updating and inserting of the package, type replacements count and the couple's type weight
+        //--------------------------------------------------------------------------------------------------------------------
+        public int InsertPackageToDB(PackageApprovalData packageApprovalData, string actionString)
+        {
+            int successIndicator = 0;
+            try
+            {
+
+                string spName1;
+                string spName2;
+
+                if (actionString == "Insert")
+                {
+                    spName1 = "SPInsertPackageDetails";
+                    spName2 = "SPInsertCoupleTypeWeights";
+                }
+
+                else // If actionString is "Update"
+                {
+                    spName1 = "SPUpdatePackageDetails";
+                    spName2 = "SPUpdateCoupleTypeWeights";
+                }
+
+
+                // Extract the package from the data
+                Package package = packageApprovalData.Package;
+
+                using (SqlConnection con = Connect())
+                {
+                    //* Step one: Inserting or updating the package details 
+
+                    using (SqlCommand cmd = CreateInsertOrUpdatePackageDetailsSP(spName1, con, package))
+                    {
+                        successIndicator = cmd.ExecuteNonQuery(); // Returns the number of rows affected by the command
+                    }
+                }
+
+                // If step one was successful, proceed to step two
+                if (successIndicator == 1)
+                {
+                    //* Step two: Inserting the relevant suppliers into the database
+                    successIndicator += InsertPackageSuppliersSP(package.SelectedSuppliers, package.AlternativeSuppliers, package.CoupleEmail, actionString);
+
+                    // If step two was successful, proceed to step three
+                    if (successIndicator == 2)
+                    {
+                        //* Step three: Inserting or Updating the couple's type weights in the database
+                        successIndicator += InsertOrUpdateCoupleTypeWeights(packageApprovalData.TypeWeights, packageApprovalData.Package.CoupleEmail, spName2);
+
+                        // If step three was successful, proceed to step four
+                        if (successIndicator == 3)
+                        {
+                            //* Step four: Updating the type replacements counts in the database
+                            successIndicator += UpdateTypeReplacementsCounts(packageApprovalData.TypeReplacements);
+                        }
+                    }
+                }
+
+                return successIndicator; // Return the final success indicator
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while inserting package details in the InsertPackageToDB method in step  " + successIndicator + " " + ex.Message);
+            }
+        }
+
+
+        private SqlCommand CreateInsertOrUpdatePackageDetailsSP(string spName, SqlConnection con, Package package)
+
+        {
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = con;
+            cmd.CommandText = spName;
+            cmd.CommandTimeout = 10;
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@couple_email", package.CoupleEmail);
+            cmd.Parameters.AddWithValue("@total_cost", package.TotalCost);
+            cmd.Parameters.AddWithValue("@total_score", package.TotalScore);
+
+            return cmd;
+        }
+
+        //--------------------------------------------------------------------------------------------
+        // This method retrieves package details from the database. Used when the user couple logs in.
+        //--------------------------------------------------------------------------------------------
+        public Package GetCouplePackageFromDB(string email)
         {
             // Initialize variables.
             Package package = null;
-
 
             try
             {
@@ -42,6 +130,8 @@ namespace Server.DAL
                         // Execute the SqlCommand and obtain a SqlDataReader.
                         using (SqlDataReader dataReader = cmd.ExecuteReader())
                         {
+                            //* Step 1: Get details of the package
+
                             // Check if dataReader has any rows.
                             if (dataReader.Read())
                             {
@@ -69,6 +159,8 @@ namespace Server.DAL
                             // Execute the SqlCommand and obtain a SqlDataReader.
                             using (SqlDataReader selectedReader = selectedCmd.ExecuteReader())
                             {
+                                //* Step 2: Retrieve the selected suppliers from the datebase using the BuildSuppliers method from the DBservicesSupplier
+
                                 // Construct selected suppliers using dataReader.
                                 DBServicesSupplier dBServicesSupplier = new DBServicesSupplier();
                                 selectedSuppliers = dBServicesSupplier.BuildSuppliers(selectedReader);
@@ -81,9 +173,13 @@ namespace Server.DAL
                             // Execute the SqlCommand and obtain a SqlDataReader.
                             using (SqlDataReader alternativeReader = alternativeCmd.ExecuteReader(CommandBehavior.CloseConnection))
                             {
+                                //* Step 3: Retrieve the alternative suppliers from the datebase using the BuildSuppliers method from the DBservicesSupplier
+
                                 // Construct alternative suppliers using dataReader.
                                 DBServicesSupplier dBServicesSupplier = new DBServicesSupplier();
                                 List<Supplier> alternativeSuppliersList = dBServicesSupplier.BuildSuppliers(alternativeReader);
+
+                                //* Step 4: Organize those suppliers by the type of supplier using a dictionary
 
                                 // Initialize alternativeSuppliers dictionary.
                                 string[] vendors = { "venue", "dj", "photographer", "dress", "rabbi", "hair and makeup" };
@@ -100,7 +196,8 @@ namespace Server.DAL
                             }
                         }
 
-                        // Assign selected and alternative suppliers to the package object.
+                        //* Step 5: Assign those beautiful supplier into the relevant properties. 
+
                         package.SelectedSuppliers = selectedSuppliers;
                         package.AlternativeSuppliers = alternativeSuppliers;
                     }
@@ -112,9 +209,11 @@ namespace Server.DAL
                 throw new Exception("An error occurred while retrieving package details in the GetPackageFromDB method: " + ex.Message);
             }
 
-            // Return the retrieved package object.
+            //* Step 6:  Return the retrieved package object (whether its empty or not).
             return package;
         }
+
+
 
         private SqlCommand CreateReadPackageSuppliersEmailsWithSP(SqlConnection con, String spName, int PackageId)
         {
@@ -151,90 +250,7 @@ namespace Server.DAL
         }
 
 
-        //--------------------------------------------------------------------------------------------------------------------
-        // This method manages the updating and inserting of the package, type replacements count and the couple's type weight
-        //--------------------------------------------------------------------------------------------------------------------
-        public int InsertPackageToDB(PackageApprovalData packageApprovalData, string actionString)
-        {
-            int successIndicator = 0;
-            try
-            {
 
-                string spName1;
-                string spName2;
-
-                if (actionString == "Insert")
-                {
-                    spName1 = "SPInsertPackageDetails";
-                    spName2 = "SPInsertCoupleTypeWeights";
-                }
-
-                else // If actionString is "Update"
-                {
-                    spName1 = "SPUpdatePackageDetails";
-                    spName2 = "SPUpdateCoupleTypeWeights";
-                }
-
-
-                // Extract the package from the data
-                Package package = packageApprovalData.Package;
-
-                using (SqlConnection con = Connect())
-                {
-                    // Step one: Inserting or updating the package details 
-
-                    using (SqlCommand cmd = CreateInsertOrUpdatePackageDetailsSP(spName1, con, package))
-                    {
-                        successIndicator = cmd.ExecuteNonQuery(); // Returns the number of rows affected by the command
-                    }
-                }
-
-                // If step one was successful, proceed to step two
-                if (successIndicator == 1)
-                {
-                    // Step two: Inserting the relevant suppliers into the database
-                    successIndicator += InsertPackageSuppliersSP(package.SelectedSuppliers, package.AlternativeSuppliers, package.CoupleEmail, actionString);
-
-                    // If step two was successful, proceed to step three
-                    if (successIndicator == 2)
-                    {
-                        // Step three: Inserting or Updating the couple's type weights in the database
-                        successIndicator += InsertOrUpdateCoupleTypeWeights(packageApprovalData.TypeWeights, packageApprovalData.Package.CoupleEmail, spName2);
-
-                        // If step three was successful, proceed to step four
-                        if (successIndicator == 3)
-                        {
-                            // Step four: Updating the type replacements counts in the database
-                            successIndicator += UpdateTypeReplacementsCounts(packageApprovalData.TypeReplacements);
-                        }
-                    }
-                }
-
-                return successIndicator; // Return the final success indicator
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while inserting package details in the InsertPackageToDB method in step  " + successIndicator + " " + ex.Message);
-            }
-        }
-
-
-        private SqlCommand CreateInsertOrUpdatePackageDetailsSP(string spName, SqlConnection con, Package package)
-
-        {
-
-            SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            cmd.CommandText = spName;
-            cmd.CommandTimeout = 10;
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-            cmd.Parameters.AddWithValue("@couple_email", package.CoupleEmail);
-            cmd.Parameters.AddWithValue("@total_cost", package.TotalCost);
-            cmd.Parameters.AddWithValue("@total_score", package.TotalScore);
-
-            return cmd;
-        }
 
 
         //------------------------------------------------------------------------------
@@ -244,10 +260,12 @@ namespace Server.DAL
         {
             try
             {
-                int suppliersInsertResult = 0;
+
+                int suppliersInsertResult = 0;  // Used to monitor that all the suppliers of the package were inserted.
+
                 using (SqlConnection con2 = Connect())
                 {
-                    // If the actionString is "Update", delete existing package suppliers
+                    // If the actionString is "Update", delete existing suppliers from the package. Annihilate them!
                     if (actionString == "Update")
                     {
                         using (SqlCommand cmd2 = CreateDeletePackageSuppliersSP("SPDeletePackageSuppliers", con2, coupleEmail))
@@ -279,7 +297,7 @@ namespace Server.DAL
                 }
 
                 // Check if all insertions were successful
-                if (suppliersInsertResult == (selectedSuppliers.Count + alternativeSuppliers.Sum(kv => kv.Value.Count)))
+                if (suppliersInsertResult == (selectedSuppliers.Count + alternativeSuppliers.Sum(typeList => typeList.Value.Count)))
                 {
                     return 1;
                 }
@@ -496,7 +514,7 @@ namespace Server.DAL
 
         //--------------------------------------------------------------------------------------------------
         // This method retrieves the suppliers based on the couple's budget and preferences 
-        //-------------------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------------------
         public List<Supplier> GetSuppliersForPackage(Couple couple)
         {
             // List to store the retrieved suppliers.

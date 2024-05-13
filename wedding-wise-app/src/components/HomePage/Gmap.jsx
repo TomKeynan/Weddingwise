@@ -31,6 +31,7 @@ function Gmap() {
         return response.json();
       })
       .then((data) => {
+        debugger
         setVenues(data);
       })
       .catch((error) => {
