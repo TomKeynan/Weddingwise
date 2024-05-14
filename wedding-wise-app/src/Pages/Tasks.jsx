@@ -1,14 +1,12 @@
 import React, { useState } from "react";
-import TaskListComp from "../components/TasksPage/TaskListComp";
+import TasksListComp from "../components/Planner/TasksPage/TaskListComp";
 
-/*import { Checkbox, Button, LinearProgress, IconButton, List, ListItem, ListItemText, ListItemSecondaryAction } from '@mui/material';
-import { ArrowDropDown } from '@mui/icons-material';
-*/
+
 
 function Tasks() {
   return (
     <div>
-      <TaskListComp />
+      <TasksListComp />
       
     </div>
   );

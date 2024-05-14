@@ -1,7 +1,7 @@
 // ============= LAST UPDATED =================
-// =============   13-5-2024  =================
-// version - 1 - map loading issue resolved
-// version - 2 - UserPackage component is Completed! 
+// =============   14-5-2024  =================
+// =============   BY: tom  Changes: added invitees comps, finished finance and tasks comps  =================
+// =============   Note: i had to modify AppContext should not cause issue but be aware  =================
 // ============= LAST UPDATED =================
 
 import "./App.css";
@@ -20,6 +20,7 @@ import Package from "./Pages/Package";
 import Finance from "./Pages/Finance";
 import EditDetails from "./Pages/EditDetails";
 import { LoadScript } from "@react-google-maps/api";
+import Invitees from "./Pages/Invitees";
 
 const googleMapsApiKey = "AIzaSyCSXv1ZziH2SJEcGQIp8EJMytapWnPjytQ";
 
@@ -35,6 +36,7 @@ const router = createBrowserRouter([
       { path: "/package", element: <Package /> },
       { path: "/tasks", element: <Tasks /> },
       { path: "/finance", element: <Finance /> },
+      { path: "/invitees", element: <Invitees /> },
       { path: "/edit", element: <EditDetails /> },
       
     ],
