@@ -1,5 +1,6 @@
 ﻿using Server.BL;
 using Server.DAL;
+using System.Diagnostics;
 
 namespace Server.Services
 {
@@ -155,40 +156,26 @@ namespace Server.Services
 
         public static Package GeneratePackage(Couple coupleWithData)
         {
-
             try
             {
                 // Step 1: Retrieve suppliers from the database
                 DBServicesPackage dbs = new DBServicesPackage();
-                List<Supplier> suppliers = dbs.GetSuppliersForPackage(coupleWithData);
+                List<Supplier> suppliersList = dbs.GetSuppliersForPackage(coupleWithData);
 
-                // Step 2: Create a dictionary to hold the top suppliers for each type
-                Dictionary<string, List<Supplier>> topSuppliers = new Dictionary<string, List<Supplier>>();
-
-                // Step 3: Insert suppliers into the topSuppliers dictionary based on their type
-                foreach (var type in coupleWithData.TypeWeights.Keys)
-                {
-                    // 
-                    topSuppliers[type] = suppliers
-                        .Where(supplier => supplier.SupplierType == type)
-                        .ToList(); //
-                }
-
-                // Step 4: Find the best combination of suppliers
+                // Step 2: Find the best combination of suppliers
                 List<Supplier> bestCombination = FindBestCombination(
-                    topSuppliers.Values.SelectMany(list => list).ToList(),
+                    suppliersList,
                     coupleWithData.TypeWeights,
                     coupleWithData.Budget
                 );
 
-                // Step 5: Calculate total cost and total score of the best combination
+                // Step 3: Calculate total cost and total score of the best combination
                 int totalCost = CalculateTotalCost(bestCombination);
                 double totalScore = CalculateTotalScore(bestCombination, coupleWithData.TypeWeights);
 
-                // Step 6: Create and populate the Package object
+                // Step 4: Create and populate the Package object
                 Package suppliersPackage = new Package
                 {
-
                     SelectedSuppliers = bestCombination,
                     TotalCost = totalCost,
                     TotalScore = totalScore,
@@ -196,13 +183,13 @@ namespace Server.Services
                     AlternativeSuppliers = new Dictionary<string, List<Supplier>>() // Initialize the dictionary
                 };
 
-                // Step 7: Populate the top 3 highest-rated suppliers for each type in the Package object
+                // Step 5: Populate the top 3 highest-rated suppliers for each type in the Package object
                 foreach (var type in coupleWithData.TypeWeights.Keys)
                 {
                     // Get the top 3 rated suppliers for the current type
-                    var topRated = topSuppliers[type]
+                    var topRated = suppliersList
+                        .Where(supplier => supplier.SupplierType == type && !bestCombination.Any(chosen => chosen.BusinessName == supplier.BusinessName))
                         .OrderByDescending(supplier => supplier.Rating)
-                        .Where(supplier => !bestCombination.Any(chosen => chosen.BusinessName == supplier.BusinessName))
                         .Take(3)
                         .ToList();
 
@@ -210,10 +197,9 @@ namespace Server.Services
                     suppliersPackage.AlternativeSuppliers[type] = topRated;
                 }
 
-                // Step 8: Return the Package
+                // Step 6: Return the Package
                 return suppliersPackage;
             }
-
             catch (Exception ex)
             {
                 // Throw a new exception with the desired error message.
@@ -221,91 +207,116 @@ namespace Server.Services
             }
         }
 
+
         // Find the best combination of suppliers based on budget and scores
-        private static List<Supplier> FindBestCombination(List<Supplier> suppliers, Dictionary<string, double> typeWeights, int budget)
+        private static List<Supplier> FindBestCombination(List<Supplier> suppliersList, Dictionary<string, double> typeWeights, int budget)
         {
-            // Initialize variables to store the best combination and its corresponding score
-            List<Supplier> bestCombination = new List<Supplier>();
-            double maxScore = 0;
+            List<Supplier> bestCombination = new List<Supplier>(); // Stores the best combination found so far
+            double maxScore = 0; // Stores the maximum score found
 
-            // Generate all possible combinations of suppliers
-            List<List<Supplier>> combinations = GenerateCombinations(suppliers);
+            // Sort suppliers by type weight descending
+            List<Supplier> sortedSuppliers = SortSuppliersByTypeWeight(suppliersList, typeWeights);
 
 
-            // Iterate through each combination to find the one with the highest score within the budget
+            // Define the time limit (e.g., 30 seconds)
+            TimeSpan timeLimit = TimeSpan.FromSeconds(2.5);
+
+            // Call the GenerateCombinations function with the time limit
+            List<List<Supplier>> combinations = GenerateCombinations(sortedSuppliers, budget, timeLimit);
+
+            // Find the combination with the highest score
             foreach (var combination in combinations)
             {
-                // Calculate the total cost of the current combination
-                int totalCost = CalculateTotalCost(combination);
-
-                // Check if the total cost of the combination is within the budget
-                if (totalCost <= budget)
+                double totalScore = CalculateTotalScore(combination, typeWeights);
+                if (totalScore > maxScore)
                 {
-                    // Calculate the total score of the current combination
-                    double totalScore = CalculateTotalScore(combination, typeWeights);
+                    maxScore = totalScore;
+                    bestCombination = combination;
+                }
+            }
 
-                    // Update the best combination if the current combination has a higher score
-                    if (totalScore > maxScore)
+            return bestCombination;
+        }
+
+        // Sort suppliers by type weight descending
+        private static List<Supplier> SortSuppliersByTypeWeight(List<Supplier> suppliers, Dictionary<string, double> typeWeights)
+        {
+            List<Supplier> sortedSuppliers = new List<Supplier>();
+
+            // Sort suppliers by type weight in descending order
+            foreach (var weightPair in typeWeights.OrderByDescending(pair => pair.Value))
+            {
+                foreach (var supplier in suppliers)
+                {
+                    if (supplier.SupplierType == weightPair.Key)
                     {
-                        maxScore = totalScore;
-                        bestCombination = combination;
+                        sortedSuppliers.Add(supplier);
                     }
                 }
             }
 
-            // Return the best combination found
-            return bestCombination;
+            return sortedSuppliers;
         }
 
-        // Generate all possible combinations of suppliers
-        private static List<List<Supplier>> GenerateCombinations(List<Supplier> suppliers)
-        {
-            // List to store the results
-            List<List<Supplier>> results = new List<List<Supplier>>();
 
-            // Get unique types of suppliers
-            List<string> types = suppliers.Select(supplier => supplier.SupplierType).Distinct().ToList();
+
+        private static List<List<Supplier>> GenerateCombinations(List<Supplier> suppliers, int budget, TimeSpan timeLimit)
+        {
+            List<List<Supplier>> results = new List<List<Supplier>>(); // Stores the generated combinations
+            List<string> types = suppliers.Select(supplier => supplier.SupplierType).Distinct().ToList(); // Get unique supplier types
+            Stopwatch stopwatch = new Stopwatch(); // Stopwatch to track elapsed time
+            stopwatch.Start(); // Start the stopwatch
+            bool timeLimitExceeded = false; // Flag to track if time limit is exceeded
 
             // Recursive function to generate combinations
             void Generate(List<Supplier> current, HashSet<string> usedTypes, int index)
             {
-                // If the combination size matches the number of unique types, add it to the results
-                if (current.Count == types.Count)
+                // Check if all unique supplier types have been included in the current combination or if the time limit has been exceeded
+                if ((current.Count == types.Count) || timeLimitExceeded)
                 {
-                    results.Add(current);
-                    return;
+                    results.Add(current); // Add the current combination to the results
+                    return; // Exit the function
                 }
 
-                // Iterate through the remaining suppliers to form combinations
+                // Iterate through remaining suppliers to add to the combination
                 for (int i = index; i < suppliers.Count; i++)
                 {
-                    // Check if the supplier type has already been used in the combination
+                    // Check if the supplier type has not been used in the current combination
                     if (!usedTypes.Contains(suppliers[i].SupplierType))
                     {
-                        // Create a new set of used types with the current type added
-                        HashSet<string> newUsedTypes = new HashSet<string>(usedTypes)
+                        int totalCost = CalculateTotalCost(current) + suppliers[i].Price;
+                        // Check if adding the supplier exceeds the budget
+                        if (totalCost <= budget)
                         {
-                            suppliers[i].SupplierType
-                        };
+                            // Create a new set of used types with the current supplier type added
+                            HashSet<string> newUsedTypes = new HashSet<string>(usedTypes);
+                            newUsedTypes.Add(suppliers[i].SupplierType);
 
-                        // Create a new combination with the current supplier added
-                        List<Supplier> newCombination = new List<Supplier>(current)
-                        {
-                            suppliers[i]
-                        };
+                            // Create a new combination with the current supplier added
+                            List<Supplier> newCombination = new List<Supplier>(current);
+                            newCombination.Add(suppliers[i]);
 
-                        // Recursively call Generate with the new combination and set of used types
-                        Generate(newCombination, newUsedTypes, i + 1);
+                            // Recursively generate combinations with the new combination and set of used types
+                            Generate(newCombination, newUsedTypes, i + 1);
+
+                            // Check if the time limit has been reached
+                            if (stopwatch.Elapsed > timeLimit)
+                            {
+                                timeLimitExceeded = true;
+                                return; // Return early
+                            }
+                        }
                     }
                 }
             }
 
-            // Start the generation process with an empty combination and an empty set of used types
+            // Start generating combinations with an empty current combination and an empty set of used types
             Generate(new List<Supplier>(), new HashSet<string>(), 0);
 
-            // Return the generated combinations
-            return results;
+            return results; // Return the generated combinations
         }
+
+
 
 
         // Calculate total cost of a list of suppliers
