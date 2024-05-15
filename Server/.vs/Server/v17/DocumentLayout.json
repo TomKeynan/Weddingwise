@@ -3,11 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Adam\\AppData\\Local\\Temp\\f1nfobgq..sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}|"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\adam\\desktop\\react\\weddingwise\\server\\server\\services\\packageservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\services\\packageservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\adam\\desktop\\react\\weddingwise\\server\\server\\controllers\\packagescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\controllers\\packagescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\adam\\desktop\\react\\weddingwise\\server\\server\\dal\\dbservicescouple.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\dal\\dbservicescouple.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\adam\\desktop\\react\\weddingwise\\server\\server\\bl\\packageapprovaldata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -20,20 +25,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\adam\\desktop\\react\\weddingwise\\server\\server\\bl\\couple.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\bl\\couple.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\adam\\desktop\\react\\weddingwise\\server\\server\\controllers\\couplescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\controllers\\couplescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\adam\\desktop\\react\\weddingwise\\server\\server\\dal\\dbservicescouple.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\dal\\dbservicescouple.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Adam\\AppData\\Local\\Temp\\f1nfobgq..sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}|CodeFrame"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Adam\\AppData\\Local\\Temp\\f1nfobgq..sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}|ResultFrame"
     }
   ],
   "DocumentGroupContainers": [
@@ -43,36 +34,36 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "SQLQuery1.sql ",
-              "DocumentMoniker": "C:\\Users\\Adam\\AppData\\Local\\Temp\\f1nfobgq..sql",
-              "RelativeDocumentMoniker": "..\\..\\..\\..\\AppData\\Local\\Temp\\f1nfobgq..sql",
-              "ToolTip": "SQLQuery1.sql *",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2024-05-11T08:23:00.89Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "DocumentIndex": 1,
+              "Title": "PackagesController.cs",
+              "DocumentMoniker": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\Controllers\\PackagesController.cs",
+              "RelativeDocumentMoniker": "Server\\Controllers\\PackagesController.cs",
+              "ToolTip": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\Controllers\\PackagesController.cs",
+              "RelativeToolTip": "Server\\Controllers\\PackagesController.cs",
+              "ViewState": "AQIAACgAAAAAAAAAAAAQwFsAAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-14T18:02:35.281Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "PackageService.cs",
               "DocumentMoniker": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\Services\\PackageService.cs",
               "RelativeDocumentMoniker": "Server\\Services\\PackageService.cs",
               "ToolTip": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\Services\\PackageService.cs",
               "RelativeToolTip": "Server\\Services\\PackageService.cs",
-              "ViewState": "AQIAAMUAAAAAAAAAAAAAwNAAAAA6AAAA",
+              "ViewState": "AQIAAL4AAAAAAAAAAAAAABIAAAANAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-05-12T08:25:36.088Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "PackageApprovalData.cs",
               "DocumentMoniker": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\BL\\PackageApprovalData.cs",
               "RelativeDocumentMoniker": "Server\\BL\\PackageApprovalData.cs",
@@ -80,12 +71,23 @@
               "RelativeToolTip": "Server\\BL\\PackageApprovalData.cs",
               "ViewState": "AQIAAA0AAAAAAAAAAAAQwBMAAAAxAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-12T10:56:15.684Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-12T10:56:15.684Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
+              "Title": "DBServicesCouple.cs",
+              "DocumentMoniker": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\DAL\\DBServicesCouple.cs",
+              "RelativeDocumentMoniker": "Server\\DAL\\DBServicesCouple.cs",
+              "ToolTip": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\DAL\\DBServicesCouple.cs",
+              "RelativeToolTip": "Server\\DAL\\DBServicesCouple.cs",
+              "ViewState": "AQIAALMAAAAAAAAAAAAAALMAAABGAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-12T08:24:47.663Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "Package.cs",
               "DocumentMoniker": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\BL\\Package.cs",
               "RelativeDocumentMoniker": "Server\\BL\\Package.cs",
@@ -93,38 +95,11 @@
               "RelativeToolTip": "Server\\BL\\Package.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-12T10:56:14.341Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-12T10:56:14.341Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "CouplesController.cs",
-              "DocumentMoniker": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\Controllers\\CouplesController.cs",
-              "RelativeDocumentMoniker": "Server\\Controllers\\CouplesController.cs",
-              "ToolTip": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\Controllers\\CouplesController.cs",
-              "RelativeToolTip": "Server\\Controllers\\CouplesController.cs",
-              "ViewState": "AQIAAIUAAAAAAAAAAADwv50AAAA5AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-11T19:58:31.628Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "DBServicesCouple.cs",
-              "DocumentMoniker": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\DAL\\DBServicesCouple.cs",
-              "RelativeDocumentMoniker": "Server\\DAL\\DBServicesCouple.cs",
-              "ToolTip": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\DAL\\DBServicesCouple.cs",
-              "RelativeToolTip": "Server\\DAL\\DBServicesCouple.cs",
-              "ViewState": "AQIAACcAAAAAAAAAAAAYwBcAAAAJAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-12T08:24:47.663Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
               "Title": "Couple.cs",
               "DocumentMoniker": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\BL\\Couple.cs",
               "RelativeDocumentMoniker": "Server\\BL\\Couple.cs",
@@ -132,8 +107,7 @@
               "RelativeToolTip": "Server\\BL\\Couple.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABUAAAAbAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-12T08:02:59.153Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-12T08:02:59.153Z"
             }
           ]
         }

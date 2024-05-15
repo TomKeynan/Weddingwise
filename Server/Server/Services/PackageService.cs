@@ -224,59 +224,102 @@ namespace Server.Services
         // Find the best combination of suppliers based on budget and scores
         private static List<Supplier> FindBestCombination(List<Supplier> suppliers, Dictionary<string, double> typeWeights, int budget)
         {
-            List<Supplier> bestCombination = new List<Supplier>();
-            double maxScore = 0;
+            List<Supplier> bestCombination = new List<Supplier>(); // Stores the best combination found so far
+            double maxScore = 0; // Stores the maximum score found
 
-            List<List<Supplier>> combinations = GenerateCombinations(suppliers);
+            // Sort suppliers by type weight descending
+            List<Supplier> sortedSuppliers = SortSuppliersByTypeWeight(suppliers, typeWeights);
 
+            // Generate combinations of suppliers
+            List<List<Supplier>> combinations = GenerateCombinations(sortedSuppliers, budget);
+
+            // Find the combination with the highest score
             foreach (var combination in combinations)
             {
-                int totalCost = CalculateTotalCost(combination);
-                if (totalCost <= budget)
+                double totalScore = CalculateTotalScore(combination, typeWeights);
+                if (totalScore > maxScore)
                 {
-                    double totalScore = CalculateTotalScore(combination, typeWeights);
-                    if (totalScore > maxScore)
-                    {
-                        maxScore = totalScore;
-                        bestCombination = combination;
-                    }
+                    maxScore = totalScore;
+                    bestCombination = combination;
                 }
             }
 
             return bestCombination;
         }
 
-        // Generate all possible combinations of suppliers
-        private static List<List<Supplier>> GenerateCombinations(List<Supplier> suppliers)
+        // Sort suppliers by type weight descending
+        private static List<Supplier> SortSuppliersByTypeWeight(List<Supplier> suppliers, Dictionary<string, double> typeWeights)
         {
-            List<List<Supplier>> results = new List<List<Supplier>>();
-            List<string> types = suppliers.Select(supplier => supplier.SupplierType).Distinct().ToList();
+            List<Supplier> sortedSuppliers = new List<Supplier>();
 
-            void Generate(List<Supplier> current, HashSet<string> usedTypes, int index)
+            // Sort suppliers by type weight in descending order
+            foreach (var weightPair in typeWeights.OrderByDescending(pair => pair.Value))
             {
-                if (current.Count == types.Count)
+                foreach (var supplier in suppliers)
                 {
-                    results.Add(current);
-                    return;
-                }
-
-                for (int i = index; i < suppliers.Count; i++)
-                {
-                    if (!usedTypes.Contains(suppliers[i].SupplierType))
+                    if (supplier.SupplierType == weightPair.Key)
                     {
-                        HashSet<string> newUsedTypes = new HashSet<string>(usedTypes);
-                        newUsedTypes.Add(suppliers[i].SupplierType);
-
-                        List<Supplier> newCombination = new List<Supplier>(current);
-                        newCombination.Add(suppliers[i]);
-                        Generate(newCombination, newUsedTypes, i + 1);
+                        sortedSuppliers.Add(supplier);
                     }
                 }
             }
 
-            Generate(new List<Supplier>(), new HashSet<string>(), 0);
-            return results;
+            return sortedSuppliers;
         }
+
+        // Generate combinations of suppliers
+        private static List<List<Supplier>> GenerateCombinations(List<Supplier> suppliers, int budget)
+        {
+            List<List<Supplier>> results = new List<List<Supplier>>(); // Stores the generated combinations
+            List<string> types = suppliers.Select(supplier => supplier.SupplierType).Distinct().ToList(); // Get unique supplier types
+            int combinationCount = 0; // Counter to track the number of combinations generated
+
+            // Recursive function to generate combinations
+            void Generate(List<Supplier> current, HashSet<string> usedTypes, int index)
+            {
+                // Check if all unique supplier types have been included in the current combination or if the combination count limit has been reached
+                if (current.Count == types.Count || combinationCount >= 1000)
+                {
+                    results.Add(current); // Add the current combination to the results
+                    combinationCount++; // Increment combination count
+                    return; // Exit the function
+                }
+
+                // Iterate through remaining suppliers to add to the combination
+                for (int i = index; i < suppliers.Count; i++)
+                {
+                    // Check if the supplier type has not been used in the current combination
+                    if (!usedTypes.Contains(suppliers[i].SupplierType))
+                    {
+                        int totalCost = CalculateTotalCost(current) + suppliers[i].Price;
+                        // Check if adding the supplier exceeds the budget
+                        if (totalCost <= budget)
+                        {
+                            // Create a new set of used types with the current supplier type added
+                            HashSet<string> newUsedTypes = new HashSet<string>(usedTypes);
+                            newUsedTypes.Add(suppliers[i].SupplierType);
+
+                            // Create a new combination with the current supplier added
+                            List<Supplier> newCombination = new List<Supplier>(current);
+                            newCombination.Add(suppliers[i]);
+
+                            // Recursively generate combinations with the new combination and set of used types
+                            Generate(newCombination, newUsedTypes, i + 1);
+
+                            // Check if the combination count limit has been reached
+                            if (combinationCount >= 1000)
+                                return; // Return early
+                        }
+                    }
+                }
+            }
+
+            // Start generating combinations with an empty current combination and an empty set of used types
+            Generate(new List<Supplier>(), new HashSet<string>(), 0);
+
+            return results; // Return the generated combinations
+        }
+
 
         // Calculate total cost of a list of suppliers
         private static int CalculateTotalCost(List<Supplier> suppliers)
@@ -291,7 +334,7 @@ namespace Server.Services
 
             foreach (var supplier in suppliers)
             {
-                totalScore += (double)supplier.Rating * typeWeights[supplier.SupplierType];
+                totalScore += (double)supplier.Rating * 20 * typeWeights[supplier.SupplierType];
             }
 
             return totalScore;
