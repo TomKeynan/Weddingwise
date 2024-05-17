@@ -208,6 +208,9 @@ namespace Server.Services
         }
 
 
+
+
+
         // Find the best combination of suppliers based on budget and scores
         private static List<Supplier> FindBestCombination(List<Supplier> suppliersList, Dictionary<string, double> typeWeights, int budget)
         {
@@ -217,12 +220,15 @@ namespace Server.Services
             // Sort suppliers by type weight descending
             List<Supplier> sortedSuppliers = SortSuppliersByTypeWeight(suppliersList, typeWeights);
 
-
-            // Define the time limit (e.g., 30 seconds)
+            // Define the maximum time to generate combinations
             TimeSpan timeLimit = TimeSpan.FromSeconds(2.5);
 
+            // Define the maximum number of combinations
+            int maxCombinations = 1000;
+
             // Call the GenerateCombinations function with the time limit
-            List<List<Supplier>> combinations = GenerateCombinations(sortedSuppliers, budget, timeLimit);
+            List<List<Supplier>> combinations = GenerateCombinations(sortedSuppliers, budget, timeLimit, maxCombinations);
+
 
             // Find the combination with the highest score
             foreach (var combination in combinations)
@@ -238,43 +244,28 @@ namespace Server.Services
             return bestCombination;
         }
 
-        // Sort suppliers by type weight descending
-        private static List<Supplier> SortSuppliersByTypeWeight(List<Supplier> suppliers, Dictionary<string, double> typeWeights)
-        {
-            List<Supplier> sortedSuppliers = new List<Supplier>();
-
-            // Sort suppliers by type weight in descending order
-            foreach (var weightPair in typeWeights.OrderByDescending(pair => pair.Value))
-            {
-                foreach (var supplier in suppliers)
-                {
-                    if (supplier.SupplierType == weightPair.Key)
-                    {
-                        sortedSuppliers.Add(supplier);
-                    }
-                }
-            }
-
-            return sortedSuppliers;
-        }
 
 
-
-        private static List<List<Supplier>> GenerateCombinations(List<Supplier> suppliers, int budget, TimeSpan timeLimit)
+        private static List<List<Supplier>> GenerateCombinations(List<Supplier> suppliers, int budget, TimeSpan timeLimit, int maxCombinations)
         {
             List<List<Supplier>> results = new List<List<Supplier>>(); // Stores the generated combinations
             List<string> types = suppliers.Select(supplier => supplier.SupplierType).Distinct().ToList(); // Get unique supplier types
             Stopwatch stopwatch = new Stopwatch(); // Stopwatch to track elapsed time
             stopwatch.Start(); // Start the stopwatch
             bool timeLimitExceeded = false; // Flag to track if time limit is exceeded
+            bool maxCombinationsReached = false; // Flag to track if the maximum number of combinations is reached
 
             // Recursive function to generate combinations
             void Generate(List<Supplier> current, HashSet<string> usedTypes, int index)
             {
                 // Check if all unique supplier types have been included in the current combination or if the time limit has been exceeded
-                if ((current.Count == types.Count) || timeLimitExceeded)
+                if ((current.Count == types.Count) || timeLimitExceeded || maxCombinationsReached)
                 {
                     results.Add(current); // Add the current combination to the results
+                    if (results.Count >= maxCombinations)
+                    {
+                        maxCombinationsReached = true;
+                    }
                     return; // Exit the function
                 }
 
@@ -305,6 +296,13 @@ namespace Server.Services
                                 timeLimitExceeded = true;
                                 return; // Return early
                             }
+
+                            // Check if the maximum number of combinations has been reached
+                            if (results.Count >= maxCombinations)
+                            {
+                                maxCombinationsReached = true;
+                                return; // Return early
+                            }
                         }
                     }
                 }
@@ -317,6 +315,27 @@ namespace Server.Services
         }
 
 
+
+
+        // Sort suppliers by type weight descending
+        private static List<Supplier> SortSuppliersByTypeWeight(List<Supplier> suppliers, Dictionary<string, double> typeWeights)
+        {
+            List<Supplier> sortedSuppliers = new List<Supplier>();
+
+            // Sort suppliers by type weight in descending order
+            foreach (var weightPair in typeWeights.OrderByDescending(pair => pair.Value))
+            {
+                foreach (var supplier in suppliers)
+                {
+                    if (supplier.SupplierType == weightPair.Key)
+                    {
+                        sortedSuppliers.Add(supplier);
+                    }
+                }
+            }
+
+            return sortedSuppliers;
+        }
 
 
         // Calculate total cost of a list of suppliers
