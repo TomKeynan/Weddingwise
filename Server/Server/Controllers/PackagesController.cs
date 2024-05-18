@@ -10,11 +10,9 @@ namespace Server.Controllers
 
     {
 
-
         //--------------------------------------------------------------------
-        // Retrieves a package provided couple data and questionnaire answers
+        // Generates a package according to couple's provided data
         //--------------------------------------------------------------------
-
         [HttpPost("getPackage")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Couple))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -39,6 +37,7 @@ namespace Server.Controllers
                     {
                         throw new ArgumentNullException("Someone didn't do their job correctly and he is about to be fired.");
                     }
+
                     // Generate the package
                     Couple coupleWithPackage = Package.GetPackage(coupleWithData, questionnaireAnswers);
 
@@ -59,7 +58,6 @@ namespace Server.Controllers
         //--------------------------------------------------------------------
         // Inserts a new package into the database.
         //--------------------------------------------------------------------
-
         [HttpPost("insertPackage")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -82,6 +80,7 @@ namespace Server.Controllers
                 {
                     return Ok(); // Return 200 OK for successful insertion
                 }
+
                 else
                 {
                     throw new Exception("Not all operations were successful only" + numberOfSuccesses + "were");

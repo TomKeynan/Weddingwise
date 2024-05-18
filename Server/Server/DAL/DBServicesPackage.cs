@@ -11,11 +11,10 @@ namespace Server.DAL
         //----------------------------------------------------------------------------------------------------------
         public static SqlConnection Connect()
         {
-
-            // read the connection string from the configuration file
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json").Build();
+            // read the connection string fromm the web.config file
+            IConfigurationRoot configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
             string cStr = configuration.GetConnectionString("myProjDB");
+            // create the connection to the db
             SqlConnection con = new SqlConnection(cStr);
             con.Open();
             return con;

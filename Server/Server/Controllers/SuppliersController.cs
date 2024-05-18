@@ -11,12 +11,9 @@ namespace Server.Controllers
     [ApiController]
     public class SuppliersController : Controller
     {
-
-
         //--------------------------------------------------------------------
         // Retrieves a list of top venues from the database.
         //--------------------------------------------------------------------
-        // GET: api/Supplier/getTopVenues
         [HttpGet("getTopVenues")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Supplier>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -31,7 +28,7 @@ namespace Server.Controllers
                 if (suppliers == null)
                 {
                     // No venues found, return 404 Not Found status code
-                    return NotFound();
+                    return NotFound("Could not retreives the top venues for Google Maps.");
                 }
 
                 // Return the list of top venues with 200 OK status code
@@ -43,6 +40,12 @@ namespace Server.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
+
+
+
+
+
+
 
 
         //  ****************   Currently not in use   ****************  \\

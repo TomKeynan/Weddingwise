@@ -19,16 +19,16 @@ namespace Server.Services
             try
             {
 
-                const int NumberOfVendors = 6;
+                const int numberOfVendors = 6;
 
                 // Create comparison matrix
-                double[,] comparisonMatrix = new double[NumberOfVendors, NumberOfVendors];
+                double[,] comparisonMatrix = new double[numberOfVendors, numberOfVendors];
 
                 // Populate comparison matrix
-                PopulateComparisonMatrix(comparisonMatrix, responses, NumberOfVendors);
+                PopulateComparisonMatrix(comparisonMatrix, responses, numberOfVendors);
 
                 // Calculate weights
-                Dictionary<string, double> weights = CalculateWeights(comparisonMatrix, NumberOfVendors);
+                Dictionary<string, double> weights = CalculateWeights(comparisonMatrix, numberOfVendors);
 
                 // Adjust weights based on database information
                 return AdjustWeights(weights);
@@ -44,34 +44,59 @@ namespace Server.Services
         // Method to populate the comparison matrix based on user responses
         private static void PopulateComparisonMatrix(double[,] matrix, int[] responses, int NumberOfVendors)
         {
+            // Initialize the index for accessing user responses
             int responseIndex = 0;
+
+            // Iterate over the rows of the comparison matrix
             for (int i = 0; i < NumberOfVendors; i++)
             {
+                // Iterate over the columns of the comparison matrix (upper triangular part)
                 for (int j = i + 1; j < NumberOfVendors; j++)
                 {
+                    // Get the numerical value representing the strength of preference from user responses
                     double value = MapResponseToValue(responses[responseIndex++]);
 
-                    // Fill upper and lower triangles of the matrix
+                    // Fill the upper triangular part of the matrix with the obtained value
                     matrix[i, j] = value;
+
+                    // Fill the corresponding lower triangular part with the reciprocal value to maintain symmetry
                     matrix[j, i] = 1 / value;
                 }
 
-                // Diagonal elements are always 1
+                // Set the diagonal elements of the matrix to 1 (neutral preference, comparing an option with itself)
                 matrix[i, i] = 1;
             }
         }
 
-        // Method to map user responses to numerical values
+        // Method to map user responses to numerical values representing the strength of preference
         private static double MapResponseToValue(int response)
         {
+            // Use a switch statement to handle different cases of user responses
             switch (response)
             {
-                case 1: return 5;
-                case 2: return 3;
-                case 3: return 1;
-                case 4: return 1.0 / 3;
-                case 5: return 1.0 / 5;
-                default: return 1; // Neutral preference
+                // Case 1: Strong preference for the first option over the second
+                case 1:
+                    return 5;
+
+                // Case 2: Moderate preference for the first option over the second
+                case 2:
+                    return 3;
+
+                // Case 3: Equal preference for both options
+                case 3:
+                    return 1;
+
+                // Case 4: Moderate preference for the second option over the first
+                case 4:
+                    return 1.0 / 3;
+
+                // Case 5: Strong preference for the second option over the first
+                case 5:
+                    return 1.0 / 5;
+
+                // Default case: Neutral preference if the user response does not match any predefined cases
+                default:
+                    return 1; // Return a neutral preference
             }
         }
 
@@ -104,6 +129,7 @@ namespace Server.Services
             // Assign weights to vendor types
             Dictionary<string, double> typeWeights = new Dictionary<string, double>();
             string[] vendors = { "venue", "dj", "photographer", "dress", "rabbi", "hair and makeup" };
+
             for (int i = 0; i < NumberOfVendors; i++)
             {
                 typeWeights[vendors[i]] = weights[i];
@@ -116,8 +142,8 @@ namespace Server.Services
         private static Dictionary<string, double> AdjustWeights(Dictionary<string, double> typeWeights)
         {
             // Step 1: Get replacement counts from the database
-            DBServicesPackage dbs = new DBServicesPackage();
-            Dictionary<string, int> replacementCounts = dbs.GetReplacementCounts();
+            DBServicesPackage dBServicesPackage = new DBServicesPackage();
+            Dictionary<string, int> replacementCounts = dBServicesPackage.GetReplacementCounts();
 
             // Step 2: Calculate total replacement count
             int totalReplacements = replacementCounts.Values.Sum();
@@ -125,10 +151,10 @@ namespace Server.Services
             // Step 3: Adjust the weights based on proportional differences
             Dictionary<string, double> adjustedWeights = new Dictionary<string, double>();
             double sum = 0;
-            foreach (var kvp in replacementCounts)
+            foreach (var supplierTypeCountPair in replacementCounts)
             {
-                string supplierType = kvp.Key;
-                int count = kvp.Value;
+                string supplierType = supplierTypeCountPair.Key;
+                int count = supplierTypeCountPair.Value;
 
                 // Calculate the proportional difference between the count and the average count
                 double proportionDiff = (double)count / totalReplacements - 1.0 / replacementCounts.Count;
@@ -150,10 +176,13 @@ namespace Server.Services
 
 
 
-        // ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-        // ┃  📦 This section generates the best combination of suppliers based on budget and ratings. 📦  ┃
-        // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+        // ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+        // ┃  📦  This section generates the best combination of suppliers based on the couple's preferences. 📦  ┃
+        // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+
+
+        // This method "manages" the generation of a package
         public static Package GeneratePackage(Couple coupleWithData)
         {
             try
@@ -188,7 +217,7 @@ namespace Server.Services
                 {
                     // Get the top 3 rated suppliers for the current type
                     var topRated = suppliersList
-                        .Where(supplier => supplier.SupplierType == type && !bestCombination.Any(chosen => chosen.BusinessName == supplier.BusinessName))
+                        .Where(supplier => supplier.SupplierType == type && !bestCombination.Any(chosen => chosen.SupplierEmail == supplier.SupplierEmail))
                         .OrderByDescending(supplier => supplier.Rating)
                         .Take(3)
                         .ToList();
@@ -208,9 +237,6 @@ namespace Server.Services
         }
 
 
-
-
-
         // Find the best combination of suppliers based on budget and scores
         private static List<Supplier> FindBestCombination(List<Supplier> suppliersList, Dictionary<string, double> typeWeights, int budget)
         {
@@ -220,15 +246,14 @@ namespace Server.Services
             // Sort suppliers by type weight descending
             List<Supplier> sortedSuppliers = SortSuppliersByTypeWeight(suppliersList, typeWeights);
 
-            // Define the maximum time to generate combinations
-            TimeSpan timeLimit = TimeSpan.FromSeconds(2.5);
+            // Define the maximum time to generate combinations (Seconds!)
+            double time = 2.5;
 
             // Define the maximum number of combinations
             int maxCombinations = 1000;
 
             // Call the GenerateCombinations function with the time limit
-            List<List<Supplier>> combinations = GenerateCombinations(sortedSuppliers, budget, timeLimit, maxCombinations);
-
+            List<List<Supplier>> combinations = GenerateCombinations(sortedSuppliers, budget, TimeSpan.FromSeconds(time), maxCombinations);
 
             // Find the combination with the highest score
             foreach (var combination in combinations)
@@ -241,80 +266,64 @@ namespace Server.Services
                 }
             }
 
+            // return the best found combination of suppliers
             return bestCombination;
         }
 
 
-
         private static List<List<Supplier>> GenerateCombinations(List<Supplier> suppliers, int budget, TimeSpan timeLimit, int maxCombinations)
         {
-            List<List<Supplier>> results = new List<List<Supplier>>(); // Stores the generated combinations
-            List<string> types = suppliers.Select(supplier => supplier.SupplierType).Distinct().ToList(); // Get unique supplier types
+            List<List<Supplier>> combinationList = new List<List<Supplier>>(); // Stores the generated combinations
+            const int numberOfSupplierTypes = 6; // Total number of supplier types
             Stopwatch stopwatch = new Stopwatch(); // Stopwatch to track elapsed time
             stopwatch.Start(); // Start the stopwatch
-            bool timeLimitExceeded = false; // Flag to track if time limit is exceeded
-            bool maxCombinationsReached = false; // Flag to track if the maximum number of combinations is reached
 
             // Recursive function to generate combinations
-            void Generate(List<Supplier> current, HashSet<string> usedTypes, int index)
+            void GenerateCombination(List<Supplier> currentCombination, HashSet<string> usedSupplierTypes, int currentSupplierIndex)
             {
-                // Check if all unique supplier types have been included in the current combination or if the time limit has been exceeded
-                if ((current.Count == types.Count) || timeLimitExceeded || maxCombinationsReached)
+                // Check if either the maximum number of combinations or the time limit has been reached
+                if (combinationList.Count >= maxCombinations || stopwatch.Elapsed > timeLimit)
                 {
-                    results.Add(current); // Add the current combination to the results
-                    if (results.Count >= maxCombinations)
-                    {
-                        maxCombinationsReached = true;
-                    }
+                    return; // Exit the function
+                }
+
+                // Check if all unique supplier types have been included in the current combination
+                if (currentCombination.Count == numberOfSupplierTypes)
+                {
+                    combinationList.Add(currentCombination); // Add the current combination to the combinationList
                     return; // Exit the function
                 }
 
                 // Iterate through remaining suppliers to add to the combination
-                for (int i = index; i < suppliers.Count; i++)
+                for (int supplierIndex = currentSupplierIndex; supplierIndex < suppliers.Count; supplierIndex++)
                 {
                     // Check if the supplier type has not been used in the current combination
-                    if (!usedTypes.Contains(suppliers[i].SupplierType))
+                    if (!usedSupplierTypes.Contains(suppliers[supplierIndex].SupplierType))
                     {
-                        int totalCost = CalculateTotalCost(current) + suppliers[i].Price;
+                        int totalCost = CalculateTotalCost(currentCombination) + suppliers[supplierIndex].Price;
                         // Check if adding the supplier exceeds the budget
                         if (totalCost <= budget)
                         {
-                            // Create a new set of used types with the current supplier type added
-                            HashSet<string> newUsedTypes = new HashSet<string>(usedTypes);
-                            newUsedTypes.Add(suppliers[i].SupplierType);
+                            // Create a new set of used supplier types with the current supplier type added
+                            HashSet<string> newUsedSupplierTypes = new HashSet<string>(usedSupplierTypes);
+                            newUsedSupplierTypes.Add(suppliers[supplierIndex].SupplierType);
 
                             // Create a new combination with the current supplier added
-                            List<Supplier> newCombination = new List<Supplier>(current);
-                            newCombination.Add(suppliers[i]);
+                            List<Supplier> newCombination = new List<Supplier>(currentCombination);
+                            newCombination.Add(suppliers[supplierIndex]);
 
-                            // Recursively generate combinations with the new combination and set of used types
-                            Generate(newCombination, newUsedTypes, i + 1);
-
-                            // Check if the time limit has been reached
-                            if (stopwatch.Elapsed > timeLimit)
-                            {
-                                timeLimitExceeded = true;
-                                return; // Return early
-                            }
-
-                            // Check if the maximum number of combinations has been reached
-                            if (results.Count >= maxCombinations)
-                            {
-                                maxCombinationsReached = true;
-                                return; // Return early
-                            }
+                            // Recursively generate combinations with the new combination and set of used supplier types
+                            GenerateCombination(newCombination, newUsedSupplierTypes, supplierIndex + 1);
                         }
                     }
                 }
             }
 
-            // Start generating combinations with an empty current combination and an empty set of used types
-            Generate(new List<Supplier>(), new HashSet<string>(), 0);
+            // Start generating combinations with an empty current combination and an empty set of used supplier types
+            GenerateCombination(new List<Supplier>(), new HashSet<string>(), 0);
 
-            return results; // Return the generated combinations
+            return combinationList; // Return the generated combinations
         }
-
-
 
 
         // Sort suppliers by type weight descending
@@ -336,7 +345,6 @@ namespace Server.Services
 
             return sortedSuppliers;
         }
-
 
         // Calculate total cost of a list of suppliers
         private static int CalculateTotalCost(List<Supplier> suppliers)

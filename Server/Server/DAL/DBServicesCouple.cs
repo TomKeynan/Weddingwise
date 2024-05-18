@@ -13,11 +13,10 @@ namespace Server.DAL
         //-----------------------------------------------------------------------------------------------------------
         public static SqlConnection Connect()
         {
-
-            // read the connection string from the configuration file
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json").Build();
+            // read the connection string fromm the web.config file
+            IConfigurationRoot configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
             string cStr = configuration.GetConnectionString("myProjDB");
+            // create the connection to the db
             SqlConnection con = new SqlConnection(cStr);
             con.Open();
             return con;
@@ -102,13 +101,9 @@ namespace Server.DAL
             return cmd;
         }
 
-
-
-
         //-------------------------------------------------------
         // This method retrieves couple details from the database.
         //-------------------------------------------------------
-
         public Couple GetCouple(string email, string enteredPassword)
         {
             // Initialize the couple object to null.
@@ -120,7 +115,7 @@ namespace Server.DAL
                 using (SqlConnection con = Connect())
                 {
                     // Create a SqlCommand to execute the stored procedure for retrieving couple details.
-                    using (SqlCommand cmd = CreateReadCoupleWithSP(con, "SPGetCoupleDetails", email, enteredPassword))
+                    using (SqlCommand cmd = CreateReadCoupleWithSP(con, "SPGetCoupleDetails", email))
                     {
                         // Execute the SqlCommand and obtain a SqlDataReader.
                         using (SqlDataReader dataReader = cmd.ExecuteReader())
@@ -214,7 +209,7 @@ namespace Server.DAL
         }
 
         // Creates a SqlCommand object for reading couple details using a stored procedure.
-        private SqlCommand CreateReadCoupleWithSP(SqlConnection con, string spName, string email, string password)
+        private SqlCommand CreateReadCoupleWithSP(SqlConnection con, string spName, string email)
         {
             SqlCommand cmd = new SqlCommand();
 
@@ -227,7 +222,6 @@ namespace Server.DAL
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
             cmd.Parameters.AddWithValue("@couple_email", email);
-
 
             return cmd;
         }
@@ -254,7 +248,6 @@ namespace Server.DAL
         //-------------------------------------------------------
         // This method updates couple's details database.
         //-------------------------------------------------------
-
         public int UpdateCouple(Couple couple)
         {
             try
@@ -311,7 +304,6 @@ namespace Server.DAL
 
             return cmd; // Return the command object
         }
-
 
     }
 }
