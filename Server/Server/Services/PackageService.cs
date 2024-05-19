@@ -188,8 +188,8 @@ namespace Server.Services
             try
             {
                 // Step 1: Retrieve suppliers from the database
-                DBServicesPackage dbs = new DBServicesPackage();
-                List<Supplier> suppliersList = dbs.GetSuppliersForPackage(coupleWithData);
+                DBServicesPackage dBServicesPackage = new DBServicesPackage();
+                List<Supplier> suppliersList = dBServicesPackage.GetSuppliersForPackage(coupleWithData);
 
                 // Step 2: Find the best combination of suppliers
                 List<Supplier> bestCombination = FindBestCombination(
@@ -217,7 +217,7 @@ namespace Server.Services
                 {
                     // Get the top 3 rated suppliers for the current type
                     var topRated = suppliersList
-                        .Where(supplier => supplier.SupplierType == type && !bestCombination.Any(chosen => chosen.SupplierEmail == supplier.SupplierEmail))
+                        .Where(supplier => supplier.SupplierType == type && !suppliersPackage.SelectedSuppliers.Any(chosen => chosen.SupplierEmail == supplier.SupplierEmail))
                         .OrderByDescending(supplier => supplier.Rating)
                         .Take(3)
                         .ToList();
@@ -271,7 +271,7 @@ namespace Server.Services
         }
 
 
-        private static List<List<Supplier>> GenerateCombinations(List<Supplier> suppliers, int budget, TimeSpan timeLimit, int maxCombinations)
+        private static List<List<Supplier>> GenerateCombinations(List<Supplier> suppliersList, int budget, TimeSpan timeLimit, int maxCombinations)
         {
             List<List<Supplier>> combinationList = new List<List<Supplier>>(); // Stores the generated combinations
             const int numberOfSupplierTypes = 6; // Total number of supplier types
@@ -295,22 +295,22 @@ namespace Server.Services
                 }
 
                 // Iterate through remaining suppliers to add to the combination
-                for (int supplierIndex = currentSupplierIndex; supplierIndex < suppliers.Count; supplierIndex++)
+                for (int supplierIndex = currentSupplierIndex; supplierIndex < suppliersList.Count; supplierIndex++)
                 {
                     // Check if the supplier type has not been used in the current combination
-                    if (!usedSupplierTypes.Contains(suppliers[supplierIndex].SupplierType))
+                    if (!usedSupplierTypes.Contains(suppliersList[supplierIndex].SupplierType))
                     {
-                        int totalCost = CalculateTotalCost(currentCombination) + suppliers[supplierIndex].Price;
+                        int totalCost = CalculateTotalCost(currentCombination) + suppliersList[supplierIndex].Price;
                         // Check if adding the supplier exceeds the budget
                         if (totalCost <= budget)
                         {
                             // Create a new set of used supplier types with the current supplier type added
                             HashSet<string> newUsedSupplierTypes = new HashSet<string>(usedSupplierTypes);
-                            newUsedSupplierTypes.Add(suppliers[supplierIndex].SupplierType);
+                            newUsedSupplierTypes.Add(suppliersList[supplierIndex].SupplierType);
 
                             // Create a new combination with the current supplier added
                             List<Supplier> newCombination = new List<Supplier>(currentCombination);
-                            newCombination.Add(suppliers[supplierIndex]);
+                            newCombination.Add(suppliersList[supplierIndex]);
 
                             // Recursively generate combinations with the new combination and set of used supplier types
                             GenerateCombination(newCombination, newUsedSupplierTypes, supplierIndex + 1);

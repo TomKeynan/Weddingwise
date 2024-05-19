@@ -1,4 +1,3 @@
-C:\Users\Adam\Desktop\React\WeddingWIse\Server\Server\bin\Debug\net6.0\appsettings.Development.json
 C:\Users\Adam\Desktop\React\WeddingWIse\Server\Server\bin\Debug\net6.0\appsettings.json
 C:\Users\Adam\Desktop\React\WeddingWIse\Server\Server\bin\Debug\net6.0\Server.exe
 C:\Users\Adam\Desktop\React\WeddingWIse\Server\Server\bin\Debug\net6.0\Server.deps.json

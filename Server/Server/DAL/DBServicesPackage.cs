@@ -214,6 +214,25 @@ namespace Server.DAL
 
 
 
+        private SqlCommand CreateReadPackageDetailsWithSP(SqlConnection con, String spName, string email)
+        {
+            SqlCommand cmd = new SqlCommand(); // create the command object
+
+            cmd.Connection = con;              // assign the connection to the command object
+
+            cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
+
+            cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
+
+            cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
+
+            cmd.Parameters.AddWithValue("@CoupleEmail", email);
+
+            return cmd;
+        }
+
+
+
         private SqlCommand CreateReadPackageSuppliersEmailsWithSP(SqlConnection con, String spName, int PackageId)
         {
             SqlCommand cmd = new SqlCommand(); // create the command object
@@ -231,22 +250,7 @@ namespace Server.DAL
             return cmd;
         }
 
-        private SqlCommand CreateReadPackageDetailsWithSP(SqlConnection con, String spName, string email)
-        {
-            SqlCommand cmd = new SqlCommand(); // create the command object
 
-            cmd.Connection = con;              // assign the connection to the command object
-
-            cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
-
-            cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
-
-            cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
-
-            cmd.Parameters.AddWithValue("@CoupleEmail", email);
-
-            return cmd;
-        }
 
 
 
