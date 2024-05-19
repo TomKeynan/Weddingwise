@@ -14,5 +14,5 @@ function Invitees() {
     </div>
   );
 }
-
+  
 export default Invitees;

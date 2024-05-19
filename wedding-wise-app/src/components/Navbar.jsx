@@ -20,13 +20,18 @@ function Navbar() {
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const [anchorElPlanner, setAnchorElPlanner] = useState(null);
   const { coupleData, setCoupleData } = useContext(AppContext);
 
   const pages = [
     { route: "/", text: "דף הבית" },
     { route: "/profile", text: "פרופיל" },
     { route: "/package", text: "חבילה" },
-    { route: "/noPathYet", text: "Planner" },
+  ];
+  const plannerOptions = [
+    { route: "/tasks", text: "משימות" },
+    { route: "/finance", text: "מעקב הוצאות" },
+    { route: "/invitees", text: "ניהול מוזמנים" },
   ];
   const settings = [
     { route: "/login", text: "התחבר" },
@@ -43,6 +48,9 @@ function Navbar() {
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
+  const handleOpenPlannerMenu = (event) => {
+    setAnchorElPlanner(event.currentTarget);
+  };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
@@ -52,13 +60,17 @@ function Navbar() {
     setAnchorElUser(null);
   };
 
+  const handleClosePlannerMenu = () => {
+    setAnchorElPlanner(null);
+  };
+
   function handleClick(linkText) {
     if (linkText === "התנתק") {
       sessionStorage.clear();
       setCoupleData(null);
     }
   }
-  // isActive = boolean property which destructured form the NavLink component.
+
   function navLinkStyles({ isActive }) {
     return {
       fontWeight: isActive ? "bold" : "500",
@@ -83,7 +95,6 @@ function Navbar() {
     >
       <Container maxWidth="xl" sx={{ p: 0 }}>
         <Toolbar disableGutters>
-          {/*  layout for screen devices above 900px(md) */}
           {screenAboveMD && (
             <Stack
               direction="row"
@@ -94,11 +105,9 @@ function Navbar() {
                 height: 80,
               }}
             >
-              {/* Settings Menu */}
               <Box sx={{ flexGrow: 1 }}>
                 <Tooltip title="התחברות / הרשמה">
                   <IconButton onClick={handleOpenUserMenu} disableRipple>
-                    {/* Icon */}
                     <AccountCircleIcon
                       fontSize="large"
                       sx={{
@@ -109,7 +118,6 @@ function Navbar() {
                     />
                   </IconButton>
                 </Tooltip>
-                {/* Setting Menu- Popup */}
                 <Menu
                   sx={{
                     mt: "45px",
@@ -194,8 +202,6 @@ function Navbar() {
                     ))}
                 </Menu>
               </Box>
-
-              {/* Pages */}
               <Stack
                 direction="row"
                 alignItems="center"
@@ -213,9 +219,57 @@ function Navbar() {
                     {page.text}
                   </NavLink>
                 ))}
+                <Box>
+                  <Button
+                    onClick={handleOpenPlannerMenu}
+                    sx={{
+                      color: customTheme.palette.secondary.dark,
+                      fontWeight: "500",
+                      fontSize: 22,
+                    }}
+                  >
+                    עזרי תכנון
+                  </Button>
+                  <Menu
+                    id="planner-menu"
+                    anchorEl={anchorElPlanner}
+                    open={Boolean(anchorElPlanner)}
+                    onClose={handleClosePlannerMenu}
+                    MenuListProps={{
+                      "aria-labelledby": "basic-button",
+                    }}
+                  >
+                    {plannerOptions.map((option) => (
+                      <MenuItem
+                        key={option.text}
+                        onClick={handleClosePlannerMenu}
+                        sx={{
+                          ":hover": {
+                            bgcolor: customTheme.palette.primary.light,
+                          },
+                        }}
+                      >
+                        <Link
+                          to={option.route}
+                          style={{ textDecoration: "none", width: "100%" }}
+                        >
+                          <Typography
+                            textAlign="center"
+                            sx={{
+                              fontWeight: "bold",
+                              fontSize: 16,
+                              color: "#000",
+                              width: "100%",
+                            }}
+                          >
+                            {option.text}
+                          </Typography>
+                        </Link>
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </Box>
               </Stack>
-
-              {/* Logo  + Icon */}
               <Stack direction="row-reverse" alignItems="center" flexGrow={1}>
                 <Typography
                   variant="h6"
@@ -241,7 +295,6 @@ function Navbar() {
             </Stack>
           )}
 
-          {/*  layout for screen devices under 900px(md) */}
           {!screenAboveMD && (
             <Stack
               direction="row"
@@ -313,6 +366,63 @@ function Navbar() {
                       </Link>
                     </MenuItem>
                   ))}
+                  <MenuItem
+                    onClick={handleOpenPlannerMenu}
+                    sx={{
+                      ":hover": {
+                        bgcolor: customTheme.palette.primary.light,
+                      },
+                    }}
+                  >
+                    <Typography
+                      textAlign="center"
+                      sx={{
+                        fontWeight: "bold",
+                        fontSize: 16,
+                        color: "#000",
+                      }}
+                    >
+                      Planner
+                    </Typography>
+                  </MenuItem>
+                  <Menu
+                    id="planner-menu-mobile"
+                    anchorEl={anchorElPlanner}
+                    open={Boolean(anchorElPlanner)}
+                    onClose={handleClosePlannerMenu}
+                    MenuListProps={{
+                      "aria-labelledby": "basic-button",
+                    }}
+                  >
+                    {plannerOptions.map((option) => (
+                      <MenuItem
+                        key={option.text}
+                        onClick={handleClosePlannerMenu}
+                        sx={{
+                          ":hover": {
+                            bgcolor: customTheme.palette.primary.light,
+                          },
+                        }}
+                      >
+                        <Link
+                          to={option.route}
+                          style={{ textDecoration: "none", width: "100%" }}
+                        >
+                          <Typography
+                            textAlign="center"
+                            sx={{
+                              fontWeight: "bold",
+                              fontSize: 16,
+                              color: "#000",
+                              width: "100%",
+                            }}
+                          >
+                            {option.text}
+                          </Typography>
+                        </Link>
+                      </MenuItem>
+                    ))}
+                  </Menu>
                 </Menu>
               </Box>
               <CardGiftcardIcon
@@ -336,14 +446,13 @@ function Navbar() {
               >
                 WeddingWise
               </Typography>
-              <Box >
+              <Box>
                 <Tooltip title="התחברות / הרשמה">
                   <IconButton
                     onClick={handleOpenUserMenu}
                     sx={{ p: 0, ml: 2 }}
                     disableRipple
                   >
-                    {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" /> */}
                     <AccountCircleIcon
                       fontSize="large"
                       sx={{
@@ -353,8 +462,6 @@ function Navbar() {
                     />
                   </IconButton>
                 </Tooltip>
-
-                {/* Setting Menu- Popup */}
                 <Menu
                   sx={{
                     mt: "45px",

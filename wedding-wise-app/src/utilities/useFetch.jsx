@@ -1,64 +1,47 @@
-import { useEffect, useState } from "react";
+import { useState } from 'react';
 
-function useFetch() {
-  const [baseUrl, setBaseUrl] = useState("");
-
-  useEffect(() => {
-    if (
-      window.location.hostname === "localhost" ||
-      window.location.hostname === "127.0.0.1"
-    )
-      setBaseUrl("https://localhost:44359/api");
-    else setBaseUrl("https://proj.ruppin.ac.il/cgroup70/test2/tar1/api");
-  }, []);
-
+const useFetch = () => {
   const [resData, setResData] = useState(null);
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(undefined);
-  // const [error, setError] = useState({ isError: false, status: "" });
 
-  async function getData(URL) {
-    try {
-      setLoading(true);
-      const response = await fetch(URL);
-      if (!response.ok) {
-        setError(true);
-        return;
-      }
-      const responseData = await response.json();
-      setResData(responseData);
-    } catch (error) {
-      console.log(error);
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const sendData = async (url, method, body = null) => {
+    setLoading(true);
+    setError(null);
 
-  async function sendData(endpoint, method, bodyData) {
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
     try {
-      setLoading(true);
-      const response = await fetch(`${baseUrl}${endpoint}`, {
-        method: method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bodyData),
+      const response = await fetch(url, {
+        method,
+        headers,
+        body: body ? JSON.stringify(body) : null,
       });
-      console.log(response);
-      if (!response.ok) {
-        return setError(response.status);
+
+      const contentType = response.headers.get("content-type");
+      let data;
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        data = await response.json();
+      } else {
+        data = await response.text();
       }
-      var responseData = await response.json();
-      setResData(responseData);
-    } catch (error) {
-      setError(responseData);
+
+      if (!response.ok) {
+        throw new Error(data.message || data || 'Something went wrong');
+      }
+
+      setResData(data);
+      return data;
+    } catch (err) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
-  }
+  };
 
-  return { resData, loading, error, getData, sendData };
-}
+  return { sendData, resData, error, loading };
+};
 
 export default useFetch;
