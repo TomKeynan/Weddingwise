@@ -7,6 +7,8 @@ namespace Server.Services
     public static class PackageService
     {
 
+
+
         // ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
         // ┃    💍  This section is about AHP algorithm process  💍  ┃
         // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
@@ -19,16 +21,16 @@ namespace Server.Services
             try
             {
 
-                const int numberOfVendors = 6;
+                int numberOfSupplierTypes = 6;// Total number of supplier types
 
                 // Create comparison matrix
-                double[,] comparisonMatrix = new double[numberOfVendors, numberOfVendors];
+                double[,] comparisonMatrix = new double[numberOfSupplierTypes, numberOfSupplierTypes];
 
                 // Populate comparison matrix
-                PopulateComparisonMatrix(comparisonMatrix, responses, numberOfVendors);
+                PopulateComparisonMatrix(comparisonMatrix, responses, numberOfSupplierTypes);
 
                 // Calculate weights
-                Dictionary<string, double> weights = CalculateWeights(comparisonMatrix, numberOfVendors);
+                Dictionary<string, double> weights = CalculateWeights(comparisonMatrix, numberOfSupplierTypes);
 
                 // Adjust weights based on database information
                 return AdjustWeights(weights);
@@ -187,22 +189,23 @@ namespace Server.Services
         {
             try
             {
-                // Step 1: Retrieve suppliers from the database
+                //* Step 1: Retrieve suppliers from the database
+                // supplierList is already sorted by supplier type and rating.
                 DBServicesPackage dBServicesPackage = new DBServicesPackage();
                 List<Supplier> suppliersList = dBServicesPackage.GetSuppliersForPackage(coupleWithData);
 
-                // Step 2: Find the best combination of suppliers
+                //* Step 2: Find the best combination of suppliers
                 List<Supplier> bestCombination = FindBestCombination(
                     suppliersList,
                     coupleWithData.TypeWeights,
                     coupleWithData.Budget
                 );
 
-                // Step 3: Calculate total cost and total score of the best combination
+                //* Step 3: Calculate total cost and total score of the best combination
                 int totalCost = CalculateTotalCost(bestCombination);
                 double totalScore = CalculateTotalScore(bestCombination, coupleWithData.TypeWeights);
 
-                // Step 4: Create and populate the Package object
+                //* Step 4: Create and populate the Package object
                 Package suppliersPackage = new Package
                 {
                     SelectedSuppliers = bestCombination,
@@ -212,21 +215,10 @@ namespace Server.Services
                     AlternativeSuppliers = new Dictionary<string, List<Supplier>>() // Initialize the dictionary
                 };
 
-                // Step 5: Populate the top 3 highest-rated suppliers for each type in the Package object
-                foreach (var type in coupleWithData.TypeWeights.Keys)
-                {
-                    // Get the top 3 rated suppliers for the current type
-                    var topRated = suppliersList
-                        .Where(supplier => supplier.SupplierType == type && !suppliersPackage.SelectedSuppliers.Any(chosen => chosen.SupplierEmail == supplier.SupplierEmail))
-                        .OrderByDescending(supplier => supplier.Rating)
-                        .Take(3)
-                        .ToList();
+                //* Step 5: Populate the top 3 highest-rated suppliers for each type in the Package object
+                PopulateAlternativeSuppliers(suppliersPackage, suppliersList, coupleWithData.Budget);
 
-                    // Add the top rated suppliers to the dictionary
-                    suppliersPackage.AlternativeSuppliers[type] = topRated;
-                }
-
-                // Step 6: Return the Package
+                //* Step 6: Return the Package
                 return suppliersPackage;
             }
             catch (Exception ex)
@@ -235,6 +227,11 @@ namespace Server.Services
                 throw new Exception("An error occurred while generating the package in method GeneratePackage:" + ex.Message);
             }
         }
+
+
+        private const double maxCombinationTime = 2.5; // Define the maximum time to generate combinations (Seconds!)
+
+        private const int maxCombinations = 1000;  // Define the maximum number of combinations
 
 
         // Find the best combination of suppliers based on budget and scores
@@ -246,14 +243,8 @@ namespace Server.Services
             // Sort suppliers by type weight descending
             List<Supplier> sortedSuppliers = SortSuppliersByTypeWeight(suppliersList, typeWeights);
 
-            // Define the maximum time to generate combinations (Seconds!)
-            double time = 2.5;
-
-            // Define the maximum number of combinations
-            int maxCombinations = 1000;
-
             // Call the GenerateCombinations function with the time limit
-            List<List<Supplier>> combinations = GenerateCombinations(sortedSuppliers, budget, TimeSpan.FromSeconds(time), maxCombinations);
+            List<List<Supplier>> combinations = GenerateCombinations(sortedSuppliers, budget, TimeSpan.FromSeconds(maxCombinationTime), maxCombinations);
 
             // Find the combination with the highest score
             foreach (var combination in combinations)
@@ -274,8 +265,11 @@ namespace Server.Services
         private static List<List<Supplier>> GenerateCombinations(List<Supplier> suppliersList, int budget, TimeSpan timeLimit, int maxCombinations)
         {
             List<List<Supplier>> combinationList = new List<List<Supplier>>(); // Stores the generated combinations
-            const int numberOfSupplierTypes = 6; // Total number of supplier types
+
+            int numberOfSupplierTypes = 6;// Total number of supplier type
+
             Stopwatch stopwatch = new Stopwatch(); // Stopwatch to track elapsed time
+
             stopwatch.Start(); // Start the stopwatch
 
             // Recursive function to generate combinations
@@ -364,5 +358,92 @@ namespace Server.Services
 
             return totalScore;
         }
+
+
+        // Populates the alternative suppliers for each selected supplier in the package, considering replacements within and beyond the budget.
+        private static void PopulateAlternativeSuppliers(Package suppliersPackage, List<Supplier> suppliersList, int budget)
+        {
+            // Iterate through each selected supplier
+            foreach (Supplier selectedSupplier in suppliersPackage.SelectedSuppliers)
+            {
+                // Initialize a list to store replacements within and beyond the budget
+                List<Supplier> topRatedReplacements = new List<Supplier>();
+
+                // Iterate through each supplier in the list of available suppliers
+                foreach (Supplier supplier in suppliersList)
+                {
+                    // Skip suppliers that are not of the same type or are the same as the selected supplier
+                    if (supplier.SupplierType != selectedSupplier.SupplierType || suppliersPackage.SelectedSuppliers.Contains(supplier))
+                    {
+                        continue;
+                    }
+
+                    // Check if replacing the selected supplier with the current supplier remains within budget
+                    if (CanReplaceWithoutExceedingBudget(suppliersPackage.SelectedSuppliers, selectedSupplier, supplier, budget))
+                    {
+                        // Add the current supplier to the list of replacements within budget
+                        topRatedReplacements.Add(supplier);
+
+                        // Check if three replacements within budget have been found and break the loop if so
+                        if (topRatedReplacements.Count == 3)
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                // If the number of replacements within budget is less than 3, find replacements beyond the budget
+                if (topRatedReplacements.Count < 3)
+                {
+                    List<Supplier> exceedingBudgetSuppliers = new List<Supplier>();
+
+                    // Order suppliers by price ascending
+                    suppliersList.Sort((s1, s2) => s1.Price.CompareTo(s2.Price));
+
+                    // Find suppliers who exceed the budget when replacing selectedSupplier and are cheaper than selectedSupplier
+                    foreach (Supplier supplier in suppliersList)
+                    {
+                        if (supplier.Price > selectedSupplier.Price &&
+                            !topRatedReplacements.Contains(supplier) &&
+                            !suppliersPackage.SelectedSuppliers.Contains(supplier) &&
+                            supplier.SupplierType == selectedSupplier.SupplierType)
+                        {
+                            exceedingBudgetSuppliers.Add(supplier);
+                        }
+                    }
+
+
+                    // Add suppliers from exceeding budget list to topRatedReplacements until it has three suppliers
+                    foreach (var supplier in exceedingBudgetSuppliers)
+                    {
+                        topRatedReplacements.Add(supplier);
+                        if (topRatedReplacements.Count == 3)
+                        {
+                            break;
+                        }
+                    }
+                }
+
+
+                // Add replacements to the dictionary of alternative suppliers
+                suppliersPackage.AlternativeSuppliers[selectedSupplier.SupplierType] = topRatedReplacements;
+            }
+        }
+
+
+        // Checks whether replacing a supplier with a new supplier keeps the total cost within the budget.
+        private static bool CanReplaceWithoutExceedingBudget(List<Supplier> selectedSuppliers, Supplier selectedSupplier, Supplier newSupplier, int budget)
+        {
+            // Calculate the current total cost of selected suppliers
+            int currentTotalCost = CalculateTotalCost(selectedSuppliers);
+
+            // Calculate the new total cost if the selected supplier is replaced with the new supplier
+            int newTotalCost = currentTotalCost - selectedSupplier.Price + newSupplier.Price;
+
+            // Check if the new total cost remains within the budget
+            return (newTotalCost <= budget);
+        }
+
+
     }
 }
