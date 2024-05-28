@@ -95,12 +95,12 @@ namespace Server.BL
 
         // Inserts or updates a package in the database.
 
-        public static int InsertOrUpdatePackage(PackageApprovalData packageApprovalData, string actionString)
+        public static int InsertOrUpdatePackage(PackageApprovalData packageApprovalData)
         {
             // Create an instance of DBServicesPackage to interact with the database
             DBServicesPackage dBServicesPackage = new DBServicesPackage();
             // Call the method to insert or update the package in the database
-            return dBServicesPackage.InsertPackageToDB(packageApprovalData, actionString);
+            return dBServicesPackage.InsertPackageToDB(packageApprovalData);
         }
 
 

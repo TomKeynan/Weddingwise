@@ -229,14 +229,18 @@ namespace Server.Services
         }
 
 
-        private const double maxCombinationTime = 2.5; // Define the maximum time to generate combinations (Seconds!)
 
-        private const int maxCombinations = 1000;  // Define the maximum number of combinations
 
 
         // Find the best combination of suppliers based on budget and scores
         private static List<Supplier> FindBestCombination(List<Supplier> suppliersList, Dictionary<string, double> typeWeights, int budget)
         {
+
+
+            double maxCombinationTime = 3; // Define the maximum time to generate combinations (Seconds!)
+
+            int maxCombinations = 1000000;  // Define the maximum number of combinations
+
             List<Supplier> bestCombination = new List<Supplier>(); // Stores the best combination found so far
             double maxScore = 0; // Stores the maximum score found
 

@@ -65,8 +65,7 @@ namespace Server.Controllers
         {
             try
             {
-                // Define the action string for inserting a new package
-                string actionString = "Insert";
+
 
                 // Check if the packageApprovalData is null
                 if (packageApprovalData == null)
@@ -75,7 +74,7 @@ namespace Server.Controllers
                 }
 
                 // Insert or update the package in the database
-                int numberOfSuccesses = Package.InsertOrUpdatePackage(packageApprovalData, actionString);
+                int numberOfSuccesses = Package.InsertOrUpdatePackage(packageApprovalData);
                 if (numberOfSuccesses == 4)
                 {
                     return Ok(); // Return 200 OK for successful insertion
@@ -108,8 +107,7 @@ namespace Server.Controllers
         {
             try
             {
-                // Define the action string for updating an existing package
-                string actionString = "Update";
+
 
                 // Check if the packageApprovalData is null
                 if (packageApprovalData == null)
@@ -118,7 +116,7 @@ namespace Server.Controllers
                 }
 
                 // Insert or update the package in the database
-                int numberOfSuccesses = Package.InsertOrUpdatePackage(packageApprovalData, actionString);
+                int numberOfSuccesses = Package.InsertOrUpdatePackage(packageApprovalData);
                 if (numberOfSuccesses == 4)
                 {
                     return NoContent(); // Return 204 NoContent for successful update

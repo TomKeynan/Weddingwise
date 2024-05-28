@@ -137,7 +137,7 @@ namespace Server.DAL
 
 
 
-        //  ****************   Currently not in use for all the section below  ****************  \\
+        //  ****************   Currently not in use  ****************  \\
 
         //--------------------------------------------------------------------------------------------------
         // This method retrieves dates for each supplier object from the database.

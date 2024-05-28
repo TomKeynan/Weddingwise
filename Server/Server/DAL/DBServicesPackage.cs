@@ -25,15 +25,25 @@ namespace Server.DAL
         //---------------------------------------------------------------------------------------------------------|
 
 
+
+
+
+
+
         //--------------------------------------------------------------------------------------------------------------------
         // This method manages the updating and inserting of the package, type replacements count and the couple's type weight
         //--------------------------------------------------------------------------------------------------------------------
-        public int InsertPackageToDB(PackageApprovalData packageApprovalData, string actionString)
+        public int InsertPackageToDB(PackageApprovalData packageApprovalData)
         {
+            // Initialize success indicator
             int successIndicator = 0;
+
             try
             {
+                // Extract action string from packageApprovalData
+                string actionString = packageApprovalData.ActionString;
 
+                // Determine stored procedure names based on action string
                 string spName1;
                 string spName2;
 
@@ -42,21 +52,19 @@ namespace Server.DAL
                     spName1 = "SPInsertPackageDetails";
                     spName2 = "SPInsertCoupleTypeWeights";
                 }
-
                 else // If actionString is "Update"
                 {
                     spName1 = "SPUpdatePackageDetails";
                     spName2 = "SPUpdateCoupleTypeWeights";
                 }
 
-
-                // Extract the package from the data
-                Package package = packageApprovalData.Package;
+                // Extract the couple and package from the data
+                Couple couple = packageApprovalData.Couple;
+                Package package = couple.Package;
 
                 using (SqlConnection con = Connect())
                 {
-                    //* Step one: Inserting or updating the package details 
-
+                    // Step one: Insert or update the package details
                     using (SqlCommand cmd = CreateInsertOrUpdatePackageDetailsSP(spName1, con, package))
                     {
                         successIndicator = cmd.ExecuteNonQuery(); // Returns the number of rows affected by the command
@@ -66,34 +74,178 @@ namespace Server.DAL
                 // If step one was successful, proceed to step two
                 if (successIndicator == 1)
                 {
-                    //* Step two: Inserting the relevant suppliers into the database
-                    successIndicator += InsertPackageSuppliersSP(package.SelectedSuppliers, package.AlternativeSuppliers, package.CoupleEmail, actionString);
+                    // Step two: Insert the relevant suppliers into the database
+                    successIndicator += InsertPackageSuppliers(package.SelectedSuppliers, package.AlternativeSuppliers, package.CoupleEmail, actionString);
 
                     // If step two was successful, proceed to step three
                     if (successIndicator == 2)
                     {
-                        //* Step three: Inserting or Updating the couple's type weights in the database
-                        successIndicator += InsertOrUpdateCoupleTypeWeights(packageApprovalData.TypeWeights, packageApprovalData.Package.CoupleEmail, spName2);
+                        // Step three: Insert or update the couple's type weights in the database
+                        successIndicator += InsertOrUpdateCoupleTypeWeights(couple.TypeWeights, couple.Email, spName2);
 
                         // If step three was successful, proceed to step four
                         if (successIndicator == 3)
                         {
-                            //* Step four: Updating the type replacements counts in the database
+                            // Step four: Update the type replacements counts in the database
                             successIndicator += UpdateTypeReplacementsCounts(packageApprovalData.TypeReplacements);
                         }
                     }
                 }
 
-                return successIndicator; // Return the final success indicator
+                // Return the final success indicator
+                return successIndicator;
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while inserting package details in the InsertPackageToDB method in step  " + successIndicator + " " + ex.Message);
+                // Throw an exception with a detailed error message
+                throw new Exception("An error occurred while inserting package details in the InsertPackageToDB method at step " + successIndicator + ": " + ex.Message);
+            }
+        }
+
+        private SqlCommand CreateInsertOrUpdatePackageDetailsSP(string spName, SqlConnection con, Package package)
+        {
+            SqlCommand cmd = new SqlCommand
+            {
+                Connection = con,
+                CommandText = spName,
+                CommandTimeout = 10,
+                CommandType = System.Data.CommandType.StoredProcedure
+            };
+
+            cmd.Parameters.AddWithValue("@couple_email", package.CoupleEmail);
+            cmd.Parameters.AddWithValue("@total_cost", package.TotalCost);
+            cmd.Parameters.AddWithValue("@total_score", package.TotalScore);
+
+            return cmd;
+        }
+
+
+
+        //------------------------------------------------------------------------------
+        // This method manages the updating and inserting of the suppliers of a package
+        //------------------------------------------------------------------------------
+        private int InsertPackageSuppliers(List<Supplier> selectedSuppliers, Dictionary<string, List<Supplier>> alternativeSuppliers, string coupleEmail, string actionString)
+        {
+            try
+            {
+
+                int suppliersInsertResult = 0;  // Used to monitor that all the suppliers of the package were inserted.
+
+                using (SqlConnection con2 = Connect())
+                {
+                    // If the actionString is "Update", delete existing suppliers from the package. Annihilate them!
+                    if (actionString == "Update")
+                    {
+                        using (SqlCommand cmd2 = CreateDeletePackageSuppliersSP("SPDeletePackageSuppliers", con2, coupleEmail))
+                        {
+                            int numEffected = cmd2.ExecuteNonQuery();
+                        }
+                    }
+
+                    // Insert selected suppliers
+                    foreach (var supplier in selectedSuppliers)
+                    {
+                        using (SqlCommand cmd2 = CreateInsertPackageSuppliersSP("SPInsertPackageSupplier", con2, supplier.SupplierEmail, coupleEmail, true))
+                        {
+                            suppliersInsertResult += cmd2.ExecuteNonQuery();
+                        }
+                    }
+
+                    // Insert alternative suppliers for each type
+                    foreach (KeyValuePair<string, List<Supplier>> typeList in alternativeSuppliers)
+                    {
+                        foreach (var supplier in typeList.Value)
+                        {
+                            using (SqlCommand cmd2 = CreateInsertPackageSuppliersSP("SPInsertPackageSupplier", con2, supplier.SupplierEmail, coupleEmail, false))
+                            {
+                                suppliersInsertResult += cmd2.ExecuteNonQuery();
+                            }
+                        }
+                    }
+                }
+
+                // Check if all insertions were successful
+                if (suppliersInsertResult == (selectedSuppliers.Count + alternativeSuppliers.Sum(typeList => typeList.Value.Count)))
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while updating type counts: " + ex.Message);
             }
         }
 
 
-        private SqlCommand CreateInsertOrUpdatePackageDetailsSP(string spName, SqlConnection con, Package package)
+        private SqlCommand CreateDeletePackageSuppliersSP(string spName, SqlConnection con, string coupleEmail)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = con;
+            cmd.CommandText = spName;
+            cmd.CommandTimeout = 10;
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@couple_email", coupleEmail);
+
+            return cmd;
+        }
+
+        private SqlCommand CreateInsertPackageSuppliersSP(string spName, SqlConnection con, string supplierEmail, string coupleEmail, bool isSelected)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = con;
+            cmd.CommandText = spName;
+            cmd.CommandTimeout = 10;
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@supplier_email", supplierEmail);
+            cmd.Parameters.AddWithValue("@couple_email", coupleEmail);
+            cmd.Parameters.AddWithValue("@is_selected", isSelected); // Assuming is_selected is a boolean value
+
+            return cmd;
+        }
+
+
+
+
+
+        //--------------------------------------------------------------------------------------------------------------------
+        // This method inserts or updates couple's type weights
+        //--------------------------------------------------------------------------------------------------------------------
+        public int InsertOrUpdateCoupleTypeWeights(Dictionary<string, double> typeWeights, string coupleEmail, string spName)
+        {
+            int successIndicator = 0;
+            try
+            {
+                using (SqlConnection con3 = Connect())
+                {
+                    // Iterate through each key-value pair in the typeWeights dictionary
+                    foreach (var kvp in typeWeights)
+                    {
+                        // Create a SqlCommand object for executing the stored procedure
+                        using (SqlCommand cmd3 = CreateInsertOrUpdateCoupleTypeWeightsSP(spName, con3, coupleEmail, kvp.Key, kvp.Value))
+                        {
+                            // Execute the stored procedure and increment successIndicator
+                            successIndicator += cmd3.ExecuteNonQuery();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception appropriately
+                throw new Exception("An error occurred while inserting or updating type weights: " + ex.Message);
+            }
+
+            // Return 1 if all type weights were successfully inserted or updated; otherwise, return 0
+            return successIndicator == typeWeights.Count ? 1 : 0;
+        }
+
+
+        private SqlCommand CreateInsertOrUpdateCoupleTypeWeightsSP(string spName, SqlConnection con, string coupleEmail, string supplierType, double typeWeight)
 
         {
 
@@ -103,12 +255,13 @@ namespace Server.DAL
             cmd.CommandTimeout = 10;
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-            cmd.Parameters.AddWithValue("@couple_email", package.CoupleEmail);
-            cmd.Parameters.AddWithValue("@total_cost", package.TotalCost);
-            cmd.Parameters.AddWithValue("@total_score", package.TotalScore);
+            cmd.Parameters.AddWithValue("@couple_email", coupleEmail);
+            cmd.Parameters.AddWithValue("@supplier_type_name", supplierType);
+            cmd.Parameters.AddWithValue("@type_weight", typeWeight);
 
             return cmd;
         }
+
 
         //--------------------------------------------------------------------------------------------
         // This method retrieves package details from the database. Used when the user couple logs in.
@@ -253,151 +406,6 @@ namespace Server.DAL
 
 
 
-
-
-
-        //------------------------------------------------------------------------------
-        // This method manages the updating and inserting of the suppliers of a package
-        //------------------------------------------------------------------------------
-        private int InsertPackageSuppliersSP(List<Supplier> selectedSuppliers, Dictionary<string, List<Supplier>> alternativeSuppliers, string coupleEmail, string actionString)
-        {
-            try
-            {
-
-                int suppliersInsertResult = 0;  // Used to monitor that all the suppliers of the package were inserted.
-
-                using (SqlConnection con2 = Connect())
-                {
-                    // If the actionString is "Update", delete existing suppliers from the package. Annihilate them!
-                    if (actionString == "Update")
-                    {
-                        using (SqlCommand cmd2 = CreateDeletePackageSuppliersSP("SPDeletePackageSuppliers", con2, coupleEmail))
-                        {
-                            int numEffected = cmd2.ExecuteNonQuery();
-                        }
-                    }
-
-                    // Insert selected suppliers
-                    foreach (var supplier in selectedSuppliers)
-                    {
-                        using (SqlCommand cmd2 = CreateInsertPackageSuppliersSP("SPInsertPackageSupplier", con2, supplier.SupplierEmail, coupleEmail, true))
-                        {
-                            suppliersInsertResult += cmd2.ExecuteNonQuery();
-                        }
-                    }
-
-                    // Insert alternative suppliers for each type
-                    foreach (KeyValuePair<string, List<Supplier>> typeList in alternativeSuppliers)
-                    {
-                        foreach (var supplier in typeList.Value)
-                        {
-                            using (SqlCommand cmd2 = CreateInsertPackageSuppliersSP("SPInsertPackageSupplier", con2, supplier.SupplierEmail, coupleEmail, false))
-                            {
-                                suppliersInsertResult += cmd2.ExecuteNonQuery();
-                            }
-                        }
-                    }
-                }
-
-                // Check if all insertions were successful
-                if (suppliersInsertResult == (selectedSuppliers.Count + alternativeSuppliers.Sum(typeList => typeList.Value.Count)))
-                {
-                    return 1;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while updating type counts: " + ex.Message);
-            }
-        }
-
-
-        private SqlCommand CreateDeletePackageSuppliersSP(string spName, SqlConnection con, string coupleEmail)
-        {
-            SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            cmd.CommandText = spName;
-            cmd.CommandTimeout = 10;
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@couple_email", coupleEmail);
-
-            return cmd;
-        }
-
-        private SqlCommand CreateInsertPackageSuppliersSP(string spName, SqlConnection con, string supplierEmail, string coupleEmail, bool isSelected)
-        {
-            SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            cmd.CommandText = spName;
-            cmd.CommandTimeout = 10;
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-            cmd.Parameters.AddWithValue("@supplier_email", supplierEmail);
-            cmd.Parameters.AddWithValue("@couple_email", coupleEmail);
-            cmd.Parameters.AddWithValue("@is_selected", isSelected); // Assuming is_selected is a boolean value
-
-            return cmd;
-        }
-
-
-
-
-
-        //--------------------------------------------------------------------------------------------------------------------
-        // This method inserts or updates couple's type weights
-        //--------------------------------------------------------------------------------------------------------------------
-        public int InsertOrUpdateCoupleTypeWeights(Dictionary<string, double> typeWeights, string coupleEmail, string spName)
-        {
-            int successIndicator = 0;
-            try
-            {
-                using (SqlConnection con3 = Connect())
-                {
-                    // Iterate through each key-value pair in the typeWeights dictionary
-                    foreach (var kvp in typeWeights)
-                    {
-                        // Create a SqlCommand object for executing the stored procedure
-                        using (SqlCommand cmd3 = CreateInsertOrUpdateCoupleTypeWeightsSP(spName, con3, coupleEmail, kvp.Key, kvp.Value))
-                        {
-                            // Execute the stored procedure and increment successIndicator
-                            successIndicator += cmd3.ExecuteNonQuery();
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Handle the exception appropriately
-                throw new Exception("An error occurred while inserting or updating type weights: " + ex.Message);
-            }
-
-            // Return 1 if all type weights were successfully inserted or updated; otherwise, return 0
-            return successIndicator == typeWeights.Count ? 1 : 0;
-        }
-
-
-        private SqlCommand CreateInsertOrUpdateCoupleTypeWeightsSP(string spName, SqlConnection con, string coupleEmail, string supplierType, double typeWeight)
-
-        {
-
-            SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            cmd.CommandText = spName;
-            cmd.CommandTimeout = 10;
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-            cmd.Parameters.AddWithValue("@couple_email", coupleEmail);
-            cmd.Parameters.AddWithValue("@supplier_type_name", supplierType);
-            cmd.Parameters.AddWithValue("@type_weight", typeWeight);
-
-            return cmd;
-        }
-
-
         //--------------------------------------------------------------------------------------------------------------------
         // This method updates the counts of type replacements for various vendors in the database
         //--------------------------------------------------------------------------------------------------------------------
@@ -407,18 +415,6 @@ namespace Server.DAL
             {
                 int successIndicator = 0;
                 string[] vendors = { "venue", "dj", "photographer", "dress", "rabbi", "hair and makeup" };
-
-                //// Create a dictionary to store the vendor names and their counts
-                //Dictionary<string, int> vendorCounts = new Dictionary<string, int>();
-
-                //// Iterate over the vendors array and typesReplacements array simultaneously
-                //for (int i = 0; i < vendors.Length; i++)
-                //{
-                //    if (typesReplacements[i] == 1)
-                //    {
-                //        vendorCounts[vendors[i]] = typesReplacements[i];
-                //    }
-                //}
 
                 using (SqlConnection con3 = Connect())
                 {
@@ -456,62 +452,6 @@ namespace Server.DAL
         }
 
 
-        //--------------------------------------------------------------------------------------------------
-        // This method retrieves the count of how many times a supplier from the package has been replaced
-        //--------------------------------------------------------------------------------------------------
-        public Dictionary<string, int> GetReplacementCounts()
-        {
-            // Dictionary to store the replacement counts.
-            Dictionary<string, int> replacementCounts = new Dictionary<string, int>();
-
-            try
-            {
-                // Open a database connection.
-                using (SqlConnection con = Connect())
-                {
-                    // Create a SqlCommand to execute the stored procedure.
-                    using (SqlCommand cmd = CreateReadTypeCountsWithSP(con, "SPGetTypeCounts"))
-                    {
-                        // Execute the SqlCommand and obtain a SqlDataReader.
-                        using (SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
-                        {
-                            // Loop through the SqlDataReader to read replacement counts.
-                            while (dataReader.Read())
-                            {
-                                string supplierType = dataReader["supplier_type_name"].ToString();
-                                int count = Convert.ToInt32(dataReader["type_count"]);
-                                replacementCounts[supplierType] = count;
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Throw a new exception with the desired error message.
-                throw new Exception("An error occurred while retrieving replacement counts in method GetReplacementCounts:" + ex.Message);
-            }
-
-            // Return the retrieved replacement counts.
-            return replacementCounts;
-        }
-
-        private SqlCommand CreateReadTypeCountsWithSP(SqlConnection con, string spName)
-        {
-
-            SqlCommand cmd = new SqlCommand(); // create the command object
-
-            cmd.Connection = con;              // assign the connection to the command object
-
-            cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
-
-            cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
-
-            cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
-
-            return cmd;
-
-        }
 
 
 
@@ -571,5 +511,65 @@ namespace Server.DAL
 
             return cmd;
         }
+
+
+
+        //--------------------------------------------------------------------------------------------------
+        // This method retrieves the count of how many times a supplier from the package has been replaced
+        //--------------------------------------------------------------------------------------------------
+        public Dictionary<string, int> GetReplacementCounts()
+        {
+            // Dictionary to store the replacement counts.
+            Dictionary<string, int> replacementCounts = new Dictionary<string, int>();
+
+            try
+            {
+                // Open a database connection.
+                using (SqlConnection con = Connect())
+                {
+                    // Create a SqlCommand to execute the stored procedure.
+                    using (SqlCommand cmd = CreateReadTypeCountsWithSP(con, "SPGetTypeCounts"))
+                    {
+                        // Execute the SqlCommand and obtain a SqlDataReader.
+                        using (SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                        {
+                            // Loop through the SqlDataReader to read replacement counts.
+                            while (dataReader.Read())
+                            {
+                                string supplierType = dataReader["supplier_type_name"].ToString();
+                                int count = Convert.ToInt32(dataReader["type_count"]);
+                                replacementCounts[supplierType] = count;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Throw a new exception with the desired error message.
+                throw new Exception("An error occurred while retrieving replacement counts in method GetReplacementCounts:" + ex.Message);
+            }
+
+            // Return the retrieved replacement counts.
+            return replacementCounts;
+        }
+
+        private SqlCommand CreateReadTypeCountsWithSP(SqlConnection con, string spName)
+        {
+
+            SqlCommand cmd = new SqlCommand(); // create the command object
+
+            cmd.Connection = con;              // assign the connection to the command object
+
+            cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
+
+            cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
+
+            cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
+
+            return cmd;
+
+        }
+
     }
 }

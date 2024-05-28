@@ -1,42 +1,46 @@
-﻿namespace Server.BL
+﻿using Server.BL;
+
+public class PackageApprovalData
 {
-    public class PackageApprovalData
+    // Private fields
+    private Couple _couple;
+    private string[] _typeReplacements;
+    private string _actionString;
+
+
+    // Default constructor
+    public PackageApprovalData()
     {
-        // Private fields
-        private Package _package;
-        private Dictionary<string, double> _typeWeights;
-        private string[] _typeReplacements;
-
-        // Constructors
-        public PackageApprovalData()
-        {
-            // Default constructor
-        }
-
-        public PackageApprovalData(Package package, Dictionary<string, double> typeWeights, string[] typeReplacements)
-        {
-            _package = package;
-            _typeWeights = typeWeights;
-            _typeReplacements = typeReplacements;
-        }
-
-        // Properties
-        public Package Package
-        {
-            get { return _package; }
-            set { _package = value; }
-        }
-
-        public Dictionary<string, double> TypeWeights
-        {
-            get { return _typeWeights; }
-            set { _typeWeights = value; }
-        }
-
-        public string[] TypeReplacements
-        {
-            get { return _typeReplacements; }
-            set { _typeReplacements = value; }
-        }
     }
+
+    // Parameterized constructor
+    public PackageApprovalData(Couple couple, string[] typeReplacements, string actionString)
+    {
+        _couple = couple;
+        _typeReplacements = typeReplacements;
+        _actionString = actionString;
+    }
+
+
+
+    // Public properties
+    public Couple Couple
+    {
+        get { return _couple; }
+        set { _couple = value; }
+    }
+
+    public string[] TypeReplacements
+    {
+        get { return _typeReplacements; }
+        set { _typeReplacements = value; }
+    }
+
+    public string ActionString
+    {
+        get { return _actionString; }
+        set { _actionString = value; }
+    }
+
+
 }
