@@ -142,10 +142,10 @@ function UserPackage() {
           )}
         </Stack>
         <Stack spacing={3}>
-          <Typography sx={{ typography: { xs: "body1", sm: "h5", md: "h4" } }}>
+          {/* <Typography sx={{ typography: { xs: "body1", sm: "h5", md: "h4" } }}>
             חבילה זו מתאימה עבורכם ב-{" "}
             {currentCouple.package.totalScore.toFixed(2)} אחוזי התאמה
-          </Typography>
+          </Typography> */}
           <Button
             variant="contained"
             sx={{

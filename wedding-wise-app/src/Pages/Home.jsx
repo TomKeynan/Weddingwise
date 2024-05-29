@@ -11,17 +11,17 @@ import Footer from "../components/Footer";
 function Home() {
   const navigate = useNavigate();
 
-  function routToProfile() {
-    navigate("/profile");
-  }
+  // function routToProfile() {
+  //   navigate("/profile");
+  // }
 
-  function routeToSignUp() {
-    navigate("/sign-up");
-  }
+  // function routeToSignUp() {
+  //   navigate("/sign-up");
+  // }
 
-  function routeToLogin() {
-    navigate("/login");
-  }
+  // function routeToLogin() {
+  //   navigate("/login");
+  // }
 
   return (
     <>
@@ -42,6 +42,7 @@ export default Home;
 
 const homeContainer = {
   display: "block",
+  // height: "100vh",
   background: customTheme.colorBg.main,
   boxShadow: customTheme.shadow.main,
 };
@@ -49,4 +50,5 @@ const homeContainer = {
 const homeContentWrapper = {
   width: { xs: "90%", sm: "80%" },
   margin: "0 auto",
+  pb: 6,
 };

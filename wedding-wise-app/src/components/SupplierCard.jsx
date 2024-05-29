@@ -8,7 +8,8 @@ import { getRandomSupplierImage } from "../utilities/functions";
 
 function SupplierCard({
   props,
-  showActionBtn = false,
+  showReplaceSupplierBtn = false,
+  showMoreInfoBtn = false,
   cardBg = "white",
   onReplacement,
 }) {
@@ -123,12 +124,12 @@ function SupplierCard({
             מחיר: {price} $
           </Typography>
         </Stack>
-        {showActionBtn && (
-          <Stack
-            direction="row"
-            justifyContent="space-around"
-            sx={{ height: "100%" }}
-          >
+        <Stack
+          direction="row"
+          justifyContent="space-around"
+          sx={{ height: "100%" }}
+        >
+          {showReplaceSupplierBtn && (
             <Button
               variant="outlined"
               sx={actionBtnSX}
@@ -136,105 +137,16 @@ function SupplierCard({
             >
               החלף ספק
             </Button>
+          )}
+          {showMoreInfoBtn && (
             <Button variant="contained" sx={actionBtnSX}>
               מידע נוסף
             </Button>
-          </Stack>
-        )}
+          )}
+        </Stack>
       </Stack>
     </Stack>
   );
-  // return (
-  //   <Grid item sx={cardContainerSX}>
-  //     <Stack
-  //       direction="column"
-  //       justifyContent="center"
-  //       alignItems="center"
-  //       sx={{  px: 4, width: "100%", margin: "0 auto", border: 1, }}
-
-  //     >
-  //       {/* care-image */}
-  //       <Box sx={{width: "200px", height:"250px"}}>
-  //         <img src={supplierImage} alt={imageAlt} className="supplier-card-image" />
-  //       </Box>
-
-  //       {/* card-content */}
-  //       <Stack
-  //         spacing={1}
-  //         sx={{
-  //           width: "100%",
-  //           textAlign: "center",
-
-  //         }}
-  //       >
-  //         <Stack
-  //           direction="row"
-  //           // justifyContent="start"
-  //           justifyContent="space-between"
-  //           alignItems="center"
-  //         >
-  //           <img
-  //             src={sticker.stickerSrc}
-  //             alt={sticker.stickerAlt}
-  //             className="supplier-card-sticker"
-  //           />
-  //           <Typography variant="body1" sx={{ textAlign: "center" }}>
-  //             {businessName}
-  //           </Typography>
-  //         </Stack>
-  //         <Stack
-  //           direction="row"
-  //           justifyContent="space-between"
-  //           // justifyContent="start"
-  //           alignItems="center"
-  //         >
-  //           <PhoneIcon sx={{ fontSize: 25 }} />
-  //           <Typography variant="body1" sx={{ textAlign: "center" }}>
-  //             {phoneNumber}
-  //           </Typography>
-  //         </Stack>
-  //         <Stack
-  //           direction="row"
-  //           // justifyContent="start"
-  //           alignItems="center"
-  //           justifyContent="space-between"
-  //         >
-  //           <AlternateEmailIcon sx={{ fontSize: 25 }} />
-  //           <Typography variant="body1" sx={{ textAlign: "center" }}>
-  //             {supplierEmail}
-  //           </Typography>
-  //         </Stack>
-  //         <Stack direction="row" alignItems="center" justifyContent="center">
-  //           <Typography
-  //             sx={{
-  //               textAlign: "center",
-  //               my: 1,
-  //               fontSize: 22,
-  //               color: customTheme.palette.primary.dark,
-  //             }}
-  //             variant="body1"
-  //           >
-  //             מחיר: {price} $
-  //           </Typography>
-  //         </Stack>
-  //         {showActionBtn && (
-  //           <Stack
-  //             direction="row"
-  //             justifyContent="space-around"
-  //             sx={{ height: "100%" }}
-  //           >
-  //             <Button variant="outlined" sx={actionBtnSX}>
-  //               החלף ספק
-  //             </Button>
-  //             <Button variant="contained" sx={actionBtnSX}>
-  //               מידע נוסף
-  //             </Button>
-  //           </Stack>
-  //         )}
-  //       </Stack>
-  //     </Stack>
-  //   </Grid>
-  // );
 }
 
 export default SupplierCard;

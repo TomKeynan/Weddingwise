@@ -12,27 +12,19 @@ import ProfileBanner from "../components/ProfilePage/ProfileBanner";
 function Profile() {
   const [currentUser, setCurrentUser] = useState(null);
 
-  const suppliers = JSON.parse(sessionStorage.getItem("currentUser")).package;
+  const currentCouple = JSON.parse(sessionStorage.getItem("currentUser"));
 
   useEffect(() => {
     setCurrentUser(JSON.parse(sessionStorage.getItem("currentUser")));
   }, []);
 
-  const navigate = useNavigate();
-
-  function routeToQuestions() {
-    navigate("/questionnaire");
-  }
-
   return (
     <Stack spacing={3} alignItems="center" sx={loginStackSX}>
       {currentUser && <ProfileBanner props={currentUser} />}
-      <Button variant="outlined" onClick={routeToQuestions} size="large">
-        שאלון
-      </Button>
+
       <Box sx={{ width: "90%" }}>
         <AccordionLayout title="חבילת נותני שירות" btnValue="/package">
-          {suppliers ? (
+          {currentCouple !== null && currentCouple.package !== null ? (
             <Stack
               direction="row"
               justifyContent="center"
@@ -41,13 +33,15 @@ function Profile() {
               rowGap={3}
               columnGap={2}
             >
-              {suppliers["selectedSuppliers"].map((supplier, index) => (
-                <SupplierCard
-                  key={index}
-                  props={supplier}
-                  cardBg={customTheme.palette.secondary.light}
-                />
-              ))}
+              {currentCouple.package["selectedSuppliers"].map(
+                (supplier, index) => (
+                  <SupplierCard
+                    key={index}
+                    props={supplier}
+                    cardBg={customTheme.palette.secondary.light}
+                  />
+                )
+              )}
             </Stack>
           ) : (
             <Box sx={{ textAlign: "center" }}>

@@ -55,7 +55,6 @@ function Login() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
-    console.log(data);
     sendData("/Couples/getCouple", "POST", data);
   }
 
@@ -198,7 +197,6 @@ const containerSX = {
   "&.MuiContainer-root": {
     padding: 0,
   },
-
 };
 
 const loginStackSX = {

@@ -81,7 +81,7 @@ export function getRandomSupplierImage(arr, type) {
   let imageSrc = "";
   const keys = Object.keys(arr);
   keys.map((key) => {
-    if (key == type) {
+    if (key === type) {
       imageSrc = arr[key][Math.floor(Math.random() * 6)];
     }
   });

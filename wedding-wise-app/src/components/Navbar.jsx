@@ -54,7 +54,8 @@ function Navbar() {
 
   function handleClick(linkText) {
     if (linkText === "התנתק") {
-      sessionStorage.clear();
+      // sessionStorage.clear();
+      sessionStorage.setItem("currentUser", JSON.stringify(null));
       setCoupleData(null);
     }
   }
@@ -90,7 +91,7 @@ function Navbar() {
               alignItems="center"
               justifyContent="space-around"
               sx={{
-                width: "100%",
+                width: "100vw",
                 height: 80,
               }}
             >
@@ -104,7 +105,7 @@ function Navbar() {
                       sx={{
                         mt: 0.5,
                         color: "secondary.dark",
-                        "&.MuiSvgIcon-root": { transform: "scale(1.3)" },
+                        "&.MuiSvgIcon-root": { fontSize: 50,},
                       }}
                     />
                   </IconButton>
@@ -248,7 +249,7 @@ function Navbar() {
               alignItems="center"
               justifyContent="space-around"
               sx={{
-                width: "100%",
+                width: "95%",
                 height: 80,
               }}
             >
@@ -336,7 +337,7 @@ function Navbar() {
               >
                 WeddingWise
               </Typography>
-              <Box >
+              <Box>
                 <Tooltip title="התחברות / הרשמה">
                   <IconButton
                     onClick={handleOpenUserMenu}
@@ -348,7 +349,7 @@ function Navbar() {
                       fontSize="large"
                       sx={{
                         color: "secondary.dark",
-                        "&.MuiSvgIcon-root": { transform: "scale(1.3)" },
+                        "&.MuiSvgIcon-root": { fontSize: 35,},
                       }}
                     />
                   </IconButton>

@@ -1,7 +1,7 @@
 import React from "react";
 import { Paper, Stack, Typography, useMediaQuery } from "@mui/material";
 import { supplierCards } from "../../utilities/collections";
-import SupplierCard from "../SupplierCard";
+// import SupplierCard from "../SupplierCard";
 import { carouselTheme } from "../../utilities/collections";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
@@ -21,7 +21,7 @@ function SuppliersCarousel() {
           containerClass="carousel-container"
         >
           {supplierCards.map((supplier, index) => (
-            <SupplierCard key={index} props={supplier} showActionBtn={true} />
+            <SuppliersCardDemo key={index} props={supplier} showActionBtn={true} />
           ))}
         </Carousel>
       </Stack>
@@ -38,7 +38,11 @@ function SuppliersCarousel() {
             containerClass="carousel-container"
           >
             {supplierCards.map((supplier, index) => (
-              <SuppliersCardDemo key={index} props={supplier} showActionBtn={true} />
+              <SuppliersCardDemo
+                key={index}
+                props={supplier}
+                showActionBtn={true}
+              />
             ))}
           </Carousel>
         </Stack>

@@ -18,7 +18,6 @@ function RandomPackage() {
           variant="h2"
           sx={{
             px: { xs: 4, sm: 10 },
-
             textAlign: "center",
             fontSize: { xs: 24, sm: 32 },
             lineHeight: 1.5,

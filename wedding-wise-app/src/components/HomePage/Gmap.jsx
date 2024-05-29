@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { GoogleMap, MarkerF, InfoWindow } from "@react-google-maps/api";
+import useFetch from "../../utilities/useFetch";
 
 const mapContainerStyle = {
   width: "100%",
@@ -21,7 +22,9 @@ function Gmap() {
   }, []);
 
   const fetchVenues = () => {
-    fetch("https://localhost:44359/api/Suppliers/getTopVenues")
+    fetch(
+      "https://proj.ruppin.ac.il/cgroup70/test2/tar1/api/Suppliers/getTopVenues"
+    )
       .then((response) => response.json())
       .then((data) => setVenues(data))
       .catch((error) =>

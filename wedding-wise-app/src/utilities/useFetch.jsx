@@ -17,10 +17,10 @@ function useFetch() {
   const [error, setError] = useState(undefined);
   // const [error, setError] = useState({ isError: false, status: "" });
 
-  async function getData(URL) {
+  async function getData(endpoint) {
     try {
       setLoading(true);
-      const response = await fetch(URL);
+      const response = await fetch(`${baseUrl}${endpoint}`);
       if (!response.ok) {
         setError(true);
         return;
@@ -41,18 +41,20 @@ function useFetch() {
       const response = await fetch(`${baseUrl}${endpoint}`, {
         method: method,
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json; charset=UTF-8",
+          accept: "application/json; charset=UTF-8",
         },
         body: JSON.stringify(bodyData),
       });
-      console.log(response);
       if (!response.ok) {
         return setError(response.status);
       }
       var responseData = await response.json();
       setResData(responseData);
     } catch (error) {
-      setError(responseData);
+      if (!error?.response) {
+        setError(500);
+      } else setError(responseData);
     } finally {
       setLoading(false);
     }

@@ -195,7 +195,7 @@ export const test = {
 
 export const supplierCards = [
   {
-    imageSrc: "assets/suppliers_pics/venue1.png",
+    imageSrc: "./assets/suppliers_pics/venue1.png",
     imageAlt: "אולם חתונות אזור החן",
     stickerSrc: "assets/graphics/venue/venue-orange.png",
     stickerAlt: "אייקון של אולם",
@@ -215,7 +215,7 @@ export const supplierCards = [
     price: "10,000",
   },
   {
-    imageSrc: "assets/suppliers_pics/photo4.jpg",
+    imageSrc: "./assets/suppliers_pics/photo4.jpg",
     imageAlt: "תמונה של צלם",
     stickerSrc: "assets/graphics/photographer/camera-orange.png",
     stickerAlt: "אייקון של",
@@ -225,7 +225,7 @@ export const supplierCards = [
     price: "11700",
   },
   {
-    imageSrc: "assets/suppliers_pics/dress1.png",
+    imageSrc: "./assets/suppliers_pics/dress1.png",
     imageAlt: "תמונה של מעצבת שמלות",
     stickerSrc: "assets/graphics/dress/dress-gray.png",
     stickerAlt: "אייקון של",
