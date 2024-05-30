@@ -15,10 +15,11 @@ function UserWithoutPackage() {
     <Box
       sx={{
         display: "flex",
+        minHeight: "100vh",
+        textAlign: "center",
         flexDirection: "column",
         rowGap: 7,
         mt: 6,
-        textAlign: "center",
         pb: 8,
       }}
     >

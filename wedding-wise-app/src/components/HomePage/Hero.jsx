@@ -13,13 +13,8 @@ function Hero() {
   return (
     <Stack sx={heroWrapperSX}>
       <Box sx={heroBgSX}></Box>
-      <Navbar styled={"home"} />
-      <Stack
-        alignItems="center"
-        justifyContent="space-around"
-        rowGap={3}
-        sx={heroContent}
-      >
+      <Navbar isLayout={false} />
+      <Stack alignItems="center" justifyContent="space-around" sx={heroContent}>
         <Stack sx={heroRightSide}>
           <Typography
             color={customTheme.palette.primary.light}
@@ -35,8 +30,9 @@ function Hero() {
               direction="row"
               sx={{
                 width: "100%",
-                justifyContent: { xs: "space-around", md: "start" },
+                justifyContent: { xs: "space-around", md: "center" },
                 columnGap: { xs: 0, md: 5 },
+                mb:5,
               }}
             >
               <Button variant="contained" sx={heroActionBtn}>
@@ -66,6 +62,7 @@ function Hero() {
                 width: "90%",
                 justifyContent: { xs: "center", md: "start" },
                 columnGap: { xs: 5, sm: 15, md: 10 },
+               
               }}
             >
               <Button variant="contained" sx={heroActionBtn}>
@@ -84,7 +81,10 @@ function Hero() {
               </Button>
             </Stack>
           )}
-          <Stack direction="row" sx={{ columnGap: { xs: 5, sm: 10, md: 5 } }}>
+          <Stack
+            direction="row"
+            sx={{ columnGap: { xs: 5, sm: 10, md: 8, lg: 12 } }}
+          >
             <img
               src="./assets/bride.png"
               alt="bride"
@@ -105,15 +105,13 @@ function Hero() {
 export default Hero;
 
 const heroWrapperSX = {
-  minHeight: { xs: "100vh", md: "95vh", lg: "85vh" },
-  pb: { xs: 0, sm: 2 },
+  minHeight: "100vh",
 };
 
 const heroBgSX = {
   position: "absolute",
   minWidth: "100%",
-  minHeight: { xs: "100vh", md: "95vh", lg: "85vh" },
-  pb: { xs: 0, sm: 2 },
+  minHeight: "100vh",
   backgroundImage: `url(assets/hero22.jpg)`,
   backgroundRepeat: "no-repeat",
   backgroundSize: "cover",
@@ -135,16 +133,18 @@ const heroContent = {
   width: "85%",
   zIndex: 1,
   margin: "auto",
+  
 };
 
 const heroRightSide = {
-  width: { xs: "100%", md: "50%" },
-  py: { xs: 0, md: 2, lg: 6 },
-  pr: { xs: 0, md: 3, lg: 10 },
+  width: { xs: "100%", md: "40%" },
+  py: { xs: 1, md: 3, lg: 6 },
+  pr: { xs: 1, md: 10, },
   fontFamily: "Varela-Round",
   flexGrow: 1,
   textAlign: { xs: "center", md: "left" },
-  rowGap: 3,
+  rowGap: 5,
+  textAlign: "center",
 };
 
 const heroRightSideTextTop = {
@@ -159,7 +159,6 @@ const heroRightSideTextTop = {
 
 const heroRightSideTextBottom = {
   fontSize: { xs: 24, sm: 26, md: 38 },
-  px:{xs:1, sm: 3},
   color: "white",
   fontWeight: "bold",
   letterSpacing: { xs: 3, sm: 4 },

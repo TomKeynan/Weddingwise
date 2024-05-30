@@ -1,5 +1,5 @@
 import React from "react";
-import { Stack } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 
 import RegisterContextProvider from "../store/RegisterContext";
 import EditCouple from "../components/EditCouple";
@@ -9,9 +9,13 @@ function EditDetails() {
     <RegisterContextProvider>
       <Stack
         maxWidth="xxl"
-        justifyContent="center"
-        sx={{ pb: 8, height: "100%", margin: "auto 0" }}
+        justifyContent="flex-start"
+        alignItems="center"
+        spacing={3}
+        sx={{ margin: "auto 0", minHeight: "100vh" }}
       >
+        <Typography variant="h3">עריכה ועדכון פרטים</Typography>
+        <Typography variant="h5">אנא מלאו את הפרטים בקפידה.</Typography>
         <EditCouple />
       </Stack>
     </RegisterContextProvider>

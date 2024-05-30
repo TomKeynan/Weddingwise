@@ -26,6 +26,7 @@ export default function AppContextProvider({ children }) {
       delete data.password;
       sessionStorage.setItem("currentUser", JSON.stringify(data));
       setCoupleData({ ...data });
+
     }
   }
 

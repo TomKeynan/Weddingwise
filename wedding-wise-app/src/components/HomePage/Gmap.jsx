@@ -11,7 +11,7 @@ const center = {
   lat: 31.6,
   lng: 34.61,
 };
-const libraries = ["places"];
+// const libraries = ["places"];
 
 function Gmap() {
   const [venues, setVenues] = useState([]);

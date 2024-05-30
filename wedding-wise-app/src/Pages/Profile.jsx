@@ -74,8 +74,7 @@ function Profile() {
 export default Profile;
 
 const loginStackSX = {
-  height: "100%",
-  width: "100%",
+  minHeight: "inherit",
 };
 
 const cardsContainer = {

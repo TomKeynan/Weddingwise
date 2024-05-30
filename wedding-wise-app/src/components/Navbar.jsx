@@ -15,7 +15,7 @@ import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
 import { customTheme } from "../store/Theme";
 import { AppContext } from "../store/AppContext";
 
-function Navbar() {
+function Navbar({ isLayout = true }) {
   const screenAboveMD = useMediaQuery("(min-width: 900px)");
 
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -54,13 +54,13 @@ function Navbar() {
 
   function handleClick(linkText) {
     if (linkText === "התנתק") {
-      // sessionStorage.clear();
       sessionStorage.setItem("currentUser", JSON.stringify(null));
       setCoupleData(null);
     }
   }
+
   // isActive = boolean property which destructured form the NavLink component.
-  function navLinkStyles({ isActive }) {
+  function navLinkLayoutStyles({ isActive }) {
     return {
       fontWeight: isActive ? "bold" : "500",
       fontSize: isActive ? 24 : 22,
@@ -71,17 +71,19 @@ function Navbar() {
     };
   }
 
+  function navLinkHomeStyles({ isActive }) {
+    return {
+      fontWeight: isActive ? "bold" : "500",
+      fontSize: isActive ? 26 : 24,
+      color: isActive ? customTheme.palette.primary.light : "white",
+      textDecoration: isActive ? "underline" : "none",
+      display: "block",
+      transform: isActive ? "translateY(-5px)" : "translateY(0px)",
+    };
+  }
+
   return (
-    <AppBar
-      position="sticky"
-      sx={{
-        bgcolor: "white",
-        color: "secondary.dark",
-        mb: 7,
-        borderBottomLeftRadius: 30,
-        borderBottomRightRadius: 30,
-      }}
-    >
+    <AppBar sx={isLayout ? appBarForLayoutSX : appBarForHomeSX}>
       <Container maxWidth="xl" sx={{ p: 0 }}>
         <Toolbar disableGutters>
           {/*  layout for screen devices above 900px(md) */}
@@ -101,29 +103,13 @@ function Navbar() {
                   <IconButton onClick={handleOpenUserMenu} disableRipple>
                     {/* Icon */}
                     <AccountCircleIcon
-                      fontSize="large"
-                      sx={{
-                        mt: 0.5,
-                        color: "secondary.dark",
-                        "&.MuiSvgIcon-root": { fontSize: 50,},
-                      }}
+                      sx={isLayout ? accountIconLayoutSX : accountIconHomeSX}
                     />
                   </IconButton>
                 </Tooltip>
                 {/* Setting Menu- Popup */}
                 <Menu
-                  sx={{
-                    mt: "45px",
-                    textAlign: "right",
-                    "& .MuiBackdrop-root": {
-                      background: "rgba(0, 0, 0, 0.4)",
-                      height: "100%",
-                    },
-                    "& .MuiMenu-paper": {
-                      py: 3,
-                      px: 5,
-                    },
-                  }}
+                  sx={settingMenuSX}
                   id="menu-appbar"
                   anchorEl={anchorElUser}
                   anchorOrigin={{
@@ -142,24 +128,10 @@ function Navbar() {
                     <MenuItem
                       key={setting.text}
                       onClick={handleCloseUserMenu}
-                      sx={{
-                        ":hover": {
-                          bgcolor: customTheme.palette.primary.light,
-                        },
-                      }}
+                      sx={menuItemSX}
                     >
-                      <Link
-                        to={setting.route}
-                        style={{ textDecoration: "none" }}
-                      >
-                        <Typography
-                          textAlign="center"
-                          sx={{
-                            fontWeight: "bold",
-                            fontSize: 16,
-                            color: "#000",
-                          }}
-                        >
+                      <Link to={setting.route} style={menuLinkStyle}>
+                        <Typography sx={typographyLinkSX}>
                           {setting.text}
                         </Typography>
                       </Link>
@@ -170,24 +142,14 @@ function Navbar() {
                       <MenuItem
                         key={item.text}
                         onClick={handleCloseUserMenu}
-                        sx={{
-                          ":hover": {
-                            bgcolor: customTheme.palette.primary.light,
-                          },
-                        }}
+                        sx={menuItemSX}
                       >
                         <Link
                           to={item.route}
                           onClick={() => handleClick(item.text)}
-                          style={{ textDecoration: "none" }}
+                          style={menuLinkStyle}
                         >
-                          <Typography
-                            sx={{
-                              fontWeight: "bold",
-                              fontSize: 16,
-                              color: "#000",
-                            }}
-                          >
+                          <Typography sx={typographyLinkSX}>
                             {item.text}
                           </Typography>
                         </Link>
@@ -208,7 +170,7 @@ function Navbar() {
                   <NavLink
                     key={page.text}
                     to={page.route}
-                    style={navLinkStyles}
+                    style={isLayout ? navLinkLayoutStyles : navLinkHomeStyles}
                     onClick={handleCloseNavMenu}
                   >
                     {page.text}
@@ -253,6 +215,7 @@ function Navbar() {
                 height: 80,
               }}
             >
+              {/* Pages Menu */}
               <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
                 <IconButton
                   size="large"
@@ -267,25 +230,18 @@ function Navbar() {
                 <Menu
                   sx={{
                     display: { xs: "block", md: "none" },
-                    "& .MuiBackdrop-root": {
-                      background: "rgba(0, 0, 0, 0.4)",
-                      height: "100%",
-                    },
-                    "& .MuiMenu-paper": {
-                      py: 3,
-                      px: 5,
-                    },
+                    ...settingMenuSX,
                   }}
                   id="menu-appbar"
                   anchorEl={anchorElNav}
                   anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
+                    vertical: "top",
+                    horizontal: "right",
                   }}
                   keepMounted
                   transformOrigin={{
                     vertical: "top",
-                    horizontal: "left",
+                    horizontal: "right",
                   }}
                   open={Boolean(anchorElNav)}
                   onClose={handleCloseNavMenu}
@@ -294,16 +250,12 @@ function Navbar() {
                     <MenuItem
                       key={page.text}
                       onClick={handleCloseNavMenu}
-                      sx={{
-                        ":hover": {
-                          bgcolor: customTheme.palette.primary.light,
-                        },
-                      }}
+                      sx={menuItemSX}
                     >
-                      <Link to={page.route} style={{ textDecoration: "none" }}>
+                      <Link to={page.route} style={menuLinkStyle}>
                         <Typography
-                          textAlign="center"
                           sx={{
+                            textAlign: "center",
                             fontWeight: "bold",
                             fontSize: 16,
                             color: "#000",
@@ -337,6 +289,8 @@ function Navbar() {
               >
                 WeddingWise
               </Typography>
+
+              {/* Settings Menu */}
               <Box>
                 <Tooltip title="התחברות / הרשמה">
                   <IconButton
@@ -344,30 +298,20 @@ function Navbar() {
                     sx={{ p: 0, ml: 2 }}
                     disableRipple
                   >
-                    {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" /> */}
+                    {/* Icon */}
                     <AccountCircleIcon
-                      fontSize="large"
-                      sx={{
-                        color: "secondary.dark",
-                        "&.MuiSvgIcon-root": { fontSize: 35,},
-                      }}
+                      sx={
+                        isLayout
+                          ? accountIconLayoutSx_Small
+                          : accountIconHomeSX_Small
+                      }
                     />
                   </IconButton>
                 </Tooltip>
 
                 {/* Setting Menu- Popup */}
                 <Menu
-                  sx={{
-                    mt: "45px",
-                    "& .MuiBackdrop-root": {
-                      background: "rgba(0, 0, 0, 0.4)",
-                      height: "100%",
-                    },
-                    "& .MuiMenu-paper": {
-                      py: 3,
-                      px: 5,
-                    },
-                  }}
+                  sx={settingMenuSX}
                   id="menu-appbar"
                   anchorEl={anchorElUser}
                   anchorOrigin={{
@@ -386,24 +330,10 @@ function Navbar() {
                     <MenuItem
                       key={setting.text}
                       onClick={handleCloseUserMenu}
-                      sx={{
-                        ":hover": {
-                          bgcolor: customTheme.palette.primary.light,
-                        },
-                      }}
+                      sx={menuItemSX}
                     >
-                      <Link
-                        to={setting.route}
-                        style={{ textDecoration: "none" }}
-                      >
-                        <Typography
-                          textAlign="center"
-                          sx={{
-                            fontWeight: "bold",
-                            fontSize: 16,
-                            color: "#000",
-                          }}
-                        >
+                      <Link to={setting.route} style={menuLinkStyle}>
+                        <Typography sx={typographyLinkSX}>
                           {setting.text}
                         </Typography>
                       </Link>
@@ -414,24 +344,14 @@ function Navbar() {
                       <MenuItem
                         key={item.text}
                         onClick={handleCloseUserMenu}
-                        sx={{
-                          ":hover": {
-                            bgcolor: customTheme.palette.primary.light,
-                          },
-                        }}
+                        sx={menuItemSX}
                       >
                         <Link
                           to={item.route}
                           onClick={() => handleClick(item.text)}
-                          style={{ textDecoration: "none" }}
+                          style={menuLinkStyle}
                         >
-                          <Typography
-                            sx={{
-                              fontWeight: "bold",
-                              fontSize: 16,
-                              color: "#000",
-                            }}
-                          >
+                          <Typography sx={typographyLinkSX}>
                             {item.text}
                           </Typography>
                         </Link>
@@ -447,3 +367,74 @@ function Navbar() {
   );
 }
 export default Navbar;
+
+const appBarForLayoutSX = {
+  position: "sticky",
+  bgcolor: "white",
+  color: "secondary.dark",
+  mb: 7,
+  borderBottomLeftRadius: 30,
+  borderBottomRightRadius: 30,
+};
+
+const appBarForHomeSX = {
+  position: "relative",
+  bgcolor: "transparent",
+  color: "white",
+  "&.MuiAppBar-root": {
+    boxShadow: "none",
+  },
+};
+
+const accountIconLayoutSX = {
+  mt: 0.5,
+  color: "secondary.dark",
+  "&.MuiSvgIcon-root": { fontSize: 50 },
+};
+
+const accountIconHomeSX = {
+  mt: 0.5,
+  color: "white",
+  "&.MuiSvgIcon-root": { fontSize: 50 },
+};
+
+const accountIconLayoutSx_Small = {
+  color: "secondary.dark",
+  "&.MuiSvgIcon-root": { fontSize: 35 },
+};
+
+const accountIconHomeSX_Small = {
+  color: "white",
+  "&.MuiSvgIcon-root": { fontSize: 35 },
+};
+
+const settingMenuSX = {
+  mt: "45px",
+  "& .MuiBackdrop-root": {
+    background: "rgba(0, 0, 0, 0.4)",
+    height: "100%",
+  },
+  "& .MuiMenu-paper": {
+    py: 2,
+  },
+};
+
+const menuItemSX = {
+  ":hover": {
+    bgcolor: customTheme.palette.primary.light,
+  },
+  "&.MuiMenuItem-root": {
+    display: "flex",
+    width: 150,
+    px: 0,
+  },
+};
+
+const menuLinkStyle = { textDecoration: "none", flexGrow: 1 };
+
+const typographyLinkSX = {
+  fontWeight: "bold",
+  fontSize: 16,
+  color: "#000",
+  textAlign: "center",
+};

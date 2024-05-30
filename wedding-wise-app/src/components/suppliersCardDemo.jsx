@@ -3,8 +3,14 @@ import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import { customTheme } from "../store/Theme";
+import CheckIcon from "@mui/icons-material/Check";
 
-function SuppliersCardDemo({ props, showActionBtn = false }) {
+function SuppliersCardDemo({
+  props,
+  showReplaceSupplierBtn,
+  showMoreInfoBtn,
+  isAlternative,
+}) {
   const {
     imageSrc,
     imageAlt,
@@ -89,20 +95,22 @@ function SuppliersCardDemo({ props, showActionBtn = false }) {
               $ מחיר: {price}
             </Typography>
           </Stack>
-          {showActionBtn && (
-            <Stack
-              direction="row"
-              justifyContent="space-around"
-              sx={{ height: "100%" }}
-            >
+          <Stack
+            direction="row"
+            justifyContent="space-around"
+            sx={{ height: "100%" }}
+          >
+            {showReplaceSupplierBtn && (
               <Button variant="outlined" sx={actionBtnSX}>
-                החלף ספק
+                {isAlternative ? <CheckIcon /> : "החלף ספק"}
               </Button>
+            )}
+            {showMoreInfoBtn && (
               <Button variant="contained" sx={actionBtnSX}>
                 מידע נוסף
               </Button>
-            </Stack>
-          )}
+            )}
+          </Stack>
         </Stack>
       </Stack>
     </Grid>

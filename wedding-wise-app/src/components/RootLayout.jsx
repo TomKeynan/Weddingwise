@@ -4,6 +4,7 @@ import Navbar from "./Navbar";
 import { Container } from "@mui/material";
 import { customTheme } from "../store/Theme";
 import Footer from "./Footer";
+import { ScrollRestoration } from "react-router-dom";
 
 const RootLayout = () => {
   return (
@@ -11,6 +12,7 @@ const RootLayout = () => {
       <Navbar />
       <Outlet />
       <Footer />
+      <ScrollRestoration />
     </Container>
   );
 };

@@ -1,7 +1,6 @@
 // ============= LAST UPDATED =================
-// =============   29-5-2024  =================
+// =============   30-5-2024  =================
 // =============   BY: Omri  Changes: last update before the protection test   =================
-// =============   Note: ScrollToTop didn't work yet - ignore it   =================
 // ============= LAST UPDATED =================
 
 import "./App.css";
@@ -25,7 +24,6 @@ import Finance from "./Pages/Finance";
 import EditDetails from "./Pages/EditDetails";
 import { LoadScript } from "@react-google-maps/api";
 import Invitees from "./Pages/Invitees";
-import ScrollToTop from "./utilities/ScrollToTop";
 
 const googleMapsApiKey = "AIzaSyCSXv1ZziH2SJEcGQIp8EJMytapWnPjytQ";
 

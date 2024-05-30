@@ -71,6 +71,7 @@ export const carouselTheme = Object.freeze({
 });
 
 export const regions = [
+  "",
   "רמת הגולן",
   "הגליל",
   "חיפה",
@@ -196,10 +197,10 @@ export const test = {
 export const supplierCards = [
   {
     imageSrc: "./assets/suppliers_pics/venue1.png",
-    imageAlt: "אולם חתונות אזור החן",
+    imageAlt: "אולם חתונות החן",
     stickerSrc: "assets/graphics/venue/venue-orange.png",
     stickerAlt: "אייקון של אולם",
-    name: "יוחאי גלאס",
+    name: "אולם חתונות החן",
     phone: "055-265-9832",
     email: "nbrgtprt@example.com",
     price: "167900",

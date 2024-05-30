@@ -5,13 +5,14 @@ import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import { customTheme } from "../store/Theme";
 import { stickers, suppliersImage } from "../utilities/collections";
 import { getRandomSupplierImage } from "../utilities/functions";
-
+import CheckIcon from '@mui/icons-material/Check';
 function SupplierCard({
   props,
-  showReplaceSupplierBtn = false,
-  showMoreInfoBtn = false,
+  showReplaceSupplierBtn,
+  showMoreInfoBtn,
   cardBg = "white",
   onReplacement,
+  isAlternative,
 }) {
   const {
     imageAlt,
@@ -135,7 +136,7 @@ function SupplierCard({
               sx={actionBtnSX}
               onClick={() => onReplacement(supplierType)}
             >
-              החלף ספק
+              { isAlternative ? <CheckIcon /> : "החלף ספק" }
             </Button>
           )}
           {showMoreInfoBtn && (
@@ -153,6 +154,7 @@ export default SupplierCard;
 
 const actionBtnSX = {
   p: 1,
+  // width: "70%"
 };
 
 const cardContainerSX = {

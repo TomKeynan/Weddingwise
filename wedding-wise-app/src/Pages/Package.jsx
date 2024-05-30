@@ -8,7 +8,7 @@ import { AppContext } from "../store/AppContext";
 function Package() {
   const { coupleData } = useContext(AppContext);
   return (
-    <Box sx={{ display: "block", width: "100%" }}>
+    <Box sx={{ minHeight: "inherit" }}>
       {coupleData === null ? (
         <RandomPackage />
       ) : coupleData.package === null ? (

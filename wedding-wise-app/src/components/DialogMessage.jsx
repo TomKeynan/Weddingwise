@@ -20,7 +20,7 @@ export default function DialogMessage({
         onClose={onClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-        sx={{ "& .MuiPaper-root": { px: 2, py: 3 } }}
+        sx={{ "& .MuiPaper-root": { px: 2, py: 3, width: "100%" } }}
       >
         <DialogTitle id="alert-dialog-title" sx={{ p: 0 }}>
           {title}

@@ -7,21 +7,9 @@ import SuppliersCarousel from "../components/HomePage/SuppliersCarousel";
 import MapSection from "../components/HomePage/MapSection";
 import Description from "../components/HomePage/Description";
 import Footer from "../components/Footer";
-// import Gmap from "../components/HomePage/Gmap";
+import { ScrollRestoration } from "react-router-dom";
+
 function Home() {
-  const navigate = useNavigate();
-
-  // function routToProfile() {
-  //   navigate("/profile");
-  // }
-
-  // function routeToSignUp() {
-  //   navigate("/sign-up");
-  // }
-
-  // function routeToLogin() {
-  //   navigate("/login");
-  // }
 
   return (
     <>
@@ -34,6 +22,7 @@ function Home() {
         </Stack>
       </Stack>
       <Footer />
+      <ScrollRestoration />
     </>
   );
 }
@@ -42,7 +31,7 @@ export default Home;
 
 const homeContainer = {
   display: "block",
-  // height: "100vh",
+  minHeight: "100vh",
   background: customTheme.colorBg.main,
   boxShadow: customTheme.shadow.main,
 };

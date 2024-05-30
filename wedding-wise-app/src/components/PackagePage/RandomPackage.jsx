@@ -12,7 +12,7 @@ function RandomPackage() {
   }
 
   return (
-    <Container maxWidth="xxl" sx={{ pb: 8 }}>
+    <Container maxWidth="xxl" sx={{ pb: 8, minHeight: "100vh" }}>
       <Box mt={3} pb={3}>
         <Typography
           variant="h2"

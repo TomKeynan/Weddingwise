@@ -30,6 +30,7 @@ const StepTwo = () => {
       pt={0}
       sx={{ width: { xs: 250, md: 600 }, margin: "0 auto" }}
     >
+      {/* Number of invitees */}
       <Grid item xs={12} md={6}>
         <TextInput
           variant="standard"
@@ -40,6 +41,7 @@ const StepTwo = () => {
           textFieldSX={textFieldSX}
         />
       </Grid>
+      {/* Budget */}
       <Grid item xs={12} md={6}>
         <TextInput
           variant="standard"
@@ -50,6 +52,7 @@ const StepTwo = () => {
           textFieldSX={textFieldSX}
         />
       </Grid>
+      {/* Region */}
       <Grid item xs={12} md={6}>
         <Autocomplete
           options={regions}
@@ -70,6 +73,7 @@ const StepTwo = () => {
           )}
         />
       </Grid>
+      {/* Desire Date   */}
       <Grid item xs={12} md={6}>
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
           <DatePicker

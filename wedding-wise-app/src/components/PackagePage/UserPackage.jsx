@@ -55,14 +55,20 @@ function UserPackage() {
     <Stack
       justifyContent="space-around"
       alignItems="center"
-      sx={{ textAlign: "center", pb: 8, width: "95%", margin: "0 auto" }}
+      sx={{
+        minHeight: "100vh",
+        textAlign: "center",
+        pb: 10,
+        width: "95%",
+        margin: "0 auto",
+      }}
       spacing={5}
     >
       {open && (
         <DialogMessage
           title="נותני שירות חלופיים"
           open={open}
-          btnValue="החלף ספק"
+          btnValue="בטל החלפה"
           onClose={handleSupplierReplacement}
         >
           {
@@ -74,16 +80,16 @@ function UserPackage() {
               rowGap={3}
               columnGap={2}
             >
-              {alterativeSuppliers[currentType].map(
-                (supplier, index) => (
-                  <SupplierCard
-                    key={index}
-                    props={supplier}
-                    showActionBtn={true}
-                    onReplacement={startReplaceSupplier}
-                  />
-                )
-              )}
+              {alterativeSuppliers[currentType].map((supplier, index) => (
+                <SupplierCard
+                  key={index}
+                  props={supplier}
+                  showMoreInfoBtn={false}
+                  showReplaceSupplierBtn={true}
+                  isAlternative={true}
+                  onReplacement={startReplaceSupplier}
+                />
+              ))}
             </Stack>
           }
         </DialogMessage>
@@ -135,25 +141,21 @@ function UserPackage() {
               <SupplierCard
                 key={index}
                 props={supplier}
-                showActionBtn={true}
+                showMoreInfoBtn={true}
+                showReplaceSupplierBtn={true}
                 onReplacement={startReplaceSupplier}
               />
             )
           )}
         </Stack>
-        <Stack spacing={3}>
+        <Stack spacing={3} sx={{width: {xs: "60%", sm: "40%"}}}>
           {/* <Typography sx={{ typography: { xs: "body1", sm: "h5", md: "h4" } }}>
             חבילה זו מתאימה עבורכם ב-{" "}
             {currentCouple.package.totalScore.toFixed(2)} אחוזי התאמה
           </Typography> */}
           <Button
             variant="contained"
-            sx={{
-              bgcolor: customTheme.palette.secondary.dark,
-              px: { xs: 2, sm: 4, md: 6 },
-              fontWeight: "bold",
-              fontSize: { xs: 16, sm: 18, md: 22 },
-            }}
+            sx={heroActionBtn}
             onClick={() => {
               sendData(
                 "https://localhost:44359/api/Packages/insertPackage",
@@ -201,4 +203,19 @@ const cardsContainer = {
   width: "100%",
   p: 1,
   rowGap: 3,
+};
+
+const heroActionBtn = {
+  border: 2,
+  py: 1,
+  px: { xs: 1, sm: 3 },
+  fontSize: { xs: 20, sm: 26 },
+  bgcolor: "white",
+  color: customTheme.palette.secondary.dark,
+  ":hover": {
+    color: "white",
+    bgcolor: customTheme.palette.secondary.dark,
+    borderColor: customTheme.palette.secondary.main,
+    border: 2,
+  },
 };

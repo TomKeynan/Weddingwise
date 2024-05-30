@@ -21,10 +21,9 @@ function Footer() {
               rowGap: 6,
             }}
           >
-            <Link to='/profile'>דף הבית</Link>
-            
-            <li>פרופיל</li>
-            <li>חבילה</li>
+            <Link to="/">דף הבית</Link>
+            <Link to="/profile">פרופיל</Link>
+            <Link to="/package">חבילה</Link>
             <li>טבלת מוזמנים</li>
             <li>מעקב הוצאות</li>
             <li>רשימת משימות</li>
@@ -58,7 +57,7 @@ const footerWrapperSX = {
   py: 5,
   height: 700,
   background: customTheme.colorBg.footer,
-  boxShadow: customTheme.shadow.footer, 
+  boxShadow: customTheme.shadow.footer,
 };
 
 const footerTopSectionSX = {
@@ -79,7 +78,7 @@ const footerNavSX = { fontSize: 26, py: 3 };
 const copyRightsSX = {
   fontSize: { xs: 18, sm: 22, md: 26 },
   textAlign: "center",
-  px:2,
+  px: 2,
   fontFamily: "Varela Round",
   fontWeight: "bold",
   color: customTheme.palette.black,

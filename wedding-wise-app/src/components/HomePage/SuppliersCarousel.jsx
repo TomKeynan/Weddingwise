@@ -41,7 +41,7 @@ function SuppliersCarousel() {
               <SuppliersCardDemo
                 key={index}
                 props={supplier}
-                showActionBtn={true}
+                showMoreInfoBtn={true}
               />
             ))}
           </Carousel>
