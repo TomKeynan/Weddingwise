@@ -1,17 +1,45 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\",
+  "WorkspaceRootPath": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\adam\\desktop\\react\\weddingwise\\server\\server\\dal\\dbservicessupplier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\tomk1\\desktop\\weddingwise\\server\\server\\dal\\dbservicestask.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\dal\\dbservicestask.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\tomk1\\desktop\\weddingwise\\server\\server\\controllers\\taskscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\controllers\\taskscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\tomk1\\desktop\\weddingwise\\server\\server\\controllers\\couplescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\controllers\\couplescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\tomk1\\desktop\\weddingwise\\server\\server\\bl\\tasks.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\bl\\tasks.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\tomk1\\desktop\\weddingwise\\server\\server\\bl\\couple.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\bl\\couple.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\tomk1\\desktop\\weddingwise\\server\\server\\dal\\dbservicescouple.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\dal\\dbservicescouple.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\tomk1\\desktop\\weddingwise\\server\\server\\bl\\subtask.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\bl\\subtask.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\tomk1\\desktop\\weddingwise\\server\\server\\dal\\dbservicessupplier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\dal\\dbservicessupplier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\adam\\desktop\\react\\weddingwise\\server\\server\\dal\\dbservicespackage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\tomk1\\desktop\\weddingwise\\server\\server\\dal\\dbservicespackage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\dal\\dbservicespackage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\adam\\desktop\\react\\weddingwise\\server\\server\\controllers\\supplierscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\tomk1\\desktop\\weddingwise\\server\\server\\controllers\\supplierscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\controllers\\supplierscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -22,15 +50,107 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Tasks.cs",
+              "DocumentMoniker": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\BL\\Tasks.cs",
+              "RelativeDocumentMoniker": "Server\\BL\\Tasks.cs",
+              "ToolTip": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\BL\\Tasks.cs",
+              "RelativeToolTip": "Server\\BL\\Tasks.cs",
+              "ViewState": "AQIAABEAAAAAAAAAAAAAwBYAAAAsAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-03T16:37:26.916Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CouplesController.cs",
+              "DocumentMoniker": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\Controllers\\CouplesController.cs",
+              "RelativeDocumentMoniker": "Server\\Controllers\\CouplesController.cs",
+              "ToolTip": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\Controllers\\CouplesController.cs",
+              "RelativeToolTip": "Server\\Controllers\\CouplesController.cs",
+              "ViewState": "AQIAABkAAAAAAAAAAAAQwCUAAAAVAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-03T17:12:01.64Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "DBServicesCouple.cs",
+              "DocumentMoniker": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\DAL\\DBServicesCouple.cs",
+              "RelativeDocumentMoniker": "Server\\DAL\\DBServicesCouple.cs",
+              "ToolTip": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\DAL\\DBServicesCouple.cs",
+              "RelativeToolTip": "Server\\DAL\\DBServicesCouple.cs",
+              "ViewState": "AQIAAEoAAAAAAAAAAAAgwCYAAAARAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-03T16:45:26.565Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Couple.cs",
+              "DocumentMoniker": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\BL\\Couple.cs",
+              "RelativeDocumentMoniker": "Server\\BL\\Couple.cs",
+              "ToolTip": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\BL\\Couple.cs",
+              "RelativeToolTip": "Server\\BL\\Couple.cs",
+              "ViewState": "AQIAAJIAAAAAAAAAAAAmwB4AAAAXAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-03T16:43:23.581Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "DBServicesTask.cs",
+              "DocumentMoniker": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\DAL\\DBServicesTask.cs",
+              "RelativeDocumentMoniker": "Server\\DAL\\DBServicesTask.cs",
+              "ToolTip": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\DAL\\DBServicesTask.cs",
+              "RelativeToolTip": "Server\\DAL\\DBServicesTask.cs",
+              "ViewState": "AQIAAE0AAAAAAAAAAAAgwFYAAAAUAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-03T16:38:56.294Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "SubTask.cs",
+              "DocumentMoniker": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\BL\\SubTask.cs",
+              "RelativeDocumentMoniker": "Server\\BL\\SubTask.cs",
+              "ToolTip": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\BL\\SubTask.cs",
+              "RelativeToolTip": "Server\\BL\\SubTask.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-03T16:37:30.609Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "TasksController.cs",
+              "DocumentMoniker": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\Controllers\\TasksController.cs",
+              "RelativeDocumentMoniker": "Server\\Controllers\\TasksController.cs",
+              "ToolTip": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\Controllers\\TasksController.cs",
+              "RelativeToolTip": "Server\\Controllers\\TasksController.cs",
+              "ViewState": "AQIAAC8AAAAAAAAAAAApwCcAAAA2AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-01T15:33:22.658Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "DBServicesSupplier.cs",
-              "DocumentMoniker": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\DAL\\DBServicesSupplier.cs",
+              "DocumentMoniker": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\DAL\\DBServicesSupplier.cs",
               "RelativeDocumentMoniker": "Server\\DAL\\DBServicesSupplier.cs",
-              "ToolTip": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\DAL\\DBServicesSupplier.cs",
+              "ToolTip": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\DAL\\DBServicesSupplier.cs",
               "RelativeToolTip": "Server\\DAL\\DBServicesSupplier.cs",
               "ViewState": "AQIAABkAAAAAAAAAAAAAAC0AAAAyAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -39,27 +159,29 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 8,
               "Title": "DBServicesPackage.cs",
-              "DocumentMoniker": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\DAL\\DBServicesPackage.cs",
+              "DocumentMoniker": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\DAL\\DBServicesPackage.cs",
               "RelativeDocumentMoniker": "Server\\DAL\\DBServicesPackage.cs",
-              "ToolTip": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\DAL\\DBServicesPackage.cs",
+              "ToolTip": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\DAL\\DBServicesPackage.cs",
               "RelativeToolTip": "Server\\DAL\\DBServicesPackage.cs",
               "ViewState": "AQIAAAkAAAAAAAAAAADwvxwAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-26T14:09:31.64Z"
+              "WhenOpened": "2024-05-26T14:09:31.64Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 9,
               "Title": "SuppliersController.cs",
-              "DocumentMoniker": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\Controllers\\SuppliersController.cs",
+              "DocumentMoniker": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\Controllers\\SuppliersController.cs",
               "RelativeDocumentMoniker": "Server\\Controllers\\SuppliersController.cs",
-              "ToolTip": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\Controllers\\SuppliersController.cs",
+              "ToolTip": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\Controllers\\SuppliersController.cs",
               "RelativeToolTip": "Server\\Controllers\\SuppliersController.cs",
               "ViewState": "AQIAABEAAAAAAAAAAAAAwAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-26T14:09:24.65Z"
+              "WhenOpened": "2024-05-26T14:09:24.65Z",
+              "EditorCaption": ""
             }
           ]
         }

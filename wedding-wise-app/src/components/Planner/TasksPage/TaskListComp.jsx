@@ -23,12 +23,14 @@ import DialogMessage from "../../DialogMessage";
 function TasksListComp() {
   const { coupleData } = useContext(AppContext);
   const { sendData, resData, error, loading } = useFetch();
+  const makeChanges = useFetch();
 
-  const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
-  const [currentSubTask, setCurrentSubTask] = useState(null);
+  const [currentTaskID, setCurrentTaskID] = useState(null);
   const [newSubTask, setNewSubTask] = useState("");
   const [open, setOpen] = useState(false);
+
+  const currentTask = resData?.find((task) => task.taskID === currentTaskID);
 
   useEffect(() => {
     if (coupleData) {
@@ -37,92 +39,57 @@ function TasksListComp() {
   }, [coupleData]);
 
   const fetchTasks = async () => {
-    try {
-      const data = await sendData(
-        `https://localhost:44359/api/Tasks/getTasks?coupleEmail=${coupleData.email}`,
-        "GET"
-      );
-      if (data) {
-        setTasks(data);
-      }
-    } catch (error) {
-      console.error("Error fetching tasks:", error);
-    }
+    await sendData(`/Tasks/getTasks?coupleEmail=${coupleData.email}`, "GET");
   };
 
   const handleAddTask = async () => {
     try {
-      const data = await sendData(
-        "https://localhost:44359/api/Tasks/addTask",
-        "POST",
-        {
-          taskID: 0,
-          taskName: newTask,
-          email: coupleData.email,
-          completed: false,
-          subTasks: [],
-        }
-      );
-      if (data) {
-        setTasks([...tasks, { ...data, subTasks: [] }]);
-        setNewTask("");
-      }
+      await makeChanges.sendData("/Tasks/addTask", "POST", {
+        email: coupleData.email,
+        taskName: newTask,
+        completed: false,
+      });
+
+      await fetchTasks();
+      setNewTask("");
     } catch (error) {
       console.error("Error adding task:", error);
     }
   };
 
   const handleAddSubTask = async () => {
-    if (currentSubTask != null) {
-      const index = tasks.findIndex(
-        (task) => task.taskID === currentSubTask.taskID
-      );
-      if (index !== -1) {
-        try {
-          const data = await sendData(
-            "https://localhost:44359/api/SubTasks/addSubTask",
-            "POST",
-            {
-              taskId: currentSubTask.taskID,
-              subTaskName: newSubTask,
-            }
-          );
-          if (data) {
-            const tempTasks = [...tasks];
-            tempTasks[index].subTasks.push(data);
-            setTasks(tempTasks);
-            setNewSubTask("");
-          }
-        } catch (error) {
-          console.error("Error adding subtask:", error);
-        }
-      }
-    }
-  };
-
-  const handleCheck = async (index) => {
-    const updatedTask = { ...tasks[index], completed: !tasks[index].completed };
     try {
-      const data = await sendData(
-        "https://localhost:44359/api/Tasks/updateTask",
-        "PUT",
-        updatedTask
-      );
-      if (data) {
-        const newTasks = tasks.map((task, idx) =>
-          idx === index ? updatedTask : task
-        );
-        setTasks(newTasks);
-      }
+      await makeChanges.sendData("/Tasks/addSubTask", "POST", {
+        subTaskName: newSubTask,
+        taskId: currentTaskID,
+      });
+
+      await fetchTasks();
     } catch (error) {
       console.error("Error updating task:", error);
     }
   };
 
-  const checkedTasks = tasks
-    ? tasks.filter((task) => task.completed).length
+  const handleCheck = async (index) => {
+    try {
+      const updatedTask = {
+        ...resData[index],
+        completed: !resData[index].completed,
+      };
+
+      await makeChanges.sendData("/Tasks/updateTask", "PUT", updatedTask);
+
+      await fetchTasks();
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
+  };
+
+  const checkedTasks = resData
+    ? resData.filter((task) => task.completed)?.length
     : 0;
-  const progress = tasks.length > 0 ? (checkedTasks / tasks.length) * 100 : 0;
+  const progress =
+    resData?.length > 0 ? (checkedTasks / resData?.length) * 100 : 0;
 
   return (
     <Stack
@@ -159,7 +126,7 @@ function TasksListComp() {
           sx={{ width: "100%" }}
         />
         <List sx={{ width: "100%" }}>
-          {tasks.map((task, index) => (
+          {resData?.map((task, index) => (
             <ListItem key={task.taskID}>
               <Checkbox
                 checked={task.completed}
@@ -167,7 +134,10 @@ function TasksListComp() {
               />
               <ListItemText primary={task.taskName} />
               <ListItemSecondaryAction>
-                <IconButton edge="end" onClick={() => setCurrentSubTask(task)}>
+                <IconButton
+                  edge="end"
+                  onClick={() => setCurrentTaskID(task.taskID)}
+                >
                   <PlaylistAddCheckIcon />
                 </IconButton>
               </ListItemSecondaryAction>
@@ -189,19 +159,17 @@ function TasksListComp() {
             הוסף משימה
           </Button>
         </Stack>
-        {currentSubTask && (
+        {currentTask && (
           <Stack spacing={2} sx={{ width: "100%" }}>
             <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-              {currentSubTask.taskName}
+              {currentTask.taskName}
             </Typography>
             <TextField multiline rows={4} placeholder="הערות" fullWidth />
             <Typography variant="h5">תתי משימות</Typography>
             <List>
-              {currentSubTask.subTasks &&
-                currentSubTask.subTasks.map((subtask, idx) => (
-                  <ListItem
-                    key={`${currentSubTask.taskID}-${subtask.subTaskId}`}
-                  >
+              {currentTask.subTasks &&
+                currentTask.subTasks.map((subtask, idx) => (
+                  <ListItem key={idx}>
                     <ListItemText primary={subtask.subTaskName} />
                   </ListItem>
                 ))}

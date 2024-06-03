@@ -40,6 +40,9 @@ namespace Server.Controllers
                         Password = couple.Password
                     };
 
+
+                    Tasks.insertCoupleInitialTasks(couple.Email);
+
                     // Create a JsonElement from the anonymous object
                     JsonElement jsonCoupleData = JsonDocument.Parse(JsonSerializer.Serialize(coupleData)).RootElement;
 

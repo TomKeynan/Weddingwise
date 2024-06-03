@@ -75,6 +75,7 @@ namespace Server.Controllers
 
                 // Insert or update the package in the database
                 int numberOfSuccesses = Package.InsertOrUpdatePackage(packageApprovalData);
+                // קורא לפונקציה שמקבלת את החבילה ומחלצת את המידע ליצור שורות חדשות בטבלת פיננסי
                 if (numberOfSuccesses == 4)
                 {
                     return Ok(); // Return 200 OK for successful insertion

@@ -32,6 +32,22 @@ namespace Server.DAL
             }
         }
 
+        public int updateTask(Tasks task)
+        {
+            using (SqlConnection con = Connect())
+            {
+                using (SqlCommand cmd = new SqlCommand("SPUpdateTask", con))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@task_id", task.TaskID);
+                    cmd.Parameters.AddWithValue("@couple_email", task.Email);
+                    cmd.Parameters.AddWithValue("@title", task.TaskName);
+                    cmd.Parameters.AddWithValue("@completed", task.Completed);
+                    return cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         public List<Tasks> GetTasks(string coupleEmail)
         {
             List<Tasks> tasks = new List<Tasks>();
@@ -78,7 +94,7 @@ namespace Server.DAL
                             {
                                 SubTaskId = Convert.ToInt32(reader["subtask_id"]),
                                 TaskId = Convert.ToInt32(reader["task_id"]),
-                                SubTaskName = reader["subtask_name"].ToString()
+                                SubTaskName = reader["title"].ToString()
                             };
                             subTasks.Add(subTask);
                         }

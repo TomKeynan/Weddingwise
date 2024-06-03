@@ -31,6 +31,28 @@ namespace Server.Controllers
             }
         }
 
+        [HttpPut("updateTask")]
+        public ActionResult UpdateTask([FromBody] Tasks task)
+        {
+            try
+            {
+                DBServicesTask dbServicesTask = new DBServicesTask();
+                int result = dbServicesTask.updateTask(task);
+                if (result > 0)
+                {
+                    return Ok(task);
+                }
+                else
+                {
+                    return BadRequest("Failed to add task.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
         [HttpPost("addSubTask")]
         public ActionResult AddSubTask([FromBody] SubTask subTask)
         {
