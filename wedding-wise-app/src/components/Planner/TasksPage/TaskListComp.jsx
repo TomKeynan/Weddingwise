@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
-  Checkbox,
+  Box,
   Button,
+  Stack,
+  Typography,
+  Checkbox,
   LinearProgress,
   IconButton,
   List,
@@ -10,108 +13,186 @@ import {
   ListItemSecondaryAction,
   TextField,
 } from "@mui/material";
-import { taskListDefault } from "../../../utilities/collections";
 import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
 import AddIcon from "@mui/icons-material/Add";
+import { AppContext } from "../../../store/AppContext";
+import useFetch from "../../../utilities/useFetch";
+import Loading from "../../Loading";
+import DialogMessage from "../../DialogMessage";
 
 function TasksListComp() {
-  const [tasks, setTasks] = useState(taskListDefault);
-  const [newTask, setNewTask] = useState("");
-  const [currentSubTask, setCurrentSubTask] = useState(null); // null at first
-  const [newSubTask, setNewSubTask] = useState("");
+  const { coupleData } = useContext(AppContext);
+  const { sendData, resData, error, loading } = useFetch();
+  const makeChanges = useFetch();
 
-  const handleAddTask = () => {
-    setTasks([...tasks, { title: newTask, completed: false, subtasks: [] }]);
-    setNewTask("");
+  const [newTask, setNewTask] = useState("");
+  const [currentTaskID, setCurrentTaskID] = useState(null);
+  const [newSubTask, setNewSubTask] = useState("");
+  const [open, setOpen] = useState(false);
+
+  const currentTask = resData?.find((task) => task.taskID === currentTaskID);
+
+  useEffect(() => {
+    if (coupleData) {
+      fetchTasks();
+    }
+  }, [coupleData]);
+
+  const fetchTasks = async () => {
+    await sendData(`/Tasks/getTasks?coupleEmail=${coupleData.email}`, "GET");
   };
 
-  const handleAddSubTask = () => {
-    if (currentSubTask != null) {
-      // is a currentSubTask selected
-      const index = tasks.findIndex(
-        (task) => task.title === currentSubTask.title
-      );
-      if (index !== -1) {
-        const tempTasks = [...tasks];
-        //  array exists or created empty
-        if (!tempTasks[index].subtasks) {
-          tempTasks[index].subtasks = [];
-        }
-        tempTasks[index].subtasks.push({ title: newSubTask, completed: false });
-        setTasks(tempTasks);
-        setNewSubTask("");
-      }
+  const handleAddTask = async () => {
+    try {
+      await makeChanges.sendData("/Tasks/addTask", "POST", {
+        email: coupleData.email,
+        taskName: newTask,
+        completed: false,
+      });
+
+      await fetchTasks();
+      setNewTask("");
+    } catch (error) {
+      console.error("Error adding task:", error);
     }
   };
 
-  const handleCheck = (index) => {
-    const newTasks = [...tasks];
-    newTasks[index].completed = !newTasks[index].completed;
-    setTasks(newTasks);
+  const handleAddSubTask = async () => {
+    try {
+      await makeChanges.sendData("/Tasks/addSubTask", "POST", {
+        subTaskName: newSubTask,
+        taskId: currentTaskID,
+      });
+
+      await fetchTasks();
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
   };
 
-  const checkedTasks = tasks.filter((task) => task.completed).length;
-  const progress = tasks.length > 0 ? (checkedTasks / tasks.length) * 100 : 0;
+  const handleCheck = async (index) => {
+    try {
+      const updatedTask = {
+        ...resData[index],
+        completed: !resData[index].completed,
+      };
+
+      await makeChanges.sendData("/Tasks/updateTask", "PUT", updatedTask);
+
+      await fetchTasks();
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
+  };
+
+  const checkedTasks = resData
+    ? resData.filter((task) => task.completed)?.length
+    : 0;
+  const progress =
+    resData?.length > 0 ? (checkedTasks / resData?.length) * 100 : 0;
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <div style={{ display: "flex", gap: "50px" }}>
-          <div>
-            <LinearProgress variant="determinate" value={progress} />
-
+    <Stack
+      justifyContent="space-around"
+      alignItems="center"
+      sx={{ textAlign: "center", pb: 8, width: "95%", margin: "0 auto" }}
+      spacing={5}
+    >
+      {loading && <Loading />}
+      {error && (
+        <DialogMessage
+          title="שגיאה!"
+          btnValue="אוקיי!"
+          open={open}
+          onClose={() => setOpen(false)}
+        >
+          <Typography variant="body1" color="grey">
+            {error}
+          </Typography>
+        </DialogMessage>
+      )}
+      <Stack
+        spacing={5}
+        justifyContent="space-around"
+        alignItems="center"
+        sx={{ width: "80%" }}
+      >
+        <Typography variant="h3" sx={{ fontWeight: "bold" }}>
+          המשימות שלכם
+        </Typography>
+        <LinearProgress
+          variant="determinate"
+          value={progress}
+          sx={{ width: "100%" }}
+        />
+        <List sx={{ width: "100%" }}>
+          {resData?.map((task, index) => (
+            <ListItem key={task.taskID}>
+              <Checkbox
+                checked={task.completed}
+                onChange={() => handleCheck(index)}
+              />
+              <ListItemText primary={task.taskName} />
+              <ListItemSecondaryAction>
+                <IconButton
+                  edge="end"
+                  onClick={() => setCurrentTaskID(task.taskID)}
+                >
+                  <PlaylistAddCheckIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+        <Stack direction="row" spacing={2}>
+          <TextField
+            value={newTask}
+            onChange={(e) => setNewTask(e.target.value)}
+            label="משימה חדשה"
+          />
+          <Button
+            onClick={handleAddTask}
+            variant="contained"
+            sx={{ height: "fit-content" }}
+          >
+            <AddIcon />
+            הוסף משימה
+          </Button>
+        </Stack>
+        {currentTask && (
+          <Stack spacing={2} sx={{ width: "100%" }}>
+            <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+              {currentTask.taskName}
+            </Typography>
+            <TextField multiline rows={4} placeholder="הערות" fullWidth />
+            <Typography variant="h5">תתי משימות</Typography>
             <List>
-              {tasks.map((task, index) => (
-                <ListItem key={index}>
-                  <Checkbox
-                    checked={task.completed}
-                    onChange={() => handleCheck(index)}
-                  />
-                  <ListItemText primary={task.title} />
-                  <ListItemSecondaryAction>
-                    <IconButton edge="end" onClick={() => setCurrentSubTask(task)}>
-                      <PlaylistAddCheckIcon />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              ))}
-            </List>
-
-            <input value={newTask} onChange={(e) => setNewTask(e.target.value)} />
-            <Button onClick={handleAddTask} variant="contained" style={{ margin: "10px", height: "23px" }}>
-              <AddIcon />
-              הוסף משימה חדשה
-            </Button>
-          </div>
-
-          {currentSubTask && (
-            <div>
-              <h3 style={{ textDecoration: "underline" }}>
-                {currentSubTask.title}:
-              </h3>
-              <h3>הערות</h3>
-              <TextField multiline rows={4} placeholder="הערות" />
-
-              <h3>תתי משימות</h3>
-              {currentSubTask.subtasks &&
-                currentSubTask.subtasks.map((subtask, idx) => (
+              {currentTask.subTasks &&
+                currentTask.subTasks.map((subtask, idx) => (
                   <ListItem key={idx}>
-                    <ListItemText primary={subtask.title} />
+                    <ListItemText primary={subtask.subTaskName} />
                   </ListItem>
                 ))}
-              <input
+            </List>
+            <Stack direction="row" spacing={2}>
+              <TextField
                 value={newSubTask}
                 onChange={(e) => setNewSubTask(e.target.value)}
+                label="תת משימה חדשה"
               />
-              <Button onClick={handleAddSubTask} variant="contained" style={{ margin: "10px", height: "23px" }}>
+              <Button
+                onClick={handleAddSubTask}
+                variant="contained"
+                sx={{ height: "fit-content" }}
+              >
                 <AddIcon />
-                הוסף תת משימה חדשה
+                הוסף תת משימה
               </Button>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+            </Stack>
+          </Stack>
+        )}
+      </Stack>
+    </Stack>
   );
 }
 
