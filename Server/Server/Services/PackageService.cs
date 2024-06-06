@@ -201,11 +201,19 @@ namespace Server.Services
                     coupleWithData.Budget
                 );
 
-                //* Step 3: Calculate total cost and total score of the best combination
+                if (bestCombination.Count == 0)
+                {
+                    return null;
+                }
+
+                //* Step 3: Sort the best combination according to predefined order
+                SortBestCombination(bestCombination);
+
+                //* Step 4: Calculate total cost and total score of the best combination
                 int totalCost = CalculateTotalCost(bestCombination);
                 double totalScore = CalculateTotalScore(bestCombination, coupleWithData.TypeWeights);
 
-                //* Step 4: Create and populate the Package object
+                //* Step 5: Create and populate the Package object
                 Package suppliersPackage = new Package
                 {
                     SelectedSuppliers = bestCombination,
@@ -215,10 +223,10 @@ namespace Server.Services
                     AlternativeSuppliers = new Dictionary<string, List<Supplier>>() // Initialize the dictionary
                 };
 
-                //* Step 5: Populate the top 3 highest-rated suppliers for each type in the Package object
+                //* Step 6: Populate the top 3 highest-rated suppliers for each type in the Package object
                 PopulateAlternativeSuppliers(suppliersPackage, suppliersList, coupleWithData.Budget);
 
-                //* Step 6: Return the Package
+                //* Step 7: Return the Package
                 return suppliersPackage;
             }
             catch (Exception ex)
@@ -227,7 +235,6 @@ namespace Server.Services
                 throw new Exception("An error occurred while generating the package in method GeneratePackage:" + ex.Message);
             }
         }
-
 
 
 
@@ -260,6 +267,8 @@ namespace Server.Services
                     bestCombination = combination;
                 }
             }
+
+
 
             // return the best found combination of suppliers
             return bestCombination;
@@ -447,6 +456,15 @@ namespace Server.Services
             // Check if the new total cost remains within the budget
             return (newTotalCost <= budget);
         }
+
+        // Method to sort the best combination list according to predefined order of vendor types
+        private static void SortBestCombination(List<Supplier> bestCombination)
+        {
+            string[] vendors = { "venue", "dj", "photographer", "dress", "rabbi", "hair and makeup" };
+            bestCombination.Sort((s1, s2) => Array.IndexOf(vendors, s1.SupplierType).CompareTo(Array.IndexOf(vendors, s2.SupplierType)));
+        }
+
+
 
 
     }

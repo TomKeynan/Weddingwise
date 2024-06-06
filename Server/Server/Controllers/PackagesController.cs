@@ -39,6 +39,7 @@ namespace Server.Controllers
                     }
 
                     // Generate the package
+
                     Couple coupleWithPackage = Package.GetPackage(coupleWithData, questionnaireAnswers);
 
                     return Ok(coupleWithPackage); // Return 200 OK with the generated package
