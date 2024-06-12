@@ -38,9 +38,10 @@ function TasksListComp() {
     }
   }, [coupleData]);
 
-  const fetchTasks = async () => {
-    await sendData(`/Tasks/getTasks?coupleEmail=${coupleData.email}`, "GET");
-  };
+    const fetchTasks = async () => {
+      await sendData(`/Tasks/getTasks?coupleEmail=${coupleData.email}`, "GET");
+    };
+ 
 
   const handleAddTask = async () => {
     try {

@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
+import { Box } from "@mui/material";
+import { AppContext } from "../store/AppContext";
+import TaskListNoUser from "../components/Planner/TasksPage/TaskListNoUser";
 import TasksListComp from "../components/Planner/TasksPage/TaskListComp";
 
-
-
 function Tasks() {
+  const { coupleData } = useContext(AppContext);
+
   return (
-    <div>
-      <TasksListComp />
-      
-    </div>
+    <Box sx={{ minHeight: "inherit" }}>
+      {coupleData === null ? (
+        <TaskListNoUser />
+      ) : (
+        <TasksListComp />
+      )}
+    </Box>
   );
 }
 
