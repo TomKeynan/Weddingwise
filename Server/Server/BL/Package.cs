@@ -112,6 +112,13 @@ namespace Server.BL
             coupleWithData.TypeWeights = PackageService.CalculateVendorWeights(questionnaireAnswers);
             // Generate a package for the couple
             coupleWithData.Package = PackageService.GeneratePackage(coupleWithData);
+
+            // If neither were successful, return a null couple
+            if (coupleWithData.TypeWeights == null || coupleWithData.Package == null)
+            {
+                return null;
+            }
+
             return coupleWithData;
         }
     }

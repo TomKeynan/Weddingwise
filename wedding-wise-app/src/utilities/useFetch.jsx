@@ -51,11 +51,13 @@ function useFetch() {
       }
       var responseData = await response.json();
       setResData(responseData);
-    } catch (error) {
+    }
+    catch (error) {
       if (!error?.response) {
         setError(500);
       } else setError(responseData);
-    } finally {
+    }
+    finally {
       setLoading(false);
     }
   }

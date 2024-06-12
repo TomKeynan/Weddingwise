@@ -1,4 +1,5 @@
 ﻿using Server.BL;
+using Server.Services;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -6,27 +7,6 @@ namespace Server.DAL
 {
     public class DBServicesPackage
     {
-        //----------------------------------------------------------------------------------------------------------
-        // This method creates a connection to the database according to the connectionString name in the web.config 
-        //----------------------------------------------------------------------------------------------------------
-        public static SqlConnection Connect()
-        {
-            // read the connection string fromm the web.config file
-            IConfigurationRoot configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-            string cStr = configuration.GetConnectionString("myProjDB");
-            // create the connection to the db
-            SqlConnection con = new SqlConnection(cStr);
-            con.Open();
-            return con;
-        }
-
-        //---------------------------------------------------------------------------------------------------------|
-        //---------------------------------------------------------------------------------------------------------|
-        //---------------------------------------------------------------------------------------------------------|
-
-
-
-
 
 
 
@@ -44,28 +24,22 @@ namespace Server.DAL
                 string actionString = packageApprovalData.ActionString;
 
                 // Determine stored procedure names based on action string
-                string spName1;
-                string spName2;
-
-                if (actionString == "Insert")
-                {
-                    spName1 = "SPInsertPackageDetails";
-                    spName2 = "SPInsertCoupleTypeWeights";
-                }
-                else // If actionString is "Update"
-                {
-                    spName1 = "SPUpdatePackageDetails";
-                    spName2 = "SPUpdateCoupleTypeWeights";
-                }
+                string spName1 = actionString == "Insert" ? "SPInsertPackageDetails" : "SPUpdatePackageDetails";
+                string spName2 = actionString == "Insert" ? "SPInsertCoupleTypeWeights" : "SPUpdateCoupleTypeWeights";
 
                 // Extract the couple and package from the data
                 Couple couple = packageApprovalData.Couple;
                 Package package = couple.Package;
 
-                using (SqlConnection con = Connect())
+                using (SqlConnection con = DBServiceHelper.Connect())
                 {
                     // Step one: Insert or update the package details
-                    using (SqlCommand cmd = CreateInsertOrUpdatePackageDetailsSP(spName1, con, package))
+                    using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, spName1, new Dictionary<string, object>
+                    {
+                        { "@couple_email", package.CoupleEmail },
+                        { "@total_cost", package.TotalCost },
+                        { "@total_score", package.TotalScore }
+                    }))
                     {
                         successIndicator = cmd.ExecuteNonQuery(); // Returns the number of rows affected by the command
                     }
@@ -102,22 +76,7 @@ namespace Server.DAL
             }
         }
 
-        private SqlCommand CreateInsertOrUpdatePackageDetailsSP(string spName, SqlConnection con, Package package)
-        {
-            SqlCommand cmd = new SqlCommand
-            {
-                Connection = con,
-                CommandText = spName,
-                CommandTimeout = 10,
-                CommandType = System.Data.CommandType.StoredProcedure
-            };
 
-            cmd.Parameters.AddWithValue("@couple_email", package.CoupleEmail);
-            cmd.Parameters.AddWithValue("@total_cost", package.TotalCost);
-            cmd.Parameters.AddWithValue("@total_score", package.TotalScore);
-
-            return cmd;
-        }
 
 
 
@@ -128,26 +87,33 @@ namespace Server.DAL
         {
             try
             {
-
                 int suppliersInsertResult = 0;  // Used to monitor that all the suppliers of the package were inserted.
 
-                using (SqlConnection con2 = Connect())
+                using (SqlConnection con = DBServiceHelper.Connect())
                 {
                     // If the actionString is "Update", delete existing suppliers from the package. Annihilate them!
                     if (actionString == "Update")
                     {
-                        using (SqlCommand cmd2 = CreateDeletePackageSuppliersSP("SPDeletePackageSuppliers", con2, coupleEmail))
+                        using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPDeletePackageSuppliers", new Dictionary<string, object>
                         {
-                            int numEffected = cmd2.ExecuteNonQuery();
+                            { "@couple_email", coupleEmail }
+                        }))
+                        {
+                            int numEffected = cmd.ExecuteNonQuery();
                         }
                     }
 
                     // Insert selected suppliers
                     foreach (var supplier in selectedSuppliers)
                     {
-                        using (SqlCommand cmd2 = CreateInsertPackageSuppliersSP("SPInsertPackageSupplier", con2, supplier.SupplierEmail, coupleEmail, true))
+                        using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPInsertPackageSupplier", new Dictionary<string, object>
                         {
-                            suppliersInsertResult += cmd2.ExecuteNonQuery();
+                            { "@supplier_email", supplier.SupplierEmail },
+                            { "@couple_email", coupleEmail },
+                            { "@is_selected", true } // Assuming is_selected is a boolean value
+                        }))
+                        {
+                            suppliersInsertResult += cmd.ExecuteNonQuery();
                         }
                     }
 
@@ -156,9 +122,14 @@ namespace Server.DAL
                     {
                         foreach (var supplier in typeList.Value)
                         {
-                            using (SqlCommand cmd2 = CreateInsertPackageSuppliersSP("SPInsertPackageSupplier", con2, supplier.SupplierEmail, coupleEmail, false))
+                            using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPInsertPackageSupplier", new Dictionary<string, object>
                             {
-                                suppliersInsertResult += cmd2.ExecuteNonQuery();
+                                { "@supplier_email", supplier.SupplierEmail },
+                                { "@couple_email", coupleEmail },
+                                { "@is_selected", false } // Assuming is_selected is a boolean value
+                            }))
+                            {
+                                suppliersInsertResult += cmd.ExecuteNonQuery();
                             }
                         }
                     }
@@ -176,37 +147,10 @@ namespace Server.DAL
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while updating type counts: " + ex.Message);
+                throw new Exception("An error occurred: " + ex.Message);
             }
         }
 
-
-        private SqlCommand CreateDeletePackageSuppliersSP(string spName, SqlConnection con, string coupleEmail)
-        {
-            SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            cmd.CommandText = spName;
-            cmd.CommandTimeout = 10;
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@couple_email", coupleEmail);
-
-            return cmd;
-        }
-
-        private SqlCommand CreateInsertPackageSuppliersSP(string spName, SqlConnection con, string supplierEmail, string coupleEmail, bool isSelected)
-        {
-            SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            cmd.CommandText = spName;
-            cmd.CommandTimeout = 10;
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-            cmd.Parameters.AddWithValue("@supplier_email", supplierEmail);
-            cmd.Parameters.AddWithValue("@couple_email", coupleEmail);
-            cmd.Parameters.AddWithValue("@is_selected", isSelected); // Assuming is_selected is a boolean value
-
-            return cmd;
-        }
 
 
 
@@ -215,21 +159,26 @@ namespace Server.DAL
         //--------------------------------------------------------------------------------------------------------------------
         // This method inserts or updates couple's type weights
         //--------------------------------------------------------------------------------------------------------------------
-        public int InsertOrUpdateCoupleTypeWeights(Dictionary<string, double> typeWeights, string coupleEmail, string spName)
+        private int InsertOrUpdateCoupleTypeWeights(Dictionary<string, double> typeWeights, string coupleEmail, string spName)
         {
             int successIndicator = 0;
             try
             {
-                using (SqlConnection con3 = Connect())
+                using (SqlConnection con = DBServiceHelper.Connect())
                 {
                     // Iterate through each key-value pair in the typeWeights dictionary
                     foreach (var kvp in typeWeights)
                     {
                         // Create a SqlCommand object for executing the stored procedure
-                        using (SqlCommand cmd3 = CreateInsertOrUpdateCoupleTypeWeightsSP(spName, con3, coupleEmail, kvp.Key, kvp.Value))
+                        using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, spName, new Dictionary<string, object>
+                        {
+                            { "@couple_email", coupleEmail },
+                            { "@supplier_type_name", kvp.Key },
+                            { "@type_weight", kvp.Value }
+                        }))
                         {
                             // Execute the stored procedure and increment successIndicator
-                            successIndicator += cmd3.ExecuteNonQuery();
+                            successIndicator += cmd.ExecuteNonQuery();
                         }
                     }
                 }
@@ -237,7 +186,7 @@ namespace Server.DAL
             catch (Exception ex)
             {
                 // Handle the exception appropriately
-                throw new Exception("An error occurred while inserting or updating type weights: " + ex.Message);
+                throw new Exception("An error occurred: " + ex.Message);
             }
 
             // Return 1 if all type weights were successfully inserted or updated; otherwise, return 0
@@ -245,22 +194,6 @@ namespace Server.DAL
         }
 
 
-        private SqlCommand CreateInsertOrUpdateCoupleTypeWeightsSP(string spName, SqlConnection con, string coupleEmail, string supplierType, double typeWeight)
-
-        {
-
-            SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            cmd.CommandText = spName;
-            cmd.CommandTimeout = 10;
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-            cmd.Parameters.AddWithValue("@couple_email", coupleEmail);
-            cmd.Parameters.AddWithValue("@supplier_type_name", supplierType);
-            cmd.Parameters.AddWithValue("@type_weight", typeWeight);
-
-            return cmd;
-        }
 
 
         //--------------------------------------------------------------------------------------------
@@ -274,10 +207,13 @@ namespace Server.DAL
             try
             {
                 // Open a database connection.
-                using (SqlConnection con = Connect())
+                using (SqlConnection con = DBServiceHelper.Connect())
                 {
                     // Create a SqlCommand to execute the stored procedure to retrieve package details.
-                    using (SqlCommand cmd = CreateReadPackageDetailsWithSP(con, "SPGetPackageDetails", email))
+                    using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPGetPackageDetails", new Dictionary<string, object>
+            {
+                { "@CoupleEmail", email }
+            }))
                     {
                         // Execute the SqlCommand and obtain a SqlDataReader.
                         using (SqlDataReader dataReader = cmd.ExecuteReader())
@@ -306,12 +242,15 @@ namespace Server.DAL
                         Dictionary<string, List<Supplier>> alternativeSuppliers = new Dictionary<string, List<Supplier>>();
 
                         // Create a SqlCommand to execute the stored procedure to retrieve selected suppliers.
-                        using (SqlCommand selectedCmd = CreateReadPackageSuppliersEmailsWithSP(con, "SPGetSelectedPackageSuppliers", package.PackageId))
+                        using (SqlCommand selectedCmd = DBServiceHelper.CreateSqlCommand(con, "SPGetSelectedPackageSuppliers", new Dictionary<string, object>
+                {
+                    { "@package_id", package.PackageId }
+                }))
                         {
                             // Execute the SqlCommand and obtain a SqlDataReader.
                             using (SqlDataReader selectedReader = selectedCmd.ExecuteReader())
                             {
-                                //* Step 2: Retrieve the selected suppliers from the datebase using the BuildSuppliers method from the DBservicesSupplier
+                                //* Step 2: Retrieve the selected suppliers from the database using the BuildSuppliers method from the DBservicesSupplier
 
                                 // Construct selected suppliers using dataReader.
                                 DBServicesSupplier dBServicesSupplier = new DBServicesSupplier();
@@ -320,12 +259,15 @@ namespace Server.DAL
                         }
 
                         // Create a SqlCommand to execute the stored procedure to retrieve alternative suppliers.
-                        using (SqlCommand alternativeCmd = CreateReadPackageSuppliersEmailsWithSP(con, "SPGetAlternativePackageSuppliers", package.PackageId))
+                        using (SqlCommand alternativeCmd = DBServiceHelper.CreateSqlCommand(con, "SPGetAlternativePackageSuppliers", new Dictionary<string, object>
+                {
+                    { "@package_id", package.PackageId }
+                }))
                         {
                             // Execute the SqlCommand and obtain a SqlDataReader.
                             using (SqlDataReader alternativeReader = alternativeCmd.ExecuteReader(CommandBehavior.CloseConnection))
                             {
-                                //* Step 3: Retrieve the alternative suppliers from the datebase using the BuildSuppliers method from the DBservicesSupplier
+                                //* Step 3: Retrieve the alternative suppliers from the database using the BuildSuppliers method from the DBservicesSupplier
 
                                 // Construct alternative suppliers using dataReader.
                                 DBServicesSupplier dBServicesSupplier = new DBServicesSupplier();
@@ -348,7 +290,7 @@ namespace Server.DAL
                             }
                         }
 
-                        //* Step 5: Assign those beautiful supplier into the relevant properties. 
+                        //* Step 5: Assign those beautiful suppliers into the relevant properties. 
 
                         package.SelectedSuppliers = selectedSuppliers;
                         package.AlternativeSuppliers = alternativeSuppliers;
@@ -361,47 +303,12 @@ namespace Server.DAL
                 throw new Exception("An error occurred while retrieving package details in the GetPackageFromDB method: " + ex.Message);
             }
 
-            //* Step 6:  Return the retrieved package object (whether its empty or not).
+            //* Step 6: Return the retrieved package object (whether it's empty or not).
             return package;
         }
 
 
 
-        private SqlCommand CreateReadPackageDetailsWithSP(SqlConnection con, String spName, string email)
-        {
-            SqlCommand cmd = new SqlCommand(); // create the command object
-
-            cmd.Connection = con;              // assign the connection to the command object
-
-            cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
-
-            cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
-
-            cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
-
-            cmd.Parameters.AddWithValue("@CoupleEmail", email);
-
-            return cmd;
-        }
-
-
-
-        private SqlCommand CreateReadPackageSuppliersEmailsWithSP(SqlConnection con, String spName, int PackageId)
-        {
-            SqlCommand cmd = new SqlCommand(); // create the command object
-
-            cmd.Connection = con;              // assign the connection to the command object
-
-            cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
-
-            cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
-
-            cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
-
-            cmd.Parameters.AddWithValue("@package_id", PackageId);
-
-            return cmd;
-        }
 
 
 
@@ -416,14 +323,17 @@ namespace Server.DAL
                 int successIndicator = 0;
                 string[] vendors = { "venue", "dj", "photographer", "dress", "rabbi", "hair and makeup" };
 
-                using (SqlConnection con3 = Connect())
+                using (SqlConnection con = DBServiceHelper.Connect())
                 {
                     // Update counts in the database
                     foreach (string vendor in typesReplacements)
                     {
-                        using (SqlCommand cmd3 = CreateUpdateTypeCountsSP("SPUpdateTypeCount", con3, vendor))
+                        using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPUpdateTypeCount", new Dictionary<string, object>
                         {
-                            successIndicator += cmd3.ExecuteNonQuery();
+                            { "@supplier_type_name", vendor }
+                        }))
+                        {
+                            successIndicator += cmd.ExecuteNonQuery();
                         }
                     }
                 }
@@ -433,25 +343,9 @@ namespace Server.DAL
             }
             catch (Exception ex)
             {
-                // Throw a new exception with the desired error message.
-                throw new Exception("An error occurred while updating replacement counts: " + ex.Message);
+                throw new Exception("An error occurred: " + ex.Message);
             }
         }
-
-
-        private SqlCommand CreateUpdateTypeCountsSP(string spName, SqlConnection con, string supplierType)
-        {
-            SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            cmd.CommandText = spName;
-            cmd.CommandTimeout = 10;
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@supplier_type_name", supplierType);
-
-            return cmd;
-        }
-
-
 
 
 
@@ -466,10 +360,16 @@ namespace Server.DAL
             try
             {
                 // Open a database connection.
-                using (SqlConnection con = Connect())
+                using (SqlConnection con = DBServiceHelper.Connect())
                 {
                     // Create a SqlCommand to execute the stored procedure.
-                    using (SqlCommand cmd = CreateReadTopSuppliersWithSP(con, "SPGetSuppliersForPackage", couple))
+                    using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPGetSuppliersForPackage", new Dictionary<string, object>
+                    {
+                        { "@desiredDate", couple.DesiredDate },
+                        { "@desiredRegion", couple.DesiredRegion },
+                        { "@maxPrice", couple.Budget },
+                        { "@minCapacity", couple.NumberOfInvitees }
+                    }))
                     {
                         // Execute the SqlCommand and obtain a SqlDataReader.
                         using (SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
@@ -491,28 +391,6 @@ namespace Server.DAL
             return suppliers;
         }
 
-        private SqlCommand CreateReadTopSuppliersWithSP(SqlConnection con, String spName, Couple couple)
-        {
-            SqlCommand cmd = new SqlCommand(); // Create the command object
-
-            cmd.Connection = con;              // Assign the connection to the command object
-
-            cmd.CommandText = spName;      // Can be Select, Insert, Update, Delete 
-
-            cmd.CommandTimeout = 10;           // Time to wait for the execution. The default is 30 seconds
-
-            cmd.CommandType = CommandType.StoredProcedure; // The type of the command, can also be text
-
-            // Add parameters
-            cmd.Parameters.AddWithValue("@desiredDate", couple.DesiredDate);
-            cmd.Parameters.AddWithValue("@desiredRegion", couple.DesiredRegion);
-            cmd.Parameters.AddWithValue("@maxPrice", couple.Budget);
-            cmd.Parameters.AddWithValue("@minCapacity", couple.NumberOfInvitees);
-
-            return cmd;
-        }
-
-
 
         //--------------------------------------------------------------------------------------------------
         // This method retrieves the count of how many times a supplier from the package has been replaced
@@ -525,10 +403,10 @@ namespace Server.DAL
             try
             {
                 // Open a database connection.
-                using (SqlConnection con = Connect())
+                using (SqlConnection con = DBServiceHelper.Connect())
                 {
                     // Create a SqlCommand to execute the stored procedure.
-                    using (SqlCommand cmd = CreateReadTypeCountsWithSP(con, "SPGetTypeCounts"))
+                    using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPGetTypeCounts", null))
                     {
                         // Execute the SqlCommand and obtain a SqlDataReader.
                         using (SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
@@ -554,22 +432,7 @@ namespace Server.DAL
             return replacementCounts;
         }
 
-        private SqlCommand CreateReadTypeCountsWithSP(SqlConnection con, string spName)
-        {
 
-            SqlCommand cmd = new SqlCommand(); // create the command object
-
-            cmd.Connection = con;              // assign the connection to the command object
-
-            cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
-
-            cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
-
-            cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
-
-            return cmd;
-
-        }
 
     }
 }

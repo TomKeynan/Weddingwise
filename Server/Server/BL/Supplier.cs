@@ -197,10 +197,14 @@ namespace Server.BL
             return dbs.GetTopVenuesPerRegion();
         }
 
+        public static List<Supplier> GetTopSuppliers()
+        {
+            // Create an instance of DBServicesSupplier to interact with the database
+            DBServicesSupplier dbs = new DBServicesSupplier();
+            // Call the method to get top suppliers from the database
+            return dbs.GetTopSuppliersByType();
+        }
 
-
-
-        //  ****************   Currently not in use   ****************  \\
 
         //Inserts the current supplier into the database.
         public int InsertSupplier()
@@ -209,6 +213,21 @@ namespace Server.BL
             DBServicesSupplier dBServicesSupplier = new DBServicesSupplier();
             // Call the method to insert the current supplier into the database
             return dBServicesSupplier.InsertSupplier(this);
+        }
+
+
+        // FindCouple: Method to find couple data from the database based on email and password
+        public static Supplier FindSupplier(string email, string password)
+        {
+            DBServicesSupplier dBServicesSupplier = new DBServicesSupplier();
+            return dBServicesSupplier.GetSupplier(email, password);
+        }
+
+        // UpdateCouple: Method to update couple data in the database
+        public int UpdateCouple()
+        {
+            DBServicesSupplier dBServicesSupplier = new DBServicesSupplier();
+            return dBServicesSupplier.UpdateSupplier(this);
         }
 
     }
