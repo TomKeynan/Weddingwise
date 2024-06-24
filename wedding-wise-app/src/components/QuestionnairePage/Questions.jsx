@@ -18,10 +18,6 @@ export default function Questions() {
   const { isLoading, coupleAnswers, handleCreateNewPackage } =
     useContext(QuestionsContext);
 
-  // useEffect(() => {
-  //   sessionStorage.setItem("offeredCouple", JSON.stringify(data));
-  // }, [data]);
-
   const screenAboveSM = useMediaQuery("(min-width: 500px)");
   const [page, setPage] = useState(1);
 
@@ -37,22 +33,6 @@ export default function Questions() {
     setPage((prev) => prev - 1);
   }
 
-  // const c = {
-  //   Email: "1",
-  //   Password: "zdfvxdcv",
-  //   Partner1Name: "Adamdzxcsad",
-  //   Partner2Name: "Beyonczxczce",
-  //   PhoneNumber: "000001",
-  //   DesiredDate: "2024-07-29",
-  //   DesiredRegion: "רמת הגולן",
-  //   Budget: Number("10000000"),
-  //   NumberOfInvitees: Number("350"),
-  // };
-
-  // const p = {
-  //   couple: c,
-  //   questionnaireAnswers: [1, 5, 2, 3, 2, 5, 2, 3, 5, 3, 2, 5, 2, 4, 4],
-  // };
 
   return (
     <Stack spacing={4} justifyContent="center" alignItems="center" px={4}>

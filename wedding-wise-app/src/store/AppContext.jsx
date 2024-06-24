@@ -3,7 +3,9 @@ import { DateClientFormat } from "../utilities/functions";
 
 export const AppContext = createContext({
   coupleData: {},
+  offeredPackage: {},
   setCoupleData: () => {},
+  setOfferedPackage: () => {},
   updateCoupleData: () => {},
   invitees: [],
   setInvitees: () => {},
@@ -13,35 +15,46 @@ export const AppContext = createContext({
 
 export default function AppContextProvider({ children }) {
   const [coupleData, setCoupleData] = useState(null);
+
+  const [offeredPackage, setOfferedPackage] = useState(null);
+
   const [invitees, setInvitees] = useState([]);
 
   useEffect(() => {
-    setCoupleData(JSON.parse(sessionStorage.getItem("currentUser")));
+    setCoupleData(JSON.parse(sessionStorage.getItem("currentCouple")));
+    setOfferedPackage(JSON.parse(localStorage.getItem("offeredPackage")));
   }, []);
 
   function updateCoupleData(data) {
-    if (data) {
-      const formattedDate = DateClientFormat(data.desiredDate);
-      data.desiredDate = formattedDate;
-      delete data.password;
-      sessionStorage.setItem("currentUser", JSON.stringify(data));
-      setCoupleData({ ...data });
-
+    if (data.package !== null) {
+      const packageAndTypeWeights = {
+        ...data.package,
+        typeWeights: data.typeWeights,
+      };
+      localStorage.setItem(
+        "offeredPackage",
+        JSON.stringify(packageAndTypeWeights)
+      );
+      setOfferedPackage(packageAndTypeWeights);
     }
+    sessionStorage.setItem("currentCouple", JSON.stringify(data));
+    setCoupleData({ ...data });
   }
 
   function addInvitee(invitee) {
-    setInvitees(prevInvitees => [...prevInvitees, invitee]);
+    setInvitees((prevInvitees) => [...prevInvitees, invitee]);
   }
 
   function removeInvitee(index) {
-    setInvitees(prevInvitees => prevInvitees.filter((_, i) => i !== index));
+    setInvitees((prevInvitees) => prevInvitees.filter((_, i) => i !== index));
   }
 
   const appContext = {
     coupleData,
+    offeredPackage,
     updateCoupleData,
     setCoupleData,
+    setOfferedPackage,
     invitees,
     setInvitees,
     addInvitee,

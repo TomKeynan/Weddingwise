@@ -20,14 +20,22 @@ function Navbar({ isLayout = true }) {
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-  const { coupleData, setCoupleData } = useContext(AppContext);
+  const { coupleData, setCoupleData, setOfferedPackage } =
+    useContext(AppContext);
 
-  const pages = [
-    { route: "/", text: "דף הבית" },
-    { route: "/profile", text: "פרופיל" },
-    { route: "/package", text: "חבילה" },
-    { route: "/noPathYet", text: "Planner" },
-  ];
+  const pages = coupleData
+    ? [
+        { route: "/", text: "דף הבית" },
+        { route: "/profile", text: "פרופיל" },
+        { route: "/package", text: "חבילה" },
+        { route: "/noPathYet", text: "Planner" },
+      ]
+    : [
+        { route: "/", text: "דף הבית" },
+        { route: "/package", text: "חבילה" },
+        { route: "/noPathYet", text: "Planner" },
+      ];
+
   const settings = [
     { route: "/login", text: "התחבר" },
     { route: "/sign-up", text: "צור חשבון" },
@@ -54,8 +62,10 @@ function Navbar({ isLayout = true }) {
 
   function handleClick(linkText) {
     if (linkText === "התנתק") {
-      sessionStorage.setItem("currentUser", JSON.stringify(null));
+      sessionStorage.setItem("currentCouple", JSON.stringify(null));
       setCoupleData(null);
+      localStorage.setItem("offeredPackage", JSON.stringify(null));
+      setOfferedPackage(null);
     }
   }
 
@@ -68,23 +78,27 @@ function Navbar({ isLayout = true }) {
       textDecoration: isActive ? "underline" : "none",
       display: "block",
       transform: isActive ? "translateY(-5px)" : "translateY(0px)",
+      paddingRight: "10px",
+      paddingLeft: "10px",
     };
   }
 
   function navLinkHomeStyles({ isActive }) {
     return {
       fontWeight: isActive ? "bold" : "500",
-      fontSize: isActive ? 26 : 24,
+      fontSize: isActive ? 24 : 22,
       color: isActive ? customTheme.palette.primary.light : "white",
       textDecoration: isActive ? "underline" : "none",
       display: "block",
       transform: isActive ? "translateY(-5px)" : "translateY(0px)",
+      paddingRight: "8px",
+      paddingLeft: "8px",
     };
   }
 
   return (
     <AppBar sx={isLayout ? appBarForLayoutSX : appBarForHomeSX}>
-      <Container maxWidth="xl" sx={{ p: 0 }}>
+      <Container maxWidth="xxl" sx={{ p: 0 }}>
         <Toolbar disableGutters>
           {/*  layout for screen devices above 900px(md) */}
           {screenAboveMD && (
@@ -98,7 +112,7 @@ function Navbar({ isLayout = true }) {
               }}
             >
               {/* Settings Menu */}
-              <Box sx={{ flexGrow: 1 }}>
+              <Box sx={{ width: "25%" }}>
                 <Tooltip title="התחברות / הרשמה">
                   <IconButton onClick={handleOpenUserMenu} disableRipple>
                     {/* Icon */}
@@ -162,9 +176,9 @@ function Navbar({ isLayout = true }) {
               <Stack
                 direction="row"
                 alignItems="center"
-                justifyContent="space-evenly"
-                sx={{ gap: 4 }}
+                justifyContent="center"
                 flexGrow={1}
+                sx={{}}
               >
                 {pages.map((page) => (
                   <NavLink
@@ -179,16 +193,19 @@ function Navbar({ isLayout = true }) {
               </Stack>
 
               {/* Logo  + Icon */}
-              <Stack direction="row-reverse" alignItems="center" flexGrow={1}>
+              <Stack
+                direction="row-reverse"
+                alignItems="center"
+                sx={{ width: "30%" }}
+              >
                 <Typography
-                  variant="h6"
                   noWrap
                   component="a"
                   href="#"
                   sx={{
                     fontFamily: customTheme.font.main,
                     fontWeight: "bold",
-                    fontSize: 28,
+                    fontSize: 24,
                     letterSpacing: ".2rem",
                     color: "inherit",
                     textDecoration: "none",
@@ -259,6 +276,7 @@ function Navbar({ isLayout = true }) {
                             fontWeight: "bold",
                             fontSize: 16,
                             color: "#000",
+                            lineHeight: 2.5,
                           }}
                         >
                           {page.text}
@@ -426,7 +444,7 @@ const menuItemSX = {
   "&.MuiMenuItem-root": {
     display: "flex",
     width: 150,
-    px: 0,
+    p: 0,
   },
 };
 
@@ -434,6 +452,7 @@ const menuLinkStyle = { textDecoration: "none", flexGrow: 1 };
 
 const typographyLinkSX = {
   fontWeight: "bold",
+  lineHeight: 2.5,
   fontSize: 16,
   color: "#000",
   textAlign: "center",

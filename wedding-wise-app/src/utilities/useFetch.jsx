@@ -36,6 +36,7 @@ function useFetch() {
   }
 
   async function sendData(endpoint, method, bodyData) {
+    debugger;
     try {
       setLoading(true);
       const response = await fetch(`${baseUrl}${endpoint}`, {
@@ -46,23 +47,27 @@ function useFetch() {
         },
         body: JSON.stringify(bodyData),
       });
+
       if (!response.ok) {
         return setError(response.status);
       }
-      var responseData = await response.json();
-      setResData(responseData);
-    }
-    catch (error) {
-      if (!error?.response) {
-        setError(500);
-      } else setError(responseData);
-    }
-    finally {
+      var responseData;
+      const textRes = await response.text();
+      if (!textRes) {
+        return setResData(response.status);
+      } else {
+        responseData = JSON.parse(textRes);
+        setResData(responseData);
+      }
+    } catch (error) {
+      if (!error?.response) setError(500);
+      else setError(responseData);
+    } finally {
       setLoading(false);
     }
   }
 
-  return { resData, loading, error, getData, sendData };
+  return { resData, loading, error, setError, getData, sendData };
 }
 
 export default useFetch;

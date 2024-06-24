@@ -33,7 +33,7 @@ const StepThree = () => {
     <Grid
       container
       spacing={2}
-      sx={{ width: { xs: 250, md: 600 }, margin: "0 auto" }}
+      sx={{ width: { xs: 270, md: 600 }, margin: "0 auto" }}
     >
       <Grid item xs={12} md={6}>
         <TextInput

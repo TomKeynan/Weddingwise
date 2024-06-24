@@ -1,7 +1,7 @@
 import React, { useState, createContext, useContext, useEffect } from "react";
 import useFetch from "../utilities/useFetch";
 import { AppContext } from "./AppContext";
-import { capitalizeKeys, dateTimeServerFormat } from "../utilities/functions";
+import { capitalizeKeys } from "../utilities/functions";
 import { useNavigate } from "react-router-dom";
 
 export const QuestionsContext = createContext({
@@ -11,7 +11,7 @@ export const QuestionsContext = createContext({
   handleCreateNewPackage: () => {},
 });
 
-const initialArray = Array.from({ length: 15 }, () => 0);
+const initialArray = Array.from({ length: 15 }, () => 4);
 
 export default function QuestionsContextProvider({ children }) {
   const { sendData, resData, loading } = useFetch();
@@ -34,8 +34,6 @@ export default function QuestionsContextProvider({ children }) {
 
   function handleCreateNewPackage() {
     let newUserData = capitalizeKeys(coupleData);
-    newUserData.DesiredDate = dateTimeServerFormat(newUserData.DesiredDate);
-    console.log(newUserData);
     sendData("/Packages/getPackage", "POST", {
       couple: newUserData,
       questionnaireAnswers: coupleAnswers,

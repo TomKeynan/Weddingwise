@@ -10,7 +10,7 @@ export function validationCheck(event) {
   else return { name: key, isValid: false, errorMsg: VALIDATIONS[key].error };
 }
 
-export function DateClientFormat(dateTimeString) {
+export function convertDateToClientFormat(dateTimeString) {
   const indexOfT = dateTimeString.indexOf("T");
   let newDateString = "";
   if (indexOfT !== -1) {
@@ -20,7 +20,7 @@ export function DateClientFormat(dateTimeString) {
   return `${parts[2]}/${parts[1]}/${parts[0]}`;
 }
 
-export function dateTimeServerFormat(dateString) {
+export function convertDateToDateServerFormat(dateString) {
   const parts = dateString.split("/");
   return `${parts[2]}-${parts[1]}-${parts[0]}`;
 }
@@ -65,7 +65,7 @@ export function buildTypeWeightsCard(typeWeightsObj, stickersArray) {
     }
   );
   const typeWeightCardsArray = typeWeightsArray.map((item) => {
-    stickersArray.map((sticker) => {
+    stickersArray.forEach((sticker) => {
       if (sticker.stickerSrc.includes(item.type)) {
         item.stickerSrc = sticker.stickerSrc;
         item.stickerAlt = sticker.stickerAlt;
@@ -80,7 +80,7 @@ export function buildTypeWeightsCard(typeWeightsObj, stickersArray) {
 export function getRandomSupplierImage(arr, type) {
   let imageSrc = "";
   const keys = Object.keys(arr);
-  keys.map((key) => {
+  keys.forEach((key) => {
     if (key === type) {
       imageSrc = arr[key][Math.floor(Math.random() * 6)];
     }

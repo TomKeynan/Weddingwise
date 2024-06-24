@@ -50,6 +50,13 @@ export const signupResponse = Object.freeze({
   500: "אופס! משהו השתבש , נסה שנית.",
 });
 
+export const insertPackageResponse = Object.freeze({
+  200: "🎊יש לכם נבחרת של נותני שירות מעולים עבורכם👏🏼👏🏼 החתונה שלכם קרובה מתמיד🎉",
+  400: "אופס! משהו השתבש, נסה שנית.",
+  409: "אישור חבילה חדשה, דורש החלפה של נותן שירות אחד או יותר.",
+  500: "אופס! משהו השתבש , נסה שנית.",
+});
+
 export const carouselTheme = Object.freeze({
   superLargeDesktop: {
     // the naming can be any, depends on you.

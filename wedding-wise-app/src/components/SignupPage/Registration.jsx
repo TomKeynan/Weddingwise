@@ -19,7 +19,8 @@ import StepThree from "./StepThree";
 import StepTwo from "./StepTwo";
 import Loading from "../Loading";
 import { signupResponse } from "../../utilities/collections";
-import DialogMessage from "../DialogMessage";
+import MessageDialog from "../Dialogs/MessageDialog";
+import useFetch from "../../utilities/useFetch";
 
 const steps = [
   {
@@ -66,21 +67,23 @@ export default function Registration() {
   };
 
   const handleClickOpen = () => {
-    setOpen(true);
+    if (error) setOpen(true);
   };
 
   return (
     <Box sx={{ width: "100%" }}>
       {loading && <Loading />}
       {error && (
-        <DialogMessage
+        <MessageDialog
           title="שגיאה!"
           btnValue="אוקיי!"
           open={open}
           onClose={() => setOpen(false)}
         >
-          <Typography variant="body1" color="grey">{signupResponse[error]}</Typography>
-        </DialogMessage>
+          <Typography variant="h6" sx={{ textAlign: "center" }}>
+            {signupResponse[error]}
+          </Typography>
+        </MessageDialog>
       )}
       <Stepper nonLinear={true} activeStep={activeStep} sx={stepStyle}>
         {steps.map((step, index) => (
@@ -130,14 +133,6 @@ export default function Registration() {
           >
             הקודם
           </Button>
-
-          {/* <Button
-            variant="outlined"
-            onClick={handleSubmission}
-            sx={submitBtnSX}
-          >
-            צור חשבון
-          </Button> */}
 
           {isFormCompleted(userDetails) && isFormValid(userDetails) && (
             <Button

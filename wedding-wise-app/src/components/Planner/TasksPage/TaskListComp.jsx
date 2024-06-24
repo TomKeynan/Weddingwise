@@ -18,7 +18,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { AppContext } from "../../../store/AppContext";
 import useFetch from "../../../utilities/useFetch";
 import Loading from "../../Loading";
-import DialogMessage from "../../DialogMessage";
+import MessageDialog from "../../Dialogs/MessageDialog";
 
 function TasksListComp() {
   const { coupleData } = useContext(AppContext);
@@ -38,10 +38,9 @@ function TasksListComp() {
     }
   }, [coupleData]);
 
-    const fetchTasks = async () => {
-      await sendData(`/Tasks/getTasks?coupleEmail=${coupleData.email}`, "GET");
-    };
- 
+  const fetchTasks = async () => {
+    await sendData(`/Tasks/getTasks?coupleEmail=${coupleData.email}`, "GET");
+  };
 
   const handleAddTask = async () => {
     try {
@@ -101,7 +100,7 @@ function TasksListComp() {
     >
       {loading && <Loading />}
       {error && (
-        <DialogMessage
+        <MessageDialog
           title="שגיאה!"
           btnValue="אוקיי!"
           open={open}
@@ -110,7 +109,7 @@ function TasksListComp() {
           <Typography variant="body1" color="grey">
             {error}
           </Typography>
-        </DialogMessage>
+        </MessageDialog>
       )}
       <Stack
         spacing={5}

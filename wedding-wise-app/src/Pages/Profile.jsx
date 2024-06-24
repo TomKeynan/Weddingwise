@@ -1,30 +1,23 @@
-import { Box, Button, Grid, Stack, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Box, Stack } from "@mui/material";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { test } from "../utilities/collections";
 import { customTheme } from "../store/Theme";
 import AccordionLayout from "../components/AccordionLayout";
-import { supplierCards } from "../utilities/collections";
 import SupplierCard from "../components/SupplierCard";
-import CostsChart from "../components/CostsChart";
 import ProfileBanner from "../components/ProfilePage/ProfileBanner";
+import { AppContext } from "../store/AppContext";
 
 function Profile() {
-  const [currentUser, setCurrentUser] = useState(null);
-
-  const currentCouple = JSON.parse(sessionStorage.getItem("currentUser"));
-
-  useEffect(() => {
-    setCurrentUser(JSON.parse(sessionStorage.getItem("currentUser")));
-  }, []);
+  
+  const { coupleData } = useContext(AppContext);
 
   return (
     <Stack spacing={3} alignItems="center" sx={loginStackSX}>
-      {currentUser && <ProfileBanner props={currentUser} />}
+      {coupleData && <ProfileBanner props={coupleData} />}
 
-      <Box sx={{ width: "90%" }}>
+      <Box sx={{ width: {xs: "80%" , sm: "70%"} }}>
         <AccordionLayout title="חבילת נותני שירות" btnValue="/package">
-          {currentCouple !== null && currentCouple.package !== null ? (
+          {coupleData !== null && coupleData.package !== null ? (
             <Stack
               direction="row"
               justifyContent="center"
@@ -32,8 +25,9 @@ function Profile() {
               flexWrap="wrap"
               rowGap={3}
               columnGap={2}
+              sx={{width: "90%", margin: "0 auto"}}
             >
-              {currentCouple.package["selectedSuppliers"].map(
+              {coupleData.package["selectedSuppliers"].map(
                 (supplier, index) => (
                   <SupplierCard
                     key={index}

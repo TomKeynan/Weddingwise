@@ -21,13 +21,16 @@ export const customTheme = createTheme(
         main: "#66bb6a",
         light: "#a5d6a7",
         dark: "#388e3c",
+        },
+        error: {
+          main: "#c21710",
+          light: "#e02c1d",
+          dark: "#b40000",
+          contrastText: "white",
       },
       black: {
         main: "#000",
       },
-      // [theme.breakpoints.up('md')]: {
-      //   fontSize: '2.4rem',
-      // },
     },
     colorBg: {
       main: "linear-gradient(160deg, rgba(218,212,251,1) 90%, rgba(247,244,255,1) 70%, rgba(253,250,255,1) 90%)",
