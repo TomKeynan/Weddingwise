@@ -36,7 +36,7 @@ function useFetch() {
   }
 
   async function sendData(endpoint, method, bodyData) {
-    debugger;
+    // debugger;
     try {
       setLoading(true);
       const response = await fetch(`${baseUrl}${endpoint}`, {
@@ -51,11 +51,17 @@ function useFetch() {
       if (!response.ok) {
         return setError(response.status);
       }
+      // possible responses form server:
+      // 1. empty response(only status code is getting returned)
+      // 2. json object with some data
       var responseData;
+      // first read the response content
       const textRes = await response.text();
+      // then check if the response has a content
       if (!textRes) {
         return setResData(response.status);
       } else {
+        // if there is a content parse it to json
         responseData = JSON.parse(textRes);
         setResData(responseData);
       }
@@ -67,7 +73,7 @@ function useFetch() {
     }
   }
 
-  return { resData, loading, error, setError, getData, sendData };
+  return { resData, loading, error, setResData, setError, getData, sendData };
 }
 
 export default useFetch;

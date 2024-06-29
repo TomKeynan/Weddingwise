@@ -5,7 +5,13 @@ import { customTheme } from "../store/Theme";
 function OutlinedButton({ btnValue, handleClick, type = "button" }) {
   return (
     <Box>
-      <Button variant="outlined" onClick={handleClick} sx={BtnSX} type={type}>
+      <Button
+        variant="outlined"
+        onClick={handleClick}
+        sx={BtnSX}
+        type={type}
+        disableRipple
+      >
         {btnValue}
       </Button>
     </Box>

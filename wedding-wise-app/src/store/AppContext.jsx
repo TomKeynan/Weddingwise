@@ -1,5 +1,4 @@
-import React, { useEffect, useState, createContext } from "react";
-import { DateClientFormat } from "../utilities/functions";
+import React, { useState, createContext, useEffect } from "react";
 
 export const AppContext = createContext({
   coupleData: {},
@@ -7,38 +6,51 @@ export const AppContext = createContext({
   setCoupleData: () => {},
   setOfferedPackage: () => {},
   updateCoupleData: () => {},
+  updateOfferedPackage: () => {},
   invitees: [],
   setInvitees: () => {},
   addInvitee: () => {},
   removeInvitee: () => {},
 });
 
+const initialState = JSON.parse(sessionStorage.getItem("currentCouple"))
 export default function AppContextProvider({ children }) {
-  const [coupleData, setCoupleData] = useState(null);
+  
+  const [coupleData, setCoupleData] = useState(initialState);
+  // const [coupleData, setCoupleData] = useState(null);
 
   const [offeredPackage, setOfferedPackage] = useState(null);
 
   const [invitees, setInvitees] = useState([]);
 
   useEffect(() => {
-    setCoupleData(JSON.parse(sessionStorage.getItem("currentCouple")));
-    setOfferedPackage(JSON.parse(localStorage.getItem("offeredPackage")));
+    // setCoupleData(JSON.parse(sessionStorage.getItem("currentCouple")));
+    setOfferedPackage(JSON.parse(sessionStorage.getItem("offeredPackage")));
   }, []);
 
   function updateCoupleData(data) {
-    if (data.package !== null) {
-      const packageAndTypeWeights = {
-        ...data.package,
-        typeWeights: data.typeWeights,
-      };
-      localStorage.setItem(
-        "offeredPackage",
-        JSON.stringify(packageAndTypeWeights)
-      );
-      setOfferedPackage(packageAndTypeWeights);
+    debugger;
+    if (data.package === null) {
+      sessionStorage.setItem("currentCouple", JSON.stringify(data));
+      setCoupleData({ ...data });
+    } else {
+      updateOfferedPackage(data);
+      sessionStorage.setItem("currentCouple", JSON.stringify(data));
+      setCoupleData({ ...data });
     }
-    sessionStorage.setItem("currentCouple", JSON.stringify(data));
-    setCoupleData({ ...data });
+  }
+
+  function updateOfferedPackage(data) {
+    debugger;
+    const packageAndTypeWeights = {
+      ...data.package,
+      typeWeights: data.typeWeights,
+    };
+    sessionStorage.setItem(
+      "offeredPackage",
+      JSON.stringify(packageAndTypeWeights)
+    );
+    setOfferedPackage(packageAndTypeWeights);
   }
 
   function addInvitee(invitee) {
@@ -53,6 +65,7 @@ export default function AppContextProvider({ children }) {
     coupleData,
     offeredPackage,
     updateCoupleData,
+    updateOfferedPackage,
     setCoupleData,
     setOfferedPackage,
     invitees,

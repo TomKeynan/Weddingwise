@@ -64,7 +64,7 @@ function Navbar({ isLayout = true }) {
     if (linkText === "התנתק") {
       sessionStorage.setItem("currentCouple", JSON.stringify(null));
       setCoupleData(null);
-      localStorage.setItem("offeredPackage", JSON.stringify(null));
+      sessionStorage.setItem("offeredPackage", JSON.stringify(null));
       setOfferedPackage(null);
     }
   }

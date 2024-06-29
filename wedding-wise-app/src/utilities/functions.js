@@ -22,7 +22,7 @@ export function convertDateToClientFormat(dateTimeString) {
 
 export function convertDateToDateServerFormat(dateString) {
   const parts = dateString.split("/");
-  return `${parts[2]}-${parts[1]}-${parts[0]}`;
+  return `${parts[2]}-${parts[1]}-${parts[0]}T00:00:00`;
 }
 
 export function getFullDate(input) {

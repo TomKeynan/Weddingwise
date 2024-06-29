@@ -1,28 +1,24 @@
-import { Box, Button, Grid, Stack, Typography } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
-import {
-  supplierCards,
-  typeWeights,
-  stickers,
-  insertPackageResponse,
-} from "../../utilities/collections";
+import { Button, Grid, Stack, Typography } from "@mui/material";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { stickers, insertPackageResponse } from "../../utilities/collections";
 import TypeWeightCard from "./TypeWeightCard";
-import { useNavigate } from "react-router-dom";
 import OutlinedButton from "../OutlinedButton";
 import SupplierCard from "../SupplierCard";
 import { customTheme } from "../../store/Theme";
 import useFetch from "../../utilities/useFetch";
 import { buildTypeWeightsCard } from "../../utilities/functions";
-import DialogMessage from "../Dialogs/MessageDialog";
+import MessageDialog from "../Dialogs/MessageDialog";
 import { AppContext } from "../../store/AppContext";
 import Loading from "../Loading";
 import ConfirmDialog from "../Dialogs/ConfirmDialog";
-import { ControlPointSharp } from "@mui/icons-material";
+import EditCouple from "../EditCouple";
+import RegisterContextProvider from "../../store/RegisterContext";
+import { useNavigate } from "react-router-dom";
 
 function UserPackage() {
-  const { sendData, loading, resData, error, setError } = useFetch();
-
   const navigate = useNavigate();
+
+  const { sendData, loading, resData, error, setError } = useFetch();
 
   const { coupleData, offeredPackage, setCoupleData, setOfferedPackage } =
     useContext(AppContext);
@@ -36,38 +32,154 @@ function UserPackage() {
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
+  const [openUpdateDetails, setOpenUpdateDetails] = useState(false);
+
+  const [openUpdateConfirm, setOpenUpdateConfirm] = useState(false);
+
+  const [isUpdateDetailsValid, setIsUpdateDetailsValid] = useState(false);
+
   const [currentType, setCurrentType] = useState("");
 
   const [selectedSupplierEmail, setSelectedSupplierEmail] = useState("");
 
   const [altSupplierEmail, setAltSupplierEmail] = useState("");
 
+  const formRef = useRef(null);
+
   useEffect(() => {
-    setOriginalSelectedSuppliers(offeredPackage.selectedSuppliers);
+    // check if couple ever approve a package
+    if (coupleData.package)
+      setOriginalSelectedSuppliers(coupleData.package.selectedSuppliers);
+    else setOriginalSelectedSuppliers(offeredPackage.selectedSuppliers);
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("offeredPackage", JSON.stringify(offeredPackage));
+    sessionStorage.setItem("offeredPackage", JSON.stringify(offeredPackage));
   }, [offeredPackage]);
-  
+
   useEffect(() => {
     sessionStorage.setItem("currentCouple", JSON.stringify(coupleData));
   }, [coupleData]);
 
   useEffect(() => {
+    // update coupleData after getting success code from DB
+    // resData === 200 -> couple has approve the offered package for the first time ever.
+    // resData === 204 -> couple has updated his package successfully.
     if (resData === 204 || resData === 200) {
       const { typeWeights, ...rest } = offeredPackage;
       setCoupleData((prevData) => {
         return {
           ...prevData,
-          package: {...rest},
+          package: { ...rest },
         };
       });
     }
   }, [resData]);
 
-  function handleClick() {
-    navigate("/questionnaire");
+  // =============== UPDATE DETAILS =====================
+
+  function startUpdateCoupleDetails() {
+    setOpenUpdateConfirm(true);
+    formRef.current.click();
+  }
+
+  function handleCancelUpdateDetails() {
+    setOpenUpdateDetails(false);
+  }
+
+  // function showUpdateDetailsDialog() {
+  //   return (
+  //     <ConfirmDialog
+  //       title="עדכון פרטים"
+  //       open={openUpdateDetails}
+  //       onApproval={startUpdateCoupleDetails}
+  //       onCancel={handleCancelUpdateDetails}
+  //     >
+  //       {
+  //         <Stack
+  //           direction="row"
+  //           justifyContent="center"
+  //           alignContent="space-around"
+  //           flexWrap="wrap"
+  //           rowGap={3}
+  //           columnGap={2}
+  //         >
+  //           <RegisterContextProvider>
+  //             <EditCouple formRef={formRef} />
+  //           </RegisterContextProvider>
+  //         </Stack>
+  //       }
+  //     </ConfirmDialog>
+  //   );
+  // }
+
+  function handleOpenUpdateDetails() {
+    setOpenUpdateDetails(true);
+  }
+
+  function changeIsUpdateDetailValid(flag) {
+    setIsUpdateDetailsValid(flag);
+  }
+
+  function showUpdateDetailsDialog() {
+    return (
+      <MessageDialog
+        title="עדכון פרטים"
+        text="אנא שנו אחד או יותר מהפרטים הקיימים. יש לוודא שבחירת הפרטים החדשים הגיונית! "
+        open={openUpdateDetails}
+        btnValue="עדכן פרטים"
+        onClose={startUpdateCoupleDetails}
+        xBtn={handleCancelUpdateDetails}
+        mode="info"
+        disabledBtn={!isUpdateDetailsValid}
+      >
+        {
+          <Stack
+            direction="row"
+            justifyContent="center"
+            alignContent="space-around"
+            flexWrap="wrap"
+            rowGap={3}
+            columnGap={2}
+          >
+            <RegisterContextProvider>
+              <EditCouple
+                formRef={formRef}
+                isValidAndComplete={changeIsUpdateDetailValid}
+              />
+            </RegisterContextProvider>
+          </Stack>
+        }
+      </MessageDialog>
+    );
+  }
+
+  // =============== CONFIRM UPDATE =====================
+
+  function handleOpenUpdateConfirm() {
+    setOpenUpdateConfirm(true);
+  }
+
+  function handleCancelUpdateConfirm() {
+    setOpenUpdateConfirm(false);
+  }
+
+  function showUpdateConfirmDialog() {
+    return (
+      <ConfirmDialog
+        title="שימו לב..."
+        open={openUpdateConfirm}
+        onCancel={handleCancelUpdateConfirm}
+        // disabledBtn={isUpdateDetailsValid}
+      >
+        <Typography variant="h6" sx={{ textAlign: "center" }}>
+          לחיצה על אישור תוביל להמלצה על חבילה חדשה לגמרי.
+        </Typography>
+        <Typography variant="h5" sx={{ textAlign: "center" }}>
+          האם אתה בטוח שאתה רוצה להחליף את כל נותני השירות?
+        </Typography>
+      </ConfirmDialog>
+    );
   }
 
   function handlePackageApproval() {
@@ -120,11 +232,12 @@ function UserPackage() {
 
   function showAltSuppliersDialog() {
     return (
-      <DialogMessage
+      <MessageDialog
         title="נותני שירות חלופיים"
         open={openAltSuppliers}
         btnValue="בטל החלפה"
         onClose={handleCloseAltSuppliers}
+        xBtn={handleCloseAltSuppliers}
         mode="info"
       >
         {
@@ -152,7 +265,7 @@ function UserPackage() {
               )}
           </Stack>
         }
-      </DialogMessage>
+      </MessageDialog>
     );
   }
 
@@ -225,21 +338,6 @@ function UserPackage() {
         totalCost: updatedTotalCost,
       };
     });
-
-    // setOfferedPackage((prevData) => {
-    //   return {
-    //     ...prevData,
-    //     package: {
-    //       ...prevData.package,
-    //       alternativeSuppliers: {
-    //         ...prevData.package.alternativeSuppliers,
-    //         [currentType]: newAltSuppliers,
-    //       },
-    //       selectedSuppliers: newSelectedSuppliers,
-    //       totalCost: updatedTotalCost,
-    //     },
-    //   };
-    // });
   }
 
   function showConfirmDialog() {
@@ -248,7 +346,7 @@ function UserPackage() {
         title="האם אתם בטוחים שאתם רוצים להחליף?"
         open={openConfirm}
         btnValue="הבנתי!"
-        onClose={handleCloseConfirm}
+        onApproval={handleCloseConfirm}
         onCancel={handleCancelConfirm}
         mode="info"
       >
@@ -273,14 +371,77 @@ function UserPackage() {
     setError(undefined);
   }
 
-  function showErrorDialog(status) {
+  function showErrorMessage(status) {
+    if (status === 409) {
+      return (
+        <MessageDialog
+          title="נראה שאישרתם חבילה זו בעבר..."
+          open={openMessage}
+          btnValue="הבנתי!"
+          onClose={handleCloseMessage}
+          xBtn={handleCloseMessage}
+          mode="error"
+        >
+          {
+            <Stack
+              direction="row"
+              justifyContent="center"
+              alignContent="space-around"
+              flexWrap="wrap"
+              rowGap={3}
+              columnGap={2}
+            >
+              <Typography
+                variant="h6"
+                sx={{ textAlign: "center", fontFamily: customTheme.font.main }}
+              >
+                {insertPackageResponse[status]}
+              </Typography>
+            </Stack>
+          }
+        </MessageDialog>
+      );
+    } else {
+      return (
+        <MessageDialog
+          title="שגיאה"
+          open={openMessage}
+          btnValue="הבנתי!"
+          onClose={handleCloseMessage}
+          xBtn={handleCloseMessage}
+          mode="error"
+        >
+          {
+            <Stack
+              direction="row"
+              justifyContent="center"
+              alignContent="space-around"
+              flexWrap="wrap"
+              rowGap={3}
+              columnGap={2}
+            >
+              <Typography
+                variant="h6"
+                sx={{ textAlign: "center", fontFamily: customTheme.font.main }}
+              >
+                {insertPackageResponse[status]}
+              </Typography>
+            </Stack>
+          }
+        </MessageDialog>
+      );
+    }
+  }
+
+  function showSuccessMessage(status) {
     if (status === 200) {
       return (
-        <DialogMessage
+        <MessageDialog
           title="בסימן טוב ומזל טוב!!"
           open={openMessage}
           btnValue="הבנתי!"
           onClose={handleCloseMessage}
+          xBtn={handleCloseMessage}
           mode="success"
         >
           <Typography
@@ -289,63 +450,25 @@ function UserPackage() {
           >
             {insertPackageResponse[200]}
           </Typography>
-        </DialogMessage>
-      );
-    } else if (status === 409) {
-      return (
-        <DialogMessage
-          title="נראה שאישרתם חבילה זו בעבר..."
-          open={openMessage}
-          btnValue="הבנתי!"
-          onClose={handleCloseMessage}
-          mode="error"
-        >
-          {
-            <Stack
-              direction="row"
-              justifyContent="center"
-              alignContent="space-around"
-              flexWrap="wrap"
-              rowGap={3}
-              columnGap={2}
-            >
-              <Typography
-                variant="h6"
-                sx={{ textAlign: "center", fontFamily: customTheme.font.main }}
-              >
-                {insertPackageResponse[status]}
-              </Typography>
-            </Stack>
-          }
-        </DialogMessage>
+        </MessageDialog>
       );
     } else {
       return (
-        <DialogMessage
-          title="שגיאה"
+        <MessageDialog
+          title="כל הכבוד👏🏼👏🏼👏🏼"
           open={openMessage}
-          btnValue="הבנתי!"
+          btnValue="יש!"
           onClose={handleCloseMessage}
-          mode="error"
+          xBtn={handleCloseMessage}
+          mode="success"
         >
-          {
-            <Stack
-              direction="row"
-              justifyContent="center"
-              alignContent="space-around"
-              flexWrap="wrap"
-              rowGap={3}
-              columnGap={2}
-            >
-              <Typography
-                variant="h6"
-                sx={{ textAlign: "center", fontFamily: customTheme.font.main }}
-              >
-                {insertPackageResponse[status]}
-              </Typography>
-            </Stack>
-          }
-        </DialogMessage>
+          <Typography
+            variant="h6"
+            sx={{ textAlign: "center", fontFamily: customTheme.font.main }}
+          >
+            {insertPackageResponse[204]}
+          </Typography>
+        </MessageDialog>
       );
     }
   }
@@ -364,9 +487,35 @@ function UserPackage() {
       }}
     >
       {loading && <Loading />}
-      {error && showErrorDialog(error)}
-      {openConfirm && showConfirmDialog()}
+      {error && showErrorMessage(error)}
+      {resData && showSuccessMessage(resData)}
       {openAltSuppliers && showAltSuppliersDialog()}
+      {openConfirm && showConfirmDialog()}
+      {openUpdateDetails && showUpdateDetailsDialog()}
+      {openUpdateConfirm && showUpdateConfirmDialog()}
+      {/* {openUpdateDetails && (
+        <ConfirmDialog
+          title="עדכון פרטים"
+          open={openUpdateDetails}
+          onApproval={handleUpdateDetailsApproval}
+          onCancel={handleCancelUpdateDetails}
+        >
+          {
+            <Stack
+              direction="row"
+              justifyContent="center"
+              alignContent="space-around"
+              flexWrap="wrap"
+              rowGap={3}
+              columnGap={2}
+            >
+              <RegisterContextProvider>
+                <EditCouple formRef={formRef} />
+              </RegisterContextProvider>
+            </Stack>
+          }
+        </ConfirmDialog>
+      )} */}
       <Stack
         spacing={5}
         justifyContent="space-around"
@@ -452,11 +601,21 @@ function UserPackage() {
         alignItems="center"
         sx={{ width: "90%", px: { xs: 1, sm: 5 } }}
       >
-        <Typography sx={{ typography: { xs: "body1", sm: "h5", md: "h4" } }}>
-          לא התחברתם לחבילה המומלצת? לא לדאוג... ניתן לענות שוב שאלון העדפות
-          ולקבל חבילה חדשה לגמרי.
+        {/* <Typography sx={{ typography: { xs: "body1", sm: "h5", md: "h4" } }}>
+          לא התחברתם לחבילה המומלצת? לא לדאוג... עדכנו את פרטי החתונה ונמליץ לכם
+          על נבחרת ספקים חדשה .
         </Typography>
-        <OutlinedButton btnValue="מילוי שאלון חדש" handleClick={handleClick} />
+        <OutlinedButton
+          btnValue="עדכון פרטים"
+          handleClick={handleOpenUpdateDetails}
+        /> */}
+        <Typography sx={{ typography: { xs: "body1", sm: "h5", md: "h4" } }}>
+          לא התחברתם לחבילה המומלצת? מעדיפים תאריך אחר ליום שלכם?  לא לדאוג... ניתן לקבל חבילה חדשה לגמרי.
+        </Typography>
+        <OutlinedButton
+          btnValue="החלף חבילה"
+          handleClick={() => navigate("/edit")}
+        />
       </Stack>
     </Stack>
   );

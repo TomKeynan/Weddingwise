@@ -16,6 +16,15 @@
   width: 50px;
 }
 
+.emojis {
+  max-width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  border-radius: 16px;
+}
+
 .supplier-card-image-package {
   max-width: 100%;
   height: 100%;

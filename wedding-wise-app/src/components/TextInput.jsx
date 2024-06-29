@@ -17,7 +17,7 @@ const TextInput = ({
   textFieldSX,
   inputProps,
   editMode = false,
-  InputProps
+  InputProps,
 }) => {
   const { userDetails, editValue, updateUserDetails, updateEditValue } =
     useContext(RegisterContext);
@@ -33,7 +33,11 @@ const TextInput = ({
   }, []);
 
   function handleChange(e) {
-    const value = e.target.value;
+    let value = e.target.value;
+    if (name == "budget" || name == "numberOfInvitees") {
+      value = Number(value);
+    }
+    console.log(value);
     validationCheck(name, value);
     if (editMode) updateEditValue({ [name]: value });
     else updateUserDetails({ [name]: value });

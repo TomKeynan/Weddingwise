@@ -51,9 +51,17 @@ export const signupResponse = Object.freeze({
 });
 
 export const insertPackageResponse = Object.freeze({
-  200: "🎊יש לכם נבחרת של נותני שירות מעולים עבורכם👏🏼👏🏼 החתונה שלכם קרובה מתמיד🎉",
+  200: "🎊יש לכם נבחרת של נותני שירות מעולים במיוחד עבורכם👏🏼👏🏼 החתונה שלכם קרובה מתמיד🎉",
+  204: "חבילת נותני השירות שלכם עודכנה בהצלחה, אנו שמחים שהצלחתם למצוא את הספק המועדף עליכם.",
   400: "אופס! משהו השתבש, נסה שנית.",
   409: "אישור חבילה חדשה, דורש החלפה של נותן שירות אחד או יותר.",
+  500: "אופס! משהו השתבש , נסה שנית.",
+});
+
+export const updateCoupleDetailsResponse = Object.freeze({
+  204: "פרטי החתונה החדשים שהזנתם עודכנו בהצלחה.",
+  400: "אופס! משהו השתבש, נסה שנית.",
+  404: "אופס! משהו השתבש, נסה שנית.",
   500: "אופס! משהו השתבש , נסה שנית.",
 });
 

@@ -104,7 +104,7 @@ function SupplierCard({
         >
           <Typography
             variant="body2"
-            sx={{ textAlign: "left", wordBreak: "break-all", width: "170px" }}
+            sx={{ textAlign: "left", wordBreak: "break-all", width: "185px" }}
           >
             {supplierEmail}
           </Typography>
@@ -140,6 +140,7 @@ function SupplierCard({
             ) : (
               <Button
                 variant="outlined"
+                disableRipple
                 sx={actionBtnSX}
                 onClick={() => onReplacement(supplierType, supplierEmail)}
               >

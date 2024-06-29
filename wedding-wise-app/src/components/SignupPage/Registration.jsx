@@ -79,6 +79,7 @@ export default function Registration() {
           btnValue="אוקיי!"
           open={open}
           onClose={() => setOpen(false)}
+          mode="error"
         >
           <Typography variant="h6" sx={{ textAlign: "center" }}>
             {signupResponse[error]}

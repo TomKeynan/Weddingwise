@@ -9,12 +9,19 @@ import {
 } from "@mui/material";
 import { customTheme } from "../../store/Theme";
 
-function ConfirmDialog({ title, open, onClose, onCancel, children }) {
+function ConfirmDialog({
+  title,
+  open,
+  approvalBtn = "אישור",
+  cancelBtn = "ביטול",
+  onApproval,
+  onCancel,
+  children,
+}) {
   return (
     <Fragment>
       <Dialog
         open={open}
-        onClose={onClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         sx={wrapperSX}
@@ -30,12 +37,12 @@ function ConfirmDialog({ title, open, onClose, onCancel, children }) {
             sx={{ width: "90%" }}
           >
             <Button
-              onClick={onClose}
+              onClick={onApproval}
               autoFocus
               variant="contained"
               sx={confirmBtnSX}
             >
-              אישור
+              {approvalBtn}
             </Button>
             <Button
               onClick={onCancel}
@@ -43,7 +50,7 @@ function ConfirmDialog({ title, open, onClose, onCancel, children }) {
               variant="contained"
               sx={cancelBtnSX}
             >
-              ביטול
+              {cancelBtn}
             </Button>
           </Stack>
         </DialogActions>
@@ -56,13 +63,15 @@ export default ConfirmDialog;
 
 const wrapperSX = {
   "& .MuiPaper-root": {
-    width: { xs: "70%", sm: "60%", md: "50%", lg: "30%" },
-    maxWidth: "700px",
+    width: { xs: "70%", sm: "60%", lg: "30%" },
+    // width: "70%",
+    maxWidth: "900px",
   },
 };
 
 const titleSX = {
-  my: 1,
+  p: 0,
+  py:2,
   textAlign: "center",
   color: customTheme.palette.primary.dark,
   fontFamily: customTheme.font.main,

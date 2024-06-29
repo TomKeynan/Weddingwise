@@ -14,14 +14,15 @@ export const QuestionsContext = createContext({
 const initialArray = Array.from({ length: 15 }, () => 4);
 
 export default function QuestionsContextProvider({ children }) {
-  const { sendData, resData, loading } = useFetch();
-  const { coupleData, updateCoupleData } = useContext(AppContext);
+  const { resData, loading, sendData  } = useFetch();
+  const { coupleData, updateOfferedPackage } = useContext(AppContext);
   const [coupleAnswers, setCoupleAnswers] = useState(initialArray);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (resData) {
-      updateCoupleData(resData);
+      console.log(resData)
+      updateOfferedPackage(resData);
       navigate("/package");
     }
   }, [resData]);
@@ -39,6 +40,7 @@ export default function QuestionsContextProvider({ children }) {
       questionnaireAnswers: coupleAnswers,
     });
   }
+
 
   const questionsCtx = {
     isLoading: loading,

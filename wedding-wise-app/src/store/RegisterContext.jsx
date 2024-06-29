@@ -3,7 +3,6 @@ import { VALIDATIONS } from "../utilities/collections";
 import { useNavigate } from "react-router-dom";
 import useFetch from "../utilities/useFetch";
 import { AppContext } from "./AppContext";
-import { SelectAllOutlined } from "@mui/icons-material";
 // import useFetch from "../utilities/useFetch";
 
 export const RegisterContext = createContext({
@@ -17,15 +16,13 @@ export const RegisterContext = createContext({
   saveDateValue: () => {},
   isFormCompleted: () => {},
   isFormValid: () => {},
+  isEditFormValid: () => {},
   handleSubmit: () => {},
 });
 export default function RegisterContextProvider({ children }) {
-  const initialValues = JSON.parse(sessionStorage.getItem("currentUser"));
-
   const navigate = useNavigate();
 
   const { sendData, resData, error, loading } = useFetch();
- 
 
   const { updateCoupleData } = useContext(AppContext);
 
@@ -49,8 +46,9 @@ export default function RegisterContextProvider({ children }) {
     relationship: "",
   });
 
-  const [editValue, setEditValue] = useState(initialValues);
-
+  const [editValue, setEditValue] = useState(
+    JSON.parse(sessionStorage.getItem("currentCouple"))
+  );
   const todayDate = new Date().toLocaleDateString();
   const [dateValue, setDateValue] = useState(todayDate);
 
@@ -74,8 +72,7 @@ export default function RegisterContextProvider({ children }) {
       if (userDetails[currentKey] === "") return (acc += 1);
       else return acc;
     }, 0);
-
-    return result === 0;
+    return result === 0 && userDetails["desiredRegion"] !== null;
   }
 
   // filter all fields that don't need to pass validation check.
@@ -99,6 +96,21 @@ export default function RegisterContextProvider({ children }) {
     return result === filteredKeys.length;
   }
 
+  // checks if all fields are valid.
+  function isEditFormValid(userDetails) {
+    const filteredKeys = filterNonRequiredFields();
+    const newKeys = filteredKeys.filter((key) => {
+      return key !== "password";
+    });
+    //result is counting how many fields passed test validation.
+    const result = newKeys.reduce((acc, currentKey) => {
+      if (VALIDATIONS[currentKey].regex.test(userDetails[currentKey]))
+        return (acc += 1);
+      else return acc;
+    }, 0);
+    return result === newKeys.length;
+  }
+
   function saveDateValue(dateInput) {
     setDateValue(dateInput);
   }
@@ -118,6 +130,7 @@ export default function RegisterContextProvider({ children }) {
     updateEditValue,
     saveDateValue,
     isFormCompleted,
+    isEditFormValid,
     isFormValid,
     handleSubmit,
   };

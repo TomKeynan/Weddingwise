@@ -1,19 +1,23 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { customTheme } from "../../store/Theme";
+import { Box, Typography } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
-export default function MessageDialog ({
+export default function MessageDialog({
   title,
+  text,
   btnValue,
   open,
   onClose,
   children,
+  xBtn,
   mode,
+  disabledBtn = false,
 }) {
   const wrapperMode =
     mode == "error"
@@ -35,23 +39,32 @@ export default function MessageDialog ({
     <Fragment>
       <Dialog
         open={open}
-        onClose={onClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         sx={wrapperMode}
-        // sx={isInfo ? infoWrapperSX : msgWrapperSX}
       >
-        <DialogTitle
-          id="alert-dialog-title"
-          sx={titleMode}
-        >
+        <Box sx={CloseBtnSX} onClick={xBtn}>
+          <CloseIcon />
+        </Box>
+        <DialogTitle id="alert-dialog-title" sx={titleMode}>
           {title}
         </DialogTitle>
-        <DialogContent sx={{ pb: { xs: 1, sm: 2 } }}>{children}</DialogContent>
+        {text && (
+          <Typography sx={{ px: 2, my: 1, textAlign: "center", fontSize:{xs: 16, sm: 22} }}>
+            {text}
+          </Typography>
+        )}
+        <DialogContent
+          sx={{
+            "&.MuiDialogContent-root": { pt: "10px" },
+          }}
+        >
+          {children}
+        </DialogContent>
         <DialogActions sx={{ justifyContent: "center" }}>
           <Button
             onClick={onClose}
-            autoFocus
+            disabled={disabledBtn}
             variant="contained"
             sx={btnMode}
           >
@@ -63,21 +76,32 @@ export default function MessageDialog ({
   );
 }
 
+const CloseBtnSX = {
+  cursor: "pointer",
+  position: "absolute",
+  pr: 1,
+  pt: 1,
+  right: 0,
+};
+
 // ================= INFO SX ==================
 
 const infoWrapperSX = {
   "& .MuiPaper-root": {
     width: "90%",
     maxWidth: "900px",
+    position: "relative",
+    p: 0
   },
 };
 
 const infoTitleSX = {
-  my: 1,
+  my: 2,
   textAlign: "center",
   color: customTheme.palette.primary.dark,
   fontFamily: customTheme.font.main,
   fontSize: { xs: 18, sm: 30 },
+  pt: 10,
 };
 
 const infoBtnSX = { mt: 1, mb: 2, width: "80%" };
@@ -86,7 +110,7 @@ const infoBtnSX = { mt: 1, mb: 2, width: "80%" };
 
 const errorWrapperSX = {
   "& .MuiPaper-root": {
-    p: { xs: 1, sm: 3 },
+    // p: 0.5,
   },
 };
 
@@ -112,7 +136,9 @@ const errorBtnSX = {
 
 const successWrapperSX = {
   "& .MuiPaper-root": {
-    p: { xs: 1, sm: 3 },
+    // px: { xs: 1, sm: 3 },
+    // pt: 0,
+    // p: 0.5,
   },
 };
 
@@ -122,6 +148,7 @@ const successTitleSX = {
   fontFamily: customTheme.font.main,
   fontSize: { xs: 20, sm: 30 },
   fontWeight: "bold",
+  mt:4,
 };
 
 const successBtnSX = {
