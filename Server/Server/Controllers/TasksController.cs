@@ -75,7 +75,7 @@ namespace Server.Controllers
             }
         }
 
-        [HttpGet("getTasks")]
+        [HttpGet("getTasks/coupleEmail/{coupleEmail}")]
         public ActionResult<List<Tasks>> GetTasks(string coupleEmail)
         {
             try
@@ -89,5 +89,28 @@ namespace Server.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpPut("updateTaskNotes")]
+        public ActionResult UpdateTaskNotes([FromBody] Tasks task)
+        {
+            try
+            {
+                DBServicesTask dbServicesTask = new DBServicesTask();
+                int result = dbServicesTask.UpdateTaskNotes(task);
+                if (result > 0)
+                {
+                    return Ok(task);
+                }
+                else
+                {
+                    return BadRequest("Failed to update task notes.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }
+

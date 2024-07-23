@@ -76,6 +76,20 @@ namespace Server.DAL
             }
             return tasks;
         }
+        public int UpdateTaskNotes(Tasks task)
+        {
+            using (SqlConnection con = Connect())
+            {
+                using (SqlCommand cmd = new SqlCommand("SPUpdateTaskNotes", con))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@task_id", task.TaskID); // Use TaskID
+                    cmd.Parameters.AddWithValue("@notes", task.Notes);
+                    return cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
 
         public List<SubTask> GetSubTasks(int taskId)
         {

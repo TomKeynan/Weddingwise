@@ -24,7 +24,7 @@ import EditDetails from "./Pages/EditDetails";
 import { LoadScript } from "@react-google-maps/api";
 import Invitees from "./Pages/Invitees";
 
-const googleMapsApiKey = "AIzaSyCSXv1ZziH2SJEcGQIp8EJMytapWnPjytQ";
+const googleMapsApiKey = "AIzaSyC3QkzXx3mLsG_-IzI67-WVFBAoAZTYWxk";
 
 const router = createHashRouter([
   { path: "/", element: <Home /> },
