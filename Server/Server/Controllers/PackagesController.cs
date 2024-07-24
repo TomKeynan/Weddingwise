@@ -7,84 +7,15 @@ namespace Server.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class PackagesController : ControllerBase
+
     {
 
         //--------------------------------------------------------------------
-        // In case of a new package, it updates the previous one to a new one
+        // Generates a package according to couple's provided data
         //--------------------------------------------------------------------
-        [HttpPut("updatePackage")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult PutPackage([FromBody] PackageApprovalData packageApprovalData)
-        {
-            try
-            {
-                string actionString = "Update"; // Changed action to "Update" for a PUT request
-                if (packageApprovalData == null)
-                {
-                    throw new ArgumentNullException(nameof(packageApprovalData), "The JSON data is null.");
-                }
-
-                if (Package.InsertOrUpdatePackage(packageApprovalData, actionString) == 4)
-                {
-                    return NoContent(); // Return 204 NoContent for successful update
-                }
-                else
-                {
-                    throw new Exception("Not all operations were successful");
-                }
-            }
-            catch (ArgumentNullException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception e)
-            {
-                return BadRequest($"Error: {e.Message}");
-            }
-        }
-
-        //--------------------------------------------------------------------
-        // Inserts a new package into the database.
-        //--------------------------------------------------------------------
-        [HttpPost("insertPackage")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult PostPackage([FromBody] PackageApprovalData packageApprovalData)
-        {
-            try
-            {
-                string actionString = "Insert";
-                if (packageApprovalData == null)
-                {
-                    throw new ArgumentNullException(nameof(packageApprovalData), "The JSON data  is null.");
-                }
-
-                if (Package.InsertOrUpdatePackage(packageApprovalData, actionString) == 4)
-                {
-                    return Ok();
-                }
-                else
-                {
-                    throw new Exception("Not all operations were successfuL");
-                }
-            }
-            catch (ArgumentNullException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception e)
-            {
-                return BadRequest($"Error: {e.Message}");
-            }
-        }
-
-        //--------------------------------------------------------------------
-        // Retrieves a package  provided couple data and questionnaire answers
-        //--------------------------------------------------------------------
-
         [HttpPost("getPackage")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Couple))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult GetPackage([FromBody] JsonElement dataForPackage)
         {
@@ -97,18 +28,27 @@ namespace Server.Controllers
                 }
                 else
                 {
-                    // Accessing the properties of the JSON data using JsonElement
+                    // Deserialize the couple data and questionnaire answers from JSON
                     JsonElement coupleElement = dataForPackage.GetProperty("couple");
                     Couple coupleWithData = JsonSerializer.Deserialize<Couple>(coupleElement.GetRawText());
                     JsonElement questionnaireElement = dataForPackage.GetProperty("questionnaireAnswers");
                     int[] questionnaireAnswers = JsonSerializer.Deserialize<int[]>(questionnaireElement.GetRawText());
 
+                    if (coupleWithData == null || questionnaireAnswers == null)
+                    {
+                        throw new ArgumentNullException("Someone didn't do their job correctly and he is about to be fired.");
+                    }
+
                     // Generate the package
 
                     Couple coupleWithPackage = Package.GetPackage(coupleWithData, questionnaireAnswers);
 
+                    if (coupleWithPackage == null)
+                    {
+                        return NotFound();
+                    }
+                    else return Ok(coupleWithPackage);
 
-                    return Ok(coupleWithPackage);
                 }
             }
             catch (ArgumentNullException ex)
@@ -118,6 +58,89 @@ namespace Server.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+
+        //--------------------------------------------------------------------
+        // Inserts a new package into the database.
+        //--------------------------------------------------------------------
+        [HttpPost("insertPackage")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult PostPackage([FromBody] PackageApprovalData packageApprovalData)
+        {
+            try
+            {
+
+
+                // Check if the packageApprovalData is null
+                if (packageApprovalData == null)
+                {
+                    throw new ArgumentNullException(nameof(packageApprovalData), "The JSON data is null.");
+                }
+
+                // Insert or update the package in the database
+                int numberOfSuccesses = Package.InsertOrUpdatePackage(packageApprovalData);
+                // קורא לפונקציה שמקבלת את החבילה ומחלצת את המידע ליצור שורות חדשות בטבלת פיננסי
+                if (numberOfSuccesses == 4)
+                {
+                    return Ok(); // Return 200 OK for successful insertion
+                }
+
+                else
+                {
+                    throw new Exception("Not all operations were successful only" + numberOfSuccesses + "were");
+                }
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest($"Error: {e.Message}");
+            }
+        }
+
+
+
+        //--------------------------------------------------------------------
+        // In case of a new package, it updates the previous one to a new one
+        //--------------------------------------------------------------------
+        [HttpPut("updatePackage")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult PutPackage([FromBody] PackageApprovalData packageApprovalData)
+        {
+            try
+            {
+
+
+                // Check if the packageApprovalData is null
+                if (packageApprovalData == null)
+                {
+                    throw new ArgumentNullException(nameof(packageApprovalData), "The JSON data is null.");
+                }
+
+                // Insert or update the package in the database
+                int numberOfSuccesses = Package.InsertOrUpdatePackage(packageApprovalData);
+                if (numberOfSuccesses == 4)
+                {
+                    return NoContent(); // Return 204 NoContent for successful update
+                }
+                else
+                {
+                    throw new Exception("Not all operations were successful only" + numberOfSuccesses + "were");
+                }
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest($"Error: {e.Message}");
             }
         }
     }

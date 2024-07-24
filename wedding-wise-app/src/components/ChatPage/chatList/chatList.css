@@ -1,0 +1,161 @@
+.chat-list {
+    flex: 1;
+    overflow-y: scroll; /* Enable vertical scrolling */
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: rgba(17, 25, 40, 0.8) rgba(17, 25, 40, 0.5); /* For Firefox */
+}
+
+/* WebKit browsers (Chrome, Safari) */
+.chat-list::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+}
+
+.chat-list::-webkit-scrollbar-track {
+    background: rgba(17, 25, 40, 0.5); /* Track color */
+}
+
+.chat-list::-webkit-scrollbar-thumb {
+    background: rgba(17, 25, 40, 0.8); /* Thumb color */
+    border-radius: 10px; /* Rounded corners for the thumb */
+}
+
+.chat-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(17, 25, 40, 1); /* Darker color on hover */
+}
+
+/* Ensure the scrollbar stays on the right side */
+.chat-list {
+    direction: ltr; /* Left-to-right text direction, keeping scrollbar on the right */
+}
+
+.chat-list .search {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.chat-list .search-bar {
+    flex: 1;
+    background-color: rgba(17, 25, 40, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.chat-list .imgs-search {
+    width: 20px;
+    height: 20px;
+}
+
+.chat-list .input {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    flex: 1;
+}
+
+.chat-list .img-plus {
+    width: 36px;
+    height: 36px;
+    background-color: rgba(17, 25, 40, 0.5);
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.chat-list .item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    cursor: pointer;
+    border-bottom: 1px solid #dddddd35;
+    direction: rtl;
+    
+}
+
+.chat-list .img-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.chat-list .texts {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-list .span {
+    font-weight: 500;
+}
+
+.chat-list .p {
+    font-size: 14px;
+    font-weight: 300;
+}
+
+
+
+
+
+
+.user-info {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.user-info .user {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.user-info .img-avatar {
+    width: 50px;
+    height: 50px; 
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-info .icons {
+    display: flex;
+    gap: 20px;
+}
+
+.user-info .img-icons {
+    width: 20px;
+    height: 20px; 
+    cursor: pointer;
+}
+
+
+.exit-button {
+    border: none; /* No border */
+    color: white; /* White text color */
+    padding: 10px; /* Padding */
+    text-align: center; /* Centered text */
+    text-decoration: none; /* No underline */
+    display: inline-block; /* Inline block display */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    position: absolute;
+    width: 25px; /* Width of the button */
+    height: 25px; /* Height of the button */
+    display: flex; /* Flexbox for centering content */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    transition: color 0.3s ease; /* Smooth transition for text color */
+    background-color: transparent; /* Transparent background */
+  }
+  
+  .exit-button:hover {
+    color: #ff0000; /* Bright red text on hover */
+  }

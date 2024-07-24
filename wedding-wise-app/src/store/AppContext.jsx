@@ -1,37 +1,77 @@
-import React, { useEffect, useState } from "react";
-import { createContext } from "react";
-import { handleDataTimeFormat } from "../utilities/functions";
-import useFetch from "../utilities/useFetch";
+import React, { useState, createContext, useEffect } from "react";
 
 export const AppContext = createContext({
-  userData: {},
-  updateUserData: () => { },
+  coupleData: {},
+  offeredPackage: {},
+  setCoupleData: () => {},
+  setOfferedPackage: () => {},
+  updateCoupleData: () => {},
+  updateOfferedPackage: () => {},
+  invitees: [],
+  setInvitees: () => {},
+  addInvitee: () => {},
+  removeInvitee: () => {},
 });
 
-// const INITIAL_STATE = JSON.parse(sessionStorage.getItem("currentUser"));
+const initialState = JSON.parse(sessionStorage.getItem("currentCouple"))
 export default function AppContextProvider({ children }) {
   
-  const [userData, setUserData] = useState(null);
-  
-  useEffect(() => {
-    setUserData(JSON.parse(sessionStorage.getItem("currentUser")));
-  }, []);
-  // console.log(userData);
+  const [coupleData, setCoupleData] = useState(initialState);
+  // const [coupleData, setCoupleData] = useState(null);
 
-  function updateUserData(data) {
-    if (data) {
-      const formattedDate = handleDataTimeFormat(data.desiredDate);
-      data.desiredDate = formattedDate;
-      delete data.password;
-      sessionStorage.setItem("currentUser", JSON.stringify(data));
-      setUserData({ ...data });
+  const [offeredPackage, setOfferedPackage] = useState(null);
+
+  const [invitees, setInvitees] = useState([]);
+
+  useEffect(() => {
+    // setCoupleData(JSON.parse(sessionStorage.getItem("currentCouple")));
+    setOfferedPackage(JSON.parse(sessionStorage.getItem("offeredPackage")));
+  }, []);
+
+  function updateCoupleData(data) {
+    debugger;
+    if (data.package === null) {
+      sessionStorage.setItem("currentCouple", JSON.stringify(data));
+      setCoupleData({ ...data });
+    } else {
+      updateOfferedPackage(data);
+      sessionStorage.setItem("currentCouple", JSON.stringify(data));
+      setCoupleData({ ...data });
     }
   }
 
+  function updateOfferedPackage(data) {
+    debugger;
+    const packageAndTypeWeights = {
+      ...data.package,
+      typeWeights: data.typeWeights,
+    };
+    sessionStorage.setItem(
+      "offeredPackage",
+      JSON.stringify(packageAndTypeWeights)
+    );
+    setOfferedPackage(packageAndTypeWeights);
+  }
+
+  function addInvitee(invitee) {
+    setInvitees((prevInvitees) => [...prevInvitees, invitee]);
+  }
+
+  function removeInvitee(index) {
+    setInvitees((prevInvitees) => prevInvitees.filter((_, i) => i !== index));
+  }
 
   const appContext = {
-    userData,
-    updateUserData,
+    coupleData,
+    offeredPackage,
+    updateCoupleData,
+    updateOfferedPackage,
+    setCoupleData,
+    setOfferedPackage,
+    invitees,
+    setInvitees,
+    addInvitee,
+    removeInvitee,
   };
 
   return (

@@ -2,10 +2,16 @@ import { Box, Button } from "@mui/material";
 import React from "react";
 import { customTheme } from "../store/Theme";
 
-function OutlinedButton({ btnValue, handleClick }) {
+function OutlinedButton({ btnValue, handleClick, type = "button" }) {
   return (
     <Box>
-      <Button variant="outlined" onClick={handleClick} sx={BtnSX}>
+      <Button
+        variant="outlined"
+        onClick={handleClick}
+        sx={BtnSX}
+        type={type}
+        disableRipple
+      >
         {btnValue}
       </Button>
     </Box>

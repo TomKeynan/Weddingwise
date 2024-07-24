@@ -25,18 +25,52 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Loading from "../components/Loading";
+import { debugErrorMap } from "firebase/auth";
+import { toast } from 'react-toastify';
+import { auth} from '../fireBase/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 function Login() {
   const { sendData, resData, error, loading } = useFetch();
-  const { updateUserData } = useContext(AppContext);
+  const { updateCoupleData } = useContext(AppContext);
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+
+  // Omri's
+  // useEffect(() => {
+  //   if (resData) {
+  //     updateCoupleData(resData);
+  //     loginFireBase();
+  //     navigate("/profile");
+  //   }
+  // }, [resData]);
 
   useEffect(() => {
-    if (resData) {
-      updateUserData(resData);
-      navigate("/profile");
-    }
+    const loginAndNavigate = async () => {
+      if (resData) {
+        updateCoupleData(resData);
+        await loginFireBase();
+        navigate("/profile");
+      }
+    };
+
+    loginAndNavigate();
   }, [resData]);
 
+  // Handle user login
+  const loginFireBase = async () => {
+
+    try {
+        // Sign in user with email and password
+        await signInWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+        console.log(err);
+        toast.error(err.message);
+    } finally {
+      console.log('check');
+    }
+};
+  
   // useMediaQuery return a boolean that indicates rather the screen size
   // matches the breakpoint/string media query , or not
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
@@ -55,7 +89,8 @@ function Login() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
-    console.log(data);
+    setEmail(data.Email);
+    setPassword(data.Password);
     sendData("/Couples/getCouple", "POST", data);
   }
 
@@ -198,7 +233,6 @@ const containerSX = {
   "&.MuiContainer-root": {
     padding: 0,
   },
-
 };
 
 const loginStackSX = {

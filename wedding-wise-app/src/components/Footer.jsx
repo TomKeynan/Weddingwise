@@ -1,6 +1,7 @@
 import React from "react";
 import { customTheme } from "../store/Theme";
 import { Button, Stack, Typography, useMediaQuery } from "@mui/material";
+import { Link } from "react-router-dom";
 
 function Footer() {
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
@@ -20,9 +21,9 @@ function Footer() {
               rowGap: 6,
             }}
           >
-            <li>דף הבית</li>
-            <li>פרופיל</li>
-            <li>חבילה</li>
+            <Link to="/">דף הבית</Link>
+            <Link to="/profile">פרופיל</Link>
+            <Link to="/package">חבילה</Link>
             <li>טבלת מוזמנים</li>
             <li>מעקב הוצאות</li>
             <li>רשימת משימות</li>
@@ -56,7 +57,7 @@ const footerWrapperSX = {
   py: 5,
   height: 700,
   background: customTheme.colorBg.footer,
-  boxShadow: customTheme.shadow.footer, 
+  boxShadow: customTheme.shadow.footer,
 };
 
 const footerTopSectionSX = {
@@ -76,7 +77,8 @@ const footerNavSX = { fontSize: 26, py: 3 };
 
 const copyRightsSX = {
   fontSize: { xs: 18, sm: 22, md: 26 },
-  // px:3
+  textAlign: "center",
+  px: 2,
   fontFamily: "Varela Round",
   fontWeight: "bold",
   color: customTheme.palette.black,

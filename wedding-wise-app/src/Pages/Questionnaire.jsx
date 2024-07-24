@@ -1,5 +1,5 @@
 import React from "react";
-import Questions from "../components/Questions";
+import Questions from "../components/QuestionnairePage/Questions";
 import { Box, Stack, Typography } from "@mui/material";
 import QuestionsContextProvider from "../store/QuestionsContext";
 
@@ -9,8 +9,9 @@ const Questionnaire = () => {
       <Stack
         spacing={4}
         alignItems="center"
-        sx={{ width: "100%", height: "100vh" }}
+        sx={{ width: "95%", margin: "0 auto", pb: 8 }}
       >
+
         <Typography sx={{ fontSize: { xs: 30, sm: 36, md: 60 } }}>
           שאלון העדפות
         </Typography>

@@ -1,40 +1,53 @@
-import { Box, Button, Grid, Stack, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { test } from "../utilities/collections";
+import { Box, Stack } from "@mui/material";
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { customTheme } from "../store/Theme";
 import AccordionLayout from "../components/AccordionLayout";
-import { supplierCards } from "../utilities/collections";
 import SupplierCard from "../components/SupplierCard";
-import CostsChart from "../components/CostsChart";
 import ProfileBanner from "../components/ProfilePage/ProfileBanner";
+import { AppContext } from "../store/AppContext";
 
 function Profile() {
-  const [currentUser, setCurrentUser] = useState(null);
-
-  useEffect(() => {
-    setCurrentUser(JSON.parse(sessionStorage.getItem("currentUser")));
-  }, []);
-
-  const navigate = useNavigate();
-
-  function routeToQuestions() {
-    navigate("/questionnaire");
-  }
+  
+  const { coupleData } = useContext(AppContext);
 
   return (
     <Stack spacing={3} alignItems="center" sx={loginStackSX}>
-      {currentUser && <ProfileBanner props={currentUser} />}
-      <Button variant="outlined" onClick={routeToQuestions} size="large">
-        שאלון
-      </Button>
-      <Box sx={{ width: "90%" }}>
+      {coupleData && <ProfileBanner props={coupleData} />}
+
+      <Box sx={{ width: {xs: "80%" , sm: "70%"} }}>
         <AccordionLayout title="חבילת נותני שירות" btnValue="/package">
-          <Grid container sx={cardsContainer}>
-            {supplierCards.map((supplier, index) => (
-              <SupplierCard key={index} props={supplier} />
-            ))}
-          </Grid>
+          {coupleData !== null && coupleData.package !== null ? (
+            <Stack
+              direction="row"
+              justifyContent="center"
+              alignContent="space-around"
+              flexWrap="wrap"
+              rowGap={3}
+              columnGap={2}
+              sx={{width: "90%", margin: "0 auto"}}
+            >
+              {coupleData.package["selectedSuppliers"].map(
+                (supplier, index) => (
+                  <SupplierCard
+                    key={index}
+                    props={supplier}
+                    cardBg={customTheme.palette.secondary.light}
+                  />
+                )
+              )}
+            </Stack>
+          ) : (
+            <Box sx={{ textAlign: "center" }}>
+              <Box>
+                עדיין לא המלצנו לכם על חבילה??{" "}
+                <Link to="/package" style={{ color: "#FF9500" }}>
+                  לחצו כאן
+                </Link>{" "}
+                למעבר לשאלון
+              </Box>
+            </Box>
+          )}
         </AccordionLayout>
         <AccordionLayout title="מעקב אחר הוצאות" btnValue="/package">
           {/* <CostsChart /> */}
@@ -55,8 +68,7 @@ function Profile() {
 export default Profile;
 
 const loginStackSX = {
-  height: "100%",
-  width: "100%",
+  minHeight: "inherit",
 };
 
 const cardsContainer = {

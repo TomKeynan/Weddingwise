@@ -1,15 +1,20 @@
-import React, { useState } from "react";
-import TaskListComp from "../components/TasksPage/TaskListComp";
-
-/*import { Checkbox, Button, LinearProgress, IconButton, List, ListItem, ListItemText, ListItemSecondaryAction } from '@mui/material';
-import { ArrowDropDown } from '@mui/icons-material';
-*/
+import React, { useContext } from "react";
+import { Box } from "@mui/material";
+import { AppContext } from "../store/AppContext";
+import TaskListNoUser from "../components/Planner/TasksPage/TaskListNoUser";
+import TasksListComp from "../components/Planner/TasksPage/TaskListComp";
 
 function Tasks() {
+  const { coupleData } = useContext(AppContext);
+
   return (
-    <div>
-      <TaskListComp />
-    </div>
+    <Box sx={{ minHeight: "inherit" }}>
+      {coupleData === null ? (
+        <TaskListNoUser />
+      ) : (
+        <TasksListComp />
+      )}
+    </Box>
   );
 }
 

@@ -40,12 +40,15 @@ namespace Server.Controllers
                         Password = couple.Password
                     };
 
+
+                    Tasks.insertCoupleInitialTasks(couple.Email);
+
                     // Create a JsonElement from the anonymous object
                     JsonElement jsonCoupleData = JsonDocument.Parse(JsonSerializer.Serialize(coupleData)).RootElement;
 
                     // After successfuly registered the couple will automatically log in
 
-                    // Call GetCouple to retrieve the newly inserted couple
+                    // Call GetCouple to retrieve the newly registered couple
                     return GetCouple(jsonCoupleData);
                 }
                 else
@@ -86,8 +89,6 @@ namespace Server.Controllers
         {
             try
             {
-
-
                 // Check if the received couple data is null
                 if (coupleData.ValueKind == JsonValueKind.Null)
                 {
@@ -103,16 +104,20 @@ namespace Server.Controllers
                     throw new ArgumentNullException("The email or the password that were sent are empty");
                 }
 
-
                 // Call a method to find the couple based on email and password
                 Couple couple = Couple.FindCouple(email, password);
 
+                if (couple == null)
+                {
+                    return NotFound("User wasn't found. Check your email or password");
+                }
 
                 // Check if couple is inactive, return Unauthorized response
                 if (couple.IsActive == false)
                 {
                     return Unauthorized();
                 }
+
                 // If couple is found and active, return OK response with couple object
                 else
                 {
@@ -130,8 +135,6 @@ namespace Server.Controllers
             }
         }
 
-
-
         //--------------------------------------------------------------------
         // You can guess what this method does.
         //--------------------------------------------------------------------
@@ -145,7 +148,7 @@ namespace Server.Controllers
                 // Check if the received couple data is null
                 if (couple == null)
                 {
-                    throw new ArgumentNullException(nameof(couple), "The JSON data is null.");
+                    throw new ArgumentNullException(nameof(couple), "The couple's object is null");
                 }
 
                 // Attempt to update the couple in the database
@@ -153,19 +156,22 @@ namespace Server.Controllers
                 {
                     return NoContent(); // Return 204 NoContent for successful update
                 }
+
                 else
                 {
                     // Throw an exception if the update operation was not successful
                     throw new Exception("The update wasn't successful");
                 }
             }
-
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch (Exception e)
             {
                 // Return a BadRequest response with the error message
                 return BadRequest($"Error: {e.Message}");
             }
         }
-
     }
 }

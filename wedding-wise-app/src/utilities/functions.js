@@ -10,14 +10,19 @@ export function validationCheck(event) {
   else return { name: key, isValid: false, errorMsg: VALIDATIONS[key].error };
 }
 
-export function handleDataTimeFormat(dateOriginalString) {
-  const indexOfT = dateOriginalString.indexOf("T");
+export function convertDateToClientFormat(dateTimeString) {
+  const indexOfT = dateTimeString.indexOf("T");
   let newDateString = "";
   if (indexOfT !== -1) {
-    newDateString = dateOriginalString.slice(0, indexOfT);
+    newDateString = dateTimeString.slice(0, indexOfT);
   } else return console.log("something went wrong- T was not found");
   const parts = newDateString.split("-");
   return `${parts[2]}/${parts[1]}/${parts[0]}`;
+}
+
+export function convertDateToDateServerFormat(dateString) {
+  const parts = dateString.split("/");
+  return `${parts[2]}-${parts[1]}-${parts[0]}T00:00:00`;
 }
 
 export function getFullDate(input) {
@@ -25,7 +30,7 @@ export function getFullDate(input) {
   const fullDate = `${date.getFullYear()}-${addZero(
     date.getMonth() + 1
   )}-${addZero(date.getDate())}`;
-  return { DesiredDate: fullDate };
+  return { desiredDate: fullDate };
 }
 
 function addZero(number) {
@@ -60,7 +65,7 @@ export function buildTypeWeightsCard(typeWeightsObj, stickersArray) {
     }
   );
   const typeWeightCardsArray = typeWeightsArray.map((item) => {
-    stickersArray.map((sticker) => {
+    stickersArray.forEach((sticker) => {
       if (sticker.stickerSrc.includes(item.type)) {
         item.stickerSrc = sticker.stickerSrc;
         item.stickerAlt = sticker.stickerAlt;
@@ -70,4 +75,15 @@ export function buildTypeWeightsCard(typeWeightsObj, stickersArray) {
     return { ...item };
   });
   return typeWeightCardsArray;
+}
+
+export function getRandomSupplierImage(arr, type) {
+  let imageSrc = "";
+  const keys = Object.keys(arr);
+  keys.forEach((key) => {
+    if (key === type) {
+      imageSrc = arr[key][Math.floor(Math.random() * 6)];
+    }
+  });
+  return imageSrc;
 }

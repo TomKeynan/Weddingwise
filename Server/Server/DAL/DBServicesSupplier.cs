@@ -1,192 +1,273 @@
-﻿using Server.BL;
+﻿using OfficeOpenXml;
+using Server.BL;
+using Server.Services;
 using System.Data;
 using System.Data.SqlClient;
-
 
 namespace Server.DAL
 {
     public class DBServicesSupplier
     {
-        //--------------------------------------------------------------------------------------------------
-        // This method creates a connection to the database according to the connectionString name in the web.config 
-        //--------------------------------------------------------------------------------------------------
-        public static SqlConnection Connect()
-        {
-
-            // read the connection string from the configuration file
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json").Build();
-            string cStr = configuration.GetConnectionString("myProjDB");
-            SqlConnection con = new SqlConnection(cStr);
-            con.Open();
-            return con;
-        }
-
-
-
-
 
 
         //-------------------------------------------------------
-        // This method retrieves the top venues from each region
+        // This method inserts a new supplier into the database.
         //-------------------------------------------------------
-
         public int InsertSupplier(Supplier supplier)
         {
-
-
             int successIndicator = 0;
+
             try
             {
-
-
-                // Open a database connection.
-                using (SqlConnection con = Connect())
+                using (SqlConnection con = DBServiceHelper.Connect())
                 {
-                    // Create a SqlCommand to execute the stored procedure.
-                    using (SqlCommand cmd = CreateInsertSupplierWithSP(con, "SPInsertSupplierDetails", supplier))
+                    Dictionary<string, object> parameters = new Dictionary<string, object>
+                    {
+                        { "@supplier_email", supplier.SupplierEmail },
+                        { "@business_name", supplier.BusinessName },
+                        { "@password_hash", BCrypt.Net.BCrypt.EnhancedHashPassword(supplier.Password, 10) },
+                        { "@phone_number", supplier.PhoneNumber },
+                        { "@price", supplier.Price },
+                        { "@capacity", supplier.Capacity },
+                        { "@region_name", supplier.AvailableRegion },
+                        { "@latitude", supplier.Latitude },
+                        { "@longitude", supplier.Longitude },
+                        { "@supplier_type_name", supplier.SupplierType },
+                        { "@rating", supplier.Rating }
+                    };
+
+                    using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPInsertSupplierDetails", parameters))
                     {
                         successIndicator = cmd.ExecuteNonQuery();
                     }
 
+                    // Currently not in use, we are not recieving the available dates of the supplier.
                     if (supplier.AvailableDates != null && successIndicator == 1)
                     {
-
                         foreach (var date in supplier.AvailableDates)
                         {
+                            Dictionary<string, object> dateParameters = new Dictionary<string, object>
+                            {
+                                { "@supplier_email", supplier.SupplierEmail },
+                                { "@available_date", date }
+                            };
 
-
-                            // Needs to rethink if the supplier registering includes dates already. *******
-                            using (SqlCommand cmd = CreateInsertSupplierDateWithSP(con, "SPInsertSupplierDates", date, supplier.SupplierEmail))
+                            using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPInsertSupplierDates", dateParameters))
                             {
                                 successIndicator += cmd.ExecuteNonQuery();
                             }
                         }
-
                     }
                     else
                     {
                         return successIndicator;
                     }
-
                 }
-
             }
             catch (SqlException ex)
             {
-                // Handle SQL-specific exceptions.
-                // You can check specific error codes or messages here to provide more tailored error handling.
-                // For example, you can check if the exception indicates a primary key violation.
                 if (ex.Number == 2627) // Primary key violation error number
                 {
-                    // Handle primary key violation error
                     throw;
                 }
                 else
                 {
-                    // Handle other SQL exceptions
                     throw new Exception("An error occurred while inserting a new couple in the InsertCouple method, sql related" + ex.Message);
                 }
             }
             catch (Exception ex)
             {
-                // Handle other types of exceptions
                 throw new Exception("An error occurred while inserting a new couple in the InsertCouple method" + ex.Message);
             }
-            if (successIndicator == 1 + supplier.AvailableDates.Count())
+
+            return successIndicator == 1 + supplier.AvailableDates.Count() ? 1 : 0;
+        }
+
+
+
+
+        //-------------------------------------------------------
+        // This method retrieves couple details from the database.
+        //-------------------------------------------------------
+        public Supplier GetSupplier(string email, string enteredPassword)
+        {
+            // Initialize the couple object to null.
+            Supplier supplier = null;
+
+            try
             {
-                return 1;
+                // Open a database connection.
+                using (SqlConnection con = DBServiceHelper.Connect())
+                {
+                    // Create a SqlCommand to execute the stored procedure for retrieving couple details.
+                    var parameters = new Dictionary<string, object>
+                    {
+                        { "@supplier_email", email }
+                    };
+                    using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPGetSupplierDetails", parameters))
+                    {
+                        // Execute the SqlCommand and obtain a SqlDataReader.
+                        using (SqlDataReader dataReader = cmd.ExecuteReader())
+                        {
+                            //* Step 1: Check if there is such couple in the db using dataReader.
+                            if (dataReader.Read())
+                            {
+                                //* Step 2: Construct the couple object using data from the dataReader.
+                                supplier = new Supplier
+                                {
+                                    SupplierEmail = email,
+                                    BusinessName = dataReader["business_name"].ToString(),
+                                    PhoneNumber = dataReader["phone_number"].ToString(),
+                                    Price = Convert.ToInt32(dataReader["price"]),
+                                    Rating = dataReader["rating"] != DBNull.Value ? Convert.ToDouble(dataReader["rating"]) : (double?)null,
+                                    AvailableRegion = dataReader["region_name"].ToString(),
+                                    SupplierType = dataReader["supplier_type_name"].ToString(),
+                                    IsActive = Convert.ToBoolean(dataReader["is_active"]),
+                                    Capacity = dataReader["capacity"] != DBNull.Value ? Convert.ToInt32(dataReader["capacity"]) : (int?)null,
+                                    Latitude = dataReader["latitude"] != DBNull.Value ? Convert.ToDouble(dataReader["latitude"]) : (double?)null,
+                                    Longitude = dataReader["longitude"] != DBNull.Value ? Convert.ToDouble(dataReader["longitude"]) : (double?)null
+                                };
+
+                                //* Step 3: Retrieve the password of the couple and check if it the same password the user entered.
+                                string hashedPasswordFromDatabase = dataReader["password_hash"].ToString();
+                                bool passwordsMatch = BCrypt.Net.BCrypt.EnhancedVerify(enteredPassword, hashedPasswordFromDatabase);
+
+                                if (!passwordsMatch)
+                                {
+                                    return null; // Passwords don't match, return null indicating unsuccessful authentication.
+                                }
+                            }
+                            // If there is no such couple
+                            else
+                            {
+                                return null;
+                            }
+                        }
+                    }
+                }
+                //* step 4: get the dates of the supplier
+                supplier.AvailableDates = GetDatesForSupplier(email);
+
             }
-            else
-                return 0;
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving supplier object in the GetSupplier method: " + ex.Message);
+            }
 
+            // step 5: return the supplier
+            return supplier;
         }
 
 
-        private SqlCommand CreateInsertSupplierWithSP(SqlConnection con, String spName, Supplier supplier)
+        //-------------------------------------------------------
+        // This method updates the supplier details
+        //-------------------------------------------------------
+        public int UpdateSupplier(Supplier supplier)
         {
-            SqlCommand cmd = new SqlCommand(); // create the command object
+            int successIndicator = 0;
 
-            cmd.Connection = con;              // assign the connection to the command object
+            try
+            {
+                // Step 1: Update the details of the supplier
+                using (SqlConnection con = DBServiceHelper.Connect())
+                {
+                    var parameters = new Dictionary<string, object>
+            {
+                { "@supplier_email", supplier.SupplierEmail },
+                { "@business_name", supplier.BusinessName },
+                { "@phone_number", supplier.PhoneNumber },
+                { "@price", supplier.Price },
+                { "@capacity", supplier.Capacity },
+                { "@region_name", supplier.AvailableRegion },
+                { "@latitude", supplier.Latitude },
+                { "@longitude", supplier.Longitude }
+            };
 
-            cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
+                    // Check if password is provided, hash it using BCrypt and update the password
+                    if (supplier.Password != null)
+                    {
+                        parameters.Add("@password_hash", BCrypt.Net.BCrypt.EnhancedHashPassword(supplier.Password, 10));
+                    }
 
-            cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
+                    using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPUpdateSupplierDetails", parameters))
+                    {
+                        successIndicator = cmd.ExecuteNonQuery();
+                    }
 
-            cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
+                    // If no available dates, return the result of updating supplier details
+                    if (supplier.AvailableDates.Count == 0)
+                    {
+                        return successIndicator;
+                    }
 
-            cmd.Parameters.AddWithValue("@supplier_email", supplier.SupplierEmail);
-            cmd.Parameters.AddWithValue("@business_name", supplier.BusinessName);
-            string hashedPassword = BCrypt.Net.BCrypt.EnhancedHashPassword(supplier.Password, 10);
-            cmd.Parameters.AddWithValue("@password_hash", hashedPassword);
-            cmd.Parameters.AddWithValue("@phone_number", supplier.PhoneNumber);
-            cmd.Parameters.AddWithValue("@price", supplier.Price);
-            cmd.Parameters.AddWithValue("@capacity", supplier.Capacity);
-            cmd.Parameters.AddWithValue("@region_name", supplier.AvailableRegion);
-            cmd.Parameters.AddWithValue("@latitude", supplier.Latitude);
-            cmd.Parameters.AddWithValue("@longitude", supplier.Longitude);
-            cmd.Parameters.AddWithValue("@supplier_type_name", supplier.SupplierType);
+                    // Step 2: Update the supplier's available dates
+                    successIndicator += UpdateSupplierDates(con, supplier);
 
-            return cmd;
+                    // If both updating the details and updating the dates were successful, return success
+                    return successIndicator > 1 ? 1 : 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while updating the supplier: " + ex.Message);
+            }
         }
 
-
-
-
-
-        private SqlCommand CreateInsertSupplierDateWithSP(SqlConnection con, String spName, DateTime date, String supplierEmail)
+        //-------------------------------------------------------
+        // This method updates the dates of a supplier
+        //-------------------------------------------------------
+        private int UpdateSupplierDates(SqlConnection con, Supplier supplier)
         {
-            SqlCommand cmd = new SqlCommand(); // create the command object
+            int successIndicator = 0;
 
-            cmd.Connection = con;              // assign the connection to the command object
+            try
+            {
+                // Delete existing dates for the supplier
+                using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPDeleteDatesForSupplier", new Dictionary<string, object>
+        {
+            { "@supplier_email", supplier.SupplierEmail }
+        }))
+                {
+                    successIndicator += cmd.ExecuteNonQuery();
+                }
 
-            cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
+                // Insert new available dates for the supplier
+                foreach (var date in supplier.AvailableDates)
+                {
+                    var dateParameters = new Dictionary<string, object>
+            {
+                { "@supplier_email", supplier.SupplierEmail },
+                { "@available_date", date }
+            };
 
-            cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
+                    using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPInsertSupplierDates", dateParameters))
+                    {
+                        successIndicator += cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while updating the supplier dates: " + ex.Message);
+            }
 
-            cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
-
-            cmd.Parameters.AddWithValue("@supplier_email", supplierEmail);
-
-            cmd.Parameters.AddWithValue("@available_date", date);
-
-            return cmd;
+            return successIndicator;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         //-------------------------------------------------------
         // This method retrieves the top venues from each region
         //-------------------------------------------------------
-
         public List<Supplier> GetTopVenuesPerRegion()
         {
-            // List to store the retrieved suppliers.
             List<Supplier> suppliers = new List<Supplier>();
 
             try
             {
-                // Open a database connection.
-                using (SqlConnection con = Connect())
+                using (SqlConnection con = DBServiceHelper.Connect())
                 {
-                    // Create a SqlCommand to execute the stored procedure.
-                    using (SqlCommand cmd = CreateReadTopVenuesPerRegionWithSp(con, "SPGetTopRatedVenuesPerRegion"))
+                    using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPGetTopRatedVenuesPerRegion", null))
                     {
-                        // Execute the SqlCommand and obtain a SqlDataReader.
                         using (SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                         {
                             suppliers = BuildSuppliers(dataReader);
@@ -196,105 +277,104 @@ namespace Server.DAL
             }
             catch (Exception ex)
             {
-                // Throw a new exception with the desired error message.
                 throw new Exception("An error occurred while retrieving top-rated venues in the GetTopVenuesPerRegion method" + ex.Message);
             }
 
-            // Return the retrieved suppliers.
             return suppliers;
         }
 
 
-        private SqlCommand CreateReadTopVenuesPerRegionWithSp(SqlConnection con, String spName)
+        //-------------------------------------------------------
+        // This method retrieves the top venues from each region
+        //-------------------------------------------------------
+        public List<Supplier> GetTopSuppliersByType()
         {
-            SqlCommand cmd = new SqlCommand(); // create the command object
+            List<Supplier> suppliers = new List<Supplier>();
 
-            cmd.Connection = con;              // assign the connection to the command object
+            try
+            {
+                using (SqlConnection con = DBServiceHelper.Connect())
+                {
+                    using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPGetTopRankedSuppliersByType", null))
+                    {
+                        using (SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                        {
+                            suppliers = BuildSuppliers(dataReader);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving top-rated venues in the GetTopVenuesPerRegion method" + ex.Message);
+            }
 
-            cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
-
-            cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
-
-            cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
-
-            return cmd;
+            return suppliers;
         }
-
-
-
-
 
 
         //------------------------------------------------------------------------------------------------------
         // This method retrieves suppliers based on a specific stored procedure and constructs supplier objects.
         // It is accessible for use by all classes for various purposes.
         //------------------------------------------------------------------------------------------------------
-
         public List<Supplier> BuildSuppliers(SqlDataReader dataReader)
         {
-            // List to store the constructed suppliers.
             List<Supplier> suppliers = new List<Supplier>();
 
             try
             {
-                // Loop through the SqlDataReader to read supplier data.
                 while (dataReader.Read())
                 {
-                    // Construct a new Supplier object.
                     Supplier supplier = new Supplier
                     {
                         SupplierEmail = dataReader["supplier_email"].ToString(),
                         BusinessName = dataReader["business_name"].ToString(),
-                        Password = dataReader["password_hash"].ToString(),
                         PhoneNumber = dataReader["phone_number"].ToString(),
                         Price = Convert.ToInt32(dataReader["price"]),
                         Rating = Convert.ToDouble(dataReader["rating"]),
                         AvailableRegion = dataReader["region_name"].ToString(),
                         SupplierType = dataReader["supplier_type_name"].ToString(),
                         IsActive = Convert.ToBoolean(dataReader["is_active"]),
-                        Capacity = dataReader["capacity"] != DBNull.Value ? Convert.ToInt32(dataReader["capacity"]) : null,
-                        Latitude = dataReader["latitude"] != DBNull.Value ? Convert.ToDouble(dataReader["latitude"]) : null,
-                        Longitude = dataReader["longitude"] != DBNull.Value ? Convert.ToDouble(dataReader["longitude"]) : null
+                        Capacity = dataReader["capacity"] != DBNull.Value ? Convert.ToInt32(dataReader["capacity"]) : (int?)null,
+                        Latitude = dataReader["latitude"] != DBNull.Value ? Convert.ToDouble(dataReader["latitude"]) : (double?)null,
+                        Longitude = dataReader["longitude"] != DBNull.Value ? Convert.ToDouble(dataReader["longitude"]) : (double?)null
                     };
 
-                    // Call GetDatesForSupplier to retrieve available dates for the supplier.
-                    //supplier.AvailableDates = GetDatesForSupplier(supplier.SupplierEmail);
-
-                    // Add the constructed supplier to the list.
                     suppliers.Add(supplier);
                 }
             }
             catch (Exception ex)
             {
-                // Throw a new exception with the desired error message.
                 throw new Exception("An error occurred while building a supplier in the BuildSuppliers method." + ex.Message);
             }
 
-            // Return the list of constructed suppliers.
             return suppliers;
         }
+
+
+
+
 
         //--------------------------------------------------------------------------------------------------
         // This method retrieves dates for each supplier object from the database.
         //--------------------------------------------------------------------------------------------------
         private List<DateTime> GetDatesForSupplier(string supplierEmail)
         {
-            // List to store the retrieved dates.
             List<DateTime> availableDates = new List<DateTime>();
 
             try
             {
-                // Open a database connection.
-                using (SqlConnection con = Connect())
+                using (SqlConnection con = DBServiceHelper.Connect())
                 {
-                    // Create a SqlCommand to execute the stored procedure.
-                    using (SqlCommand cmd = CreateReadDatesForSupplierWithSP(con, "SPGetDatesForSupplier", supplierEmail))
+                    Dictionary<string, object> parameters = new Dictionary<string, object>
                     {
-                        // Execute the SqlCommand and obtain a SqlDataReader.
+                        { "@SupplierEmail", supplierEmail }
+                    };
+
+                    using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPGetDatesForSupplier", parameters))
+                    {
                         using (SqlDataReader dataReader2 = cmd.ExecuteReader())
                         {
-
-                            // Loop through the SqlDataReader to read dates.
                             while (dataReader2.Read())
                             {
                                 DateTime date = (DateTime)dataReader2["available_date"];
@@ -304,33 +384,122 @@ namespace Server.DAL
                     }
                 }
             }
-
             catch (Exception ex)
             {
-                // Throw a new exception with the desired error message.
                 throw new Exception("An error occurred while retrieving dates for the supplier in the GetDatesForSupplier method." + ex.Message);
             }
 
-            // Return the retrieved dates.
             return availableDates;
         }
 
-        private SqlCommand CreateReadDatesForSupplierWithSP(SqlConnection con, String spName, String supplierEmail)
+
+
+
+
+
+        // Temporary
+        public List<Supplier> UploadSuppliersToDatabase(string excelFilePath)
         {
-            SqlCommand cmd = new SqlCommand(); // create the command object
+            // Set the license context to NonCommercial
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-            cmd.Connection = con;              // assign the connection to the command object
+            FileInfo fileInfo = new FileInfo(excelFilePath);
 
-            cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
+            List<Supplier> suppliers = new List<Supplier>();
 
-            cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
 
-            cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
 
-            cmd.Parameters.AddWithValue("@SupplierEmail", supplierEmail);
+            using (ExcelPackage package = new ExcelPackage(fileInfo))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // Assuming data is in the first worksheet
 
-            return cmd;
+                int rowCount = worksheet.Dimension.Rows;
+
+
+
+
+                for (int row = 2; row <= rowCount; row++) // Start from row 2 assuming row 1 contains headers
+                {
+
+                    Supplier newSupplier = new Supplier();
+
+                    newSupplier.BusinessName = worksheet.Cells[row, 1].Value?.ToString().Trim();
+                    newSupplier.SupplierEmail = worksheet.Cells[row, 2].Value?.ToString().Trim();
+                    newSupplier.SupplierType = worksheet.Cells[row, 3].Value?.ToString().Trim();
+                    newSupplier.Password = worksheet.Cells[row, 4].Value?.ToString().Trim();
+                    newSupplier.PhoneNumber = worksheet.Cells[row, 5].Value?.ToString().Trim();
+                    newSupplier.Price = Convert.ToInt32(worksheet.Cells[row, 6].Value);
+                    newSupplier.Rating = Convert.ToDouble(worksheet.Cells[row, 7].Value);
+                    newSupplier.Capacity = Convert.ToInt32(worksheet.Cells[row, 8].Value);
+                    newSupplier.AvailableRegion = worksheet.Cells[row, 10].Value?.ToString().Trim(); // Assuming region name is in column 10
+                    newSupplier.IsActive = Convert.ToBoolean(worksheet.Cells[row, 13].Value);
+                    newSupplier.Latitude = Convert.ToDouble(worksheet.Cells[row, 11].Value);
+                    newSupplier.Longitude = Convert.ToDouble(worksheet.Cells[row, 12].Value);
+
+
+
+                    // If the supplier type is dress, skip adding available dates
+                    string supplierType = worksheet.Cells[row, 3].Value?.ToString().Trim();
+                    if (supplierType == "dress")
+                    {
+                        suppliers.Add(newSupplier);
+                        continue;
+                    }
+                    else
+                    {
+                        // Get comma-separated list of dates from Excel and split it into array
+                        string[] datesArray = worksheet.Cells[row, 9].Value?.ToString().Trim('[', ']').Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        List<DateTime> dates = new List<DateTime>();
+                        // Insert each date for the supplier
+                        foreach (string dateStr in datesArray)
+                        {
+                            DateTime date = DateTime.Parse(dateStr.Trim('\'', ' '));
+                            dates.Add(date);
+                        }
+
+                        newSupplier.AvailableDates = dates;
+
+                        suppliers.Add(newSupplier);
+                    }
+                }
+            }
+
+            return suppliers;
+
         }
 
+
+
+
     }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

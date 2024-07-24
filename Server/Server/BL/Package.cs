@@ -7,12 +7,12 @@ namespace Server.BL
     public class Package
     {
         // Private fields
-        private int _packageId;
-        private string _coupleEmail;
-        private int _totalCost;
-        private double _totalScore;
-        private List<Supplier> _selectedSuppliers;
-        private Dictionary<string, List<Supplier>> _alternativeSuppliers;
+        private int _packageId;                         // ID of the package
+        private string _coupleEmail;                    // Email of the couple
+        private int _totalCost;                         // Total cost of the package
+        private double _totalScore;                     // Total score of the package
+        private List<Supplier> _selectedSuppliers;      // List of selected suppliers for the package
+        private Dictionary<string, List<Supplier>> _alternativeSuppliers;  // Dictionary of alternative suppliers for the package
 
         // Default constructor
         public Package() { }
@@ -43,8 +43,6 @@ namespace Server.BL
             get { return _coupleEmail; }
             set { _coupleEmail = value; }
         }
-
-
 
         // Gets or sets the total cost of the package.
         public int TotalCost
@@ -95,19 +93,32 @@ namespace Server.BL
         }
 
 
-        public static int InsertOrUpdatePackage(PackageApprovalData packageApprovalData, string actionString)
-        {
+        // Inserts or updates a package in the database.
 
+        public static int InsertOrUpdatePackage(PackageApprovalData packageApprovalData)
+        {
+            // Create an instance of DBServicesPackage to interact with the database
             DBServicesPackage dBServicesPackage = new DBServicesPackage();
-            return dBServicesPackage.InsertPackageToDB(packageApprovalData, actionString);
+            // Call the method to insert or update the package in the database
+            return dBServicesPackage.InsertPackageToDB(packageApprovalData);
         }
 
 
         // Generates a package for the couple based on their details and questionnaire answers.
+
         public static Couple GetPackage(Couple coupleWithData, int[] questionnaireAnswers)
         {
+            // Calculate vendor weights based on questionnaire answers
             coupleWithData.TypeWeights = PackageService.CalculateVendorWeights(questionnaireAnswers);
+            // Generate a package for the couple
             coupleWithData.Package = PackageService.GeneratePackage(coupleWithData);
+
+            // If neither were successful, return a null couple
+            if (coupleWithData.TypeWeights == null || coupleWithData.Package == null)
+            {
+                return null;
+            }
+
             return coupleWithData;
         }
     }

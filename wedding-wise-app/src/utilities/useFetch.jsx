@@ -17,10 +17,10 @@ function useFetch() {
   const [error, setError] = useState(undefined);
   // const [error, setError] = useState({ isError: false, status: "" });
 
-  async function getData(URL) {
+  async function getData(endpoint) {
     try {
       setLoading(true);
-      const response = await fetch(URL);
+      const response = await fetch(`${baseUrl}${endpoint}`);
       if (!response.ok) {
         setError(true);
         return;
@@ -36,29 +36,44 @@ function useFetch() {
   }
 
   async function sendData(endpoint, method, bodyData) {
+    // debugger;
     try {
       setLoading(true);
       const response = await fetch(`${baseUrl}${endpoint}`, {
         method: method,
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json; charset=UTF-8",
+          accept: "application/json; charset=UTF-8",
         },
         body: JSON.stringify(bodyData),
       });
-      console.log(response);
+
       if (!response.ok) {
         return setError(response.status);
       }
-      var responseData = await response.json();
-      setResData(responseData);
+      // possible responses form server:
+      // 1. empty response(only status code is getting returned)
+      // 2. json object with some data
+      var responseData;
+      // first read the response content
+      const textRes = await response.text();
+      // then check if the response has a content
+      if (!textRes) {
+        return setResData(response.status);
+      } else {
+        // if there is a content parse it to json
+        responseData = JSON.parse(textRes);
+        setResData(responseData);
+      }
     } catch (error) {
-      setError(responseData);
+      if (!error?.response) setError(500);
+      else setError(responseData);
     } finally {
       setLoading(false);
     }
   }
 
-  return { resData, loading, error, getData, sendData };
+  return { resData, loading, error, setResData, setError, getData, sendData };
 }
 
 export default useFetch;

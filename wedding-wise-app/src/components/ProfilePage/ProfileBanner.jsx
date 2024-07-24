@@ -1,6 +1,7 @@
 import { Stack, Typography } from "@mui/material";
 import React from "react";
 import { customTheme } from "../../store/Theme";
+import { convertDateToClientFormat } from "../../utilities/functions";
 
 function ProfileBanner({ props }) {
   const { partner1Name, partner2Name, desiredDate } = props;
@@ -11,7 +12,7 @@ function ProfileBanner({ props }) {
         <Typography sx={namesSX}>
           {`${partner1Name} & ${partner2Name}`}
         </Typography>
-        <Typography sx={weddingDateSX}>{`${desiredDate}`}</Typography>
+        <Typography sx={weddingDateSX}>{convertDateToClientFormat(desiredDate)}</Typography>
       </Stack>
     </Stack>
   );
@@ -41,8 +42,9 @@ const bannerSX = {
 };
 
 const namesSX = {
+  fontFamily: customTheme.font.main,
   fontSize: { xs: 40, sm: 55, md: 80 },
-  fontWeight: "bold",
+  WebkitTextStrokeWidth: {xs: 2 , sm: 5},
   color: { sm: "secondary.light" },
 };
 

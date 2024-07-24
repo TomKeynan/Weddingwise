@@ -3,115 +3,203 @@ import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import { customTheme } from "../store/Theme";
-import { stickers } from "../utilities/collections";
+import { stickers, suppliersImage } from "../utilities/collections";
+import { getRandomSupplierImage } from "../utilities/functions";
+import CheckIcon from "@mui/icons-material/Check";
+import { db } from "../fireBase/firebase";
+import { getDocs, query, where, collection } from "firebase/firestore";
 
-function SupplierCard({ props, showActionBtn = false }) {
-  const {
-    imageSrc,
-    imageAlt,
-    businessName,
-    phoneNumber,
-    supplierEmail,
-    price,
-    supplierType,
-  } = props;
+function SupplierCard({
+  props,
+  showReplaceSupplierBtn,
+  showMoreInfoBtn,
+  cardBg = "white",
+  onReplacement,
+  onCheckBtnClick,
+  isAlternative,
+  isPackage,
+}) {
+  const { businessName, phoneNumber, supplierEmail, price, supplierType } =
+    props;
 
   const [sticker, setSticker] = useState({});
 
+  const [supplierImage, setSupplierImage] = useState("");
+
+
+  const [user, setUser] = useState(null);
+
+  // OMRI'S
+  // useEffect(() => {
+  //   const cardSticker = stickers.filter((sticker) => {
+  //     if (sticker.stickerSrc.includes("makeup")) return sticker;
+  //     else return sticker.stickerSrc.includes(supplierType);
+  //   });
+  //   setSticker({ ...cardSticker[0] });
+  //   getImage();
+  //   setSupplierImage(user.avatar);
+  // }, []);
+
+
   useEffect(() => {
-    const cardSticker = stickers.filter((sticker) => {
-      if (sticker.stickerSrc.includes("makeup")) return sticker;
-      else return sticker.stickerSrc.includes(supplierType);
-    });
-    setSticker({ ...cardSticker[0] });
-  }, []);
+    const fetchImage = async () => {
+      try {
+        // Reference to the 'users' collection
+        const userRef = collection(db, "users");
+
+        // Query to find a user by email
+        const q = query(userRef, where("email", "==", supplierEmail));
+
+        // Execute the query
+        const querySnapshot = await getDocs(q);
+
+        // If a user is found, set the user state
+        if (!querySnapshot.empty) {
+          setUser(querySnapshot.docs[0].data());
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchImage();
+  }, [supplierEmail]);
+
+  useEffect(() => {
+    if (user) {
+      const cardSticker = stickers.filter((sticker) => {
+        if (sticker.stickerSrc.includes("makeup")) return sticker;
+        return sticker.stickerSrc.includes(supplierType);
+      });
+      setSticker({ ...cardSticker[0] });
+      setSupplierImage(user.avatar);
+    }
+  }, [user, supplierType, stickers, setSticker, setSupplierImage]);
+
+  
 
   return (
-    <Grid item xs={12} sm={6} md={4} lg={2} sx={cardContainerSX}>
-      <Stack
-        direction="column"
-        justifyContent="center"
-        alignItems="center"
-        sx={{ width: "90%", margin: "0 auto" }}
+    <Stack
+      direction="column"
+      justifyContent="center"
+      alignItems="center"
+      sx={{
+        bgcolor: cardBg,
+        boxShadow: customTheme.shadow.main,
+        borderRadius: 4,
+      }}
+    >
+      {/* care-image */}
+      <Box
+        sx={{
+          minWidth: "100%",
+          height: "250px",
+          margin: "0 auto",
+        }}
       >
-        <Box>
-          <img src={imageSrc} alt={imageAlt} className="supplier-card-image" />
-        </Box>
+        <img
+          src={supplierImage}
+          alt={businessName}
+          className={
+            isPackage ? "supplier-card-image-package" : "supplier-card-image"
+          }
+        />
+      </Box>
+
+      {/* card-content */}
+      <Stack
+        spacing={1}
+        sx={{
+          width: "100%",
+          textAlign: "center",
+          py: 2,
+        }}
+      >
         <Stack
-          spacing={1}
-          sx={{
-            width: { xs: "50%", sm: "60%", md: "85%", lg: "50%" },
-            textAlign: "center",
-            px: 4,
-          }}
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{ px: 1 }}
         >
-          <Stack
-            direction="row"
-            // justifyContent="start"
-            justifyContent="space-between"
-            alignItems="center"
+          <Typography variant="body1" sx={{ textAlign: "center" }}>
+            {businessName}
+          </Typography>
+          <img
+            src={sticker.stickerSrc}
+            alt={sticker.stickerAlt}
+            className="supplier-card-sticker"
+          />
+        </Stack>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{ px: 1 }}
+        >
+          <Typography variant="body1" sx={{ textAlign: "center" }}>
+            {phoneNumber}
+          </Typography>
+          <PhoneIcon sx={{ fontSize: 20 }} />
+        </Stack>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ px: 1 }}
+        >
+          <Typography
+            variant="body2"
+            sx={{ textAlign: "left", wordBreak: "break-all", width: "185px" }}
           >
-            <img
-              src={sticker.stickerSrc}
-              alt={sticker.stickerAlt}
-              className="supplier-card-sticker"
-            />
-            <Typography variant="body1" sx={{ textAlign: "center" }}>
-              {businessName}
-            </Typography>
-          </Stack>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            // justifyContent="start"
-            alignItems="center"
+            {supplierEmail}
+          </Typography>
+          <AlternateEmailIcon sx={{ fontSize: 20 }} />
+        </Stack>
+        <Stack direction="row" alignItems="center" justifyContent="center">
+          <Typography
+            sx={{
+              textAlign: "center",
+              my: 1,
+              fontSize: 22,
+              color: customTheme.palette.primary.dark,
+            }}
+            variant="body1"
           >
-            <PhoneIcon sx={{ fontSize: 25 }} />
-            <Typography variant="body1" sx={{ textAlign: "center" }}>
-              {phoneNumber}
-            </Typography>
-          </Stack>
-          <Stack
-            direction="row"
-            // justifyContent="start"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <AlternateEmailIcon sx={{ fontSize: 25 }} />
-            <Typography variant="body1" sx={{ textAlign: "center" }}>
-              {supplierEmail}
-            </Typography>
-          </Stack>
-          <Stack direction="row" alignItems="center" justifyContent="center">
-            <Typography
-              sx={{
-                textAlign: "center",
-                my: 1,
-                fontSize: 22,
-                color: customTheme.palette.primary.dark,
-              }}
-              variant="body1"
-            >
-              מחיר: {price} $
-            </Typography>
-          </Stack>
-          {showActionBtn && (
-            <Stack
-              direction="row"
-              justifyContent="space-around"
-              sx={{ height: "100%" }}
-            >
-              <Button variant="outlined" sx={actionBtnSX}>
+            מחיר: {price} $
+          </Typography>
+        </Stack>
+        <Stack
+          direction="row"
+          justifyContent="space-around"
+          sx={{ height: "100%" }}
+        >
+          {showReplaceSupplierBtn &&
+            (isAlternative ? (
+              <Button
+                variant="outlined"
+                sx={actionBtnSX}
+                onClick={() => onCheckBtnClick(supplierEmail)}
+              >
+                <CheckIcon />
+              </Button>
+            ) : (
+              <Button
+                variant="outlined"
+                disableRipple
+                sx={actionBtnSX}
+                onClick={() => onReplacement(supplierType, supplierEmail)}
+              >
                 החלף ספק
               </Button>
-              <Button variant="contained" sx={actionBtnSX}>
-                מידע נוסף
-              </Button>
-            </Stack>
+            ))}
+          {showMoreInfoBtn && (
+            <Button variant="contained" sx={actionBtnSX}>
+              מידע נוסף
+            </Button>
           )}
         </Stack>
       </Stack>
-    </Grid>
+    </Stack>
   );
 }
 
@@ -120,11 +208,183 @@ export default SupplierCard;
 const actionBtnSX = {
   p: 1,
 };
+// import React, { useEffect, useState } from "react";
+// import { Box, Button, Grid, Stack, Typography } from "@mui/material";
+// import PhoneIcon from "@mui/icons-material/Phone";
+// import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
+// import { customTheme } from "../store/Theme";
+// import { stickers, suppliersImage } from "../utilities/collections";
+// import { getRandomSupplierImage } from "../utilities/functions";
+// import CheckIcon from "@mui/icons-material/Check";
+// function SupplierCard({
+//   props,
+//   showReplaceSupplierBtn,
+//   showMoreInfoBtn,
+//   cardBg = "white",
+//   onReplacement,
+//   onSelection,
+//   onCheckBtnClick,
+//   isAlternative,
+//   isPackage,
+// }) {
+//   const {
+//     businessName,
+//     phoneNumber,
+//     supplierEmail,
+//     price,
+//     supplierType,
+//   } = props;
 
-const cardContainerSX = {
-  px: { xs: 2, sm: 0 },
-  mb: 2,
-  // bgcolor: customTheme.palette.primary.light,
-  // py: 2,
-  // border: 1,
-};
+//   const [sticker, setSticker] = useState({});
+
+//   const [supplierImage, setSupplierImage] = useState("");
+
+//   useEffect(() => {
+//     const cardSticker = stickers.filter((sticker) => {
+//       if (sticker.stickerSrc.includes("makeup")) return sticker;
+//       else return sticker.stickerSrc.includes(supplierType);
+//     });
+//     setSticker({ ...cardSticker[0] });
+
+//     setSupplierImage(getRandomSupplierImage(suppliersImage, supplierType));
+//   }, []);
+
+//   function updatedSelectedSupplierDetails(supplierType, supplierEmail) {
+//     onReplacement();
+//     onSelection(supplierType, supplierEmail);
+//   }
+
+//   return (
+//     <Stack
+//       direction="column"
+//       justifyContent="center"
+//       alignItems="center"
+//       sx={{
+//         bgcolor: cardBg,
+//         boxShadow: customTheme.shadow.main,
+//         borderRadius: 4,
+//       }}
+//     >
+//       {/* care-image */}
+//       <Box
+//         sx={{
+//           minWidth: "100%",
+//           height: "250px",
+//           margin: "0 auto",
+//         }}
+//       >
+//         <img
+//           src={supplierImage}
+//           alt={businessName}
+//           className={
+//             isPackage ? "supplier-card-image-package" : "supplier-card-image"
+//           }
+//         />
+//       </Box>
+
+//       {/* card-content */}
+//       <Stack
+//         spacing={1}
+//         sx={{
+//           width: "100%",
+//           textAlign: "center",
+//           py: 2,
+//         }}
+//       >
+//         <Stack
+//           direction="row"
+//           justifyContent="space-between"
+//           alignItems="center"
+//           sx={{ px: 1 }}
+//         >
+//           <Typography variant="body1" sx={{ textAlign: "center" }}>
+//             {businessName}
+//           </Typography>
+//           <img
+//             src={sticker.stickerSrc}
+//             alt={sticker.stickerAlt}
+//             className="supplier-card-sticker"
+//           />
+//         </Stack>
+//         <Stack
+//           direction="row"
+//           justifyContent="space-between"
+//           alignItems="center"
+//           sx={{ px: 1 }}
+//         >
+//           <Typography variant="body1" sx={{ textAlign: "center" }}>
+//             {phoneNumber}
+//           </Typography>
+//           <PhoneIcon sx={{ fontSize: 20 }} />
+//         </Stack>
+//         <Stack
+//           direction="row"
+//           alignItems="center"
+//           justifyContent="space-between"
+//           sx={{ px: 1 }}
+//         >
+//           <Typography
+//             variant="body2"
+//             sx={{ textAlign: "left", wordBreak: "break-all", width: "170px" }}
+//           >
+//             {supplierEmail}
+//           </Typography>
+//           <AlternateEmailIcon sx={{ fontSize: 20 }} />
+//         </Stack>
+//         <Stack direction="row" alignItems="center" justifyContent="center">
+//           <Typography
+//             sx={{
+//               textAlign: "center",
+//               my: 1,
+//               fontSize: 22,
+//               color: customTheme.palette.primary.dark,
+//             }}
+//             variant="body1"
+//           >
+//             מחיר: {price} $
+//           </Typography>
+//         </Stack>
+//         <Stack
+//           direction="row"
+//           justifyContent="space-around"
+//           sx={{ height: "100%" }}
+//         >
+//           {showReplaceSupplierBtn &&
+//             (isAlternative ? (
+//               <Button
+//                 variant="outlined"
+//                 sx={actionBtnSX}
+//                 onClick={() => onCheckBtnClick({ supplierEmail, supplierType })}
+//               >
+//                 <CheckIcon />
+//               </Button>
+//             ) : (
+//               <Button
+//                 variant="outlined"
+//                 sx={actionBtnSX}
+//                 onClick={() =>
+//                   updatedSelectedSupplierDetails(supplierType, {
+//                     supplierEmail,
+//                     supplierType,
+//                   })
+//                 }
+//               >
+//                 החלף ספק
+//               </Button>
+//             ))}
+//           {showMoreInfoBtn && (
+//             <Button variant="contained" sx={actionBtnSX}>
+//               מידע נוסף
+//             </Button>
+//           )}
+//         </Stack>
+//       </Stack>
+//     </Stack>
+//   );
+// }
+
+// export default SupplierCard;
+
+// const actionBtnSX = {
+//   p: 1,
+// };

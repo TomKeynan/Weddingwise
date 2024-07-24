@@ -84,7 +84,7 @@ function Description() {
               <img
                 src="assets/emojis.png"
                 alt="emojis"
-                className="supplier-card-image"
+                className="emojis"
               />
             </Stack>
           )}

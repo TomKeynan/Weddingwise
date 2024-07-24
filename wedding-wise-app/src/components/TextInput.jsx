@@ -16,19 +16,31 @@ const TextInput = ({
   label,
   textFieldSX,
   inputProps,
+  editMode = false,
+  InputProps,
 }) => {
-  const { userDetails, updateUserDetails } = useContext(RegisterContext);
+  const { userDetails, editValue, updateUserDetails, updateEditValue } =
+    useContext(RegisterContext);
 
   const [check, setCheck] = useState(initialCheckState);
 
   useEffect(() => {
-    validationCheck(name, userDetails[name]);
+    if (editMode) {
+      validationCheck(name, editValue[name]);
+    } else {
+      validationCheck(name, userDetails[name]);
+    }
   }, []);
 
   function handleChange(e) {
-    const value = e.target.value;
+    let value = e.target.value;
+    if (name == "budget" || name == "numberOfInvitees") {
+      value = Number(value);
+    }
+    console.log(value);
     validationCheck(name, value);
-    updateUserDetails({ [name]: value });
+    if (editMode) updateEditValue({ [name]: value });
+    else updateUserDetails({ [name]: value });
   }
 
   function validationCheck(key, value) {
@@ -50,10 +62,9 @@ const TextInput = ({
       onChange={handleChange}
       sx={textFieldSX}
       inputProps={inputProps}
+      InputProps={InputProps}
     />
   );
 };
 
 export default TextInput;
-
-
