@@ -9,7 +9,6 @@ namespace Server.BL
         private string _taskName;
         private string _email;
         private bool _completed;
-        private string? _notes;
         private List<SubTask>? _subTasks;
 
         public Tasks() { }
@@ -24,7 +23,6 @@ namespace Server.BL
         public int? TaskID { get => _taskID; set => _taskID = value; }
         public string TaskName { get => _taskName; set => _taskName = value; }
         public string Email { get => _email; set => _email = value; }
-        public string Notes { get => _notes; set => _notes = value; }
         public bool Completed { get => _completed; set => _completed = value; }
         public List<SubTask>? SubTasks { get => _subTasks; set => _subTasks = value; }
 

@@ -23,8 +23,11 @@ import Finance from "./Pages/Finance";
 import EditDetails from "./Pages/EditDetails";
 import { LoadScript } from "@react-google-maps/api";
 import Invitees from "./Pages/Invitees";
-
-const googleMapsApiKey = "AIzaSyC3QkzXx3mLsG_-IzI67-WVFBAoAZTYWxk";
+import { auth } from "./fireBase/firebase";
+import { useUserStore } from "./fireBase/userStore";
+import { onAuthStateChanged } from "firebase/auth";
+import { useEffect } from "react";
+const googleMapsApiKey = "AIzaSyCSXv1ZziH2SJEcGQIp8EJMytapWnPjytQ";
 
 const router = createHashRouter([
   { path: "/", element: <Home /> },
@@ -45,7 +48,23 @@ const router = createHashRouter([
   { path: "/login", element: <Login /> },
 ]);
 
+
+
 function App() {
+
+  const { fetchUserInfo } = useUserStore();
+// When a user logs in, fetch their data.
+useEffect(() => {
+  // Subscribe to auth state changes
+  const unSub = onAuthStateChanged(auth, (user) => {
+    fetchUserInfo(user?.uid);
+  });
+  // Cleanup function to unsubscribe from auth state changes
+  return () => {
+    unSub();
+  };
+}, [fetchUserInfo]);
+
   return (
     <LoadScript
       googleMapsApiKey={googleMapsApiKey}

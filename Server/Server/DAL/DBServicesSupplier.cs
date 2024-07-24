@@ -1,4 +1,5 @@
-﻿using Server.BL;
+﻿using OfficeOpenXml;
+using Server.BL;
 using Server.Services;
 using System.Data;
 using System.Data.SqlClient;
@@ -31,7 +32,8 @@ namespace Server.DAL
                         { "@region_name", supplier.AvailableRegion },
                         { "@latitude", supplier.Latitude },
                         { "@longitude", supplier.Longitude },
-                        { "@supplier_type_name", supplier.SupplierType }
+                        { "@supplier_type_name", supplier.SupplierType },
+                        { "@rating", supplier.Rating }
                     };
 
                     using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPInsertSupplierDetails", parameters))
@@ -389,6 +391,86 @@ namespace Server.DAL
 
             return availableDates;
         }
+
+
+
+
+
+
+        // Temporary
+        public List<Supplier> UploadSuppliersToDatabase(string excelFilePath)
+        {
+            // Set the license context to NonCommercial
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            FileInfo fileInfo = new FileInfo(excelFilePath);
+
+            List<Supplier> suppliers = new List<Supplier>();
+
+
+
+            using (ExcelPackage package = new ExcelPackage(fileInfo))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // Assuming data is in the first worksheet
+
+                int rowCount = worksheet.Dimension.Rows;
+
+
+
+
+                for (int row = 2; row <= rowCount; row++) // Start from row 2 assuming row 1 contains headers
+                {
+
+                    Supplier newSupplier = new Supplier();
+
+                    newSupplier.BusinessName = worksheet.Cells[row, 1].Value?.ToString().Trim();
+                    newSupplier.SupplierEmail = worksheet.Cells[row, 2].Value?.ToString().Trim();
+                    newSupplier.SupplierType = worksheet.Cells[row, 3].Value?.ToString().Trim();
+                    newSupplier.Password = worksheet.Cells[row, 4].Value?.ToString().Trim();
+                    newSupplier.PhoneNumber = worksheet.Cells[row, 5].Value?.ToString().Trim();
+                    newSupplier.Price = Convert.ToInt32(worksheet.Cells[row, 6].Value);
+                    newSupplier.Rating = Convert.ToDouble(worksheet.Cells[row, 7].Value);
+                    newSupplier.Capacity = Convert.ToInt32(worksheet.Cells[row, 8].Value);
+                    newSupplier.AvailableRegion = worksheet.Cells[row, 10].Value?.ToString().Trim(); // Assuming region name is in column 10
+                    newSupplier.IsActive = Convert.ToBoolean(worksheet.Cells[row, 13].Value);
+                    newSupplier.Latitude = Convert.ToDouble(worksheet.Cells[row, 11].Value);
+                    newSupplier.Longitude = Convert.ToDouble(worksheet.Cells[row, 12].Value);
+
+
+
+                    // If the supplier type is dress, skip adding available dates
+                    string supplierType = worksheet.Cells[row, 3].Value?.ToString().Trim();
+                    if (supplierType == "dress")
+                    {
+                        suppliers.Add(newSupplier);
+                        continue;
+                    }
+                    else
+                    {
+                        // Get comma-separated list of dates from Excel and split it into array
+                        string[] datesArray = worksheet.Cells[row, 9].Value?.ToString().Trim('[', ']').Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        List<DateTime> dates = new List<DateTime>();
+                        // Insert each date for the supplier
+                        foreach (string dateStr in datesArray)
+                        {
+                            DateTime date = DateTime.Parse(dateStr.Trim('\'', ' '));
+                            dates.Add(date);
+                        }
+
+                        newSupplier.AvailableDates = dates;
+
+                        suppliers.Add(newSupplier);
+                    }
+                }
+            }
+
+            return suppliers;
+
+        }
+
+
+
 
     }
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { GoogleMap, MarkerF, InfoWindowF  } from "@react-google-maps/api";
+import { GoogleMap, MarkerF, InfoWindow } from "@react-google-maps/api";
 import useFetch from "../../utilities/useFetch";
 
 const mapContainerStyle = {
@@ -52,7 +52,7 @@ function Gmap() {
         ))}
 
         {selectedVenue && (
-          <InfoWindowF
+          <InfoWindow
             position={{
               lat: selectedVenue.latitude,
               lng: selectedVenue.longitude,
@@ -65,7 +65,7 @@ function Gmap() {
               <p>מתאים ל: {selectedVenue.capacity}</p>
               <p>מס' טלפון: {selectedVenue.phoneNumber}</p>
             </div>
-          </InfoWindowF>
+          </InfoWindow>
         )}
       </GoogleMap>
     </div>

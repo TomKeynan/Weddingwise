@@ -14,9 +14,18 @@ import MenuItem from "@mui/material/MenuItem";
 import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
 import { customTheme } from "../store/Theme";
 import { AppContext } from "../store/AppContext";
+import { auth } from '../fireBase/firebase';
+import { useChatStore } from "../fireBase/chatStore";
+import { useUserStore } from "../fireBase/userStore";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "../fireBase/firebase";
+import { useEffect } from "react";
 
 function Navbar({ isLayout = true }) {
   const screenAboveMD = useMediaQuery("(min-width: 900px)");
+
+  const { resetChat,  changeChatStatus, isSeen, changeIsSeenStatus } = useChatStore();
+  const { currentUser } = useUserStore();
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -25,16 +34,17 @@ function Navbar({ isLayout = true }) {
 
   const pages = coupleData
     ? [
-        { route: "/", text: "דף הבית" },
-        { route: "/profile", text: "פרופיל" },
-        { route: "/package", text: "חבילה" },
-        { route: "/noPathYet", text: "Planner" },
-      ]
+      { route: "/", text: "דף הבית" },
+      { route: "/profile", text: "פרופיל" },
+      { route: "/package", text: "חבילה" },
+      { route: "/noPathYet", text: "Planner" },
+
+    ]
     : [
-        { route: "/", text: "דף הבית" },
-        { route: "/package", text: "חבילה" },
-        { route: "/noPathYet", text: "Planner" },
-      ];
+      { route: "/", text: "דף הבית" },
+      { route: "/package", text: "חבילה" },
+      { route: "/noPathYet", text: "Planner" },
+    ];
 
   const settings = [
     { route: "/login", text: "התחבר" },
@@ -44,6 +54,7 @@ function Navbar({ isLayout = true }) {
     { route: "/edit", text: "עדכן פרטים" },
     { route: "/", text: "התנתק" },
   ];
+
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -66,8 +77,44 @@ function Navbar({ isLayout = true }) {
       setCoupleData(null);
       sessionStorage.setItem("offeredPackage", JSON.stringify(null));
       setOfferedPackage(null);
+
+      auth.signOut();
+      resetChat();
     }
   }
+
+
+  // Adam's 
+  const handleChat = () => {
+    changeChatStatus();
+    handleCloseUserMenu();
+  }
+
+  // Listen for changes to the current chat and update the local state
+  useEffect(() => {
+    let unSub = null;
+    debugger;
+    if (currentUser?.id) {
+      unSub = onSnapshot(
+        doc(db, "userChats", currentUser.id),
+        (res) => {
+          const chatsData = res.data();
+          if (chatsData && Array.isArray(chatsData.chats)) {
+            const hasUnseenChat = chatsData.chats.some(chat => chat.isSeen === false);
+            changeIsSeenStatus(!hasUnseenChat);
+          }
+        }
+      );
+    }
+
+    // Cleanup the listener on component unmount
+    return () => {
+      if (unSub) {
+        unSub();
+      }
+    };
+  }, [currentUser?.id,changeIsSeenStatus]);
+
 
   // isActive = boolean property which destructured form the NavLink component.
   function navLinkLayoutStyles({ isActive }) {
@@ -111,6 +158,20 @@ function Navbar({ isLayout = true }) {
                 height: 80,
               }}
             >
+
+              {/* {Adam's} */}
+              {!isSeen && <img
+                style={{
+                  height: '35px',
+                  position: 'absolute',
+                  right: '-14.5px',
+                  bottom: '58%',
+                  zIndex: '1'
+                }}
+                src='assets/chat_pics/inbox.png' alt=''
+              />}
+
+
               {/* Settings Menu */}
               <Box sx={{ width: "25%" }}>
                 <Tooltip title="התחברות / הרשמה">
@@ -151,6 +212,21 @@ function Navbar({ isLayout = true }) {
                       </Link>
                     </MenuItem>
                   ))}
+
+                  {/* {Adam's}  */}
+                  {coupleData && (
+                    <MenuItem onClick={handleChat} sx={menuItemSX}>
+                      <Link onClick={(e) => e.preventDefault()} style={menuLinkStyle}>
+                        {isSeen ? <Typography sx={typographyLinkSX}>
+                          צ'אט
+                        </Typography> : <Typography sx={typographyLinkSX}>
+                          צ'אט  <span style={{ color: 'red' }}>*</span>
+                        </Typography>}
+
+                      </Link>
+                    </MenuItem>
+                  )}
+
                   {coupleData &&
                     userSettings.map((item) => (
                       <MenuItem
@@ -171,6 +247,10 @@ function Navbar({ isLayout = true }) {
                     ))}
                 </Menu>
               </Box>
+
+
+              {/* {Adam's} */}
+              {/* {chatStatus && <Chat />} */}
 
               {/* Pages */}
               <Stack

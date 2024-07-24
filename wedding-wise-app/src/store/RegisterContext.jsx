@@ -4,6 +4,10 @@ import { useNavigate } from "react-router-dom";
 import useFetch from "../utilities/useFetch";
 import { AppContext } from "./AppContext";
 // import useFetch from "../utilities/useFetch";
+import { toast } from 'react-toastify';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '../fireBase/firebase';
+import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 
 export const RegisterContext = createContext({
   userDetails: {},
@@ -11,13 +15,13 @@ export const RegisterContext = createContext({
   date: "",
   error: null,
   loading: false,
-  updateUserDetails: () => {},
-  updateEditValue: () => {},
-  saveDateValue: () => {},
-  isFormCompleted: () => {},
-  isFormValid: () => {},
-  isEditFormValid: () => {},
-  handleSubmit: () => {},
+  updateUserDetails: () => { },
+  updateEditValue: () => { },
+  saveDateValue: () => { },
+  isFormCompleted: () => { },
+  isFormValid: () => { },
+  isEditFormValid: () => { },
+  handleSubmit: () => { },
 });
 export default function RegisterContextProvider({ children }) {
   const navigate = useNavigate();
@@ -26,12 +30,70 @@ export default function RegisterContextProvider({ children }) {
 
   const { updateCoupleData } = useContext(AppContext);
 
+
+
+  // Omri's
+  // useEffect(() => {
+  //   if (resData) {
+  //     updateCoupleData(resData);
+  //     navigate("/profile");
+  //   }
+  // }, [resData]);
+
+
   useEffect(() => {
-    if (resData) {
-      updateCoupleData(resData);
-      navigate("/profile");
-    }
+    const registerAndNavigate = async () => {
+      if (resData) {
+        updateCoupleData(resData);
+        await registerFireBase();
+        navigate("/profile");
+      }
+    };
+
+    registerAndNavigate();
   }, [resData]);
+
+  const registerFireBase = async () => {
+   
+    const username = userDetails.partner1Name + ' ו' + userDetails.partner2Name;  // Need to fix?
+    const email = userDetails.email;
+    const password = userDetails.password
+
+    // Validate unique username
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, where("email", "==", email));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      return toast.warn("Select another username");
+    }
+
+    try {
+      // Create user with email and password using auth of firebase
+      const res = await createUserWithEmailAndPassword(auth, email, password);
+      // if the creating is succesful res is the user with propreties. 
+
+      // Set user document in Firestore
+      await setDoc(doc(db, "users", res.user.uid), {
+        username,
+        email,
+        avatar: "assets/chat_pics/avatar.png", // I think its already default
+        id: res.user.uid,
+        blocked: []
+      });
+
+      // Set user chats document in Firestore
+      await setDoc(doc(db, "userChats", res.user.uid), {
+        chats: [],
+      });
+
+      toast.success("Account created! You can login now!");
+    } catch (err) {
+      console.log(err);
+      toast.error(err.message);
+    } finally {
+    
+    }
+  };
 
   const [userDetails, setUserDetails] = useState({
     email: "",
@@ -54,6 +116,7 @@ export default function RegisterContextProvider({ children }) {
 
   function updateUserDetails(currentInput) {
     setUserDetails((prevData) => {
+      // currentInput.hasownproprety('password')
       return { ...prevData, ...currentInput };
     });
   }

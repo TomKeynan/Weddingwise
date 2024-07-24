@@ -17,14 +17,20 @@
     "classnames": "^2.5.1",
     "cssjanus": "^2.1.0",
     "dayjs": "^1.11.10",
+    "emoji-picker-react": "^4.11.1",
+    "firebase": "^10.12.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-multi-carousel": "^2.8.5",
     "react-router-dom": "^6.22.3",
     "react-scripts": "5.0.1",
+    "react-toastify": "^10.0.5",
     "stylis": "^4.3.1",
     "stylis-plugin-rtl": "^2.1.1",
-    "web-vitals": "^2.1.4"
+    "timeago-react": "^3.0.6",
+    "timeago.js": "^4.0.2",
+    "web-vitals": "^2.1.4",
+    "zustand": "^4.5.4"
   },
   "scripts": {
     "start": "react-scripts start",
