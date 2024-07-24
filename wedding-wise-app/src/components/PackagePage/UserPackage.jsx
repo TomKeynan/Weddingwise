@@ -15,6 +15,13 @@ import EditCouple from "../EditCouple";
 import RegisterContextProvider from "../../store/RegisterContext";
 import { useNavigate } from "react-router-dom";
 
+import { arrayUnion, collection, doc, deleteDoc, arrayRemove, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
+import { db } from '../../fireBase/firebase';
+import { useUserStore } from "../../fireBase/userStore";
+import { useChatStore } from "../../fireBase/chatStore";
+
+
+
 function UserPackage() {
   const navigate = useNavigate();
 
@@ -46,6 +53,13 @@ function UserPackage() {
 
   const formRef = useRef(null);
 
+  const { currentUser } = useUserStore();
+
+  const { isSeen, changeIsSeenStatus } = useChatStore();
+
+  const [loadingFB, setLoadingFB] = useState(false);
+
+
   useEffect(() => {
     // check if couple ever approve a package
     if (coupleData.package)
@@ -61,20 +75,161 @@ function UserPackage() {
     sessionStorage.setItem("currentCouple", JSON.stringify(coupleData));
   }, [coupleData]);
 
+
+  // Omri's
+  // useEffect(() => {
+  //   // update coupleData after getting success code from DB
+  //   // resData === 200 -> couple has approve the offered package for the first time ever.
+  //   // resData === 204 -> couple has updated his package successfully.
+  //   if (resData === 204 || resData === 200) {
+  //     const { typeWeights, ...rest } = offeredPackage;
+  //     addSuppliersChats(...rest.selectedSuppliers);
+  //     setCoupleData((prevData) => {
+  //       return {
+  //         ...prevData,
+  //         package: { ...rest },
+  //       };
+  //     });
+  //   }
+  // }, [resData]);
+
   useEffect(() => {
-    // update coupleData after getting success code from DB
-    // resData === 200 -> couple has approve the offered package for the first time ever.
-    // resData === 204 -> couple has updated his package successfully.
-    if (resData === 204 || resData === 200) {
-      const { typeWeights, ...rest } = offeredPackage;
-      setCoupleData((prevData) => {
-        return {
-          ...prevData,
-          package: { ...rest },
-        };
-      });
-    }
+    const updateCoupleData = async () => {
+      if (resData === 204 || resData === 200) {
+
+        const { typeWeights, ...rest } = offeredPackage;
+        await addSuppliersChats(rest.selectedSuppliers); // Wait for this to complete
+        setCoupleData((prevData) => {
+          return {
+            ...prevData,
+            package: { ...rest },
+          };
+        });
+      }
+    };
+
+    updateCoupleData();
   }, [resData]);
+
+
+
+  const addSuppliersChats = async (suppliers) => {
+    const chatRef = collection(db, "chats");
+    const userChatsRef = collection(db, "userChats");
+    setLoadingFB(true);
+    try {
+      // Get the current package from sessionStorage
+      const supplierPackage = JSON.parse(sessionStorage.getItem('currentCouple')).package;
+
+      if (supplierPackage != null) {
+        // Step 1: Delete existing chats
+        const userChatsDocRef = doc(userChatsRef, currentUser.id);
+        const userChatsDoc = await getDoc(userChatsDocRef);
+        const existingChats = userChatsDoc.data()?.chats || [];
+
+        // Delete chat documents from the "chats" collection
+        for (const chat of existingChats) {
+          const chatId = chat.chatId;
+          await deleteDoc(doc(chatRef, chatId));
+        }
+
+
+        // Clear the chats array in the current user's userChats document
+        await updateDoc(userChatsDocRef, {
+          chats: []
+        });
+
+        // Step 2: Remove chat references from each supplier's userChats document
+        for (const supplier of supplierPackage.selectedSuppliers) {
+          const userRef = collection(db, "users");
+          const q = query(userRef, where("email", "==", supplier.supplierEmail));
+          const querySnapshot = await getDocs(q);
+
+          if (!querySnapshot.empty) {
+            const user = querySnapshot.docs[0].data();
+            const supplierId = user.id;
+
+            // Get the userChats document for the supplier
+            const supplierUserChatsDocRef = doc(userChatsRef, supplierId);
+            const supplierUserChatsDoc = await getDoc(supplierUserChatsDocRef);
+            const supplierChats = supplierUserChatsDoc.data()?.chats || [];
+
+            // Remove chat references where receiverId is the current user's ID
+            for (const chat of supplierChats) {
+              if (chat.receiverId === currentUser.id) {
+                // Remove chat from the supplier's userChats document
+                await updateDoc(supplierUserChatsDocRef, {
+                  chats: arrayRemove(chat)
+                });
+              }
+            }
+          }
+        }
+      }
+
+      // Step 3: Add new chats for the suppliers
+      for (const supplier of suppliers) {
+        const userRef = collection(db, "users");
+        const q = query(userRef, where("email", "==", supplier.supplierEmail));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const user = querySnapshot.docs[0].data();
+          const supplierId = user.id;
+
+          const newChatRef = doc(chatRef);
+          const firstMessage = `!${currentUser.username} רוצים ליצור איתך קשר `;
+
+          await setDoc(newChatRef, {
+            createdAt: serverTimestamp(),
+            messages: [],
+          });
+
+          // Update both userChats documents with the new chat
+          await updateDoc(doc(userChatsRef, supplierId), {
+            chats: arrayUnion({
+              chatId: newChatRef.id,
+              lastMessage: firstMessage,
+              receiverId: currentUser.id,
+              updatedAt: Date.now(),
+            }),
+          });
+
+          await updateDoc(doc(userChatsRef, currentUser.id), {
+            chats: arrayUnion({
+              chatId: newChatRef.id,
+              lastMessage: firstMessage,
+              isSeen: false,
+              receiverId: supplierId,
+              updatedAt: Date.now(),
+            }),
+          });
+
+          // Add the initial message to the chat
+          await updateDoc(doc(db, "chats", newChatRef.id), {
+            messages: arrayUnion({
+              senderId: currentUser.id,
+              text: firstMessage,
+              createdAt: new Date(),
+            }),
+          });
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    finally {
+      setLoadingFB(false);
+      // changeIsSeenStatus(!isSeen);
+    }
+  };
+
+
+
+
+
+
+
 
   // =============== UPDATE DETAILS =====================
 
@@ -170,7 +325,7 @@ function UserPackage() {
         title="שימו לב..."
         open={openUpdateConfirm}
         onCancel={handleCancelUpdateConfirm}
-        // disabledBtn={isUpdateDetailsValid}
+      // disabledBtn={isUpdateDetailsValid}
       >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
           לחיצה על אישור תוביל להמלצה על חבילה חדשה לגמרי.
@@ -486,9 +641,11 @@ function UserPackage() {
         margin: "0 auto",
       }}
     >
-      {loading && <Loading />}
-      {error && showErrorMessage(error)}
-      {resData && showSuccessMessage(resData)}
+
+      {/* {loading && <Loading />} */}
+      {loadingFB && <Loading />}
+      {!loadingFB && error && showErrorMessage(error)}
+      {!loadingFB && resData && showSuccessMessage(resData)}
       {openAltSuppliers && showAltSuppliersDialog()}
       {openConfirm && showConfirmDialog()}
       {openUpdateDetails && showUpdateDetailsDialog()}

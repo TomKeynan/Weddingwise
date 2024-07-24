@@ -6,6 +6,9 @@ import { customTheme } from "../store/Theme";
 import { stickers, suppliersImage } from "../utilities/collections";
 import { getRandomSupplierImage } from "../utilities/functions";
 import CheckIcon from "@mui/icons-material/Check";
+import { db } from "../fireBase/firebase";
+import { getDocs, query, where, collection } from "firebase/firestore";
+
 function SupplierCard({
   props,
   showReplaceSupplierBtn,
@@ -23,15 +26,57 @@ function SupplierCard({
 
   const [supplierImage, setSupplierImage] = useState("");
 
-  useEffect(() => {
-    const cardSticker = stickers.filter((sticker) => {
-      if (sticker.stickerSrc.includes("makeup")) return sticker;
-      else return sticker.stickerSrc.includes(supplierType);
-    });
-    setSticker({ ...cardSticker[0] });
 
-    setSupplierImage(getRandomSupplierImage(suppliersImage, supplierType));
-  }, []);
+  const [user, setUser] = useState(null);
+
+  // OMRI'S
+  // useEffect(() => {
+  //   const cardSticker = stickers.filter((sticker) => {
+  //     if (sticker.stickerSrc.includes("makeup")) return sticker;
+  //     else return sticker.stickerSrc.includes(supplierType);
+  //   });
+  //   setSticker({ ...cardSticker[0] });
+  //   getImage();
+  //   setSupplierImage(user.avatar);
+  // }, []);
+
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        // Reference to the 'users' collection
+        const userRef = collection(db, "users");
+
+        // Query to find a user by email
+        const q = query(userRef, where("email", "==", supplierEmail));
+
+        // Execute the query
+        const querySnapshot = await getDocs(q);
+
+        // If a user is found, set the user state
+        if (!querySnapshot.empty) {
+          setUser(querySnapshot.docs[0].data());
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchImage();
+  }, [supplierEmail]);
+
+  useEffect(() => {
+    if (user) {
+      const cardSticker = stickers.filter((sticker) => {
+        if (sticker.stickerSrc.includes("makeup")) return sticker;
+        return sticker.stickerSrc.includes(supplierType);
+      });
+      setSticker({ ...cardSticker[0] });
+      setSupplierImage(user.avatar);
+    }
+  }, [user, supplierType, stickers, setSticker, setSupplierImage]);
+
+  
 
   return (
     <Stack

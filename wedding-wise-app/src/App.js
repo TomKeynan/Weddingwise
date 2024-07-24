@@ -24,6 +24,10 @@ import SupplierLayout from "./components/rootLayouts/SupplierLayout";
 import SupplierLP from "./Pages/SupplierLP";
 import SupplierSignUp from "./Pages/SupplierSignUp";
 
+import { auth } from "./fireBase/firebase";
+import { useUserStore } from "./fireBase/userStore";
+import { onAuthStateChanged } from "firebase/auth";
+import { useEffect } from "react";
 const googleMapsApiKey = "AIzaSyCSXv1ZziH2SJEcGQIp8EJMytapWnPjytQ";
 
 const router = createHashRouter([
@@ -53,7 +57,23 @@ const router = createHashRouter([
   { path: "/supplier-login", element: <SupplierLogin /> },
 ]);
 
+
+
 function App() {
+
+  const { fetchUserInfo } = useUserStore();
+// When a user logs in, fetch their data.
+useEffect(() => {
+  // Subscribe to auth state changes
+  const unSub = onAuthStateChanged(auth, (user) => {
+    fetchUserInfo(user?.uid);
+  });
+  // Cleanup function to unsubscribe from auth state changes
+  return () => {
+    unSub();
+  };
+}, [fetchUserInfo]);
+
   return (
     <LoadScript
       googleMapsApiKey={googleMapsApiKey}

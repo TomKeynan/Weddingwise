@@ -15,6 +15,7 @@ namespace Server.Controllers
         //--------------------------------------------------------------------
         [HttpPost("getPackage")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Couple))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult GetPackage([FromBody] JsonElement dataForPackage)
         {
@@ -42,7 +43,12 @@ namespace Server.Controllers
 
                     Couple coupleWithPackage = Package.GetPackage(coupleWithData, questionnaireAnswers);
 
-                    return Ok(coupleWithPackage); // Return 200 OK with the generated package
+                    if (coupleWithPackage == null)
+                    {
+                        return NotFound();
+                    }
+                    else return Ok(coupleWithPackage);
+
                 }
             }
             catch (ArgumentNullException ex)
