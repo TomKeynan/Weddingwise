@@ -27,13 +27,13 @@ function Description() {
           px: { xs: 1, sm: 4, md: 5 },
           py: 1,
         }}
-        direction={screenAboveMD ? "row" : "column-reverse"}
+        direction= "column-reverse"
         columnGap={1}
       >
         {screenAboveMD && (
           <Stack>
             <img
-              src="assets/emojis.png"
+              src="./assets/home_pics/emojis.png"
               alt="emojis"
               className="supplier-card-image"
             />
@@ -76,13 +76,13 @@ function Description() {
           alignItems="center"
           justifyContent="space-around"
           sx={{ width: "100%", margin: " 0 auto" }}
-          direction={screenAboveMD ? "row" : "column-reverse"}
+          direction="row"
           columnGap={3}
         >
           {screenAboveMD && (
             <Stack>
               <img
-                src="assets/emojis.png"
+                src="./assets/home_pics/emojis.png"
                 alt="emojis"
                 className="emojis"
               />

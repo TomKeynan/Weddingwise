@@ -34,16 +34,17 @@ const TextInput = ({
 
   function handleChange(e) {
     let value = e.target.value;
+    console.log(value);
+    validationCheck(name, value);
     if (name == "budget" || name == "numberOfInvitees") {
       value = Number(value);
     }
-    console.log(value);
-    validationCheck(name, value);
     if (editMode) updateEditValue({ [name]: value });
     else updateUserDetails({ [name]: value });
   }
 
   function validationCheck(key, value) {
+    // debugger;
     if (VALIDATIONS[key].regex.test(value))
       setCheck({ name: key, isValid: true, validMsg: VALIDATIONS[key].valid });
     else

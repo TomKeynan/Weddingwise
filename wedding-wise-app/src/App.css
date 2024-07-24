@@ -69,3 +69,27 @@
     height: 240px;
   }
 }
+
+.supplierLP-img1 {
+  width: 40%;
+  aspect-ratio: 1/1;
+  object-fit: contain;
+  border-radius: 10%;
+  background-position: center;
+}
+
+@media screen and (max-width: 900px) {
+  .supplierLP-img1 {
+    width: 70%;
+  }
+}
+
+/* styles.css */
+.fade-in {
+  opacity: 0;
+  transition: opacity 1s ease-in;
+}
+
+.fade-in.visible {
+  opacity: 1;
+}

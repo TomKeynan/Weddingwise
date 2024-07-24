@@ -17,6 +17,7 @@ const initialState = JSON.parse(sessionStorage.getItem("currentCouple"))
 export default function AppContextProvider({ children }) {
   
   const [coupleData, setCoupleData] = useState(initialState);
+  // console.log(coupleData)
   // const [coupleData, setCoupleData] = useState(null);
 
   const [offeredPackage, setOfferedPackage] = useState(null);

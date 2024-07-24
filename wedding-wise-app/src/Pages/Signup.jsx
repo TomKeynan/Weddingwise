@@ -2,7 +2,6 @@ import React from "react";
 import { Container, Stack, Typography } from "@mui/material";
 import Registration from "../components/SignupPage/Registration";
 import RegisterContextProvider from "../store/RegisterContext";
-import { customTheme } from "../store/Theme";
 
 const Signup = () => {
   return (
@@ -33,15 +32,3 @@ const Signup = () => {
 };
 
 export default Signup;
-
-// const containerSX = {
-//   display: "block",
-//   width: "100%",
-//   // minHeight: "100vh",
-//   pb:10,
-//   position: "relative",
-//   "&.MuiContainer-root": {
-//     padding: 0,
-//   },
-//   background: customTheme.colorBg.main,
-// };

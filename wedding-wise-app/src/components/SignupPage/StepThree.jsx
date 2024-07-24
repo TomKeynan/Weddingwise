@@ -70,15 +70,10 @@ const StepThree = () => {
           <TextInput
             id="password-input"
             name="password"
-            // onChange={handleChange}
             value={userDetails.password}
             label="סיסמא"
             type={showPassword ? "text" : "password"}
             sx={textFieldSX}
-            // error={check.isValid !== true}
-            // helperText={
-            //   check.isValid === true ? check.validMsg : check.errorMsg
-            // }
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">

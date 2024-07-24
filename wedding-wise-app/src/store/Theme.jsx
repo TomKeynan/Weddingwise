@@ -21,19 +21,19 @@ export const customTheme = createTheme(
         main: "#66bb6a",
         light: "#a5d6a7",
         dark: "#388e3c",
-        },
-        error: {
-          main: "#c21710",
-          light: "#e02c1d",
-          dark: "#b40000",
-          contrastText: "white",
+      },
+      error: {
+        main: "#c21710",
+        light: "#e02c1d",
+        dark: "#b40000",
+        contrastText: "white",
       },
       black: {
         main: "#000",
       },
     },
     colorBg: {
-      main: "linear-gradient(160deg, rgba(218,212,251,1) 90%, rgba(247,244,255,1) 70%, rgba(253,250,255,1) 90%)",
+      main: "linear-gradient(220deg, rgba(218,212,251,1) 90%, rgba(247,244,255,1) 60%, rgba(253,250,255,1) 70%)",
       threeColors:
         "linear-gradient(165deg, rgba(255,255,255,0.9) 60%, rgba(255,214,135,0.6) 60%, rgba(227,220,252,0.8) 85%);",
       footer:
@@ -47,6 +47,29 @@ export const customTheme = createTheme(
     font: {
       main: "Varela Round",
     },
+    supplier: {
+      colors: {
+        primary: {
+          //pink
+          light: "#f7caf4",
+          main: "#D740F6",
+          dark: "#BC5BB4",
+        },
+        secondary: {
+          //green
+          light: "#E0F5E1",
+          main: "#B2E6B5",
+          dark: "#70AE91",
+        },
+      },
+      colorBg: {
+        main: "linear-gradient(180deg, rgba(224,245,225,1) 80%, rgba(255,255,255,1) 60%)",
+        // main: "linear-gradient(240deg, rgba(255,255,255,1) 65%, rgba(247,244,255,1) 80%)",
+        footer:
+          "linear-gradient(135deg, rgba(255,255,255,1) 13%, rgba(247,202,244,1) 60%, rgba(224,245,225,1) 81%);",
+      },
+    },
+
   },
   heIL
 );

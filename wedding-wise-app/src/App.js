@@ -1,15 +1,11 @@
 // ============= LAST UPDATED =================
-// =============   29-6-2024  =================
+// =============   24-7-2024  =================
 // ============= LAST UPDATED =================
 
 import "./App.css";
 import AppContextProvider from "./store/AppContext";
-import {
-  RouterProvider,
-  createBrowserRouter,
-  createHashRouter,
-} from "react-router-dom";
-import RootLayout from "./components/RootLayout";
+import { RouterProvider, createHashRouter } from "react-router-dom";
+import CoupleLayout from "./components/rootLayouts/CoupleLayout";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import Profile from "./Pages/Profile";
@@ -23,6 +19,10 @@ import Finance from "./Pages/Finance";
 import EditDetails from "./Pages/EditDetails";
 import { LoadScript } from "@react-google-maps/api";
 import Invitees from "./Pages/Invitees";
+import SupplierLogin from "./Pages/SupplierLogin";
+import SupplierLayout from "./components/rootLayouts/SupplierLayout";
+import SupplierLP from "./Pages/SupplierLP";
+import SupplierSignUp from "./Pages/SupplierSignUp";
 
 const googleMapsApiKey = "AIzaSyCSXv1ZziH2SJEcGQIp8EJMytapWnPjytQ";
 
@@ -30,7 +30,7 @@ const router = createHashRouter([
   { path: "/", element: <Home /> },
   {
     path: "/",
-    element: <RootLayout />,
+    element: <CoupleLayout />,
     children: [
       { path: "profile", element: <Profile /> },
       { path: "sign-up", element: <Signup /> },
@@ -42,7 +42,15 @@ const router = createHashRouter([
       { path: "edit", element: <EditDetails /> },
     ],
   },
+  {
+    element: <SupplierLayout />,
+    children: [
+      { path: "/suppliers", element: <SupplierLP /> },
+      { path: "/supplier-signup", element: <SupplierSignUp /> },
+    ],
+  },
   { path: "/login", element: <Login /> },
+  { path: "/supplier-login", element: <SupplierLogin /> },
 ]);
 
 function App() {

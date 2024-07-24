@@ -13,6 +13,7 @@ function useFetch() {
   }, []);
 
   const [resData, setResData] = useState(null);
+  const [resGetData, setResGetData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(undefined);
   // const [error, setError] = useState({ isError: false, status: "" });
@@ -26,7 +27,7 @@ function useFetch() {
         return;
       }
       const responseData = await response.json();
-      setResData(responseData);
+      setResGetData(responseData);
     } catch (error) {
       console.log(error);
       setError(true);
@@ -73,7 +74,7 @@ function useFetch() {
     }
   }
 
-  return { resData, loading, error, setResData, setError, getData, sendData };
+  return { resData, resGetData, loading, error, setResData, setError, getData, sendData };
 }
 
 export default useFetch;

@@ -36,8 +36,8 @@ const StepOne = () => {
           >
             <img
               className="step1-img"
-              src={"assets/female-icon.png"}
-              alt="female-gender-sign"
+              src={"assets/registration_pics/female-icon.png"}
+              alt="man-gender-sign"
             />
             <FormControlLabel value="female" control={<Radio />} label="נשים" />
           </Stack>
@@ -49,7 +49,7 @@ const StepOne = () => {
           >
             <img
               className="step1-img"
-              src={"assets/men-icon.png"}
+              src={"assets/registration_pics/men-icon.png"}
               alt="female-gender-sign"
             />
             <FormControlLabel value="male" control={<Radio />} label="גברים" />
@@ -62,7 +62,7 @@ const StepOne = () => {
           >
             <img
               className="step1-img"
-              src={"assets/couple-icon.png"}
+              src={"assets/registration_pics/couple-icon.png"}
               alt="female-gender-sign"
             />
             <FormControlLabel

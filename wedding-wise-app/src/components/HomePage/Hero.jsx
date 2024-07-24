@@ -32,7 +32,7 @@ function Hero() {
                 width: "100%",
                 justifyContent: { xs: "space-around", md: "center" },
                 columnGap: { xs: 0, md: 5 },
-                mb:5,
+                mb: 5,
               }}
             >
               <Button variant="contained" sx={heroActionBtn}>
@@ -62,7 +62,6 @@ function Hero() {
                 width: "90%",
                 justifyContent: { xs: "center", md: "start" },
                 columnGap: { xs: 5, sm: 15, md: 10 },
-               
               }}
             >
               <Button variant="contained" sx={heroActionBtn}>
@@ -86,12 +85,12 @@ function Hero() {
             sx={{ columnGap: { xs: 5, sm: 10, md: 8, lg: 12 } }}
           >
             <img
-              src="./assets/bride.png"
+              src="./assets/home_pics/bride.png"
               alt="bride"
               className="hero-graphics"
             />
             <img
-              src="./assets/groom.png"
+              src="./assets/home_pics/groom.png"
               alt="groom"
               className="hero-graphics"
             />
@@ -112,7 +111,7 @@ const heroBgSX = {
   position: "absolute",
   minWidth: "100%",
   minHeight: "100vh",
-  backgroundImage: `url(assets/hero22.jpg)`,
+  backgroundImage: `url(assets/home_pics/hero1.jpg)`,
   backgroundRepeat: "no-repeat",
   backgroundSize: "cover",
   backgroundPosition: "center",
@@ -133,13 +132,12 @@ const heroContent = {
   width: "85%",
   zIndex: 1,
   margin: "auto",
-  
 };
 
 const heroRightSide = {
   width: { xs: "100%", md: "40%" },
   py: { xs: 1, md: 3, lg: 6 },
-  pr: { xs: 1, md: 10, },
+  pr: { xs: 1, md: 10 },
   fontFamily: "Varela-Round",
   flexGrow: 1,
   textAlign: { xs: "center", md: "left" },

@@ -11,13 +11,11 @@ export const VALIDATIONS = Object.freeze({
   },
   numberOfInvitees: {
     regex: /^$|^[1-9]\d{2,}$/,
-    // regex: /^$|^[1-9]{3,}\d*$/,
     error: "שדה לא חוקי. יש להכניס רק מספרים.",
     valid: "ציינו כמות המקסימילית (לפחות 100)",
   },
   budget: {
     regex: /^$|^[1-9]\d{5,}$/,
-    // regex: /^$|^[0-9]{5,}\d*$/,
     error: "שדה לא חוקי. יש להכניס רק מספרים.",
     valid: "ציינו סכום מקסימלי (לפחות 100,000)",
   },
@@ -31,7 +29,35 @@ export const VALIDATIONS = Object.freeze({
     error: "שדה לא חוקי. הסיסמא חייב להכיל לפחות 6 תוים",
     valid: "",
   },
+  supplierName: {
+    regex: /^.{0,30}$/,
+    error: "שדה לא חוקי. יש לרשום שם באורך 30 תווים בלבד",
+  },
+  capacity: {
+    regex: /^$|^[1-9]\d{2,}$/,
+    error: "שדה לא חוקי. יש להכניס רק מספרים.",
+    valid: "ציינו כמות המקסימילית (לפחות 100)",
+  },
+  price: {
+    regex: /^\d+$/,
+    error: "שדה לא חוקי. יש להכניס רק מספרים.",
+    valid: "ציינו סכום מקסימלי (לפחות 100,000)",
+  },
+  phoneNumber: {
+    regex: /^\d{9,10}$/,
+    // error: "שדה לא חוקי. יש להכניס רק מספרים.",
+    // valid: "ציינו סכום מקסימלי (לפחות 100,000)",
+  },
 });
+
+export const supplierTypes = [
+  "אולם שמחות",
+  "תקליטן",
+  "צילום אירועים",
+  "עיצוב שמלות",
+  "איפור כלות",
+  "רב / עורך טקסים",
+];
 
 export const loginResponse = Object.freeze({
   200: "הצלחה",
@@ -221,7 +247,7 @@ export const supplierCards = [
     price: "167900",
   },
   {
-    imageSrc: "./assets/supplier-dj.png",
+    imageSrc: "./assets/suppliers_pics/supplier-dj.png",
     imageAlt: "תמונה של תקליטן",
     stickerSrc: "assets/graphics/dj/dj-gray.png",
     stickerAlt: "אייקון של",

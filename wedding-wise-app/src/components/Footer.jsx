@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { customTheme } from "../store/Theme";
 import { Button, Stack, Typography, useMediaQuery } from "@mui/material";
 import { Link } from "react-router-dom";
+import { AppContext } from "../store/AppContext";
 
 function Footer() {
+  const { coupleData } = useContext(AppContext);
+
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
+
   return (
     <Stack sx={footerWrapperSX}>
       <Stack
@@ -22,7 +26,7 @@ function Footer() {
             }}
           >
             <Link to="/">דף הבית</Link>
-            <Link to="/profile">פרופיל</Link>
+            {coupleData && <Link to="/profile">פרופיל</Link>}
             <Link to="/package">חבילה</Link>
             <li>טבלת מוזמנים</li>
             <li>מעקב הוצאות</li>
