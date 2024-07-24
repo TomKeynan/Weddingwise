@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Adam\\Desktop\\Weddingwise-main\\Server\\Server\\Server.csproj": {}
+    "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\Server.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Adam\\Desktop\\Weddingwise-main\\Server\\Server\\Server.csproj": {
+    "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\Server.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Adam\\Desktop\\Weddingwise-main\\Server\\Server\\Server.csproj",
+        "projectUniqueName": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\Server.csproj",
         "projectName": "Server",
-        "projectPath": "C:\\Users\\Adam\\Desktop\\Weddingwise-main\\Server\\Server\\Server.csproj",
+        "projectPath": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\Server.csproj",
         "packagesPath": "C:\\Users\\Adam\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Adam\\Desktop\\Weddingwise-main\\Server\\Server\\obj\\",
+        "outputPath": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Adam\\AppData\\Roaming\\NuGet\\NuGet.Config",
