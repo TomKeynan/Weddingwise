@@ -4,6 +4,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import Questions from "./QuestionnairePage/Questions";
+import CoupleTable from "./CoupleTable";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -49,13 +50,13 @@ export default function BasicTabs() {
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab label="האירועים שלי" {...a11yProps(0)} />
+          <Tab label="החבילות שלי" {...a11yProps(0)} />
           <Tab label="פידבקים" {...a11yProps(1)} />
           <Tab label="עריכת פרטים" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <Questions />
+        <CoupleTable />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         Item Two

@@ -1,5 +1,5 @@
 // ============= LAST UPDATED =================
-// =============   24-7-2024  =================
+// =============   26-7-2024  =================
 // ============= LAST UPDATED =================
 
 import "./App.css";
@@ -53,29 +53,29 @@ const router = createHashRouter([
     children: [
       { path: "/suppliers", element: <SupplierLP /> },
       { path: "/supplier-signup", element: <SupplierSignUp /> },
-      { path: "/supplier-private-Profile", element: <SupplierPrivateProfile /> },
+      {
+        path: "/supplier-private-Profile",
+        element: <SupplierPrivateProfile />,
+      },
     ],
   },
   { path: "/login", element: <Login /> },
   { path: "/supplier-login", element: <SupplierLogin /> },
 ]);
 
-
-
 function App() {
-
   const { fetchUserInfo } = useUserStore();
-// When a user logs in, fetch their data.
-useEffect(() => {
-  // Subscribe to auth state changes
-  const unSub = onAuthStateChanged(auth, (user) => {
-    fetchUserInfo(user?.uid);
-  });
-  // Cleanup function to unsubscribe from auth state changes
-  return () => {
-    unSub();
-  };
-}, [fetchUserInfo]);
+  // When a user logs in, fetch their data.
+  useEffect(() => {
+    // Subscribe to auth state changes
+    const unSub = onAuthStateChanged(auth, (user) => {
+      fetchUserInfo(user?.uid);
+    });
+    // Cleanup function to unsubscribe from auth state changes
+    return () => {
+      unSub();
+    };
+  }, [fetchUserInfo]);
 
   return (
     <LoadScript
