@@ -5,12 +5,11 @@ import { Container } from "@mui/material";
 import { customTheme } from "../../store/Theme";
 import Footer from "../Footer";
 import { ScrollRestoration } from "react-router-dom";
-import Chat from "./ChatPage/Chat";
-import { useChatStore } from "../fireBase/chatStore";
+import Chat from "../ChatPage/Chat"
+import { useChatStore } from "../../fireBase/chatStore";
 
 
 const CoupleLayout = () => {
-// const RootLayout = () => {
 const {chatStatus} = useChatStore();
 
   return (

@@ -650,29 +650,6 @@ function UserPackage() {
       {openConfirm && showConfirmDialog()}
       {openUpdateDetails && showUpdateDetailsDialog()}
       {openUpdateConfirm && showUpdateConfirmDialog()}
-      {/* {openUpdateDetails && (
-        <ConfirmDialog
-          title="עדכון פרטים"
-          open={openUpdateDetails}
-          onApproval={handleUpdateDetailsApproval}
-          onCancel={handleCancelUpdateDetails}
-        >
-          {
-            <Stack
-              direction="row"
-              justifyContent="center"
-              alignContent="space-around"
-              flexWrap="wrap"
-              rowGap={3}
-              columnGap={2}
-            >
-              <RegisterContextProvider>
-                <EditCouple formRef={formRef} />
-              </RegisterContextProvider>
-            </Stack>
-          }
-        </ConfirmDialog>
-      )} */}
       <Stack
         spacing={5}
         justifyContent="space-around"

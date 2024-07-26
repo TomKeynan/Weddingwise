@@ -21,7 +21,7 @@ export default function QuestionsContextProvider({ children }) {
 
   useEffect(() => {
     if (resData) {
-      console.log(resData)
+      // console.log(resData)
       updateOfferedPackage(resData);
       navigate("/package");
     }

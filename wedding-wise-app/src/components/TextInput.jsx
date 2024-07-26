@@ -34,7 +34,6 @@ const TextInput = ({
 
   function handleChange(e) {
     let value = e.target.value;
-    console.log(value);
     validationCheck(name, value);
     if (name == "budget" || name == "numberOfInvitees") {
       value = Number(value);

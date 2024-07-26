@@ -31,7 +31,6 @@ export default function RegisterContextProvider({ children }) {
   const { updateCoupleData } = useContext(AppContext);
 
 
-
   // Omri's
   // useEffect(() => {
   //   if (resData) {

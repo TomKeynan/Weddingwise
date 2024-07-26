@@ -87,3 +87,57 @@ export function getRandomSupplierImage(arr, type) {
   });
   return imageSrc;
 }
+
+export function translateSupplierTypeToEnglish(type) {
+  let translatedType = "";
+  switch (type) {
+    case "אולם שמחות":
+      translatedType = "venue";
+      break;
+    case "תקליטן":
+      translatedType = "dj";
+      break;
+    case "צילום אירועים":
+      translatedType = "photographer";
+      break;
+    case "עיצוב שמלות":
+      translatedType = "dress";
+      break;
+    case "רב / עורך טקסים":
+      translatedType = "rabbi";
+      break;
+    case "איפור כלות":
+      translatedType = "hair and makeup";
+      break;
+    default:
+      translatedType = "";
+  }
+  return translatedType;
+}
+
+export function translateSupplierTypeToHebrew(type) {
+  let translatedType = "";
+  switch (type) {
+    case "venue":
+      translatedType = "אולם שמחות";
+      break;
+    case "dj":
+      translatedType = "דיי ג'יי";
+      break;
+    case "photographer":
+      translatedType = "צילום אירועים";
+      break;
+    case "dress":
+      translatedType = "עיצוב שמלות";
+      break;
+    case "rabbi":
+      translatedType = "רב / עורך טקסים";
+      break;
+    case "hair and makeup":
+      translatedType = "איפור כלות";
+      break;
+    default:
+      translatedType = "";
+  }
+  return translatedType;
+}

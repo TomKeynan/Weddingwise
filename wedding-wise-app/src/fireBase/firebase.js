@@ -5,7 +5,8 @@ import {getStorage} from "firebase/storage"
 
 
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  apiKey: "AIzaSyDlcdTfTQn9aatH1g1qcMHelXm8TykR5Jc",
+  // apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: "weddingwisetest-ecd19.firebaseapp.com",
   projectId: "weddingwisetest-ecd19",
   storageBucket: "weddingwisetest-ecd19.appspot.com",

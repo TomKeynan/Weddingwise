@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { customTheme } from "../store/Theme";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import useFetch from "../utilities/useFetch";
-import { AppContext } from "../store/AppContext";
 import { loginResponse } from "../utilities/collections";
 import {
   Container,
@@ -11,12 +10,10 @@ import {
   Box,
   Paper,
   Typography,
-  Button,
   OutlinedInput,
   InputLabel,
   InputAdornment,
   FormControl,
-  FormHelperText,
   Alert,
 } from "@mui/material/";
 import CloseIcon from "@mui/icons-material/Close";
@@ -30,12 +27,11 @@ import SupplierOutlineBtn from "../components/buttons/SupplierOutlineBtn";
 
 function SupplierLogin() {
   const { sendData, resData, error, loading } = useFetch();
-  const { updateCoupleData } = useContext(AppContext);
 
   useEffect(() => {
     if (resData) {
-      updateCoupleData(resData);
-      navigate("/profile");
+      sessionStorage.setItem("currentSupplier", JSON.stringify(resData));
+      navigate("/supplier-private-Profile");
     }
   }, [resData]);
 
@@ -49,7 +45,7 @@ function SupplierLogin() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
-    sendData("/Couples/getCouple", "POST", data);
+    sendData("/Suppliers/getSupplier", "POST", data);
   }
 
   const [showPassword, setShowPassword] = useState(false);

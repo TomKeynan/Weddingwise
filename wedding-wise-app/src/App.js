@@ -28,7 +28,9 @@ import { auth } from "./fireBase/firebase";
 import { useUserStore } from "./fireBase/userStore";
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
-const googleMapsApiKey = "AIzaSyCSXv1ZziH2SJEcGQIp8EJMytapWnPjytQ";
+import SupplierPrivateProfile from "./Pages/SupplierPrivateProfile";
+const googleMapsApiKey = "AIzaSyC3QkzXx3mLsG_-IzI67-WVFBAoAZTYWxk";
+// const googleMapsApiKey = "AIzaSyCSXv1ZziH2SJEcGQIp8EJMytapWnPjytQ";
 
 const router = createHashRouter([
   { path: "/", element: <Home /> },
@@ -51,6 +53,7 @@ const router = createHashRouter([
     children: [
       { path: "/suppliers", element: <SupplierLP /> },
       { path: "/supplier-signup", element: <SupplierSignUp /> },
+      { path: "/supplier-private-Profile", element: <SupplierPrivateProfile /> },
     ],
   },
   { path: "/login", element: <Login /> },

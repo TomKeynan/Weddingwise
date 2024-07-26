@@ -52,7 +52,7 @@ function Navbar({ isLayout = true }) {
   const settings = [
     { route: "/login", text: "התחבר" },
     { route: "/sign-up", text: "צור חשבון" },
-    { route: "/sign-up", text: "נותן שירות?" },
+    { route: "/suppliers", text: "נותן שירות?" },
   ];
   const userSettings = [
     { route: "/edit", text: "עדכן פרטים" },
@@ -95,7 +95,6 @@ function Navbar({ isLayout = true }) {
   // Listen for changes to the current chat and update the local state
   useEffect(() => {
     let unSub = null;
-    debugger;
     if (currentUser?.id) {
       unSub = onSnapshot(doc(db, "userChats", currentUser.id), (res) => {
         const chatsData = res.data();
@@ -272,7 +271,7 @@ function Navbar({ isLayout = true }) {
                         )}
 
                         {coupleData &&
-                          userSettings.map((item) => (
+                          userSettings.map((setting) => (
                             <MenuItem
                               key={setting.text}
                               onClick={handleCloseUserMenu}

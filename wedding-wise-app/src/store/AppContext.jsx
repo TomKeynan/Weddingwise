@@ -30,7 +30,7 @@ export default function AppContextProvider({ children }) {
   }, []);
 
   function updateCoupleData(data) {
-    debugger;
+    // debugger;
     if (data.package === null) {
       sessionStorage.setItem("currentCouple", JSON.stringify(data));
       setCoupleData({ ...data });
@@ -42,7 +42,7 @@ export default function AppContextProvider({ children }) {
   }
 
   function updateOfferedPackage(data) {
-    debugger;
+    // debugger;
     const packageAndTypeWeights = {
       ...data.package,
       typeWeights: data.typeWeights,

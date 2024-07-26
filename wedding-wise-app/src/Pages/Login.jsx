@@ -36,15 +36,6 @@ function Login() {
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
 
-  // Omri's
-  // useEffect(() => {
-  //   if (resData) {
-  //     updateCoupleData(resData);
-  //     loginFireBase();
-  //     navigate("/profile");
-  //   }
-  // }, [resData]);
-
   useEffect(() => {
     const loginAndNavigate = async () => {
       if (resData) {
@@ -59,7 +50,6 @@ function Login() {
 
   // Handle user login
   const loginFireBase = async () => {
-
     try {
         // Sign in user with email and password
         await signInWithEmailAndPassword(auth, email, password);
@@ -67,7 +57,7 @@ function Login() {
         console.log(err);
         toast.error(err.message);
     } finally {
-      console.log('check');
+      // console.log('check');
     }
 };
   
