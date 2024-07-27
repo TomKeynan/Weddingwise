@@ -28,13 +28,23 @@ import Loading from "../components/Loading";
 import { translateSupplierTypeToEnglish } from "../utilities/functions";
 import MessageDialog from "../components/Dialogs/MessageDialog";
 import ReadOnlyPopup from "../components/Dialogs/ReadOnlyPopup";
+import { toast } from 'react-toastify';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '../fireBase/firebase';
+import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
+import upload from '../fireBase/upload';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const SupplierSignUp = () => {
   const navigate = useNavigate();
   const { sendData, resData, loading, error, setError } = useFetch();
   const [showPassword, setShowPassword] = useState(false);
   const [isVenue, setIsVenue] = useState(false);
-  const [imageUrl, setImageUrl] = useState(null); // this state keep the supplies's profile image
+  // const [imageUrl, setImageUrl] = useState(null); // this state keep the supplies's profile image
+  const [avatar, setAvatar] = useState({
+    file: null,
+    url: ""
+  });
   // console.log(imageUrl)
   const [supplierDescription, setSupplierDescription] = useState("");
   // console.log(supplierDescription)
@@ -42,29 +52,128 @@ const SupplierSignUp = () => {
   const [open, setOpen] = useState(false);
   const [currentSupplierData, setCurrentSupplierData] = useState({});
 
+
+  // Omri's
+  // useEffect(() => {
+  //   if (resData) {
+  //     setTimeout(() => {
+  //       sessionStorage.setItem(
+  //         "currentSupplier",
+  //         JSON.stringify(currentSupplierData)
+  //       );
+  //       navigate("/supplier-private-Profile");
+  //     }, 4000);
+  //   }
+  // }, [resData]);
+
   useEffect(() => {
-    if (resData) {
-      setTimeout(() => {
-        sessionStorage.setItem(
-          "currentSupplier",
-          JSON.stringify(currentSupplierData)
-        );
-        navigate("/supplier-private-Profile");
-      }, 4000);
-    }
+    const registerAndNavigate = async () => {
+      if (resData) {
+        await registerFireBase();
+        await loginFireBase();
+        setTimeout(() => {
+          sessionStorage.setItem(
+            "currentSupplier",
+            JSON.stringify(resData)
+          );
+          navigate("/supplier-private-Profile");
+        }, 4000);
+      }
+    };
+    registerAndNavigate();
+
   }, [resData]);
+
+  const loginFireBase = async () => {
+    debugger;
+    try {
+      await signInWithEmailAndPassword(auth, currentSupplierData.supplierEmail, currentSupplierData.Password);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // Handle avatar file selection
+  const handleAvatar = (e) => {
+    if (e.target.files[0]) {
+      setAvatar({
+        file: e.target.files[0],
+        url: URL.createObjectURL(e.target.files[0])
+      });
+    }
+  };
+
+  const registerFireBase = async () => {
+
+    debugger;
+    const username = currentSupplierData.businessName;
+    const email = currentSupplierData.supplierEmail;
+    const password = currentSupplierData.Password;
+
+    // Validate unique username
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, where("email", "==", email));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      return toast.warn("Select another username");
+    }
+
+    try {
+      // Create user with email and password using auth of firebase
+      const res = await createUserWithEmailAndPassword(auth, email, password);
+      // if the creating is succesful res is the user with propreties. 
+
+      const imgUrl = null;
+      if(avatar.file)
+      {
+        const imgUrl = await upload(avatar.file);
+      }
+     
+
+
+
+      await setDoc(doc(db, "users", res.user.uid), {
+        username,
+        email,
+        description: supplierDescription,
+        avatar: imgUrl || "https://firebasestorage.googleapis.com/v0/b/weddingwisetest-ecd19.appspot.com/o/images%2Favatar.png?alt=media&token=9f7020cf-fb7b-4170-8870-030e6dc9fbba",
+        id: res.user.uid,
+        blocked: []
+      });
+
+
+      await setDoc(doc(db, "userChats", res.user.uid), {
+        chats: [],
+      });
+
+   
+      await setDoc(doc(db, "supplierComments", res.user.uid), {
+        comments: [],
+      });
+
+      toast.success("Account created! You can login now!");
+    } catch (err) {
+      console.log(err);
+      toast.error(err.message);
+    } finally {
+
+    }
+  };
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  function handelImageUpload(imageObj) {
-    if (imageObj) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImageUrl(reader.result);
-      };
-      reader.readAsDataURL(imageObj);
-    }
-  }
+  // function handelImageUpload(imageObj) {
+  //   debugger;
+  //   console.log(imageObj);
+  //   console.log(URL.createObjectURL(imageObj));
+  //   if (imageObj) {
+  //     const reader = new FileReader();
+  //     reader.onload = () => {
+  //       setImageUrl(reader.result);
+  //     };
+  //     reader.readAsDataURL(imageObj);
+  //   }
+  // }
 
   function handleFormSubmit(e) {
     e.preventDefault();
@@ -364,9 +473,9 @@ const SupplierSignUp = () => {
                 <FormControl
                   name="userImage"
                   sx={textFieldSX}
-                  onChange={(e) => handelImageUpload(e.target.files[0])}
+                  onChange={handleAvatar}
                 >
-                  <InputFileUpload isUpload={imageUrl} />
+                  <InputFileUpload isUpload={avatar.file} />
                 </FormControl>
               </Grid>
               <Grid item xs={12}>

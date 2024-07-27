@@ -72,12 +72,12 @@ namespace Server.DAL
                 }
                 else
                 {
-                    throw new Exception("An error occurred while inserting a new couple in the InsertCouple method, sql related" + ex.Message);
+                    throw new Exception("An error occurred while inserting a new couple in the InsertSupplier method, sql related" + ex.Message);
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while inserting a new couple in the InsertCouple method" + ex.Message);
+                throw new Exception("An error occurred while inserting a new couple in the InsertSupplier method" + ex.Message);
             }
 
             return successIndicator == 1 + supplier.AvailableDates.Count() ? 1 : 0;
@@ -332,6 +332,7 @@ namespace Server.DAL
                         PhoneNumber = dataReader["phone_number"].ToString(),
                         Price = Convert.ToInt32(dataReader["price"]),
                         Rating = Convert.ToDouble(dataReader["rating"]),
+                        RatedCount = Convert.ToInt32(dataReader["rated_count"]),
                         AvailableRegion = dataReader["region_name"].ToString(),
                         SupplierType = dataReader["supplier_type_name"].ToString(),
                         IsActive = Convert.ToBoolean(dataReader["is_active"]),
@@ -391,6 +392,56 @@ namespace Server.DAL
 
             return availableDates;
         }
+
+
+
+
+
+        //-------------------------------------------------------
+        // This method rates an existing supplier in the db 
+        //-------------------------------------------------------
+        public int RateSupplier(string supplierEmail, string coupleEmail, int rating)
+        {
+            int successIndicator = 0;
+
+            try
+            {
+                using (SqlConnection con = DBServiceHelper.Connect())
+                {
+                    Dictionary<string, object> parameters = new Dictionary<string, object>
+                    {
+                        { "@supplier_email", supplierEmail },
+                        { "@couple_email", coupleEmail },
+                        { "@rating_given", rating }
+
+                    };
+
+                    using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPInsertSupplierRatingsForCouple", parameters))
+                    {
+                        successIndicator = cmd.ExecuteNonQuery();
+                    }
+
+                }
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Number == 2627) // Primary key violation error number
+                {
+                    throw;
+                }
+                else
+                {
+                    throw new Exception("An error occurred while inserting a new couple in the InsertSupplier method, sql related" + ex.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while inserting a new couple in the InsertSupplier method" + ex.Message);
+            }
+
+            return successIndicator;
+        }
+
 
 
 

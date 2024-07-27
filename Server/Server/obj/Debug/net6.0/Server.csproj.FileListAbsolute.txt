@@ -166,3 +166,4 @@ C:\Users\Adam\Desktop\React\WeddingWIse\Server\Server\bin\Debug\net6.0\runtimes\
 C:\Users\Adam\Desktop\React\WeddingWIse\Server\Server\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Security.Cryptography.Pkcs.dll
 C:\Users\Adam\Desktop\React\WeddingWIse\Server\Server\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Text.Encoding.CodePages.dll
 C:\Users\Adam\Desktop\React\WeddingWIse\Server\Server\bin\Debug\net6.0\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll
+C:\Users\Adam\Desktop\React\WeddingWIse\Server\Server\bin\Debug\net6.0\appsettings.json

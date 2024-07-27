@@ -11,6 +11,7 @@ namespace Server.BL
         private string _phoneNumber;        // Phone number of the supplier
         private int _price;                 // Price of services provided
         private double? _rating;            // Rating of the supplier (nullable)
+        private int _ratedCount;
         private int? _capacity;             // Capacity of the supplier (nullable)
         private string _availableRegion;    // Region where the supplier provides services
         private double? _latitude;          // Latitude coordinate of the supplier's location (nullable)
@@ -34,6 +35,7 @@ namespace Server.BL
             string phoneNumber,
             int price,
             double? rating,
+            int ratedCount,
             int? capacity,
             string availableRegion,
             double? latitude,
@@ -49,6 +51,7 @@ namespace Server.BL
             _phoneNumber = phoneNumber;
             _price = price;
             _rating = rating;
+            _ratedCount = ratedCount;
             _capacity = capacity;
             _availableRegion = availableRegion;
             _latitude = latitude;
@@ -186,6 +189,8 @@ namespace Server.BL
             set { _availableDates = value; }
         }
 
+        public int RatedCount { get => _ratedCount; set => _ratedCount = value; }
+
 
         // Retrieves a list of top venues from the database.
 
@@ -230,7 +235,15 @@ namespace Server.BL
             return dBServicesSupplier.UpdateSupplier(this);
         }
 
+        public static int RateSupplier(string supplierEmail, string coupleEmail, int rating)
 
+        {
+            DBServicesSupplier dBServicesSupplier = new DBServicesSupplier();
+            return dBServicesSupplier.RateSupplier(supplierEmail, coupleEmail, rating);
+
+
+
+        }
 
     }
 }

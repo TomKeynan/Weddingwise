@@ -5,6 +5,7 @@ import { useUserStore } from '../../fireBase/userStore';
 import { useChatStore } from '../../fireBase/chatStore';
 import ChatList from './chatList/ChatList';
 import { Link } from 'react-router-dom';
+import zIndex from '@mui/material/styles/zIndex';
 
 
 
@@ -46,6 +47,11 @@ function Chat() {
   }, []);
 
 
+
+
+  // Need To Add Case Of Supplier****
+
+  
   // If the app is loading, display a loading indicator
   if (isLoading) return <div style={loadingStyle}>Loading...</div>;
 
@@ -97,6 +103,7 @@ const chatStyle = {
   position: 'fixed',
   right: '12%',
   top: '13%',
+  zIndex:2,
   boxSizing: 'border-box',
   fontFamily: 'Lucida Sans, Lucida Sans Regular, Lucida Grande, Geneva, Verdana, sans-serif',
   textAlign: 'right',

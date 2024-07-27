@@ -24,16 +24,36 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Loading from "../components/Loading";
 import SupplierContainBtn from "../components/buttons/SupplierContainBtn";
 import SupplierOutlineBtn from "../components/buttons/SupplierOutlineBtn";
+import { toast } from 'react-toastify';
+import { auth } from '../fireBase/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 function SupplierLogin() {
   const { sendData, resData, error, loading } = useFetch();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
-    if (resData) {
-      sessionStorage.setItem("currentSupplier", JSON.stringify(resData));
-      navigate("/supplier-private-Profile");
-    }
+    debugger;
+    const loginAndNavigate = async () => {
+      if (resData) {
+        sessionStorage.setItem("currentSupplier", JSON.stringify(resData));
+        await loginFireBase();
+        navigate("/supplier-private-Profile");
+      }
+    };
+    loginAndNavigate();
   }, [resData]);
+
+  const loginFireBase = async () => {
+    debugger;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
 
   // useMediaQuery return a boolean that indicates rather the screen size
   // matches the breakpoint/string media query , or not
@@ -45,6 +65,9 @@ function SupplierLogin() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
+    setEmail(data.Email);
+    setPassword(data.Password);
+    debugger;
     sendData("/Suppliers/getSupplier", "POST", data);
   }
 

@@ -251,7 +251,7 @@ function Navbar({ isLayout = true }) {
                         ))}
 
                         {/* {Adam's}  */}
-                        {coupleData && (
+                        {currentUser && (
                           <MenuItem onClick={handleChat} sx={menuItemSX}>
                             <Link
                               onClick={(e) => e.preventDefault()}

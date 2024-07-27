@@ -47,12 +47,8 @@ namespace Server.Controllers
                     // Create a JsonElement from the anonymous object
                     JsonElement jsonSupplierData = JsonDocument.Parse(JsonSerializer.Serialize(supplierData)).RootElement;
 
-                    // After successfuly registered the couple will automatically log in
 
-                    // Call GetCouple to retrieve the newly registered couple
-
-
-                    return Ok();
+                    return GetSupplier(jsonSupplierData);
 
                 }
                 else
@@ -176,6 +172,58 @@ namespace Server.Controllers
             {
                 // Return a BadRequest response with the error message
                 return BadRequest($"Error: {e.Message}");
+            }
+        }
+
+
+
+        //-------------------------------------------
+        // Rates a supplier 
+        //-------------------------------------------
+        [HttpPost("rateSupplier")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<Supplier> rateSupplier([FromBody] JsonElement ratingsData)
+        {
+            try
+            {
+
+                string supplierEmail = ratingsData.GetProperty("supplierEmail").GetString();
+                string coupleEmail = ratingsData.GetProperty("coupleEmail").GetString();
+                int rating = ratingsData.GetProperty("rating").GetInt32();
+
+
+                int rowsAffected = Supplier.RateSupplier(supplierEmail, coupleEmail, rating);
+
+                // 2 incase of insertion and update both tables.
+                if (rowsAffected == 2)
+                {
+                    return Ok("The supplier has been successfuly rated!");
+                }
+                else
+                {
+
+                    return BadRequest("Failed to rate a supplier.");
+                }
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Number == 2627)
+                {
+                    return Conflict("The couple has already rated this supplier");
+                }
+                else
+                {
+
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
             }
         }
 
