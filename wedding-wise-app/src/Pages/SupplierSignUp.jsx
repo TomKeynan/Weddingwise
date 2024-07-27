@@ -66,6 +66,7 @@ const SupplierSignUp = () => {
   //   }
   // }, [resData]);
 
+  
   useEffect(() => {
     const registerAndNavigate = async () => {
       if (resData) {
