@@ -251,7 +251,7 @@ const SupplierSignUp = () => {
     <RegisterContextProvider>
       {loading && <Loading />}
       {error && showErrorMessage(error)}
-      {!error && showSuccessMessage()}
+      {resData == 200 && showSuccessMessage()}
       <Stack
         spacing={2}
         textAlign="center"

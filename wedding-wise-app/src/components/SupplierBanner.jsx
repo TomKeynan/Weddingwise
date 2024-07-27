@@ -1,52 +1,37 @@
-import { Box, Stack, Typography, useMediaQuery } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import React from "react";
 import { customTheme } from "../store/Theme";
 
-const size = 400;
-function SupplierBanner({ businessName, type }) {
-  const screenAboveSM = useMediaQuery("(min-width: 1200px)");
+function SupplierBanner() {
   return (
-    <Stack
-      spacing={4}
-      direction="row"
-      justifyContent="space-between"
-      sx={bannerSX}
-    >
+    <Stack spacing={4} direction="row" justifyContent="center" sx={bannerSX}>
       <Stack
-        justifyContent="flex-end"
-        alignItems="flex-start"
-        sx={{ width: "100%", zIndex: 1, minHeight: size }}
+        justifyContent="center"
+        alignItems="center"
+        sx={{ width: "100%", zIndex: 1, minHeight: 400 }}
       >
-        <Box sx={{ width: size, height: size, ml: 5 }}>
+        <Box
+          sx={{
+            border: "3px solid black",
+            width: { xs: 250, sm: 400 },
+            height: { xs: 250, sm: 400 },
+            borderRadius: "50%",
+            position: "absolute",
+            bottom: { xs: "-20%", sm: "-40%" },
+          }}
+        >
           <Box
+            component="img"
+            src="/assets/login.jpg"
             sx={{
-              border: "3px solid black",
-              width: size,
-              height: size,
+              width: { xs: 250, sm: 400 },
+              height: { xs: 250, sm: 400 },
               borderRadius: "50%",
-              position: "absolute",
-              bottom: "-30%",
+              objectFit: "cover",
             }}
-          >
-            <img
-              src="/assets/login.jpg"
-              style={{
-                width: size,
-                height: size,
-                borderRadius: "50%",
-                objectFit: "cover",
-              }}
-            />
-          </Box>
+          ></Box>
         </Box>
       </Stack>
-      {/* <Stack
-        justifyContent="flex-end"
-        alignItems="flex-end"
-        sx={{ zIndex: 1, minHeight: size, flexGrow: 1 }}
-      >
-        <Typography sx={namesSX}> {`${type} - ${businessName}`}</Typography>
-      </Stack> */}
     </Stack>
   );
 }
@@ -74,7 +59,6 @@ const namesSX = {
   fontSize: { xs: 40, sm: 45, md: 55 },
   //   mr: { xs: 3, sm: 3, md: 8 },
   pr: { xs: 3, sm: 5, md: 8 },
-  //   WebkitTextStrokeWidth: { xs: 2, sm: 5 },
   //   color: customTheme.supplier.colors.primary.main
 };
 // import { Box, Stack, Typography, useMediaQuery } from "@mui/material";
