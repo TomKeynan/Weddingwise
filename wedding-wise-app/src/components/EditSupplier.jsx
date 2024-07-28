@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Alert,
   Autocomplete,
@@ -20,12 +20,17 @@ import {
   supplierTypes,
   VALIDATIONS,
 } from "../utilities/collections";
-import InputFileUpload from "../components/InputFileUpload";
+import InputFileUpload from "./InputFileUpload";
 import SupplierOutlineBtn from "../components/buttons/SupplierOutlineBtn";
 import useFetch from "../utilities/useFetch";
 import { useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
-import { translateSupplierTypeToEnglish } from "../utilities/functions";
+import {
+  convertDateToClientFormat,
+  getFullDate,
+  translateSupplierTypeToEnglish,
+  translateSupplierTypeToHebrew,
+} from "../utilities/functions";
 import MessageDialog from "../components/Dialogs/MessageDialog";
 import ReadOnlyPopup from "../components/Dialogs/ReadOnlyPopup";
 import { toast } from "react-toastify";
@@ -41,10 +46,16 @@ import {
 } from "firebase/firestore";
 import upload from "../fireBase/upload";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { AppContext } from "../store/AppContext";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 
-const SupplierSignUp = () => {
-  const navigate = useNavigate();
+const EditSupplier = () => {
+  //   const navigate = useNavigate();
   const { sendData, resData, loading, error, setError } = useFetch();
+  const { editSupplier, setEditSupplier } = useContext(AppContext);
+  //   console.log(editSupplier);
   const [showPassword, setShowPassword] = useState(false);
   const [isVenue, setIsVenue] = useState(false);
   // const [imageUrl, setImageUrl] = useState(null); // this state keep the supplies's profile image
@@ -60,32 +71,33 @@ const SupplierSignUp = () => {
   const [currentSupplierData, setCurrentSupplierData] = useState({});
 
   // Omri's
-  // useEffect(() => {
-  //   if (resData) {
-  //     setTimeout(() => {
-  //       sessionStorage.setItem(
-  //         "currentSupplier",
-  //         JSON.stringify(currentSupplierData)
-  //       );
-  //       navigate("/supplier-private-Profile");
-  //     }, 4000);
-  //   }
-  // }, [resData]);
-
   useEffect(() => {
-    const registerAndNavigate = async () => {
-      console.log(resData)
-      if (resData) {
-        await registerFireBase();
-        await loginFireBase();
-        setTimeout(() => {
-          sessionStorage.setItem("currentSupplier", JSON.stringify(resData));
-          navigate("/supplier-private-Profile");
-        }, 4000);
-      }
-    };
-    registerAndNavigate();
+    if (resData) {
+      setTimeout(() => {
+        sessionStorage.setItem(
+          "currentSupplier",
+          JSON.stringify(currentSupplierData)
+        );
+        // navigate("/supplier-private-Profile");
+        setOpen(false);
+      }, 3000);
+    }
   }, [resData]);
+
+  //   useEffect(() => {
+  //     const registerAndNavigate = async () => {
+  //       //   console.log(resData);
+  //       if (resData) {
+  //         await registerFireBase();
+  //         await loginFireBase();
+  //         setTimeout(() => {
+  //           sessionStorage.setItem("currentSupplier", JSON.stringify(currentSupplierData));
+  //           navigate("/supplier-private-Profile");
+  //         }, 4000);
+  //       }
+  //     };
+  //     registerAndNavigate();
+  //   }, [resData]);
 
   const loginFireBase = async () => {
     try {
@@ -175,7 +187,7 @@ const SupplierSignUp = () => {
   // }
 
   function handleFormSubmit(e) {
-    // debugger;
+    debugger;
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
@@ -185,6 +197,7 @@ const SupplierSignUp = () => {
 
     const newErrors = {};
     for (let field in data) {
+      //   if (field === "Password") return;
       if (
         VALIDATIONS.hasOwnProperty(field) &&
         !VALIDATIONS[field].regex.test(data[field])
@@ -201,8 +214,26 @@ const SupplierSignUp = () => {
       setCurrentSupplierData(data);
       setOpen(true);
       setErrors({});
-      sendData("/Suppliers/registerSupplier", "POST", data);
+      sendData("/Suppliers/updateSupplier", "PUT", data);
     }
+  }
+
+  function handleInputChange(e) {
+    let name = e.target.name;
+    if (name === "Password") {
+      setEditSupplier((prevData) => {
+        return { ...prevData, password: e.target.value };
+      });
+    }
+    setEditSupplier((prevData) => {
+      return { ...prevData, [name]: e.target.value };
+    });
+  }
+
+  function addAvailableDates(date) {
+    // const dateObject = getFullDate(date);
+    // const dataString = convertDateToClientFormat(`${dateObject}T`);
+    // console.log(dataString);
   }
 
   // ================ error handling ================
@@ -218,6 +249,7 @@ const SupplierSignUp = () => {
         btnValue="אוקיי!"
         open={open}
         onClose={handleCloseMessage}
+        xBtn={handleCloseMessage}
         mode="error"
       >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
@@ -249,43 +281,58 @@ const SupplierSignUp = () => {
     <RegisterContextProvider>
       {loading && <Loading />}
       {error && showErrorMessage(error)}
-      {resData && showSuccessMessage()}
+      {resData === 204 && showSuccessMessage()}
       <Stack
         spacing={2}
         textAlign="center"
         justifyContent="flex-start"
         sx={{
-          width: { xs: "90%", sm: "70%", md: "60%" },
+          width: "90%",
           margin: "auto",
           minHeight: "inherit",
           pb: 10,
         }}
       >
         <Paper variant="elevation" elevation={6} sx={paperSX}>
-          <Typography
-            sx={{
-              fontSize: { xs: 20, sm: 26, md: 32 },
-              fontFamily: customTheme.font.main,
-              pb: 3,
-            }}
-          >
-            הצטרפו אלינו והתחילו להרחיב את מעגל הלקוחות שלכם!
-          </Typography>
-          <Typography
-            sx={{
-              pb: 3,
-              fontWeight: "bold",
-              fontSize: { xs: 18, sm: 24, md: 26 },
-              color: customTheme.supplier.colors.primary.main,
-            }}
-          >
-            הרשמה מהירה וקלה לשירות הפשוט והחכם לתכנון חתונות מוצלחות.
-          </Typography>
           <form onSubmit={handleFormSubmit}>
             <Grid container sx={{ rowGap: 3 }}>
+              <Grid item xs={12}>
+                <LocalizationProvider
+                  dateAdapter={AdapterDayjs}
+                  adapterLocale="en-gb"
+                >
+                  <DatePicker
+                    label="תאריך"
+                    showDaysOutsideCurrentMonth
+                    onChange={(newValue) => addAvailableDates(newValue)}
+                    required
+                    disablePast={true}
+                    slotProps={{
+                      textField: {
+                        name: "desiredDate",
+                        variant: "outlined",
+                        sx: textFieldSX,
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+                <Grid container sx={{ rowGap: 3 }}>
+                  {editSupplier["availableDates"].length > 0 ? (
+                    editSupplier["availableDates"].map((date, index) => (
+                      <Grid item key={index} xs={12} sm={4} md={4}>
+                        <Typography variant="h6">{date}</Typography>
+                      </Grid>
+                    ))
+                  ) : (
+                    <Grid item xs={12} sx={{ py: 1, px: 2, color: "red" }}>
+                      <Alert severity="warning">לא נבחרו תאריכים פנויים</Alert>
+                    </Grid>
+                  )}
+                </Grid>
+              </Grid>
               <Grid item xs={12} md={6} sx={{ alignContent: "" }}>
                 <TextField
-                  variant="outlined"
+                  variant="filled"
                   type="text"
                   label="שם העסק"
                   name="businessName"
@@ -293,6 +340,8 @@ const SupplierSignUp = () => {
                   sx={textFieldSX}
                   inputProps={{ maxLength: 30 }}
                   helperText="שם העסק יופיע בפרופיל שלכם"
+                  value={editSupplier.businessName}
+                  onChange={handleInputChange}
                 />
                 {errors.businessName && (
                   <Alert severity="error" sx={errorAlertSX}>
@@ -305,9 +354,18 @@ const SupplierSignUp = () => {
                 <Autocomplete
                   options={supplierTypes}
                   freeSolo={false}
+                  value={translateSupplierTypeToHebrew(
+                    editSupplier.supplierType
+                  )}
                   onChange={(event, newValue) => {
                     if (newValue === "אולם שמחות") setIsVenue(true);
                     else setIsVenue(false);
+                    setEditSupplier((prevData) => {
+                      return {
+                        ...prevData,
+                        supplierType: translateSupplierTypeToEnglish(newValue),
+                      };
+                    });
                   }}
                   renderInput={(params) => (
                     <TextField
@@ -329,11 +387,13 @@ const SupplierSignUp = () => {
                 <>
                   <Grid item xs={12} md={6}>
                     <TextField
-                      variant="outlined"
+                      variant="filled"
                       type="text"
                       label="כמות אורחים"
                       name="capacity"
                       sx={textFieldSX}
+                      value={editSupplier.capacity === null && 0}
+                      onChange={handleInputChange}
                     />
                     {errors.capacity && (
                       <Alert severity="error" sx={errorAlertSX}>
@@ -343,7 +403,7 @@ const SupplierSignUp = () => {
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <TextField
-                      variant="outlined"
+                      variant="filled"
                       type="text"
                       label="כתובת"
                       name="venueAddress"
@@ -359,12 +419,14 @@ const SupplierSignUp = () => {
               )}
               <Grid item xs={12} md={6}>
                 <TextField
-                  variant="outlined"
+                  variant="filled"
                   type="text"
                   label="מחיר"
                   name="price"
                   sx={textFieldSX}
                   helperText="המחיר הממוצע עבור השירות שלכם"
+                  value={editSupplier.price}
+                  onChange={handleInputChange}
                 />
                 {errors.price && (
                   <Alert severity="error" sx={errorAlertSX}>
@@ -377,6 +439,15 @@ const SupplierSignUp = () => {
                 <Autocomplete
                   options={regions}
                   freeSolo={false}
+                  value={editSupplier.availableRegion}
+                  onChange={(event, newValue) => {
+                    setEditSupplier((prevData) => {
+                      return {
+                        ...prevData,
+                        availableRegion: newValue,
+                      };
+                    });
+                  }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -395,28 +466,16 @@ const SupplierSignUp = () => {
               </Grid>
               <Grid item xs={12} md={6}>
                 <TextField
-                  variant="outlined"
+                  variant="filled"
+                  value={editSupplier.phoneNumber}
                   label="מס' טלפון"
                   name="phoneNumber"
                   sx={textFieldSX}
+                  onChange={handleInputChange}
                 />
                 {errors.phoneNumber && (
                   <Alert severity="error" sx={errorAlertSX}>
                     {errors.phoneNumber}
-                  </Alert>
-                )}
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  variant="outlined"
-                  type="text"
-                  label="אימייל"
-                  name="supplierEmail"
-                  sx={textFieldSX}
-                />
-                {errors.supplierEmail && (
-                  <Alert severity="error" sx={errorAlertSX}>
-                    {errors.supplierEmail}
                   </Alert>
                 )}
               </Grid>
@@ -429,19 +488,26 @@ const SupplierSignUp = () => {
                   sx={textareaSX}
                   helperText="תיאור זה יופיע בפרופיל - כתבו תיאור הולם עבור העסק והשירות שאתם מציעים"
                 />
+                {errors.description && (
+                  <Alert severity="error" sx={errorAlertSX}>
+                    {errors.description}
+                  </Alert>
+                )}
               </Grid>
               {/* Password */}
               <Grid item xs={12} md={6}>
                 <FormControl
                   color="primary"
-                  variant="outlined"
+                  variant="filled"
                   sx={textFieldSX}
+                  value={editSupplier.Password}
                 >
                   <TextField
                     id="password-input"
                     name="Password"
                     label="סיסמא"
                     type={showPassword ? "text" : "password"}
+                    onChange={handleInputChange}
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
@@ -493,12 +559,12 @@ const SupplierSignUp = () => {
   );
 };
 
-export default SupplierSignUp;
+export default EditSupplier;
 
 const paperSX = {
-  minHeight: "600px",
-  p: 5,
-  backgroundColor: "rgba(255,255,255,0.6)",
+  py: 3,
+  px: { xs: 1, sm: 3 },
+  backgroundColor: "rgba(255,255,255,0.8)",
 };
 
 const textFieldSX = {
@@ -509,7 +575,7 @@ const textFieldSX = {
     left: "-3px",
   },
   "& .MuiFormHelperText-root": {
-    fontSize: 15,
+    fontSize: { xs: 12, sm: 15 },
   },
 };
 
@@ -521,7 +587,7 @@ const textareaSX = {
     left: "-3px",
   },
   "& .MuiFormHelperText-root": {
-    fontSize: 15,
+    fontSize: { xs: 12, sm: 15 },
   },
 };
 

@@ -3,8 +3,10 @@ import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import Questions from "./QuestionnairePage/Questions";
 import CoupleTable from "./CoupleTable";
+import CommentCard from "./CommentCard";
+import { Stack } from "@mui/material";
+import EditSupplier from "./EditSupplier";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -17,7 +19,11 @@ function CustomTabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      {value === index && (
+        <Box sx={{ py: 4, px: 0, }}>
+          {children}
+        </Box>
+      )}
     </div>
   );
 }
@@ -51,7 +57,7 @@ export default function BasicTabs() {
           aria-label="basic tabs example"
         >
           <Tab label="החבילות שלי" {...a11yProps(0)} />
-          <Tab label="פידבקים" {...a11yProps(1)} />
+          <Tab label="תגובות" {...a11yProps(1)} />
           <Tab label="עריכת פרטים" {...a11yProps(2)} />
         </Tabs>
       </Box>
@@ -59,10 +65,16 @@ export default function BasicTabs() {
         <CoupleTable />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        Item Two
+        <Stack sx={{ maxHeight: 500, overflowY: "scroll", rowGap: 4, p: 2 }}>
+          <CommentCard />
+          <CommentCard />
+          <CommentCard />
+          <CommentCard />
+          <CommentCard />
+        </Stack>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        Item Three
+        <EditSupplier />
       </CustomTabPanel>
     </Box>
   );

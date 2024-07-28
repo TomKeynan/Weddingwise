@@ -30,6 +30,25 @@ export default function RegisterContextProvider({ children }) {
 
   const { updateCoupleData } = useContext(AppContext);
 
+  const [editValue, setEditValue] = useState(
+    JSON.parse(sessionStorage.getItem("currentCouple"))
+  );
+  const todayDate = new Date().toLocaleDateString();
+  const [dateValue, setDateValue] = useState(todayDate);
+
+  const [userDetails, setUserDetails] = useState({
+    email: "",
+    password: "",
+    partner1Name: "",
+    partner2Name: "",
+    PhoneNumber: "000",
+    desiredDate: "",
+    desiredRegion: "",
+    budget: "",
+    numberOfInvitees: "",
+    relationship: "",
+  });
+
 
   // Omri's
   // useEffect(() => {
@@ -94,24 +113,7 @@ export default function RegisterContextProvider({ children }) {
     }
   };
 
-  const [userDetails, setUserDetails] = useState({
-    email: "",
-    password: "",
-    partner1Name: "",
-    partner2Name: "",
-    PhoneNumber: "000",
-    desiredDate: "",
-    desiredRegion: "",
-    budget: "",
-    numberOfInvitees: "",
-    relationship: "",
-  });
 
-  const [editValue, setEditValue] = useState(
-    JSON.parse(sessionStorage.getItem("currentCouple"))
-  );
-  const todayDate = new Date().toLocaleDateString();
-  const [dateValue, setDateValue] = useState(todayDate);
 
   function updateUserDetails(currentInput) {
     setUserDetails((prevData) => {

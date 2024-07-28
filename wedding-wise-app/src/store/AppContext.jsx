@@ -2,23 +2,35 @@ import React, { useState, createContext, useEffect } from "react";
 
 export const AppContext = createContext({
   coupleData: {},
+  supplierData: {},
+  editSupplier: {},
   offeredPackage: {},
   setCoupleData: () => {},
   setOfferedPackage: () => {},
   updateCoupleData: () => {},
   updateOfferedPackage: () => {},
+  setEditSupplier: () => {},
   invitees: [],
   setInvitees: () => {},
   addInvitee: () => {},
   removeInvitee: () => {},
 });
 
-const initialState = JSON.parse(sessionStorage.getItem("currentCouple"))
+const initialStateCoupleData = JSON.parse(
+  sessionStorage.getItem("currentCouple")
+);
+
+const initialStateSupplierData = JSON.parse(
+  sessionStorage.getItem("currentSupplier")
+);
+if (initialStateSupplierData.rating === null)
+  initialStateSupplierData.rating = 0;
 export default function AppContextProvider({ children }) {
-  
-  const [coupleData, setCoupleData] = useState(initialState);
-  // console.log(coupleData)
-  // const [coupleData, setCoupleData] = useState(null);
+  const [coupleData, setCoupleData] = useState(initialStateCoupleData);
+
+  const [supplierData, setSupplierData] = useState(initialStateSupplierData);
+
+  const [editSupplier, setEditSupplier] = useState(initialStateSupplierData);
 
   const [offeredPackage, setOfferedPackage] = useState(null);
 
@@ -64,7 +76,10 @@ export default function AppContextProvider({ children }) {
 
   const appContext = {
     coupleData,
+    supplierData,
     offeredPackage,
+    editSupplier,
+    setEditSupplier,
     updateCoupleData,
     updateOfferedPackage,
     setCoupleData,

@@ -94,7 +94,7 @@ export function translateSupplierTypeToEnglish(type) {
     case "אולם שמחות":
       translatedType = "venue";
       break;
-    case "תקליטן":
+    case "דיי ג'יי":
       translatedType = "dj";
       break;
     case "צילום אירועים":

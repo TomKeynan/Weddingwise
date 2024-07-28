@@ -34,7 +34,6 @@ function SupplierLogin() {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    debugger;
     const loginAndNavigate = async () => {
       if (resData) {
         sessionStorage.setItem("currentSupplier", JSON.stringify(resData));
@@ -46,7 +45,6 @@ function SupplierLogin() {
   }, [resData]);
 
   const loginFireBase = async () => {
-    debugger;
     try {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (err) {
@@ -67,7 +65,6 @@ function SupplierLogin() {
     const data = Object.fromEntries(formData.entries());
     setEmail(data.Email);
     setPassword(data.Password);
-    debugger;
     sendData("/Suppliers/getSupplier", "POST", data);
   }
 
