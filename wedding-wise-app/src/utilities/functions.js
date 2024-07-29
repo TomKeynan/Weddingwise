@@ -40,6 +40,22 @@ function addZero(number) {
   return number;
 }
 
+export function getDayWeek(dateString) {
+  const date = new Date(dateString);
+  const dayOfWeekNumber = date.getDay();
+  const daysOfWeek = [
+    "ראשון",
+    "שני",
+    "שלישי",
+    "רביעי",
+    "חמישי",
+    "שישי",
+    "שבת",
+  ];
+  const dayOfWeekName = daysOfWeek[dayOfWeekNumber];
+  return dayOfWeekName
+}
+
 export function capitalizeKeys(obj) {
   const newObj = {};
   for (let key in obj) {
@@ -94,7 +110,7 @@ export function translateSupplierTypeToEnglish(type) {
     case "אולם שמחות":
       translatedType = "venue";
       break;
-    case "תקליטן":
+    case "דיי ג'יי":
       translatedType = "dj";
       break;
     case "צילום אירועים":

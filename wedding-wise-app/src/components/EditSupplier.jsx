@@ -1,9 +1,7 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Alert,
   Autocomplete,
-  Box,
-  Button,
   FormControl,
   Grid,
   IconButton,
@@ -12,7 +10,6 @@ import {
   Stack,
   TextField,
   Typography,
-  useControlled,
 } from "@mui/material";
 import RegisterContextProvider from "../store/RegisterContext";
 import { customTheme } from "../store/Theme";
@@ -23,12 +20,16 @@ import {
   supplierTypes,
   VALIDATIONS,
 } from "../utilities/collections";
-import InputFileUpload from "../components/InputFileUpload";
+import InputFileUpload from "./InputFileUpload";
 import SupplierOutlineBtn from "../components/buttons/SupplierOutlineBtn";
 import useFetch from "../utilities/useFetch";
 import { useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
-import { translateSupplierTypeToEnglish } from "../utilities/functions";
+import {
+  getFullDate,
+  translateSupplierTypeToEnglish,
+  translateSupplierTypeToHebrew,
+} from "../utilities/functions";
 import MessageDialog from "../components/Dialogs/MessageDialog";
 import ReadOnlyPopup from "../components/Dialogs/ReadOnlyPopup";
 import { toast } from "react-toastify";
@@ -44,52 +45,54 @@ import {
 } from "firebase/firestore";
 import upload from "../fireBase/upload";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import HomeIcon from "@mui/icons-material/Home";
 import { AppContext } from "../store/AppContext";
+import ConfirmDialog from "./Dialogs/ConfirmDialog";
 
-const SupplierSignUp = () => {
-  const navigate = useNavigate();
-  const { sendData, resData, loading, error, setError } = useFetch();
-  const { setSupplierData } = useContext(AppContext);
-  const [showPassword, setShowPassword] = useState(false);
+const EditSupplier = () => {
+  const { editSupplier, setEditSupplier, setSupplierData } =
+    useContext(AppContext);
+  const { sendData, resData, setResData, loading, error, setError } =
+    useFetch();
   const [isVenue, setIsVenue] = useState(false);
+  const [supplierDescription, setSupplierDescription] = useState("");
+  const [errors, setErrors] = useState({});
+  const [open, setOpen] = useState(false);
+  const [currentSupplierData, setCurrentSupplierData] = useState(null);
+  const [openUpdateConfirm, setOpenUpdateConfirm] = useState(false);
+  const [openUpdateSuccess, setOpenUpdateSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [avatar, setAvatar] = useState({
     file: null,
     url: "",
   });
-  const [supplierDescription, setSupplierDescription] = useState("");
-  const [errors, setErrors] = useState({});
-  const [open, setOpen] = useState(false);
-  const [currentSupplierData, setCurrentSupplierData] = useState({});
+  // const [openConfirm, setOpenConfirm] = useState(false);
+  // const [imageUrl, setImageUrl] = useState(null); // this state keep the supplies's profile image
 
   // Omri's
-  // useEffect(() => {
-  //   if (resData) {
-  //     setTimeout(() => {
-  //       sessionStorage.setItem(
-  //         "currentSupplier",
-  //         JSON.stringify(currentSupplierData)
-  //       );
-  //       navigate("/supplier-private-Profile");
-  //     }, 4000);
-  //   }
-  // }, [resData]);
-
   useEffect(() => {
-    const registerAndNavigate = async () => {
-      console.log(resData);
-      if (resData) {
-        setSupplierData(resData);
-        await registerFireBase();
-        await loginFireBase();
-        setTimeout(() => {
-          navigate("/supplier-private-Profile");
-        }, 3000);
-      }
+    if (resData) {
+      setSupplierData(currentSupplierData);
+      setOpenUpdateSuccess(true);
+    }
+    return () => {
+      setResData(undefined);
     };
-    registerAndNavigate();
-  }, [resData]);
+  }, [resData, currentSupplierData]);
+
+  //   useEffect(() => {
+  //     const registerAndNavigate = async () => {
+  //       //   console.log(resData);
+  //       if (resData) {
+  //         await registerFireBase();
+  //         await loginFireBase();
+  //         setTimeout(() => {
+  //           sessionStorage.setItem("currentSupplier", JSON.stringify(currentSupplierData));
+  //           navigate("/supplier-private-Profile");
+  //         }, 4000);
+  //       }
+  //     };
+  //     registerAndNavigate();
+  //   }, [resData]);
 
   const loginFireBase = async () => {
     try {
@@ -165,16 +168,29 @@ const SupplierSignUp = () => {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
- 
+  // function handelImageUpload(imageObj) {
+  //   debugger;
+  //   console.log(imageObj);
+  //   console.log(URL.createObjectURL(imageObj));
+  //   if (imageObj) {
+  //     const reader = new FileReader();
+  //     reader.onload = () => {
+  //       setImageUrl(reader.result);
+  //     };
+  //     reader.readAsDataURL(imageObj);
+  //   }
+  // }
+
   function handleFormSubmit(e) {
-    // debugger;
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
     setSupplierDescription(data.description);
     data.supplierType = translateSupplierTypeToEnglish(data.supplierType);
+    delete data.description;
     delete data.userImage;
 
+    // data validation
     const newErrors = {};
     for (let field in data) {
       if (
@@ -190,11 +206,17 @@ const SupplierSignUp = () => {
       setErrors(newErrors);
       return;
     } else {
-      setCurrentSupplierData(data);
+      setCurrentSupplierData({ ...editSupplier, ...data });
       setOpen(true);
+      setOpenUpdateConfirm(true);
       setErrors({});
-      sendData("/Suppliers/registerSupplier", "POST", data);
     }
+  }
+
+  function handleInputChange(e) {
+    setEditSupplier((prevData) => {
+      return { ...prevData, [e.target.name]: e.target.value };
+    });
   }
 
   // ================ error handling ================
@@ -210,6 +232,7 @@ const SupplierSignUp = () => {
         btnValue="אוקיי!"
         open={open}
         onClose={handleCloseMessage}
+        xBtn={handleCloseMessage}
         mode="error"
       >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
@@ -219,21 +242,49 @@ const SupplierSignUp = () => {
     );
   }
 
+  // ================ Confirm update handling ================
+
+  function handleCancelUpdateConfirm() {
+    setOpenUpdateConfirm(false);
+  }
+
+  function handleApprovalUpdateConfirm() {
+    sendData("/Suppliers/updateSupplier", "PUT", currentSupplierData);
+    setOpenUpdateConfirm(false);
+    setOpen(true);
+  }
+
+  function showUpdateConfirmDialog() {
+    return (
+      <ConfirmDialog
+        title="שימו לב..."
+        open={openUpdateConfirm}
+        onCancel={handleCancelUpdateConfirm}
+        onApproval={handleApprovalUpdateConfirm}
+      >
+        <Typography variant="h6" sx={{ textAlign: "center" }}>
+          האם את\ה בטוחים שאתם רוצים לעדכן את הפרטים?
+        </Typography>
+      </ConfirmDialog>
+    );
+  }
+
+  // ================  Updated success handling ================
+
   function showSuccessMessage() {
     return (
-      <ReadOnlyPopup
-        title="🎉 ברוכים הבאים ל- WeddingWise🎉"
-        text="תהליך ההרשמה עבר הצלחה👏🏼"
+      <MessageDialog
+        title="כל הכבוד!"
+        btnValue="אוקיי!"
         open={open}
+        onClose={() => setOpenUpdateSuccess(false)}
+        xBtn={() => setOpenUpdateSuccess(false)}
         mode="success"
       >
-        <Typography
-          variant="h5"
-          sx={{ textAlign: "center", fontFamily: customTheme.font.main }}
-        >
-          {signupSupplierErrors[200]}
+        <Typography variant="h6" sx={{ textAlign: "center" }}>
+          עדכון הפרטים החדשים שלך עבר בהצלחה
         </Typography>
-      </ReadOnlyPopup>
+      </MessageDialog>
     );
   }
 
@@ -241,56 +292,25 @@ const SupplierSignUp = () => {
     <RegisterContextProvider>
       {loading && <Loading />}
       {error && showErrorMessage(error)}
-      {resData && showSuccessMessage()}
+      {openUpdateConfirm && showUpdateConfirmDialog()}
+      {openUpdateSuccess && showSuccessMessage()}
       <Stack
         spacing={2}
         textAlign="center"
         justifyContent="flex-start"
         sx={{
-          width: { xs: "90%", sm: "70%", md: "60%" },
+          width: "90%",
           margin: "auto",
           minHeight: "inherit",
           pb: 10,
-          position: "relative",
         }}
       >
         <Paper variant="elevation" elevation={6} sx={paperSX}>
-          <Box
-            sx={{
-              position: "absolute",
-              right: 10,
-              top: 0,
-              fontSize: { xs: 28, sm: 32 },
-              cursor: "pointer",
-            }}
-            onClick={() => navigate("/suppliers")}
-          >
-            x
-          </Box>
-          <Typography
-            sx={{
-              fontSize: { xs: 20, sm: 26, md: 32 },
-              fontFamily: customTheme.font.main,
-              pb: 3,
-            }}
-          >
-            הצטרפו אלינו והתחילו להרחיב את מעגל הלקוחות שלכם!
-          </Typography>
-          <Typography
-            sx={{
-              pb: 3,
-              fontWeight: "bold",
-              fontSize: { xs: 18, sm: 24, md: 26 },
-              color: customTheme.supplier.colors.primary.main,
-            }}
-          >
-            הרשמה מהירה וקלה לשירות הפשוט והחכם לתכנון חתונות מוצלחות.
-          </Typography>
           <form onSubmit={handleFormSubmit}>
             <Grid container sx={{ rowGap: 3 }}>
-              <Grid item xs={12} md={6} sx={{ alignContent: "" }}>
+              <Grid item xs={12} md={6}>
                 <TextField
-                  variant="outlined"
+                  variant="filled"
                   type="text"
                   label="שם העסק"
                   name="businessName"
@@ -298,6 +318,8 @@ const SupplierSignUp = () => {
                   sx={textFieldSX}
                   inputProps={{ maxLength: 30 }}
                   helperText="שם העסק יופיע בפרופיל שלכם"
+                  value={editSupplier.businessName}
+                  onChange={handleInputChange}
                 />
                 {errors.businessName && (
                   <Alert severity="error" sx={errorAlertSX}>
@@ -310,9 +332,18 @@ const SupplierSignUp = () => {
                 <Autocomplete
                   options={supplierTypes}
                   freeSolo={false}
+                  value={translateSupplierTypeToHebrew(
+                    editSupplier.supplierType
+                  )}
                   onChange={(event, newValue) => {
                     if (newValue === "אולם שמחות") setIsVenue(true);
                     else setIsVenue(false);
+                    setEditSupplier((prevData) => {
+                      return {
+                        ...prevData,
+                        supplierType: translateSupplierTypeToEnglish(newValue),
+                      };
+                    });
                   }}
                   renderInput={(params) => (
                     <TextField
@@ -334,11 +365,13 @@ const SupplierSignUp = () => {
                 <>
                   <Grid item xs={12} md={6}>
                     <TextField
-                      variant="outlined"
+                      variant="filled"
                       type="text"
                       label="כמות אורחים"
                       name="capacity"
                       sx={textFieldSX}
+                      value={editSupplier.capacity === null && 0}
+                      onChange={handleInputChange}
                     />
                     {errors.capacity && (
                       <Alert severity="error" sx={errorAlertSX}>
@@ -348,7 +381,7 @@ const SupplierSignUp = () => {
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <TextField
-                      variant="outlined"
+                      variant="filled"
                       type="text"
                       label="כתובת"
                       name="venueAddress"
@@ -364,12 +397,14 @@ const SupplierSignUp = () => {
               )}
               <Grid item xs={12} md={6}>
                 <TextField
-                  variant="outlined"
+                  variant="filled"
                   type="text"
                   label="מחיר"
                   name="price"
                   sx={textFieldSX}
                   helperText="המחיר הממוצע עבור השירות שלכם"
+                  value={editSupplier.price}
+                  onChange={handleInputChange}
                 />
                 {errors.price && (
                   <Alert severity="error" sx={errorAlertSX}>
@@ -382,6 +417,15 @@ const SupplierSignUp = () => {
                 <Autocomplete
                   options={regions}
                   freeSolo={false}
+                  value={editSupplier.availableRegion}
+                  onChange={(event, newValue) => {
+                    setEditSupplier((prevData) => {
+                      return {
+                        ...prevData,
+                        availableRegion: newValue,
+                      };
+                    });
+                  }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -398,78 +442,35 @@ const SupplierSignUp = () => {
                   </Alert>
                 )}
               </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  variant="outlined"
-                  label="מס' טלפון"
-                  name="phoneNumber"
-                  sx={textFieldSX}
-                />
-                {errors.phoneNumber && (
-                  <Alert severity="error" sx={errorAlertSX}>
-                    {errors.phoneNumber}
-                  </Alert>
-                )}
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  variant="outlined"
-                  type="text"
-                  label="אימייל"
-                  name="supplierEmail"
-                  sx={textFieldSX}
-                />
-                {errors.supplierEmail && (
-                  <Alert severity="error" sx={errorAlertSX}>
-                    {errors.supplierEmail}
-                  </Alert>
-                )}
-              </Grid>
               <Grid item xs={12}>
                 <TextField
                   name="description"
+                  variant="filled"
                   label="תיאור"
+                  value={"פה צריך להציג את התיאור מה-firebase"}
                   multiline
                   maxRows={5}
                   sx={textareaSX}
                   helperText="תיאור זה יופיע בפרופיל - כתבו תיאור הולם עבור העסק והשירות שאתם מציעים"
                 />
-              </Grid>
-              {/* Password */}
-              <Grid item xs={12} md={6}>
-                <FormControl
-                  color="primary"
-                  variant="outlined"
-                  sx={textFieldSX}
-                >
-                  <TextField
-                    id="password-input"
-                    name="Password"
-                    label="סיסמא"
-                    type={showPassword ? "text" : "password"}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            edge="end"
-                            sx={{
-                              "& .MuiSvgIcon-root": {
-                                fill: customTheme.palette.primary.main,
-                              },
-                            }}
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </FormControl>
-                {errors.Password && (
+                {errors.description && (
                   <Alert severity="error" sx={errorAlertSX}>
-                    {errors.Password}
+                    {errors.description}
+                  </Alert>
+                )}
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  variant="filled"
+                  value={editSupplier.phoneNumber}
+                  label="מס' טלפון"
+                  name="phoneNumber"
+                  sx={textFieldSX}
+                  onChange={handleInputChange}
+                />
+                {errors.phoneNumber && (
+                  <Alert severity="error" sx={errorAlertSX}>
+                    {errors.phoneNumber}
                   </Alert>
                 )}
               </Grid>
@@ -485,45 +486,25 @@ const SupplierSignUp = () => {
               <Grid item xs={12}>
                 <SupplierOutlineBtn
                   type="submit"
-                  value="צור חשבון"
+                  value="עדכן פרטים"
                   width="100%"
                   fontSize={{ xs: 16, sm: 20 }}
                 />
               </Grid>
             </Grid>
           </form>
-          <Stack
-            direction="row"
-            justifyContent="space-around"
-            flexWrap="wrap"
-            sx={{ pt: 5, rowGap: 1 }}
-          >
-            <Button onClick={() => navigate("/supplier-login")}>
-              <ArrowForwardIcon />
-              <Typography sx={{ pl: 1, fontSize: { xs: 18, sm: 20 } }}>
-                יש לי כבר חשבון
-              </Typography>
-            </Button>
-
-            <Button onClick={() => navigate("/suppliers")}>
-              <Typography sx={{ pr: 1, fontSize: { xs: 18, sm: 20 } }}>
-                חזור לדף הבית
-              </Typography>
-              <HomeIcon />
-            </Button>
-          </Stack>
         </Paper>
       </Stack>
     </RegisterContextProvider>
   );
 };
 
-export default SupplierSignUp;
+export default EditSupplier;
 
 const paperSX = {
-  minHeight: "600px",
-  p: 5,
-  backgroundColor: "rgba(255,255,255,0.6)",
+  py: 3,
+  px: { xs: 1, sm: 3 },
+  backgroundColor: "rgba(255,255,255,0.8)",
 };
 
 const textFieldSX = {
@@ -534,7 +515,7 @@ const textFieldSX = {
     left: "-3px",
   },
   "& .MuiFormHelperText-root": {
-    fontSize: 15,
+    fontSize: { xs: 12, sm: 15 },
   },
 };
 
@@ -546,7 +527,7 @@ const textareaSX = {
     left: "-3px",
   },
   "& .MuiFormHelperText-root": {
-    fontSize: 15,
+    fontSize: { xs: 12, sm: 15 },
   },
 };
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import SupplierBanner from "../components/SupplierBanner";
 import { Stack, Typography, useMediaQuery } from "@mui/material";
 import { translateSupplierTypeToHebrew } from "../utilities/functions";
@@ -7,24 +7,32 @@ import Tabs from "../components/Tabs";
 import KpiPaper from "../components/KpiPaper";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
+import { AppContext } from "../store/AppContext";
 
-const initialData = JSON.parse(sessionStorage.getItem("currentSupplier"));
-
-const kpis = [
-  { title: "מספר המדרגים:", data: "125", icon: <PeopleOutlineIcon /> },
-  { title: "דירוג:", data: "4.75", icon: <StarOutlineIcon /> },
-];
 
 function SupplierPrivateProfile() {
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
-  const [supplier, setSupplier] = useState(initialData);
+  const { supplierData } = useContext(AppContext)
+  let rating;
+  if (!supplierData.rating)
+    rating = 0
+  
+    const kpis = [
+    {
+      title: "מספר המדרגים:",
+      data: supplierData.ratedCount,
+      icon: <PeopleOutlineIcon />,
+    },
+    { title: "דירוג:", data: rating, icon: <StarOutlineIcon /> },
+  ];
+  
   return (
     <Stack spacing={3} sx={stackWrapperSX}>
       <SupplierBanner />
       <Stack
         justifyContent="center"
         sx={{
-          width: "70%",
+          width: { xs: "90%", sm: "70%" },
           "&.MuiStack-root": {
             margin: "0 auto",
           },
@@ -36,8 +44,8 @@ function SupplierPrivateProfile() {
           sx={{ teatAlign: "center", mt: { xs: 0, sm: 3 } }}
         >
           <Typography sx={namesSX}>
-            {`${translateSupplierTypeToHebrew(supplier.supplierType)} - ${
-              supplier.businessName
+            {`${translateSupplierTypeToHebrew(supplierData.supplierType)} - ${
+              supplierData.businessName
             }`}
           </Typography>
         </Stack>
@@ -63,6 +71,7 @@ export default SupplierPrivateProfile;
 const stackWrapperSX = {
   minHeight: "inherit",
   backgroundImage: "url(assets/bg-stars.png)",
+  pb: 10,
 };
 
 const namesSX = {

@@ -55,7 +55,6 @@ const rows = [
     location: "חדרה",
     email: "omri@gmail.com",
   },
-  
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -243,7 +242,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-export default function CoupleTable() {
+function CoupleTable() {
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
@@ -393,10 +392,12 @@ export default function CoupleTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-          <FormControlLabel
+      <FormControlLabel
         label="בטל רווחים"
         control={<Switch checked={dense} onChange={handleChangeDense} />}
       />
     </Box>
   );
 }
+
+export default CoupleTable;
