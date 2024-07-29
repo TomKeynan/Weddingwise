@@ -148,7 +148,8 @@ const successTitleSX = {
   fontFamily: customTheme.font.main,
   fontSize: { xs: 20, sm: 30 },
   fontWeight: "bold",
-  mt:4,
+  mt: 4,
+  pb: 0,
 };
 
 const successBtnSX = {

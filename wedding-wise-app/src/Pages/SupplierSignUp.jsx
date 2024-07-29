@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Alert,
   Autocomplete,
+  Box,
+  Button,
   FormControl,
   Grid,
   IconButton,
@@ -10,6 +12,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useControlled,
 } from "@mui/material";
 import RegisterContextProvider from "../store/RegisterContext";
 import { customTheme } from "../store/Theme";
@@ -41,20 +44,21 @@ import {
 } from "firebase/firestore";
 import upload from "../fireBase/upload";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import HomeIcon from "@mui/icons-material/Home";
+import { AppContext } from "../store/AppContext";
 
 const SupplierSignUp = () => {
   const navigate = useNavigate();
   const { sendData, resData, loading, error, setError } = useFetch();
+  const { setSupplierData } = useContext(AppContext);
   const [showPassword, setShowPassword] = useState(false);
   const [isVenue, setIsVenue] = useState(false);
-  // const [imageUrl, setImageUrl] = useState(null); // this state keep the supplies's profile image
   const [avatar, setAvatar] = useState({
     file: null,
     url: "",
   });
-  // console.log(imageUrl)
   const [supplierDescription, setSupplierDescription] = useState("");
-  // console.log(supplierDescription)
   const [errors, setErrors] = useState({});
   const [open, setOpen] = useState(false);
   const [currentSupplierData, setCurrentSupplierData] = useState({});
@@ -74,14 +78,14 @@ const SupplierSignUp = () => {
 
   useEffect(() => {
     const registerAndNavigate = async () => {
-      console.log(resData)
+      console.log(resData);
       if (resData) {
+        setSupplierData(resData);
         await registerFireBase();
         await loginFireBase();
         setTimeout(() => {
-          sessionStorage.setItem("currentSupplier", JSON.stringify(resData));
           navigate("/supplier-private-Profile");
-        }, 4000);
+        }, 3000);
       }
     };
     registerAndNavigate();
@@ -161,19 +165,7 @@ const SupplierSignUp = () => {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  // function handelImageUpload(imageObj) {
-  //   debugger;
-  //   console.log(imageObj);
-  //   console.log(URL.createObjectURL(imageObj));
-  //   if (imageObj) {
-  //     const reader = new FileReader();
-  //     reader.onload = () => {
-  //       setImageUrl(reader.result);
-  //     };
-  //     reader.readAsDataURL(imageObj);
-  //   }
-  // }
-
+ 
   function handleFormSubmit(e) {
     // debugger;
     e.preventDefault();
@@ -259,9 +251,22 @@ const SupplierSignUp = () => {
           margin: "auto",
           minHeight: "inherit",
           pb: 10,
+          position: "relative",
         }}
       >
         <Paper variant="elevation" elevation={6} sx={paperSX}>
+          <Box
+            sx={{
+              position: "absolute",
+              right: 10,
+              top: 0,
+              fontSize: { xs: 28, sm: 32 },
+              cursor: "pointer",
+            }}
+            onClick={() => navigate("/suppliers")}
+          >
+            x
+          </Box>
           <Typography
             sx={{
               fontSize: { xs: 20, sm: 26, md: 32 },
@@ -487,6 +492,26 @@ const SupplierSignUp = () => {
               </Grid>
             </Grid>
           </form>
+          <Stack
+            direction="row"
+            justifyContent="space-around"
+            flexWrap="wrap"
+            sx={{ pt: 5, rowGap: 1 }}
+          >
+            <Button onClick={() => navigate("/supplier-login")}>
+              <ArrowForwardIcon />
+              <Typography sx={{ pl: 1, fontSize: { xs: 18, sm: 20 } }}>
+                יש לי כבר חשבון
+              </Typography>
+            </Button>
+
+            <Button onClick={() => navigate("/suppliers")}>
+              <Typography sx={{ pr: 1, fontSize: { xs: 18, sm: 20 } }}>
+                חזור לדף הבית
+              </Typography>
+              <HomeIcon />
+            </Button>
+          </Stack>
         </Paper>
       </Stack>
     </RegisterContextProvider>

@@ -6,11 +6,11 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { regions } from "../../utilities/collections";
 import { customTheme } from "../../store/Theme";
-import "dayjs/locale/en-gb";
-import dayjs from "dayjs";
-import "./steps.css";
-import TextInput from "../TextInput";
 import { getFullDate } from "../../utilities/functions";
+import TextInput from "../TextInput";
+import dayjs from "dayjs";
+import "dayjs/locale/he";
+import "./steps.css";
 
 const StepTwo = () => {
   const { userDetails, date, updateUserDetails, saveDateValue } =
@@ -75,7 +75,7 @@ const StepTwo = () => {
       </Grid>
       {/* Desire Date   */}
       <Grid item xs={12} md={6}>
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="he">
           <DatePicker
             label="תאריך"
             showDaysOutsideCurrentMonth

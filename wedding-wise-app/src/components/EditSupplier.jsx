@@ -26,7 +26,6 @@ import useFetch from "../utilities/useFetch";
 import { useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
 import {
-  convertDateToClientFormat,
   getFullDate,
   translateSupplierTypeToEnglish,
   translateSupplierTypeToHebrew,
@@ -47,42 +46,38 @@ import {
 import upload from "../fireBase/upload";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { AppContext } from "../store/AppContext";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
+import ConfirmDialog from "./Dialogs/ConfirmDialog";
 
 const EditSupplier = () => {
-  //   const navigate = useNavigate();
-  const { sendData, resData, loading, error, setError } = useFetch();
-  const { editSupplier, setEditSupplier } = useContext(AppContext);
-  //   console.log(editSupplier);
-  const [showPassword, setShowPassword] = useState(false);
+  const { editSupplier, setEditSupplier, setSupplierData } =
+    useContext(AppContext);
+  const { sendData, resData, setResData, loading, error, setError } =
+    useFetch();
   const [isVenue, setIsVenue] = useState(false);
-  // const [imageUrl, setImageUrl] = useState(null); // this state keep the supplies's profile image
+  const [supplierDescription, setSupplierDescription] = useState("");
+  const [errors, setErrors] = useState({});
+  const [open, setOpen] = useState(false);
+  const [currentSupplierData, setCurrentSupplierData] = useState(null);
+  const [openUpdateConfirm, setOpenUpdateConfirm] = useState(false);
+  const [openUpdateSuccess, setOpenUpdateSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [avatar, setAvatar] = useState({
     file: null,
     url: "",
   });
-  // console.log(imageUrl)
-  const [supplierDescription, setSupplierDescription] = useState("");
-  // console.log(supplierDescription)
-  const [errors, setErrors] = useState({});
-  const [open, setOpen] = useState(false);
-  const [currentSupplierData, setCurrentSupplierData] = useState({});
+  // const [openConfirm, setOpenConfirm] = useState(false);
+  // const [imageUrl, setImageUrl] = useState(null); // this state keep the supplies's profile image
 
   // Omri's
   useEffect(() => {
     if (resData) {
-      setTimeout(() => {
-        sessionStorage.setItem(
-          "currentSupplier",
-          JSON.stringify(currentSupplierData)
-        );
-        // navigate("/supplier-private-Profile");
-        setOpen(false);
-      }, 3000);
+      setSupplierData(currentSupplierData);
+      setOpenUpdateSuccess(true);
     }
-  }, [resData]);
+    return () => {
+      setResData(undefined);
+    };
+  }, [resData, currentSupplierData]);
 
   //   useEffect(() => {
   //     const registerAndNavigate = async () => {
@@ -187,17 +182,17 @@ const EditSupplier = () => {
   // }
 
   function handleFormSubmit(e) {
-    debugger;
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
     setSupplierDescription(data.description);
     data.supplierType = translateSupplierTypeToEnglish(data.supplierType);
+    delete data.description;
     delete data.userImage;
 
+    // data validation
     const newErrors = {};
     for (let field in data) {
-      //   if (field === "Password") return;
       if (
         VALIDATIONS.hasOwnProperty(field) &&
         !VALIDATIONS[field].regex.test(data[field])
@@ -211,29 +206,17 @@ const EditSupplier = () => {
       setErrors(newErrors);
       return;
     } else {
-      setCurrentSupplierData(data);
+      setCurrentSupplierData({ ...editSupplier, ...data });
       setOpen(true);
+      setOpenUpdateConfirm(true);
       setErrors({});
-      sendData("/Suppliers/updateSupplier", "PUT", data);
     }
   }
 
   function handleInputChange(e) {
-    let name = e.target.name;
-    if (name === "Password") {
-      setEditSupplier((prevData) => {
-        return { ...prevData, password: e.target.value };
-      });
-    }
     setEditSupplier((prevData) => {
-      return { ...prevData, [name]: e.target.value };
+      return { ...prevData, [e.target.name]: e.target.value };
     });
-  }
-
-  function addAvailableDates(date) {
-    // const dateObject = getFullDate(date);
-    // const dataString = convertDateToClientFormat(`${dateObject}T`);
-    // console.log(dataString);
   }
 
   // ================ error handling ================
@@ -259,21 +242,49 @@ const EditSupplier = () => {
     );
   }
 
+  // ================ Confirm update handling ================
+
+  function handleCancelUpdateConfirm() {
+    setOpenUpdateConfirm(false);
+  }
+
+  function handleApprovalUpdateConfirm() {
+    sendData("/Suppliers/updateSupplier", "PUT", currentSupplierData);
+    setOpenUpdateConfirm(false);
+    setOpen(true);
+  }
+
+  function showUpdateConfirmDialog() {
+    return (
+      <ConfirmDialog
+        title="שימו לב..."
+        open={openUpdateConfirm}
+        onCancel={handleCancelUpdateConfirm}
+        onApproval={handleApprovalUpdateConfirm}
+      >
+        <Typography variant="h6" sx={{ textAlign: "center" }}>
+          האם את\ה בטוחים שאתם רוצים לעדכן את הפרטים?
+        </Typography>
+      </ConfirmDialog>
+    );
+  }
+
+  // ================  Updated success handling ================
+
   function showSuccessMessage() {
     return (
-      <ReadOnlyPopup
-        title="🎉 ברוכים הבאים ל- WeddingWise🎉"
-        text="תהליך ההרשמה עבר הצלחה👏🏼"
+      <MessageDialog
+        title="כל הכבוד!"
+        btnValue="אוקיי!"
         open={open}
+        onClose={() => setOpenUpdateSuccess(false)}
+        xBtn={() => setOpenUpdateSuccess(false)}
         mode="success"
       >
-        <Typography
-          variant="h5"
-          sx={{ textAlign: "center", fontFamily: customTheme.font.main }}
-        >
-          {signupSupplierErrors[200]}
+        <Typography variant="h6" sx={{ textAlign: "center" }}>
+          עדכון הפרטים החדשים שלך עבר בהצלחה
         </Typography>
-      </ReadOnlyPopup>
+      </MessageDialog>
     );
   }
 
@@ -281,7 +292,8 @@ const EditSupplier = () => {
     <RegisterContextProvider>
       {loading && <Loading />}
       {error && showErrorMessage(error)}
-      {resData === 204 && showSuccessMessage()}
+      {openUpdateConfirm && showUpdateConfirmDialog()}
+      {openUpdateSuccess && showSuccessMessage()}
       <Stack
         spacing={2}
         textAlign="center"
@@ -296,41 +308,7 @@ const EditSupplier = () => {
         <Paper variant="elevation" elevation={6} sx={paperSX}>
           <form onSubmit={handleFormSubmit}>
             <Grid container sx={{ rowGap: 3 }}>
-              <Grid item xs={12}>
-                <LocalizationProvider
-                  dateAdapter={AdapterDayjs}
-                  adapterLocale="en-gb"
-                >
-                  <DatePicker
-                    label="תאריך"
-                    showDaysOutsideCurrentMonth
-                    onChange={(newValue) => addAvailableDates(newValue)}
-                    required
-                    disablePast={true}
-                    slotProps={{
-                      textField: {
-                        name: "desiredDate",
-                        variant: "outlined",
-                        sx: textFieldSX,
-                      },
-                    }}
-                  />
-                </LocalizationProvider>
-                <Grid container sx={{ rowGap: 3 }}>
-                  {editSupplier["availableDates"].length > 0 ? (
-                    editSupplier["availableDates"].map((date, index) => (
-                      <Grid item key={index} xs={12} sm={4} md={4}>
-                        <Typography variant="h6">{date}</Typography>
-                      </Grid>
-                    ))
-                  ) : (
-                    <Grid item xs={12} sx={{ py: 1, px: 2, color: "red" }}>
-                      <Alert severity="warning">לא נבחרו תאריכים פנויים</Alert>
-                    </Grid>
-                  )}
-                </Grid>
-              </Grid>
-              <Grid item xs={12} md={6} sx={{ alignContent: "" }}>
+              <Grid item xs={12} md={6}>
                 <TextField
                   variant="filled"
                   type="text"
@@ -464,6 +442,23 @@ const EditSupplier = () => {
                   </Alert>
                 )}
               </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  name="description"
+                  variant="filled"
+                  label="תיאור"
+                  value={"פה צריך להציג את התיאור מה-firebase"}
+                  multiline
+                  maxRows={5}
+                  sx={textareaSX}
+                  helperText="תיאור זה יופיע בפרופיל - כתבו תיאור הולם עבור העסק והשירות שאתם מציעים"
+                />
+                {errors.description && (
+                  <Alert severity="error" sx={errorAlertSX}>
+                    {errors.description}
+                  </Alert>
+                )}
+              </Grid>
               <Grid item xs={12} md={6}>
                 <TextField
                   variant="filled"
@@ -479,61 +474,6 @@ const EditSupplier = () => {
                   </Alert>
                 )}
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  name="description"
-                  label="תיאור"
-                  multiline
-                  maxRows={5}
-                  sx={textareaSX}
-                  helperText="תיאור זה יופיע בפרופיל - כתבו תיאור הולם עבור העסק והשירות שאתם מציעים"
-                />
-                {errors.description && (
-                  <Alert severity="error" sx={errorAlertSX}>
-                    {errors.description}
-                  </Alert>
-                )}
-              </Grid>
-              {/* Password */}
-              <Grid item xs={12} md={6}>
-                <FormControl
-                  color="primary"
-                  variant="filled"
-                  sx={textFieldSX}
-                  value={editSupplier.Password}
-                >
-                  <TextField
-                    id="password-input"
-                    name="Password"
-                    label="סיסמא"
-                    type={showPassword ? "text" : "password"}
-                    onChange={handleInputChange}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            edge="end"
-                            sx={{
-                              "& .MuiSvgIcon-root": {
-                                fill: customTheme.palette.primary.main,
-                              },
-                            }}
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </FormControl>
-                {errors.Password && (
-                  <Alert severity="error" sx={errorAlertSX}>
-                    {errors.Password}
-                  </Alert>
-                )}
-              </Grid>
               <Grid item xs={12} md={6}>
                 <FormControl
                   name="userImage"
@@ -546,7 +486,7 @@ const EditSupplier = () => {
               <Grid item xs={12}>
                 <SupplierOutlineBtn
                   type="submit"
-                  value="צור חשבון"
+                  value="עדכן פרטים"
                   width="100%"
                   fontSize={{ xs: 16, sm: 20 }}
                 />

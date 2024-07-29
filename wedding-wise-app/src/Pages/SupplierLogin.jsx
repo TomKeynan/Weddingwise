@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { customTheme } from "../store/Theme";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -27,16 +27,20 @@ import SupplierOutlineBtn from "../components/buttons/SupplierOutlineBtn";
 import { toast } from 'react-toastify';
 import { auth } from '../fireBase/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { AppContext } from "../store/AppContext";
 
 function SupplierLogin() {
   const { sendData, resData, error, loading } = useFetch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setSupplierData, setEditSupplier } = useContext(AppContext)
 
   useEffect(() => {
     const loginAndNavigate = async () => {
       if (resData) {
         sessionStorage.setItem("currentSupplier", JSON.stringify(resData));
+        setSupplierData(resData)
+        setEditSupplier(resData)
         await loginFireBase();
         navigate("/supplier-private-Profile");
       }

@@ -13,24 +13,19 @@ import { AppContext } from "../store/AppContext";
 function SupplierPrivateProfile() {
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
   const { supplierData } = useContext(AppContext)
-
-  const kpis = [
+  let rating;
+  if (!supplierData.rating)
+    rating = 0
+  
+    const kpis = [
     {
       title: "מספר המדרגים:",
       data: supplierData.ratedCount,
       icon: <PeopleOutlineIcon />,
     },
-    { title: "דירוג:", data: supplierData.rating, icon: <StarOutlineIcon /> },
+    { title: "דירוג:", data: rating, icon: <StarOutlineIcon /> },
   ];
   
-  // const kpis = [
-  //   {
-  //     title: "מספר המדרגים:",
-  //     data: supplier.ratedCount,
-  //     icon: <PeopleOutlineIcon />,
-  //   },
-  //   { title: "דירוג:", data: supplier.rating, icon: <StarOutlineIcon /> },
-  // ];
   return (
     <Stack spacing={3} sx={stackWrapperSX}>
       <SupplierBanner />
