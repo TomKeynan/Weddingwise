@@ -94,6 +94,7 @@ function Navbar({ isLayout = true }) {
 
   // Listen for changes to the current chat and update the local state
   useEffect(() => {
+    
     let unSub = null;
     if (currentUser?.id) {
       unSub = onSnapshot(doc(db, "userChats", currentUser.id), (res) => {
@@ -166,6 +167,20 @@ function Navbar({ isLayout = true }) {
                 {/* Settings Menu - couple*/}
                 <Box>
                   <Tooltip title="התחברות / הרשמה">
+                      {/* {Adam's} */}
+                      {(!isSeen && currentUser) && (
+                      <img
+                        style={{
+                          height: "35px",
+                          position: "absolute",
+                          right: "-14.5px",
+                          bottom: "58%",
+                          zIndex: "1000",
+                        }}
+                        src="assets/chat_pics/inbox.png"
+                        alt=""
+                      />
+                    )}
                     <IconButton onClick={handleOpenUserMenu} disableRipple>
                       {/* Icon */}
                       <AccountCircleIcon
@@ -190,21 +205,8 @@ function Navbar({ isLayout = true }) {
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                   >
-                    {/* {Adam's} */}
 
-                    {!isSeen && (
-                      <img
-                        style={{
-                          height: "35px",
-                          position: "absolute",
-                          right: "-14.5px",
-                          bottom: "58%",
-                          zIndex: "1",
-                        }}
-                        src="assets/chat_pics/inbox.png"
-                        alt=""
-                      />
-                    )}
+                
 
                     {/* Settings Menu */}
                     {/* {settings.map((setting) => ( */}

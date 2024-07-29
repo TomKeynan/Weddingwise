@@ -190,6 +190,7 @@ function UserPackage() {
             chats: arrayUnion({
               chatId: newChatRef.id,
               lastMessage: firstMessage,
+                isSeen: false,
               receiverId: currentUser.id,
               updatedAt: Date.now(),
             }),

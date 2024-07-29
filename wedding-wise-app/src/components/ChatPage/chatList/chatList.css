@@ -137,25 +137,3 @@
 }
 
 
-.exit-button {
-    border: none; /* No border */
-    color: white; /* White text color */
-    padding: 10px; /* Padding */
-    text-align: center; /* Centered text */
-    text-decoration: none; /* No underline */
-    display: inline-block; /* Inline block display */
-    font-size: 16px; /* Font size */
-    cursor: pointer; /* Pointer cursor on hover */
-    position: absolute;
-    width: 25px; /* Width of the button */
-    height: 25px; /* Height of the button */
-    display: flex; /* Flexbox for centering content */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    transition: color 0.3s ease; /* Smooth transition for text color */
-    background-color: transparent; /* Transparent background */
-  }
-  
-  .exit-button:hover {
-    color: #ff0000; /* Bright red text on hover */
-  }

@@ -119,7 +119,7 @@ namespace Server.DAL
                                     BusinessName = dataReader["business_name"].ToString(),
                                     PhoneNumber = dataReader["phone_number"].ToString(),
                                     Price = Convert.ToInt32(dataReader["price"]),
-                                    Rating = dataReader["rating"] != DBNull.Value ? Convert.ToDouble(dataReader["rating"]) : (double?)null,
+                                    Rating = dataReader["rating"] != DBNull.Value ? Convert.ToDouble(dataReader["rating"]) : 0.0,
                                     AvailableRegion = dataReader["region_name"].ToString(),
                                     SupplierType = dataReader["supplier_type_name"].ToString(),
                                     IsActive = Convert.ToBoolean(dataReader["is_active"]),
@@ -331,7 +331,7 @@ namespace Server.DAL
                         BusinessName = dataReader["business_name"].ToString(),
                         PhoneNumber = dataReader["phone_number"].ToString(),
                         Price = Convert.ToInt32(dataReader["price"]),
-                        Rating = Convert.ToDouble(dataReader["rating"]),
+                        Rating = dataReader["rating"] != DBNull.Value ? Convert.ToDouble(dataReader["rating"]) : 0.0,
                         RatedCount = Convert.ToInt32(dataReader["rated_count"]),
                         AvailableRegion = dataReader["region_name"].ToString(),
                         SupplierType = dataReader["supplier_type_name"].ToString(),
@@ -394,6 +394,53 @@ namespace Server.DAL
         }
 
 
+
+        //--------------------------------------------------------------------------------------------------
+        // 
+        //--------------------------------------------------------------------------------------------------
+        public List<SupplierEvent> GetSupplierEvents(string supplierEmail)
+        {
+            List<SupplierEvent> supplierEvents = new List<SupplierEvent>();
+
+            try
+            {
+                using (SqlConnection con = DBServiceHelper.Connect())
+                {
+                    Dictionary<string, object> parameters = new Dictionary<string, object>
+                    {
+                        { "@supplier_email", supplierEmail }
+                    };
+
+                    using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPGetSupplierEvents", parameters))
+                    {
+                        using (SqlDataReader dataReader = cmd.ExecuteReader())
+                        {
+                            while (dataReader.Read())
+                            {
+
+                                SupplierEvent supplierEvent = new SupplierEvent
+                                 (
+                                Convert.ToDouble(dataReader["Latitude"]),
+                                Convert.ToDouble(dataReader["longitude"]),
+                                (DateTime)dataReader["EventDate"],
+                                dataReader["CoupleNames"].ToString(),
+                                Convert.ToInt32(dataReader["NumberOfInvitees"]),
+                                Convert.ToInt32(dataReader["ImportanceRank"])
+                                 );
+
+                                supplierEvents.Add(supplierEvent);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving events for the supplier in the GetSuppliersEvents method." + ex.Message);
+            }
+
+            return supplierEvents;
+        }
 
 
 

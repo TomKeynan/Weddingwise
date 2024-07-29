@@ -6,7 +6,7 @@ export const useChatStore = create((set) => ({
   user: null,
   isCurrentUserBlocked: false,
   isReceiverBlocked: false,
-  chatStatus: false,
+  chatStatus: false, // To be seen or not to be seen!
   isSeen: true,
   changeChat: (chatId, user) => {
     const currentUser = useUserStore.getState().currentUser;

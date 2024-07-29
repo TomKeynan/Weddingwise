@@ -235,6 +235,12 @@ namespace Server.BL
             return dBServicesSupplier.UpdateSupplier(this);
         }
 
+        public static List<SupplierEvent> GetSupplierEvents(string supplierEmail)
+        {
+            DBServicesSupplier dBServicesSupplier = new DBServicesSupplier();
+            return dBServicesSupplier.GetSupplierEvents(supplierEmail);
+
+        }
         public static int RateSupplier(string supplierEmail, string coupleEmail, int rating)
 
         {

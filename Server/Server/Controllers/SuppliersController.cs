@@ -175,6 +175,41 @@ namespace Server.Controllers
             }
         }
 
+        //------------------------------------------------
+        // Retreives the "events" of a supplier 
+        //------------------------------------------------
+        [HttpGet("getSupplierEvents/email/{supplierEmail}")] // Attribute specifying the HTTP method and route template
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<List<SupplierEvent>> GetSupplierProfileInfo(string supplierEmail) // Method signature specifying input parameters and return type
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(supplierEmail))
+                {
+                    return BadRequest("Supplier email is required.");
+                }
+
+                List<SupplierEvent> events = Supplier.GetSupplierEvents(supplierEmail);
+
+                if (events == null)
+                {
+                    return NotFound("The supplier doesn't have any events");
+                }
+
+                // If events are found, return OK response with events list
+                return Ok(events);
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Return a BadRequest response with the exception message in case of an error
+                return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+            }
+        }
 
 
         //-------------------------------------------

@@ -38,10 +38,11 @@ function ChatList() {
         return () => {
             unsub();
         }
-    }, [currentUser.id]);
+    }, [currentUser?.id]);
 
     const handleSelect = async (chat) => {
         // Mark the selected chat as seen
+        debugger;
         const userChats = chats.map((item) => {
             const { user, ...rest } = item;
             return rest;
@@ -82,7 +83,6 @@ function ChatList() {
 
         <div style={listStyle}>
 
-            <button onClick={()=>changeChatStatus()} className='exit-button'>&#10005;</button>
             <div className="user-info">
                 <div className="user">
                     <img className="img-avatar" src={currentUser.avatar || 'assets/chat_pics/avatar.png'} alt='' />
