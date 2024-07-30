@@ -1,22 +1,30 @@
 import { useEffect, useState } from "react";
 
-function useFetch() {
-  const [baseUrl, setBaseUrl] = useState("");
+var baseUrl = "";
+if (
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1"
+)
+  baseUrl = "https://localhost:44359/api";
+else baseUrl = "https://proj.ruppin.ac.il/cgroup70/test2/tar1/api";
 
-  useEffect(() => {
-    if (
-      window.location.hostname === "localhost" ||
-      window.location.hostname === "127.0.0.1"
-    )
-      setBaseUrl("https://localhost:44359/api");
-    else setBaseUrl("https://proj.ruppin.ac.il/cgroup70/test2/tar1/api");
-  }, []);
+function useFetch() {
+  // const [baseUrl, setBaseUrl] = useState(
+  //   "https://proj.ruppin.ac.il/cgroup70/test2/tar1/api"
+  // );
+
+  // useEffect(() => {
+  //   if (
+  //     window.location.hostname === "localhost" ||
+  //     window.location.hostname === "127.0.0.1"
+  //   )
+  //     setBaseUrl("https://localhost:44359/api");
+  //   else setBaseUrl("https://proj.ruppin.ac.il/cgroup70/test2/tar1/api");
+  // }, []);
 
   const [resData, setResData] = useState(null);
-  const [resGetData, setResGetData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(undefined);
-  // const [error, setError] = useState({ isError: false, status: "" });
 
   async function getData(endpoint) {
     try {
@@ -27,7 +35,7 @@ function useFetch() {
         return;
       }
       const responseData = await response.json();
-      setResGetData(responseData);
+      setResData(responseData);
     } catch (error) {
       console.log(error);
       setError(true);
@@ -74,7 +82,15 @@ function useFetch() {
     }
   }
 
-  return { resData, resGetData, loading, error, setResData, setError, getData, sendData };
+  return {
+    resData,
+    loading,
+    error,
+    setResData,
+    setError,
+    getData,
+    sendData,
+  };
 }
 
 export default useFetch;

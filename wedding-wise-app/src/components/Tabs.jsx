@@ -1,13 +1,17 @@
 import * as React from "react";
+import { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import CoupleTable from "./CoupleTable";
 import CommentCard from "./CommentCard";
-import { Stack } from "@mui/material";
+import { Alert, Paper, Stack, Typography } from "@mui/material";
 import EditSupplier from "./EditSupplier";
 import EditAvailableDates from "./EditAvailableDates";
+import { AppContext } from "../store/AppContext";
+import useFetch from "../utilities/useFetch";
+import { customTheme } from "../store/Theme";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -39,7 +43,24 @@ function a11yProps(index) {
 }
 
 export default function BasicTabs() {
-  const [value, setValue] = React.useState(0);
+  const { supplierData } = useContext(AppContext);
+  const [supplierPackages, setSupplierPackages] = useState([]);
+  const { getData, resData } = useFetch();
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    getData(`/Suppliers/getSupplierEvents/email/${supplierData.supplierEmail}`);
+  }, []);
+
+  useEffect(() => {
+    if (resData) {
+      const packages = resData.map((item, index) => {
+        item.id = index;
+        return item;
+      });
+      setSupplierPackages(packages);
+    }
+  }, [resData]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -65,7 +86,26 @@ export default function BasicTabs() {
       </Box>
       <CustomTabPanel value={value} index={0}>
         <EditAvailableDates />
-        <CoupleTable />
+        <Typography
+          sx={{
+            textAlign: "left",
+            fontFamily: customTheme.font.main,
+            color: customTheme.palette.primary.main,
+            fontSize: { xs: 18, sm: 24, md: 30 },
+            fontWeight: "bold",
+          }}
+        >
+          החבילות שלי!
+        </Typography>
+        {supplierPackages.length > 0 ? (
+          <CoupleTable supplierPackages={supplierPackages} />
+        ) : (
+          <Paper variant="elevation" elevation={6} sx={paperSX}>
+            <Alert severity="warning">
+              אתם עדיין לא מופיעים באף חבילה שהומלצה לזוגות{" "}
+            </Alert>
+          </Paper>
+        )}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <Stack sx={{ maxHeight: 500, overflowY: "scroll", rowGap: 4, p: 2 }}>
@@ -86,6 +126,13 @@ export default function BasicTabs() {
 const tabSX = {
   px: 0,
   "&.MuiButtonBase-root": {
-    fontSize: { xs: 12, sm: 14 },
+    fontSize: { xs: 12, sm: 14, md: 16 },
   },
+};
+
+const paperSX = {
+  mt: 2, 
+  py: 3,
+  px: { xs: 1, sm: 3 },
+  backgroundColor: "rgba(255,255,255,0.8)",
 };

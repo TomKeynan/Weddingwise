@@ -9,23 +9,19 @@ import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import { AppContext } from "../store/AppContext";
 
-
 function SupplierPrivateProfile() {
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
-  const { supplierData } = useContext(AppContext)
-  let rating;
-  if (!supplierData.rating)
-    rating = 0
+  const { supplierData } = useContext(AppContext);
   
-    const kpis = [
+  const kpis = [
     {
       title: "מספר המדרגים:",
       data: supplierData.ratedCount,
       icon: <PeopleOutlineIcon />,
     },
-    { title: "דירוג:", data: rating, icon: <StarOutlineIcon /> },
+    { title: "דירוג:", data: supplierData.rating, icon: <StarOutlineIcon /> },
   ];
-  
+
   return (
     <Stack spacing={3} sx={stackWrapperSX}>
       <SupplierBanner />

@@ -71,7 +71,8 @@ const EditSupplier = () => {
   // Omri's
   useEffect(() => {
     if (resData) {
-      setSupplierData(currentSupplierData);
+      const { Password, ...rest } = currentSupplierData
+      setSupplierData(rest);
       setOpenUpdateSuccess(true);
     }
     return () => {
@@ -182,11 +183,11 @@ const EditSupplier = () => {
   // }
 
   function handleFormSubmit(e) {
+    // debugger;
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
     setSupplierDescription(data.description);
-    data.supplierType = translateSupplierTypeToEnglish(data.supplierType);
     delete data.description;
     delete data.userImage;
 
@@ -328,7 +329,7 @@ const EditSupplier = () => {
                 )}
               </Grid>
               {/* SupplierTypes */}
-              <Grid item xs={12} md={6}>
+              {/* <Grid item xs={12} md={6}>
                 <Autocomplete
                   options={supplierTypes}
                   freeSolo={false}
@@ -360,8 +361,23 @@ const EditSupplier = () => {
                     {errors.supplierType}
                   </Alert>
                 )}
+              </Grid> */}
+              <Grid item xs={12} md={6}>
+                <TextField
+                  variant="filled"
+                  value={editSupplier.phoneNumber}
+                  label="מס' טלפון"
+                  name="phoneNumber"
+                  sx={textFieldSX}
+                  onChange={handleInputChange}
+                />
+                {errors.phoneNumber && (
+                  <Alert severity="error" sx={errorAlertSX}>
+                    {errors.phoneNumber}
+                  </Alert>
+                )}
               </Grid>
-              {isVenue && (
+              {editSupplier.supplierType === "venue" && (
                 <>
                   <Grid item xs={12} md={6}>
                     <TextField
@@ -459,18 +475,41 @@ const EditSupplier = () => {
                   </Alert>
                 )}
               </Grid>
+
               <Grid item xs={12} md={6}>
-                <TextField
-                  variant="filled"
-                  value={editSupplier.phoneNumber}
-                  label="מס' טלפון"
-                  name="phoneNumber"
+                <FormControl
+                  color="primary"
+                  variant="outlined"
                   sx={textFieldSX}
-                  onChange={handleInputChange}
-                />
-                {errors.phoneNumber && (
+                >
+                  <TextField
+                    id="password-input"
+                    name="Password"
+                    label="סיסמא"
+                    type={showPassword ? "text" : "password"}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            edge="end"
+                            sx={{
+                              "& .MuiSvgIcon-root": {
+                                fill: customTheme.palette.primary.main,
+                              },
+                            }}
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </FormControl>
+                {errors.Password && (
                   <Alert severity="error" sx={errorAlertSX}>
-                    {errors.phoneNumber}
+                    {errors.Password}
                   </Alert>
                 )}
               </Grid>

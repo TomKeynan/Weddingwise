@@ -23,6 +23,7 @@ export default function InputFileUpload({ isUpload }) {
         p: 1.5,
         bgcolor: btnBgColor,
         "&:hover": { bgcolor: btnBgColor },
+        fontSize: { xs: 16, sm: 18 },
       }}
       component="label"
     //   role={undefined}

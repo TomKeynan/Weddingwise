@@ -168,7 +168,7 @@ function Navbar({ isLayout = true }) {
                 <Box>
                   <Tooltip title="התחברות / הרשמה">
                       {/* {Adam's} */}
-                      {(!isSeen && currentUser) && (
+                      {/* {(!isSeen && currentUser) && (
                       <img
                         style={{
                           height: "35px",
@@ -180,7 +180,7 @@ function Navbar({ isLayout = true }) {
                         src="assets/chat_pics/inbox.png"
                         alt=""
                       />
-                    )}
+                    )} */}
                     <IconButton onClick={handleOpenUserMenu} disableRipple>
                       {/* Icon */}
                       <AccountCircleIcon

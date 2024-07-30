@@ -8,14 +8,13 @@ import ProfileBanner from "../components/ProfilePage/ProfileBanner";
 import { AppContext } from "../store/AppContext";
 
 function Profile() {
-  
   const { coupleData } = useContext(AppContext);
 
   return (
-    <Stack spacing={3} alignItems="center" sx={loginStackSX}>
-      {coupleData && <ProfileBanner props={coupleData} />}
+    <Stack alignItems="center" sx={loginStackSX}>
+      <ProfileBanner props={coupleData} />
 
-      <Box sx={{ width: {xs: "80%" , sm: "70%"} }}>
+      <Box sx={{ width: { xs: "80%", sm: "70%" }, marginTop: 10 }}>
         <AccordionLayout title="חבילת נותני שירות" btnValue="/package">
           {coupleData !== null && coupleData.package !== null ? (
             <Stack
@@ -25,7 +24,7 @@ function Profile() {
               flexWrap="wrap"
               rowGap={3}
               columnGap={2}
-              sx={{width: "90%", margin: "0 auto"}}
+              sx={{ width: "90%", margin: "0 auto" }}
             >
               {coupleData.package["selectedSuppliers"].map(
                 (supplier, index) => (
