@@ -32,7 +32,7 @@ function ProfileBanner({ props }) {
             width: { xs: 250, sm: 300, lg: 400 },
             height: { xs: 250, sm: 300, lg: 400 },
             // aspectRatio: "1/1",
-            borderRadius: "10%",
+            borderRadius: "20%",
             position: { xs: "absolute", md: "relative" },
             bottom: { xs: "-40%", sm: "-30%", md: "0%" },
             // mt: 10
@@ -45,7 +45,7 @@ function ProfileBanner({ props }) {
               width: { xs: 250, sm: 300, lg: 400 },
               // height: { xs: 250, sm: 400 , md: 350, lg: 400},
               aspectRatio: "1/1",
-              borderRadius: "10%",
+              borderRadius: "20%",
               objectFit: "cover",
             }}
           ></Box>
@@ -83,17 +83,19 @@ const namesSX = {
   fontSize: { xs: 40, sm: 55, md: 70, lg: 80 },
   WebkitTextStrokeWidth: { xs: 2, sm: 5 },
   color: { sm: "secondary.main" },
-  WebkitTextStrokeWidth: { xs: 2, sm: 1 },
-  WebkitTextStrokeColor: "black",
+  WebkitTextStrokeWidth: { xs: 2, sm: 0.7 },
+  // WebkitTextStrokeColor: "black",
+  fontWeight: "bold"
 };
 
 const weddingDateSX = {
-  fontSize: { xs: 35, sm: 45, md: 55, lg: 65 },
-  letterSpacing: { xs: 5, sm: 10, md: 10 },
+  fontSize: { xs: 35, sm: 45, md: 55, lg: 70 },
+  letterSpacing: { xs: 5, sm: 10, md: 15 },
   fontWeight: "lighter",
   color: { sm: "secondary.main" },
   fontFamily: customTheme.font.main,
-  WebkitTextStrokeWidth: { xs: 2, sm: 1 },
-  WebkitTextStrokeColor: "black",
+  WebkitTextStrokeWidth: { xs: 2, sm: 0.5 },
+  // WebkitTextStrokeColor: "black",
+  fontWeight: "bold"
   // fontFamily: "system-ui",
 };

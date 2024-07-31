@@ -29,6 +29,7 @@ import { useUserStore } from "./fireBase/userStore";
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
 import SupplierPrivateProfile from "./Pages/SupplierPrivateProfile";
+import SupplierPublicProfile from "./Pages/SupplierPublicProfile";
 const googleMapsApiKey = "AIzaSyC3QkzXx3mLsG_-IzI67-WVFBAoAZTYWxk";
 // const googleMapsApiKey = "AIzaSyCSXv1ZziH2SJEcGQIp8EJMytapWnPjytQ";
 
@@ -56,6 +57,10 @@ const router = createHashRouter([
       {
         path: "/supplier-private-Profile",
         element: <SupplierPrivateProfile />,
+      },
+      {
+        path: "/supplier-public-Profile",
+        element: <SupplierPublicProfile />,
       },
     ],
   },

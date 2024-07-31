@@ -93,3 +93,14 @@
 .fade-in.visible {
   opacity: 1;
 }
+
+/* the slides*/
+.slick-slide > div {
+  margin: 0 10px;
+}
+
+/* the parent */
+.slick-list {
+  margin: 0 -10px;
+}
+
