@@ -32,7 +32,6 @@ function useFetch() {
   }
 
   async function sendData(endpoint, method, bodyData) {
-    debugger;
     try {
       setLoading(true);
       const response = await fetch(`${baseUrl}${endpoint}`, {

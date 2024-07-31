@@ -63,23 +63,52 @@ const SupplierSignUp = () => {
   const [errors, setErrors] = useState({});
   const [open, setOpen] = useState(false);
   const [currentSupplierData, setCurrentSupplierData] = useState({});
-  const { isLoading } = useUserStore(); // Firebase's
+  const { isLoading,fetchUserInfo } = useUserStore(); // Firebase's
 
  
+  // useEffect(() => {
+  //   const registerAndNavigate = async () => {
+  //     console.log(resData);
+  //     if (resData) {
+  //       setSupplierData(resData);
+  //       await registerFireBase();
+  //       await loginFireBase();
+  //       setTimeout(() => {
+  //         navigate("/supplier-private-Profile");
+  //       }, 3000);
+  //     }
+  //   };
+  //   registerAndNavigate();
+  // }, [resData]);
+  
   useEffect(() => {
     const registerAndNavigate = async () => {
       console.log(resData);
       if (resData) {
-        setSupplierData(resData);
-        await registerFireBase();
-        await loginFireBase();
-        setTimeout(() => {
+        try {
+          setSupplierData(resData);
+
+          // Perform registration and login, awaiting both
+          await registerFireBase();
+          await loginFireBase();
+
+          // Fetch user info after logging in
+          if (auth.currentUser?.uid) {
+            await fetchUserInfo(auth.currentUser.uid);
+          }
+
+          // Navigate after all asynchronous operations are complete
           navigate("/supplier-private-Profile");
-        }, 3000);
+        } catch (err) {
+          console.error("Registration, login, or fetching user info failed:", err);
+          // Show an error message if registration, login, or fetching user info fails
+          toast.error("An error occurred. Please try again.");
+        }
       }
     };
+
     registerAndNavigate();
-  }, [resData]);
+  }, [resData, fetchUserInfo, navigate]);
 
   const loginFireBase = async () => {
     try {
@@ -118,7 +147,7 @@ const SupplierSignUp = () => {
 
       const res = await createUserWithEmailAndPassword(auth, email, password);
 
-      const imgUrl = null;
+      let imgUrl = null;
       if (avatar.file) {
         imgUrl = await upload(avatar.file);
       }

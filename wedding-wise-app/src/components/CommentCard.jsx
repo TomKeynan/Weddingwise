@@ -7,6 +7,7 @@ export default function CommentCard({
   coupleNames,
   text,
   commentDate,
+  rating,
 }) {
   return (
     <Stack sx={commentWrapperSX}>
@@ -57,7 +58,7 @@ export default function CommentCard({
         </Stack>
         <Rating
           name="read-only"
-          value={3.75} // {comment.rating}
+          value={rating} // {comment.rating}
           readOnly
           size="small"
         />{" "}

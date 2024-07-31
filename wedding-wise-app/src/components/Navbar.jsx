@@ -29,7 +29,7 @@ function Navbar({ isLayout = true }) {
 
   const { resetChat, changeChatStatus, isSeen, changeIsSeenStatus } =
     useChatStore();
-  const { currentUser, isLoading } = useUserStore();
+  const { currentUser, isLoading, logout } = useUserStore();
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -38,16 +38,16 @@ function Navbar({ isLayout = true }) {
 
   const pages = coupleData
     ? [
-        { route: "/", text: "דף הבית" },
-        { route: "/profile", text: "פרופיל" },
-        { route: "/package", text: "חבילה" },
-        { route: "/noPathYet", text: "Planner" },
-      ]
+      { route: "/", text: "דף הבית" },
+      { route: "/profile", text: "פרופיל" },
+      { route: "/package", text: "חבילה" },
+      { route: "/noPathYet", text: "Planner" },
+    ]
     : [
-        { route: "/", text: "דף הבית" },
-        { route: "/package", text: "חבילה" },
-        { route: "/noPathYet", text: "Planner" },
-      ];
+      { route: "/", text: "דף הבית" },
+      { route: "/package", text: "חבילה" },
+      { route: "/noPathYet", text: "Planner" },
+    ];
 
   const settings = [
     { route: "/login", text: "התחבר" },
@@ -75,28 +75,41 @@ function Navbar({ isLayout = true }) {
   };
 
   function handleClick(linkText) {
+  
     if (linkText === "התנתק") {
+      // Set session storage and state to null
       sessionStorage.setItem("currentCouple", JSON.stringify(null));
       setCoupleData(null);
       sessionStorage.setItem("offeredPackage", JSON.stringify(null));
       setOfferedPackage(null);
-
-      auth.signOut();
       resetChat();
+  
+      // Perform logout
+      const performLogout = async () => {
+        try {
+          // Sign out the user
+          await auth.signOut();
+  
+          // Clear user state in the Zustand store
+          logout();
+        } catch (error) {
+          console.error("Error logging out:", error);
+        }
+      };
+  
+      performLogout();
     }
   }
-  const { chatStatus } = useChatStore();
 
   // Adam's
   const handleChat = () => {
-    debugger;
-    console.log(chatStatus);
     changeChatStatus();
     handleCloseUserMenu();
   };
 
   // Listen for changes to the current chat and update the local state
   useEffect(() => {
+    debugger;
     let unSub = null;
     if (currentUser?.id) {
       unSub = onSnapshot(doc(db, "userChats", currentUser.id), (res) => {
@@ -116,7 +129,7 @@ function Navbar({ isLayout = true }) {
         unSub();
       }
     };
-  }, [currentUser?.id, changeIsSeenStatus]);
+  }, [currentUser?.id]);
 
   // isActive = boolean property which destructured form the NavLink component.
   function navLinkLayoutStyles({ isActive }) {
@@ -184,13 +197,10 @@ function Navbar({ isLayout = true }) {
                           src="assets/chat_pics/inbox.png"
                           alt=""
                         />
-                      ) : (
-                        <AccountCircleIcon
-                          sx={
-                            isLayout ? accountIconLayoutSX : accountIconHomeSX
-                          }
-                        />
-                      )}
+                      ) : null}
+                      <AccountCircleIcon
+                        sx={isLayout ? accountIconLayoutSX : accountIconHomeSX}
+                      />
                     </IconButton>
                   </Tooltip>
                   {/* Setting Menu- Popup */}

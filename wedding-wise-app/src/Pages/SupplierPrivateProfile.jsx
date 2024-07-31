@@ -10,10 +10,11 @@ import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import { AppContext } from "../store/AppContext";
 import { useUserStore } from "../fireBase/userStore";
 import Loading from "../components/Loading";
+import useFetch from "../utilities/useFetch";
 
 function SupplierPrivateProfile() {
-  const { isLoading } = useUserStore();
-
+  const { isLoading,fetchUserInfo} = useUserStore();
+  const { loading } = useFetch();
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
   const { supplierData, scrollToTop } = useContext(AppContext);
 
@@ -22,6 +23,9 @@ function SupplierPrivateProfile() {
   //     window.scrollTo({ top: 0, behavior: "smooth" });
   //   }
   // }, [scrollToTop]);
+
+
+
   const kpis = [
     {
       title: "מספר המדרגים:",
@@ -31,7 +35,7 @@ function SupplierPrivateProfile() {
     { title: "דירוג:", data: supplierData.rating, icon: <StarOutlineIcon /> },
   ];
 
-  return isLoading ? (
+  return isLoading || loading ? (
     <Loading />
   ) : (
     <Stack spacing={3} sx={stackWrapperSX}>
@@ -51,9 +55,8 @@ function SupplierPrivateProfile() {
           sx={{ teatAlign: "center", mt: { xs: 0, sm: 3 } }}
         >
           <Typography sx={namesSX}>
-            {`${translateSupplierTypeToHebrew(supplierData.supplierType)} - ${
-              supplierData.businessName
-            }`}
+            {`${translateSupplierTypeToHebrew(supplierData.supplierType)} - ${supplierData.businessName
+              }`}
           </Typography>
         </Stack>
         <Stack

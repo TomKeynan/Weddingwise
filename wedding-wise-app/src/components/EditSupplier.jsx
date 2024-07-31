@@ -67,7 +67,7 @@ const EditSupplier = () => {
     file: null,
     url: "",
   });
-  const { currentUser, isLoading, fetchUserInfo } = useUserStore();
+  const { currentUser, isLoading, fetchUserInfo,setLoading } = useUserStore();
   const [currentDescription, setCurrentDescription] = useState("");
 
   useEffect(() => {
@@ -75,14 +75,20 @@ const EditSupplier = () => {
       if (resData) {
         const { Password, ...rest } = currentSupplierData;
         setSupplierData(rest);
-        await updateUserFirebase();
-        setOpenUpdateSuccess(true);
-        // setScrollToTop(true);
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        setLoading(true); // Set loading to true
+
+        try {
+          await updateUserFirebase();
+          setOpenUpdateSuccess(true);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } catch (error) {
+          console.error("Error updating user:", error);
+        } finally {
+          setLoading(false); // Set loading to false
+        }
       }
       return () => {
         setResData(undefined);
-        // setScrollToTop(false);
       };
     };
 

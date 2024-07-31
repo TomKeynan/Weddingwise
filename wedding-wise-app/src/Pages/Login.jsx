@@ -36,38 +36,55 @@ function Login() {
   const { updateCoupleData } = useContext(AppContext);
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
-  const { isLoading } = useUserStore(); // Firebase's
+  const { isLoading,fetchUserInfo } = useUserStore(); // Firebase's
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loginAndNavigate = async () => {
+      debugger;
       if (resData) {
-        updateCoupleData(resData);
-        await loginFireBase();
-        navigate("/profile");
+        try {
+          // Update user data
+          updateCoupleData(resData);
+
+          // Perform login and wait for it to complete
+          await loginFireBase();
+
+          // Fetch user info after login
+          if (auth.currentUser?.uid) {
+            await fetchUserInfo(auth.currentUser.uid);
+          }
+
+          // Navigate only if login is successful and user info is fetched
+          navigate("/profile");
+        } catch (err) {
+          console.error("Login or fetching user info failed:", err);
+          // Show an error message if login or fetching user info fails
+          toast.error("Login failed. Please try again.");
+        }
       }
     };
 
     loginAndNavigate();
-  }, [resData]);
+  }, [resData, fetchUserInfo, navigate]);
 
   // Handle user login
   const loginFireBase = async () => {
     try {
-        // Sign in user with email and password
-        await signInWithEmailAndPassword(auth, email, password);
+      // Sign in user with email and password
+      await signInWithEmailAndPassword(auth, email, password);
     } catch (err) {
-        console.log(err);
-        toast.error(err.message);
-    } finally {
-      // console.log('check');
+      console.log(err);
+      toast.error(err.message);
+      // Rethrow error to be handled in loginAndNavigate
+      throw err;
     }
-};
+  };
   
   // useMediaQuery return a boolean that indicates rather the screen size
   // matches the breakpoint/string media query , or not
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
 
-  const navigate = useNavigate();
 
   function routeToHome() {
     navigate("/");
@@ -92,7 +109,7 @@ function Login() {
 
   return (
     <Container sx={containerSX} maxWidth="xxl">
-      {(loading || isLoading) && <Loading />}
+      {(loading ) && <Loading />}
       <Stack direction="row" height="100%">
         <Stack sx={loginStackSX}>
           <Paper variant="elevation" elevation={6} sx={paperSX}>

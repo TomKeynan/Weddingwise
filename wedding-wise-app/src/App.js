@@ -69,13 +69,18 @@ const router = createHashRouter([
 ]);
 
 function App() {
-  const { fetchUserInfo,isLoading } = useUserStore();
+
+
+  const { fetchUserInfo } = useUserStore();
   // When a user logs in, fetch their data.
   useEffect(() => {
     // Subscribe to auth state changes
-    const unSub = onAuthStateChanged(auth, (user) => {
-      fetchUserInfo(user?.uid);
+    const unSub = onAuthStateChanged(auth, async (user) => {
+      if (user?.uid) {
+        await fetchUserInfo(user.uid);
+      }
     });
+
     // Cleanup function to unsubscribe from auth state changes
     return () => {
       unSub();

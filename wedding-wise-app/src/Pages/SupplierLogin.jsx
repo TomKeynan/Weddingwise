@@ -34,35 +34,51 @@ function SupplierLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setSupplierData, setEditSupplier } = useContext(AppContext)
-  const { isLoading } = useUserStore(); // Firebase's
+  const { isLoading, fetchUserInfo}  = useUserStore(); // Firebase's
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const loginAndNavigate = async () => {
-      if (resData) {
-        await loginFireBase();
-        sessionStorage.setItem("currentSupplier", JSON.stringify(resData));
-        setSupplierData(resData)
-        setEditSupplier(resData)
-        navigate("/supplier-private-Profile");
+    useEffect(() => {
+      const loginAndNavigate = async () => {
+        if (resData) {
+          try {
+            // Await loginFireBase to ensure login is complete
+            await loginFireBase();
+            
+            // Fetch user info
+            if (auth.currentUser?.uid) {
+              await fetchUserInfo(auth.currentUser.uid);
+            }
+            
+            // Optionally, handle additional operations like saving data
+            sessionStorage.setItem("currentSupplier", JSON.stringify(resData));
+            setSupplierData(resData);
+            setEditSupplier(resData);
+            
+            // Navigate after all asynchronous operations are complete
+            navigate("/supplier-private-Profile");
+          } catch (err) {
+            console.error("Login or navigation failed:", err);
+          }
+        }
+      };
+  
+      loginAndNavigate();
+    }, [resData, email, password, fetchUserInfo, navigate]);
+  
+    const loginFireBase = async () => {
+      try {
+        // Sign in user with email and password
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (err) {
+        console.log(err);
+        throw new Error("Login failed. Please check your credentials.");
       }
     };
-    loginAndNavigate();
-  }, [resData]);
-
-  const loginFireBase = async () => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
 
   // useMediaQuery return a boolean that indicates rather the screen size
   // matches the breakpoint/string media query , or not
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
 
-  const navigate = useNavigate();
 
   function handleSubmit(e) {
     e.preventDefault();

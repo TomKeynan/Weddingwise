@@ -179,6 +179,7 @@ export default function BasicTabs() {
               coupleNames={comment.coupleNames}
               text={comment.text}
               commentDate={comment.commentDate}
+              rating = {comment.rating}
             />
           ))}
         </Stack>

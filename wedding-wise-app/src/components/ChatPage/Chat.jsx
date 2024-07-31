@@ -43,13 +43,11 @@ function Chat() {
 
 
     const currentCouple = sessionStorage.getItem("currentCouple");
-    console.log("currentCouple value:", currentCouple);
     if (currentCouple) {
       setIsCoupleConnected(true);
     } else {
       setIsCoupleConnected(false);
     }
-    console.log('isCoupleConnected state:', isCoupleConnected);
 
 
     // Set up a Firestore onSnapshot listener for user chats

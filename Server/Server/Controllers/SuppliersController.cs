@@ -235,7 +235,7 @@ namespace Server.Controllers
                 // 2 incase of insertion and update both tables.
                 if (rowsAffected == 2)
                 {
-                    return Ok("The supplier has been successfuly rated!");
+                    return Ok();
                 }
                 else
                 {
@@ -247,7 +247,7 @@ namespace Server.Controllers
             {
                 if (ex.Number == 2627)
                 {
-                    return Conflict("The couple has already rated this supplier");
+                    return Conflict();
                 }
                 else
                 {

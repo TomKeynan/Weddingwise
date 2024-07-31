@@ -1,5 +1,3 @@
-// This component manages the user state using Zustand and fetches user information from Firestore.
-
 import { doc, getDoc } from "firebase/firestore";
 import { create } from "zustand";
 import { db } from "./firebase";
@@ -9,10 +7,11 @@ export const useUserStore = create((set) => ({
   // Initial state
   currentUser: null,  // Stores the current user information
   isLoading: true,    // Indicates whether the user information is being loaded
+
   // Method to fetch user information from Firestore based on user ID (uid)
   fetchUserInfo: async (uid) => {
     if (!uid) {
-      // If im logged out uid will be null!
+      // If UID is null, set currentUser to null and isLoading to false
       return set({ currentUser: null, isLoading: false });
     }
 
@@ -23,17 +22,20 @@ export const useUserStore = create((set) => ({
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        // If the document exists, update currentUser with the fetched data and set isLoading to false
+        // If the document exists, update currentUser with the fetched data
         set({ currentUser: docSnap.data(), isLoading: false });
       } else {
-        // If the document does not exist, set currentUser to null and isLoading to false
+        // If the document does not exist, set currentUser to null
         set({ currentUser: null, isLoading: false });
       }
     } catch (err) {
-      // If there is an error, log it and set currentUser to null and isLoading to false
+      // Log any error and set currentUser to null
       console.log(err);
-      return set({ currentUser: null, isLoading: false });
+      set({ currentUser: null, isLoading: false });
     }
   },
 
+  // Method to handle user logout
+  logout: () => set({ currentUser: null, isLoading: false }),
+  setLoading: (loading) => set({ isLoading: loading }), 
 }));
