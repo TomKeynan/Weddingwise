@@ -5,45 +5,41 @@ import { useUserStore } from "../fireBase/userStore";
 import Loading from "./Loading";
 
 function SupplierBanner() {
-  const { currentUser,isLoading } = useUserStore();
+  const { currentUser, isLoading } = useUserStore();
 
   return (
-    isLoading ? (
-      <Loading />
-    ) : 
-      (
-        <div>
-          <Stack spacing={4} direction="row" justifyContent="center" sx={bannerSX}>
-            <Stack
-              justifyContent="center"
-              alignItems="center"
-              sx={{ width: "100%", zIndex: 1, minHeight: 400 }}
-            >
-              <Box
-                sx={{
-                  border: "3px solid black",
-                  width: { xs: 250, sm: 400 },
-                  height: { xs: 250, sm: 400 },
-                  borderRadius: "50%",
-                  position: "absolute",
-                  bottom: { xs: "-20%", sm: "-40%" },
-                }}
-              >
-                <Box
-                  component="img"
-                  src={currentUser.avatar}
-                  sx={{
-                    width: { xs: 250, sm: 400 },
-                    height: { xs: 250, sm: 400 },
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                  }}
-                />
-              </Box>
-            </Stack>
-          </Stack>
-        </div> 
-      )
+    <>
+      {isLoading  && <Loading />}
+      <Stack spacing={4} direction="row" justifyContent="center" sx={bannerSX}>
+        <Stack
+          justifyContent="center"
+          alignItems="center"
+          sx={{ width: "100%", zIndex: 1, minHeight: 400 }}
+        >
+          <Box
+            sx={{
+              border: "3px solid black",
+              width: { xs: 250, sm: 400 },
+              height: { xs: 250, sm: 400 },
+              borderRadius: "50%",
+              position: "absolute",
+              bottom: { xs: "-20%", sm: "-40%" },
+            }}
+          >
+            <Box
+              component="img"
+              src={isLoading ? "" : currentUser.avatar}
+              sx={{
+                width: { xs: 250, sm: 400 },
+                height: { xs: 250, sm: 400 },
+                borderRadius: "50%",
+                objectFit: "cover",
+              }}
+            />
+          </Box>
+        </Stack>
+      </Stack>
+    </>
   );
 }
 

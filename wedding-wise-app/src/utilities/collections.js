@@ -128,6 +128,12 @@ export const updateCoupleDetailsResponse = Object.freeze({
   500: "אופס! משהו השתבש , נסה שנית.",
 });
 
+export const rateSupplierResponse = Object.freeze({
+  400: "אופס! משהו השתבש, נסה שנית.",
+  409: "נראה שכבר הוספת תגובה ודירוג בעבר, תודה בכל מקרה",
+  500: "אופס! משהו השתבש , נסה שנית.",
+});
+
 export const carouselTheme = Object.freeze({
   superLargeDesktop: {
     // the naming can be any, depends on you.

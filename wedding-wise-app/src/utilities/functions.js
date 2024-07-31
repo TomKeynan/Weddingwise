@@ -1,6 +1,5 @@
 import { VALIDATIONS } from "./collections";
 
-
 export async function reverseGeocoding(lat, lng) {
   try {
     const response = await fetch(
@@ -8,17 +7,17 @@ export async function reverseGeocoding(lat, lng) {
     );
 
     if (!response.ok) {
-      throw new Error('Network response was not ok');
+      throw new Error("Network response was not ok");
     }
     const data = await response.json();
     if (data && data.display_name) {
       return data.display_name;
     } else {
-      return 'Address not found';
+      return "Address not found";
     }
   } catch (error) {
-    console.error('Error fetching address:', error);
-    return 'Error fetching address';
+    console.error("Error fetching address:", error);
+    return "Error fetching address";
   }
 }
 
@@ -65,17 +64,9 @@ function addZero(number) {
 export function getDayWeek(dateString) {
   const date = new Date(dateString);
   const dayOfWeekNumber = date.getDay();
-  const daysOfWeek = [
-    "ראשון",
-    "שני",
-    "שלישי",
-    "רביעי",
-    "חמישי",
-    "שישי",
-    "שבת",
-  ];
+  const daysOfWeek = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
   const dayOfWeekName = daysOfWeek[dayOfWeekNumber];
-  return dayOfWeekName
+  return dayOfWeekName;
 }
 
 export function capitalizeKeys(obj) {
@@ -178,4 +169,14 @@ export function translateSupplierTypeToHebrew(type) {
       translatedType = "";
   }
   return translatedType;
+}
+
+export function getTodayDate() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+
+  const formattedDate = `${day}/${month}/${year}`;
+  return formattedDate;
 }

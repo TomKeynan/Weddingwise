@@ -23,7 +23,7 @@ const upload = async (file) => {
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         // Log the upload progress to the console
-        console.log("Upload is " + progress + "% done");
+        // console.log("Upload is " + progress + "% done");
       },
       (error) => {
         // If an error occurs during the upload, reject the Promise with an error message

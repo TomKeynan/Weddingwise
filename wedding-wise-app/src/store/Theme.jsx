@@ -41,7 +41,8 @@ export const customTheme = createTheme(
     },
     shadow: {
       main: "0px 15px 15px -3px rgba(0,0,0,0.1)",
-      strong: "0px 25px 15px 5px rgba(0,0,0,0.2)",
+      strong:
+        "0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12)",
       footer: "inset 0px 15px 35px -3px rgba(0,0,0,0.1);",
     },
     font: {
@@ -69,7 +70,6 @@ export const customTheme = createTheme(
           "linear-gradient(135deg, rgba(255,255,255,1) 13%, rgba(247,202,244,1) 60%, rgba(224,245,225,1) 81%);",
       },
     },
-
   },
   heIL
 );

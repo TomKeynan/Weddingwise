@@ -18,16 +18,6 @@ export default function CommentCard({
         flexWrap="wrap"
         sx={{ width: "100%", columnGap: 1, py: 2 }}
       >
-        <Box
-          component="img"
-          src={coupleAvatar}
-          sx={{
-            width: { xs: 60, sm: 43 },
-            aspectRatio: "1/1",
-            borderRadius: "50%",
-            objectFit: "cover",
-          }}
-        ></Box>
         {/* card-header-text */}
         <Stack
           direction={{ xs: "column", sm: "row" }}
@@ -35,25 +25,35 @@ export default function CommentCard({
           flexWrap="wrap"
           sx={{ columnGap: 1 }}
         >
-          {/* <Box
+          <Box
             component="img"
-            src="/assets/login.jpg" // comment.image
+            src={coupleAvatar}
             sx={{
               width: { xs: 60, sm: 43 },
               aspectRatio: "1/1",
               borderRadius: "50%",
               objectFit: "cover",
             }}
-          > */}
-          <Typography>{coupleNames}</Typography>
-          <Typography
-            sx={{
-              fontSize: { xs: 12, sm: 16, md: 16 },
-              color: "grey",
-            }}
-          >
-            {commentDate}
-          </Typography>
+          ></Box>
+          {/* card-header-text */}
+          <Stack alignItems={{ xs: "center", sm: "flex-start" }}>
+            <Typography
+              sx={{
+                fontFamily: customTheme.font.main,
+                fontSize: { xs: 16, sm: 18, md: 20 },
+              }}
+            >
+              {coupleNames}
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: { xs: 12, sm: 14 },
+                color: "grey",
+              }}
+            >
+              {commentDate}
+            </Typography>
+          </Stack>
         </Stack>
         <Rating
           name="read-only"
@@ -63,7 +63,14 @@ export default function CommentCard({
         />{" "}
       </Stack>
 
-      <Typography sx={{ fontSize: { xs: 16, sm: 20, md: 24 }, px: 1 }}>
+      <Typography
+        sx={{
+          textAlign: { xs: "center", sm: "left" },
+          fontSize: { xs: 14, sm: 16 },
+          px: 1,
+          py:2,
+        }}
+      >
         {text}
       </Typography>
     </Stack>
@@ -75,7 +82,7 @@ const commentWrapperSX = {
   bgcolor: "white",
   // bgcolor: customTheme.supplier.colors.primary.light,
   p: { xs: 1, sm: 3 },
-  // boxShadow: customTheme.shadow.main,
+  boxShadow: customTheme.shadow.main,
   borderRadius: 3,
 };
 // import { Box, Stack, Typography } from "@mui/material";

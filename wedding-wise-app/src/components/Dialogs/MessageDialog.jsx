@@ -50,7 +50,14 @@ export default function MessageDialog({
           {title}
         </DialogTitle>
         {text && (
-          <Typography sx={{ px: 2, my: 1, textAlign: "center", fontSize:{xs: 16, sm: 22} }}>
+          <Typography
+            sx={{
+              px: 2,
+              my: 1,
+              textAlign: "center",
+              fontSize: { xs: 16, sm: 22 },
+            }}
+          >
             {text}
           </Typography>
         )}
@@ -91,7 +98,7 @@ const infoWrapperSX = {
     width: "90%",
     maxWidth: "900px",
     position: "relative",
-    p: 0
+    p: 0,
   },
 };
 

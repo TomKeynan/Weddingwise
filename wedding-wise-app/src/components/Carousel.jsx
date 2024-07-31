@@ -4,42 +4,9 @@ import CommentCard from "./CommentCard";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Box } from "@mui/material";
+import { customTheme } from "../store/Theme";
 
 function Carousel() {
-  //   var settings = {
-  //     dots: true,
-  //     infinite: false,
-  //     speed: 500,
-  //     slidesToShow: 4,
-  //     slidesToScroll: 4,
-  //     initialSlide: 0,
-  //     responsive: [
-  //       {
-  //         breakpoint: 1024,
-  //         settings: {
-  //           slidesToShow: 3,
-  //           slidesToScroll: 3,
-  //           infinite: true,
-  //           dots: true
-  //         }
-  //       },
-  //       {
-  //         breakpoint: 600,
-  //         settings: {
-  //           slidesToShow: 2,
-  //           slidesToScroll: 2,
-  //           initialSlide: 2
-  //         }
-  //       },
-  //       {
-  //         breakpoint: 480,
-  //         settings: {
-  //           slidesToShow: 1,
-  //           slidesToScroll: 1
-  //         }
-  //       }
-  //     ]
-  //   };
   var settings = {
     dots: true,
     infinite: false,
@@ -54,7 +21,7 @@ function Carousel() {
           slidesToShow: 2,
           slidesToScroll: 2,
           infinite: true,
-          dots: true,
+          // dots: true,
         },
       },
       {
@@ -85,24 +52,28 @@ function Carousel() {
         style={{
           ...style,
           display: "block",
-          background: "#9DD2B9",
+          // background: "#9DD2B9",
+          background: "grey",
           borderRadius: "50%",
+          boxShadow: customTheme.shadow.strong
         }}
         onClick={onClick}
-      />
-    );
-  }
-
-  function SamplePrevArrow(props) {
-    const { className, style, onClick } = props;
-    return (
-      <div
+        />
+      );
+    }
+    
+    function SamplePrevArrow(props) {
+      const { className, style, onClick } = props;
+      return (
+        <div
         className={className}
         style={{
           ...style,
           display: "block",
-          background: "#9DD2B9",
+          // background: "#9DD2B9",
+          background: "grey",
           borderRadius: "50%",
+          boxShadow: customTheme.shadow.strong
         }}
         onClick={onClick}
       />

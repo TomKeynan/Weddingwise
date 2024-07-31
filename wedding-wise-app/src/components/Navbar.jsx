@@ -29,7 +29,7 @@ function Navbar({ isLayout = true }) {
 
   const { resetChat, changeChatStatus, isSeen, changeIsSeenStatus } =
     useChatStore();
-  const { currentUser,isLoading } = useUserStore();
+  const { currentUser, isLoading } = useUserStore();
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -85,7 +85,7 @@ function Navbar({ isLayout = true }) {
       resetChat();
     }
   }
-  const {chatStatus} = useChatStore();
+  const { chatStatus } = useChatStore();
 
   // Adam's
   const handleChat = () => {
@@ -97,7 +97,6 @@ function Navbar({ isLayout = true }) {
 
   // Listen for changes to the current chat and update the local state
   useEffect(() => {
-    
     let unSub = null;
     if (currentUser?.id) {
       unSub = onSnapshot(doc(db, "userChats", currentUser.id), (res) => {
@@ -170,25 +169,28 @@ function Navbar({ isLayout = true }) {
                 {/* Settings Menu - couple*/}
                 <Box>
                   <Tooltip title="התחברות / הרשמה">
-                      {/* {Adam's} */}
-                      {(!isSeen && currentUser && !isLoading) && (
-                      <img
-                        style={{
-                          height: "35px",
-                          position: "absolute",
-                          right: "-14.5px",
-                          bottom: "58%",
-                          zIndex: "1000",
-                        }}
-                        src="assets/chat_pics/inbox.png"
-                        alt=""
-                      />
-                    )} 
                     <IconButton onClick={handleOpenUserMenu} disableRipple>
                       {/* Icon */}
-                      <AccountCircleIcon
-                        sx={isLayout ? accountIconLayoutSX : accountIconHomeSX}
-                      />
+                      {/* {Adam's} */}
+                      {!isSeen && currentUser && !isLoading ? (
+                        <img
+                          style={{
+                            height: "35px",
+                            position: "absolute",
+                            right: "-14.5px",
+                            bottom: "58%",
+                            zIndex: "1000",
+                          }}
+                          src="assets/chat_pics/inbox.png"
+                          alt=""
+                        />
+                      ) : (
+                        <AccountCircleIcon
+                          sx={
+                            isLayout ? accountIconLayoutSX : accountIconHomeSX
+                          }
+                        />
+                      )}
                     </IconButton>
                   </Tooltip>
                   {/* Setting Menu- Popup */}
@@ -208,9 +210,6 @@ function Navbar({ isLayout = true }) {
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                   >
-
-                
-
                     {/* Settings Menu */}
                     {/* {settings.map((setting) => ( */}
                     <Box sx={{ width: "25%" }}>

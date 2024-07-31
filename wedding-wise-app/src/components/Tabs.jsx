@@ -20,8 +20,6 @@ import { reverseGeocoding } from "../utilities/functions";
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
-
-
   return (
     <div
       role="tabpanel"
@@ -49,7 +47,6 @@ function a11yProps(index) {
 }
 
 export default function BasicTabs() {
-
   const [value, setValue] = React.useState(0);
   const { currentUser } = useUserStore();
   const [comments, setComments] = useState([]);
@@ -60,20 +57,24 @@ export default function BasicTabs() {
   useEffect(() => {
     if (!currentUser?.id) return;
 
-    const unSub = onSnapshot(doc(db, "supplierComments", currentUser.id), (docSnapshot) => {
-      if (docSnapshot.exists()) {
-        const commentsData = docSnapshot.data().comments || [];
-        const commentsWithDate = commentsData.map(comment => ({
-          ...comment,
-          commentDate: comment.commentTime ? comment.commentTime.toDate().toLocaleDateString('en-GB') : "",
-        }));
-        commentsWithDate.sort((a, b) => b.commentTime - a.commentTime);
-        console.log(commentsWithDate);
-        setComments(commentsWithDate);
-      } else {
-        setComments([]);
+    const unSub = onSnapshot(
+      doc(db, "supplierComments", currentUser.id),
+      (docSnapshot) => {
+        if (docSnapshot.exists()) {
+          const commentsData = docSnapshot.data().comments || [];
+          const commentsWithDate = commentsData.map((comment) => ({
+            ...comment,
+            commentDate: comment.commentTime
+              ? comment.commentTime.toDate().toLocaleDateString("en-GB")
+              : "",
+          }));
+          commentsWithDate.sort((a, b) => b.commentTime - a.commentTime);
+          setComments(commentsWithDate);
+        } else {
+          setComments([]);
+        }
       }
-    });
+    );
 
     // Cleanup the listener on component unmount
     return () => {
@@ -81,26 +82,23 @@ export default function BasicTabs() {
     };
   }, [currentUser?.id]);
 
-
-
   useEffect(() => {
     getData(`/Suppliers/getSupplierEvents/email/${supplierData.supplierEmail}`);
   }, []);
 
   useEffect(() => {
     const handlePackages = async () => {
-    if (resData) {
-      const packages = resData.map((item, index) => {
-        item.id = index;
-        return item;
-      });
-      debugger;
-      const updatedPackages = await  addAddresses(packages);
-      setSupplierPackages(updatedPackages);
-    }}
+      if (resData) {
+        const packages = resData.map((item, index) => {
+          item.id = index;
+          return item;
+        });
+        const updatedPackages = await addAddresses(packages);
+        setSupplierPackages(updatedPackages);
+      }
+    };
     handlePackages();
   }, [resData]);
-
 
   // Assuming result is the data array you received
   const addAddresses = async (data) => {
@@ -114,9 +112,8 @@ export default function BasicTabs() {
         };
       })
     );
-    debugger;
     // Set the suppliersEvents state with the updated data
-    return (updatedData);
+    return updatedData;
   };
 
   const handleChange = (event, newValue) => {
@@ -124,7 +121,6 @@ export default function BasicTabs() {
   };
 
   return (
-
     <Box sx={{ width: "100%" }}>
       <Box
         sx={{
@@ -166,7 +162,16 @@ export default function BasicTabs() {
         )}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <Stack sx={{ maxHeight: 500, overflowY: "scroll", rowGap: 4, p: 2 }}>
+        <Stack
+          sx={{
+            maxHeight: 500,
+            overflowY: "scroll",
+            rowGap: 4,
+            p: 2,
+            width: "70%",
+            margin: "0 auto",
+          }}
+        >
           {comments.map((comment, index) => (
             <CommentCard
               key={index}
@@ -182,7 +187,7 @@ export default function BasicTabs() {
         <EditSupplier />
       </CustomTabPanel>
     </Box>
-  )
+  );
 }
 
 const tabSX = {

@@ -1,5 +1,5 @@
 import { Paper, Stack, Typography, useMediaQuery } from "@mui/material";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import SupplierBanner from "../components/SupplierBanner";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import InstagramIcon from "@mui/icons-material/Instagram";
@@ -9,17 +9,18 @@ import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import KpiPaper from "../components/KpiPaper";
 import { AppContext } from "../store/AppContext";
-import Rating from "@mui/material/Rating";
-import EmojiRating from "../components/EmojiRating";
 import { customTheme } from "../store/Theme";
 import Carousel from "../components/Carousel";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CommentForm from "../components/CommentForm";
+import MessageDialog from "../components/Dialogs/MessageDialog";
 
 function SupplierPublicProfile() {
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
+
   const { supplierData } = useContext(AppContext);
+
   const kpis = [
     {
       title: "מספר המדרגים:",
@@ -29,8 +30,11 @@ function SupplierPublicProfile() {
     { title: "דירוג:", data: 3.75, icon: <StarOutlineIcon /> },
   ];
 
+
+
   return (
     <Stack alignItems="center" sx={stackWrapperSX}>
+
       <SupplierBanner />
       <Stack
         spacing={10}
@@ -39,12 +43,14 @@ function SupplierPublicProfile() {
           mt: { xs: 0, sm: 3 },
         }}
       >
+        {/* social media links */}
         <Stack direction="row" justifyContent="space-around">
           <YouTubeIcon sx={socialIconsSX} />
           <InstagramIcon sx={socialIconsSX} />
           <LinkedInIcon sx={socialIconsSX} />
           <FacebookIcon sx={socialIconsSX} />
         </Stack>
+        {/* rating and number of raters */}
         <Stack
           direction={screenAboveSM ? "row" : "column"}
           justifyContent="center"
@@ -56,6 +62,7 @@ function SupplierPublicProfile() {
             <KpiPaper key={index} kpi={kpi} />
           ))}
         </Stack>
+        {/* supplier description */}
         <Stack>
           <Typography sx={{ ...titleSX, mb: 5 }}>אודות שם ספק </Typography>
           <Paper variant="elevation" elevation={6} sx={paperSX}>
@@ -69,14 +76,16 @@ function SupplierPublicProfile() {
           </Paper>
         </Stack>
       </Stack>
+      {/* carousel */}
       <Stack sx={{ minHeigh: 300, width: { xs: "70%", sm: "80%" }, my: 15 }}>
         <Typography sx={{ ...titleSX, mb: 5 }}>
           הזוגות של WeddingWise משתפים
         </Typography>
         <Carousel />
       </Stack>
-      <Stack>
-        <Typography sx={{ ...titleSX, mb: 5 }}>
+      {/* comment form */}
+      <Stack sx={{  maxWidth: 700 , width: { xs: "90%", sm: "60%" } }}>
+        <Typography sx={{ ...titleSX, mb: 5, px: 2 }}>
           השאירו תגובה מהחוויה שלכם עם שם ספק
         </Typography>
         <CommentForm />

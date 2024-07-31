@@ -51,7 +51,7 @@ import { updatePassword } from "firebase/auth";
 import { updateDoc, onSnapshot } from "firebase/firestore";
 
 const EditSupplier = () => {
-  const { editSupplier, setEditSupplier, setSupplierData } =
+  const { editSupplier, setEditSupplier, setSupplierData, setScrollToTop } =
     useContext(AppContext);
   const { sendData, resData, setResData, loading, error, setError } =
     useFetch();
@@ -70,30 +70,30 @@ const EditSupplier = () => {
   const { currentUser, isLoading, fetchUserInfo } = useUserStore();
   const [currentDescription, setCurrentDescription] = useState("");
 
-
   useEffect(() => {
     const updateUser = async () => {
       if (resData) {
-        const { Password, ...rest } = currentSupplierData
+        const { Password, ...rest } = currentSupplierData;
         setSupplierData(rest);
         await updateUserFirebase();
         setOpenUpdateSuccess(true);
+        // setScrollToTop(true);
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
       return () => {
         setResData(undefined);
-      }};
+        // setScrollToTop(false);
+      };
+    };
 
     updateUser();
   }, [resData, currentSupplierData]);
-
-
 
   const updateUserFirebase = async () => {
     const username = currentSupplierData.businessName;
     const password = currentSupplierData.Password;
     const description = currentDescription;
 
-    debugger;
     try {
       // Update password in Firebase Authentication
       const user = auth.currentUser;
@@ -114,12 +114,10 @@ const EditSupplier = () => {
         description,
         avatar: imgUrl || currentUser.avatar,
       });
-
     } catch (err) {
       console.log(err);
     }
   };
-
 
   useEffect(() => {
     if (currentUser && currentUser.description) {
@@ -127,12 +125,11 @@ const EditSupplier = () => {
     }
   }, [currentUser]);
 
-
   useEffect(() => {
     if (!currentUser?.id) return;
 
     // Create a reference to the user document
-    const userDocRef = doc(db, 'users', currentUser.id);
+    const userDocRef = doc(db, "users", currentUser.id);
 
     // Set up a Firestore onSnapshot listener
     const unsub = onSnapshot(userDocRef, (docSnapshot) => {
@@ -148,7 +145,6 @@ const EditSupplier = () => {
     };
   }, [fetchUserInfo]);
 
-
   const handleAvatar = (e) => {
     if (e.target.files[0]) {
       setAvatar({
@@ -159,8 +155,6 @@ const EditSupplier = () => {
   };
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-
 
   function handleFormSubmit(e) {
     // debugger;
@@ -232,7 +226,7 @@ const EditSupplier = () => {
   function handleApprovalUpdateConfirm() {
     sendData("/Suppliers/updateSupplier", "PUT", currentSupplierData);
     setOpenUpdateConfirm(false);
-    setOpen(true);
+    // setOpen(true);
   }
 
   function showUpdateConfirmDialog() {
@@ -252,29 +246,29 @@ const EditSupplier = () => {
 
   // ================  Updated success handling ================
 
-  function showSuccessMessage() {
-    return (
-      <MessageDialog
-        title="כל הכבוד!"
-        btnValue="אוקיי!"
-        open={open}
-        onClose={() => setOpenUpdateSuccess(false)}
-        xBtn={() => setOpenUpdateSuccess(false)}
-        mode="success"
-      >
-        <Typography variant="h6" sx={{ textAlign: "center" }}>
-          עדכון הפרטים החדשים שלך עבר בהצלחה
-        </Typography>
-      </MessageDialog>
-    );
-  }
+  // function showSuccessMessage() {
+  //   return (
+  //     <MessageDialog
+  //       title="כל הכבוד!"
+  //       btnValue="אוקיי!"
+  //       open={open}
+  //       onClose={() => setOpenUpdateSuccess(false)}
+  //       xBtn={() => setOpenUpdateSuccess(false)}
+  //       mode="success"
+  //     >
+  //       <Typography variant="h6" sx={{ textAlign: "center" }}>
+  //         עדכון הפרטים החדשים שלך עבר בהצלחה
+  //       </Typography>
+  //     </MessageDialog>
+  //   );
+  // }
 
   return (
     <RegisterContextProvider>
-      {loading  && <Loading />}
+      {isLoading && <Loading />}
       {error && showErrorMessage(error)}
       {openUpdateConfirm && showUpdateConfirmDialog()}
-      {openUpdateSuccess && showSuccessMessage()}
+      {/* {openUpdateSuccess && showSuccessMessage()} */}
       <Stack
         spacing={2}
         textAlign="center"

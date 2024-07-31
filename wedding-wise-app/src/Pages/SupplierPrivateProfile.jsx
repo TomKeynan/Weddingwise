@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import SupplierBanner from "../components/SupplierBanner";
 import { Stack, Typography, useMediaQuery } from "@mui/material";
 import { translateSupplierTypeToHebrew } from "../utilities/functions";
@@ -12,12 +12,16 @@ import { useUserStore } from "../fireBase/userStore";
 import Loading from "../components/Loading";
 
 function SupplierPrivateProfile() {
-
   const { isLoading } = useUserStore();
 
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
-  const { supplierData } = useContext(AppContext);
+  const { supplierData, scrollToTop } = useContext(AppContext);
 
+  // useEffect(() => {
+  //   if (scrollToTop) {
+  //     window.scrollTo({ top: 0, behavior: "smooth" });
+  //   }
+  // }, [scrollToTop]);
   const kpis = [
     {
       title: "מספר המדרגים:",
@@ -27,46 +31,46 @@ function SupplierPrivateProfile() {
     { title: "דירוג:", data: supplierData.rating, icon: <StarOutlineIcon /> },
   ];
 
-  return (
-    isLoading ? (
-      <Loading />
-    ) : (
-      <Stack spacing={3} sx={stackWrapperSX}>
-        <SupplierBanner />
+  return isLoading ? (
+    <Loading />
+  ) : (
+    <Stack spacing={3} sx={stackWrapperSX}>
+      <SupplierBanner />
+      <Stack
+        justifyContent="center"
+        sx={{
+          width: { xs: "90%", sm: "70%" },
+          "&.MuiStack-root": {
+            margin: "0 auto",
+          },
+        }}
+      >
         <Stack
           justifyContent="center"
-          sx={{
-            width: { xs: "90%", sm: "70%" },
-            "&.MuiStack-root": {
-              margin: "0 auto",
-            },
-          }}
+          alignItems="center"
+          sx={{ teatAlign: "center", mt: { xs: 0, sm: 3 } }}
         >
-          <Stack
-            justifyContent="center"
-            alignItems="center"
-            sx={{ teatAlign: "center", mt: { xs: 0, sm: 3 } }}
-          >
-            <Typography sx={namesSX}>
-              {`${translateSupplierTypeToHebrew(supplierData.supplierType)} - ${supplierData.businessName
-                }`}
-            </Typography>
-          </Stack>
-          <Stack
-            direction={screenAboveSM ? "row" : "column"}
-            justifyContent="center"
-            alignItems="center"
-            spacing={3}
-            sx={{ mb: 15, mt: 10 }}
-          >
-            {kpis.map((kpi, index) => (
-              <KpiPaper key={index} kpi={kpi} />
-            ))}
-          </Stack>
-          <Tabs />
+          <Typography sx={namesSX}>
+            {`${translateSupplierTypeToHebrew(supplierData.supplierType)} - ${
+              supplierData.businessName
+            }`}
+          </Typography>
         </Stack>
+        <Stack
+          direction={screenAboveSM ? "row" : "column"}
+          justifyContent="center"
+          alignItems="center"
+          spacing={3}
+          sx={{ mb: 15, mt: 10 }}
+        >
+          {kpis.map((kpi, index) => (
+            <KpiPaper key={index} kpi={kpi} />
+          ))}
+        </Stack>
+        <Tabs />
       </Stack>
-    ));
+    </Stack>
+  );
 }
 
 export default SupplierPrivateProfile;

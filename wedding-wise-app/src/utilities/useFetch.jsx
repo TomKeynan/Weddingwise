@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 var baseUrl = "";
 if (
@@ -9,19 +9,6 @@ if (
 else baseUrl = "https://proj.ruppin.ac.il/cgroup70/test2/tar1/api";
 
 function useFetch() {
-  // const [baseUrl, setBaseUrl] = useState(
-  //   "https://proj.ruppin.ac.il/cgroup70/test2/tar1/api"
-  // );
-
-  // useEffect(() => {
-  //   if (
-  //     window.location.hostname === "localhost" ||
-  //     window.location.hostname === "127.0.0.1"
-  //   )
-  //     setBaseUrl("https://localhost:44359/api");
-  //   else setBaseUrl("https://proj.ruppin.ac.il/cgroup70/test2/tar1/api");
-  // }, []);
-
   const [resData, setResData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(undefined);
@@ -45,7 +32,7 @@ function useFetch() {
   }
 
   async function sendData(endpoint, method, bodyData) {
-    // debugger;
+    debugger;
     try {
       setLoading(true);
       const response = await fetch(`${baseUrl}${endpoint}`, {
