@@ -183,7 +183,7 @@ function Navbar({ isLayout = true }) {
                         src="assets/chat_pics/inbox.png"
                         alt=""
                       />
-                    )}
+                    )} 
                     <IconButton onClick={handleOpenUserMenu} disableRipple>
                       {/* Icon */}
                       <AccountCircleIcon

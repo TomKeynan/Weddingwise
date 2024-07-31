@@ -9,6 +9,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { customTheme } from "../../store/Theme";
 import TextInput from "../TextInput";
 import { VALIDATIONS } from "../../utilities/collections";
+import InputFileUpload from "../InputFileUpload";
 
 const StepThree = () => {
   const { userDetails, updateUserDetails } = useContext(RegisterContext);
@@ -18,6 +19,21 @@ const StepThree = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const [avatar, setAvatar] = useState({
+    file: null,
+    url: "",
+  });
+
+  // Handle avatar file selection
+  const handleAvatar = (e) => {
+    if (e.target.files[0]) {
+      setAvatar({
+        file: e.target.files[0],
+        url: URL.createObjectURL(e.target.files[0]),
+      });
+    }
+  };
 
   // const handleChange = (event) => {
   //   const key = event.target.name;
@@ -93,6 +109,11 @@ const StepThree = () => {
               ),
             }}
           />
+        </FormControl>
+      </Grid>
+      <Grid item xs={12} >
+        <FormControl name="userImage" sx={textFieldSX} onChange={handleAvatar}>
+          <InputFileUpload isUpload={avatar.file} />
         </FormControl>
       </Grid>
     </Grid>

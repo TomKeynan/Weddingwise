@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect, useContext, useState } from "react";
 import PropTypes from "prop-types";
 import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -21,41 +22,11 @@ import Switch from "@mui/material/Switch";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
-
-const rows = [
-  {
-    id: "omri@gmail.com",
-    date: "01-10-2024",
-    names: "רוני ועומרי",
-    price: "10500",
-    location: "חדרה",
-    email: "omri@gmail.com",
-  },
-  {
-    id: "omri@gmail.com2",
-    date: "01-10-2024",
-    names: "רוני ועומרי",
-    price: "10500",
-    location: "חדרה",
-    email: "omri@gmail.com3",
-  },
-  {
-    id: "omri@gmail.com4",
-    date: "01-10-2024",
-    names: "רוני ועומרי",
-    price: "10500",
-    location: "חדרה",
-    email: "omri@gmail.com",
-  },
-  {
-    id: "omri@gmail.com5",
-    date: "01-10-2024",
-    names: "רוני ועומרי",
-    price: "10500",
-    location: "חדרה",
-    email: "omri@gmail.com",
-  },
-];
+import useFetch from "../utilities/useFetch";
+import { AppContext } from "../store/AppContext";
+import { convertDateToClientFormat } from "../utilities/functions";
+import { Stack } from "@mui/material";
+import { customTheme } from "../store/Theme";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -91,32 +62,38 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: "name",
-    numeric: false,
-    disablePadding: true,
+    id: "date",
+    alignTo: "center",
+    disablePadding: false,
     label: "תאריך",
   },
   {
-    id: "calories",
-    numeric: true,
+    id: "names",
+    alignTo: "center",
     disablePadding: false,
     label: "שמות",
   },
   {
-    id: "fat",
-    numeric: true,
-    disablePadding: false,
-    label: "מחיר",
-  },
-  {
-    id: "carbs",
-    numeric: true,
+    id: "address",
+    alignTo: "center",
     disablePadding: false,
     label: "מיקום",
   },
   {
-    id: "protein",
-    numeric: true,
+    id: "numberOfInvitees",
+    alignTo: "center",
+    disablePadding: false,
+    label: "כמות מוזמנים",
+  },
+  {
+    id: "importanceRank",
+    alignTo: "center",
+    disablePadding: false,
+    label: "דירוג בחבילה",
+  },
+  {
+    id: "email",
+    alignTo: "center",
     disablePadding: false,
     label: "אימייל",
   },
@@ -152,7 +129,7 @@ function EnhancedTableHead(props) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? "right" : "left"}
+            align={headCell.alignTo}
             padding={headCell.disablePadding ? "none" : "normal"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -217,23 +194,26 @@ function EnhancedTableToolbar(props) {
           id="tableTitle"
           component="div"
         >
-          פרטי הלקוחות הפוטנאליים שאת\ה שאישרו חבילה שאתם נמצאים בה
+          פרטי הלקוחות הפוטנאליים שאישרו חבילה שאתם נמצאים בה
         </Typography>
       )}
 
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+      {
+        numSelected > 0 && (
+          <Tooltip title="Delete">
+            <IconButton>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        )
+        // ) : (
+        //   <Tooltip title="Filter list">
+        //     <IconButton>
+        //       <FilterListIcon />
+        //     </IconButton>
+        //   </Tooltip>
+        // )}
+      }
     </Toolbar>
   );
 }
@@ -242,13 +222,17 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-function CoupleTable() {
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("calories");
-  const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+function CoupleTable({supplierPackages}) {
+
+
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("calories");
+  const [selected, setSelected] = useState([]);
+  const [page, setPage] = useState(0);
+  const [dense, setDense] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -258,7 +242,8 @@ function CoupleTable() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
+      // console.log(rows);
+      const newSelected = supplierPackages.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
@@ -301,19 +286,31 @@ function CoupleTable() {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0
+      ? Math.max(0, (1 + page) * rowsPerPage - supplierPackages.length)
+      : 0;
 
   const visibleRows = React.useMemo(
     () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
+      stableSort(supplierPackages, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
-    [order, orderBy, page, rowsPerPage]
+    [order, orderBy, page, rowsPerPage, supplierPackages]
   );
 
   return (
     <Box sx={{ width: "100%" }}>
+      <Stack sx={{ px: 2, mb: 5 }}>
+        <Typography
+          sx={{
+            textAlign: "left",
+            fontSize: { xs: 16, sm: 20, md: 24 },
+          }}
+        >
+          בטבלה תוכלו לראות את פרטי הזוגות שעבורם נמצאתם כמתאימים ביותר  
+        </Typography>
+      </Stack>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>
@@ -328,7 +325,7 @@ function CoupleTable() {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={supplierPackages.length}
             />
             <TableBody>
               {visibleRows.map((row, index) => {
@@ -361,12 +358,13 @@ function CoupleTable() {
                       scope="row"
                       padding="none"
                     >
-                      {row.date}
+                      {convertDateToClientFormat(row.date)}
                     </TableCell>
-                    <TableCell align="right">{row.names}</TableCell>
-                    <TableCell align="right">{row.price}</TableCell>
-                    <TableCell align="right">{row.location}</TableCell>
-                    <TableCell align="right">{row.email}</TableCell>
+                    <TableCell align="center">{row.coupleNames}</TableCell>
+                    <TableCell align="center">{row.address}</TableCell>
+                    <TableCell align="center">{row.numberOfInvitees}</TableCell>
+                    <TableCell align="center">{row.importanceRank}</TableCell>
+                    <TableCell align="center">{row.email}</TableCell>
                   </TableRow>
                 );
               })}
@@ -385,7 +383,7 @@ function CoupleTable() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={supplierPackages.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

@@ -98,7 +98,7 @@ function TasksListComp() {
       sx={{ textAlign: "center", pb: 8, width: "95%", margin: "0 auto" }}
       spacing={5}
     >
-      {loading && <Loading />}
+      {/* {loading && <Loading />} */}
       {error && (
         <MessageDialog
           title="שגיאה!"

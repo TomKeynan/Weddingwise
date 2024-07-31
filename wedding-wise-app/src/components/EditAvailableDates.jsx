@@ -40,10 +40,6 @@ export default function EditAvailableDates() {
     };
   }, [resData]);
 
-  // useEffect(() => {}, []);
-
-  function handleFormSubmit() {}
-
   function handleChangeAvailableDates(date) {
     // extract string date from the selected date
     const { desiredDate } = getFullDate(date);
@@ -69,7 +65,6 @@ export default function EditAvailableDates() {
   // ================ Confirm update handling ================
 
   function handleApprovalUpdateConfirm() {
-    // debugger;
     if (isDeletingDate) {
       const availableDatesCopy = [...supplierData.availableDates];
       const filteredAvailableDates = availableDatesCopy.filter(
@@ -146,28 +141,28 @@ export default function EditAvailableDates() {
         onClose={() => {
           handleCloseMessage();
           setShowDateError(false);
-          }}
-          xBtn={() => {
-            handleCloseMessage();
-            setShowDateError(false);
-          }}
+        }}
+        xBtn={() => {
+          handleCloseMessage();
+          setShowDateError(false);
+        }}
         mode="error"
-        >
+      >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
           תאריך זה נבחר כבר כ-"תאריך פנוי".
         </Typography>
       </MessageDialog>
     );
   }
-  
+
   function showErrorMessage() {
     return (
       <MessageDialog
-      title="שגיאה!"
-      btnValue="אוקיי!"
-      open={open}
-      onClose={handleCloseMessage}
-      xBtn={handleCloseMessage}
+        title="שגיאה!"
+        btnValue="אוקיי!"
+        open={open}
+        onClose={handleCloseMessage}
+        xBtn={handleCloseMessage}
         mode="error"
       >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
@@ -192,30 +187,47 @@ export default function EditAvailableDates() {
       {showDateError && showErrorDateMessage()}
       {error && showErrorMessage()}
       {openUpdateConfirm && showUpdateConfirmDialog()}
+      <Stack sx={{ px: 2 }}>
+        <Typography
+          sx={{
+            textAlign: "left",
+            fontFamily: customTheme.font.main,
+            color: customTheme.palette.primary.main,
+            fontSize: { xs: 18, sm: 24, md: 30 },
+            fontWeight: "bold",
+          }}
+        >
+          הישארו רלוונטים!
+        </Typography>
+        <Typography
+          sx={{
+            textAlign: "left",
+            fontSize: { xs: 16, sm: 20, md: 24 },
+          }}
+        >
+          עדכנו לעיתים קרובות את התאריכים הפנויים שיש לכם וכך תגדילו את הסיכויים
+          שלכם לקחת חלק בחתונות בימים האלה
+        </Typography>
+      </Stack>
       <Paper variant="elevation" elevation={6} sx={paperSX}>
         <Grid container sx={{ rowGap: 3 }}>
           <Grid item xs={12} sm={4}>
-            <form onSubmit={handleFormSubmit}>
-              <LocalizationProvider
-                dateAdapter={AdapterDayjs}
-                adapterLocale="he"
-              >
-                <DatePicker
-                  label="תאריך"
-                  showDaysOutsideCurrentMonth
-                  onChange={(newValue) => handleChangeAvailableDates(newValue)}
-                  required
-                  disablePast={true}
-                  slotProps={{
-                    textField: {
-                      name: "desiredDate",
-                      variant: "outlined",
-                      sx: textFieldSX,
-                    },
-                  }}
-                />
-              </LocalizationProvider>
-            </form>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="he">
+              <DatePicker
+                label="תאריך"
+                showDaysOutsideCurrentMonth
+                onChange={(newValue) => handleChangeAvailableDates(newValue)}
+                required
+                disablePast={true}
+                slotProps={{
+                  textField: {
+                    name: "desiredDate",
+                    variant: "outlined",
+                    sx: textFieldSX,
+                  },
+                }}
+              />
+            </LocalizationProvider>
           </Grid>
           {supplierData["availableDates"].length > 0 ? (
             <Grid item xs={12} sm={8}>
@@ -225,7 +237,7 @@ export default function EditAvailableDates() {
               />
             </Grid>
           ) : (
-            <Grid item xs={8} sx={{ py: 1, px: 2, color: "red" }}>
+            <Grid item xs={12} sm={8} sx={{ py: 1, px: 2, color: "red" }}>
               <Alert severity="warning">לא נבחרו תאריכים פנויים</Alert>
             </Grid>
           )}

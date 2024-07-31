@@ -1,18 +1,21 @@
 import * as React from "react";
+import { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import CoupleTable from "./CoupleTable";
 import CommentCard from "./CommentCard";
-import { Stack } from "@mui/material";
+import { Alert, Paper, Stack, Typography } from "@mui/material";
 import EditSupplier from "./EditSupplier";
 import EditAvailableDates from "./EditAvailableDates";
+import { AppContext } from "../store/AppContext";
+import useFetch from "../utilities/useFetch";
+import { customTheme } from "../store/Theme";
 import { useUserStore } from "../fireBase/userStore";
 import { db } from "../fireBase/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import { useState, useEffect } from 'react';
-
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -46,17 +49,17 @@ function a11yProps(index) {
 }
 
 export default function BasicTabs() {
+
   const [value, setValue] = React.useState(0);
   const { currentUser } = useUserStore();
   const [comments, setComments] = useState([]);
+  const { supplierData } = useContext(AppContext);
+  const [supplierPackages, setSupplierPackages] = useState([]);
+  const { getData, resData } = useFetch();
 
-
-
-
-    
   useEffect(() => {
     if (!currentUser?.id) return;
-debugger;
+    debugger;
     const unSub = onSnapshot(doc(db, "supplierComments", currentUser.id), (docSnapshot) => {
       if (docSnapshot.exists()) {
         const commentsData = docSnapshot.data().comments || [];
@@ -77,6 +80,23 @@ debugger;
       unSub();
     };
   }, [currentUser?.id]);
+
+  
+
+  useEffect(() => {
+    getData(`/Suppliers/getSupplierEvents/email/${supplierData.supplierEmail}`);
+  }, []);
+
+  useEffect(() => {
+    if (resData) {
+      const packages = resData.map((item, index) => {
+        item.id = index;
+        return item;
+      });
+      setSupplierPackages(packages);
+    }
+  }, [resData]);
+
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -107,15 +127,15 @@ debugger;
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
           <Stack sx={{ maxHeight: 500, overflowY: "scroll", rowGap: 4, p: 2 }}>
-          {comments.map((comment, index) => (
-       <CommentCard
-          key={index}
-          coupleAvatar = {comment.coupleAvatar}
-          coupleNames={comment.coupleNames}
-          text={comment.text}
-          commentDate={comment.commentDate}
-        />
-      ))}
+            {comments.map((comment, index) => (
+              <CommentCard
+                key={index}
+                coupleAvatar={comment.coupleAvatar}
+                coupleNames={comment.coupleNames}
+                text={comment.text}
+                commentDate={comment.commentDate}
+              />
+            ))}
           </Stack>
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
@@ -128,6 +148,13 @@ debugger;
 const tabSX = {
   px: 0,
   "&.MuiButtonBase-root": {
-    fontSize: { xs: 12, sm: 14 },
+    fontSize: { xs: 12, sm: 14, md: 16 },
   },
+};
+
+const paperSX = {
+  mt: 2,
+  py: 3,
+  px: { xs: 1, sm: 3 },
+  backgroundColor: "rgba(255,255,255,0.8)",
 };
