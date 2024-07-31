@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../fireBase/firebase';
 import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
+import upload from "../fireBase/upload";
 
 export const RegisterContext = createContext({
   userDetails: {},
@@ -15,6 +16,7 @@ export const RegisterContext = createContext({
   date: "",
   error: null,
   loading: false,
+  avatar: null,
   updateUserDetails: () => { },
   updateEditValue: () => { },
   saveDateValue: () => { },
@@ -22,6 +24,7 @@ export const RegisterContext = createContext({
   isFormValid: () => { },
   isEditFormValid: () => { },
   handleSubmit: () => { },
+  handleAvatar: () => { },
 });
 export default function RegisterContextProvider({ children }) {
   const navigate = useNavigate();
@@ -49,15 +52,10 @@ export default function RegisterContextProvider({ children }) {
     relationship: "",
   });
 
-
-  // Omri's
-  // useEffect(() => {
-  //   if (resData) {
-  //     updateCoupleData(resData);
-  //     navigate("/profile");
-  //   }
-  // }, [resData]);
-
+  const [avatar, setAvatar] = useState({
+    file: null,
+    url: "",
+  });
 
   useEffect(() => {
     const registerAndNavigate = async () => {
@@ -72,10 +70,11 @@ export default function RegisterContextProvider({ children }) {
   }, [resData]);
 
   const registerFireBase = async () => {
-   
+
     const username = userDetails.partner1Name + ' ו' + userDetails.partner2Name;  // Need to fix?
     const email = userDetails.email;
     const password = userDetails.password
+
 
     // Validate unique username
     const usersRef = collection(db, "users");
@@ -86,34 +85,49 @@ export default function RegisterContextProvider({ children }) {
     }
 
     try {
-      // Create user with email and password using auth of firebase
       const res = await createUserWithEmailAndPassword(auth, email, password);
-      // if the creating is succesful res is the user with propreties. 
 
-      // Set user document in Firestore
+      let imgUrl = null;
+      if (avatar.file) {
+        imgUrl = await upload(avatar.file);
+      }
+
+     
       await setDoc(doc(db, "users", res.user.uid), {
         username,
         email,
-        avatar: "assets/chat_pics/avatar.png", // I think its already default
+        avatar:
+          imgUrl ||
+          "assets/chat_pics/avatar.png",
         id: res.user.uid,
-        blocked: []
+        blocked: [],
       });
 
-      // Set user chats document in Firestore
+
       await setDoc(doc(db, "userChats", res.user.uid), {
         chats: [],
       });
+
+
 
       toast.success("Account created! You can login now!");
     } catch (err) {
       console.log(err);
       toast.error(err.message);
     } finally {
-    
+
     }
   };
 
-
+  const handleAvatar = (e) => {
+    debugger;
+    if (e.target.files[0]) {
+      setAvatar({
+        file: e.target.files[0],
+        url: URL.createObjectURL(e.target.files[0]),
+      });
+    }
+  };
 
   function updateUserDetails(currentInput) {
     setUserDetails((prevData) => {
@@ -190,6 +204,7 @@ export default function RegisterContextProvider({ children }) {
     date: dateValue,
     error,
     loading,
+    avatar,
     updateUserDetails,
     updateEditValue,
     saveDateValue,
@@ -197,6 +212,7 @@ export default function RegisterContextProvider({ children }) {
     isEditFormValid,
     isFormValid,
     handleSubmit,
+    handleAvatar,
   };
 
   return (

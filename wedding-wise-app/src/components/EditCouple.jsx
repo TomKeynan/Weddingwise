@@ -70,6 +70,7 @@ function EditCouple() {
 
   useEffect(() => {
     if (resData) {
+      debugger;
       setOpenSuccessMessage(true);
       updateCoupleData(editValue);
     } else if (error) {

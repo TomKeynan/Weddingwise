@@ -24,24 +24,25 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Loading from "../components/Loading";
 import SupplierContainBtn from "../components/buttons/SupplierContainBtn";
 import SupplierOutlineBtn from "../components/buttons/SupplierOutlineBtn";
-import { toast } from 'react-toastify';
 import { auth } from '../fireBase/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { AppContext } from "../store/AppContext";
+import { useUserStore } from "../fireBase/userStore";
 
 function SupplierLogin() {
   const { sendData, resData, error, loading } = useFetch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setSupplierData, setEditSupplier } = useContext(AppContext)
+  const { isLoading } = useUserStore(); // Firebase's
 
   useEffect(() => {
     const loginAndNavigate = async () => {
       if (resData) {
+        await loginFireBase();
         sessionStorage.setItem("currentSupplier", JSON.stringify(resData));
         setSupplierData(resData)
         setEditSupplier(resData)
-        await loginFireBase();
         navigate("/supplier-private-Profile");
       }
     };
@@ -78,7 +79,7 @@ function SupplierLogin() {
 
   return (
     <Container sx={containerSX} maxWidth="xxl">
-      {loading && <Loading />}
+      {(loading || isLoading) && <Loading />}
       <Stack direction="row" height="100%">
         {screenAboveSM && <Box sx={imageBoxSX}></Box>}
         <Stack sx={loginStackSX}>

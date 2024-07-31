@@ -69,7 +69,7 @@ const router = createHashRouter([
 ]);
 
 function App() {
-  const { fetchUserInfo } = useUserStore();
+  const { fetchUserInfo,isLoading } = useUserStore();
   // When a user logs in, fetch their data.
   useEffect(() => {
     // Subscribe to auth state changes

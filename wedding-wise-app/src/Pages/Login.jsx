@@ -29,12 +29,14 @@ import { debugErrorMap } from "firebase/auth";
 import { toast } from 'react-toastify';
 import { auth} from '../fireBase/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useUserStore } from "../fireBase/userStore";
 
 function Login() {
   const { sendData, resData, error, loading } = useFetch();
   const { updateCoupleData } = useContext(AppContext);
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
+  const { isLoading } = useUserStore(); // Firebase's
 
   useEffect(() => {
     const loginAndNavigate = async () => {
@@ -90,7 +92,7 @@ function Login() {
 
   return (
     <Container sx={containerSX} maxWidth="xxl">
-      {loading && <Loading />}
+      {(loading || isLoading) && <Loading />}
       <Stack direction="row" height="100%">
         <Stack sx={loginStackSX}>
           <Paper variant="elevation" elevation={6} sx={paperSX}>

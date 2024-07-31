@@ -120,6 +120,7 @@ namespace Server.DAL
                                     PhoneNumber = dataReader["phone_number"].ToString(),
                                     Price = Convert.ToInt32(dataReader["price"]),
                                     Rating = dataReader["rating"] != DBNull.Value ? Convert.ToDouble(dataReader["rating"]) : 0.0,
+                                    RatedCount = Convert.ToInt32(dataReader["rated_count"]),
                                     AvailableRegion = dataReader["region_name"].ToString(),
                                     SupplierType = dataReader["supplier_type_name"].ToString(),
                                     IsActive = Convert.ToBoolean(dataReader["is_active"]),
@@ -420,6 +421,7 @@ namespace Server.DAL
 
                                 SupplierEvent supplierEvent = new SupplierEvent
                                  (
+                                dataReader["CoupleEmail"].ToString(),
                                 Convert.ToDouble(dataReader["Latitude"]),
                                 Convert.ToDouble(dataReader["longitude"]),
                                 (DateTime)dataReader["EventDate"],

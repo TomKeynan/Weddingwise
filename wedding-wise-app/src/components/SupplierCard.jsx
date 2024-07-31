@@ -26,20 +26,9 @@ function SupplierCard({
 
   const [supplierImage, setSupplierImage] = useState("");
 
-
   const [user, setUser] = useState(null);
 
-  // OMRI'S
-  // useEffect(() => {
-  //   const cardSticker = stickers.filter((sticker) => {
-  //     if (sticker.stickerSrc.includes("makeup")) return sticker;
-  //     else return sticker.stickerSrc.includes(supplierType);
-  //   });
-  //   setSticker({ ...cardSticker[0] });
-  //   getImage();
-  //   setSupplierImage(user.avatar);
-  // }, []);
-
+ 
 
   useEffect(() => {
     const fetchImage = async () => {

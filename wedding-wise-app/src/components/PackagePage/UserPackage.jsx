@@ -53,11 +53,11 @@ function UserPackage() {
 
   const formRef = useRef(null);
 
-  const { currentUser } = useUserStore();
+  const { currentUser,isLoading } = useUserStore();
 
   const { isSeen, changeIsSeenStatus } = useChatStore();
 
-  const [loadingFB, setLoadingFB] = useState(false);
+
 
 
   useEffect(() => {
@@ -76,22 +76,7 @@ function UserPackage() {
   }, [coupleData]);
 
 
-  // Omri's
-  // useEffect(() => {
-  //   // update coupleData after getting success code from DB
-  //   // resData === 200 -> couple has approve the offered package for the first time ever.
-  //   // resData === 204 -> couple has updated his package successfully.
-  //   if (resData === 204 || resData === 200) {
-  //     const { typeWeights, ...rest } = offeredPackage;
-  //     addSuppliersChats(...rest.selectedSuppliers);
-  //     setCoupleData((prevData) => {
-  //       return {
-  //         ...prevData,
-  //         package: { ...rest },
-  //       };
-  //     });
-  //   }
-  // }, [resData]);
+ 
 
   useEffect(() => {
     const updateCoupleData = async () => {
@@ -114,9 +99,9 @@ function UserPackage() {
 
 
   const addSuppliersChats = async (suppliers) => {
+    debugger;
     const chatRef = collection(db, "chats");
     const userChatsRef = collection(db, "userChats");
-    setLoadingFB(true);
     try {
       // Get the current package from sessionStorage
       const supplierPackage = JSON.parse(sessionStorage.getItem('currentCouple')).package;
@@ -219,10 +204,7 @@ function UserPackage() {
     } catch (err) {
       console.error(err);
     }
-    finally {
-      setLoadingFB(false);
-      // changeIsSeenStatus(!isSeen);
-    }
+  
   };
 
 
@@ -644,9 +626,9 @@ function UserPackage() {
     >
 
       {/* {loading && <Loading />} */}
-      {loadingFB && <Loading />}
-      {!loadingFB && error && showErrorMessage(error)}
-      {!loadingFB && resData && showSuccessMessage(resData)}
+      {(isLoading || loading) && <Loading />}
+      {!isLoading && !loading && error && showErrorMessage(error)}
+      {!isLoading && !loading && resData && showSuccessMessage(resData)}
       {openAltSuppliers && showAltSuppliersDialog()}
       {openConfirm && showConfirmDialog()}
       {openUpdateDetails && showUpdateDetailsDialog()}

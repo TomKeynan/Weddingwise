@@ -12,6 +12,7 @@ import { useChatStore } from "../../fireBase/chatStore";
 const CoupleLayout = () => {
 const {chatStatus} = useChatStore();
 
+
   return (
     <Container sx={containerSX} maxWidth="xxl">
       <Navbar />

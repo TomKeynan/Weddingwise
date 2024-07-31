@@ -12,9 +12,15 @@ import EditAvailableDates from "./EditAvailableDates";
 import { AppContext } from "../store/AppContext";
 import useFetch from "../utilities/useFetch";
 import { customTheme } from "../store/Theme";
+import { useUserStore } from "../fireBase/userStore";
+import { db } from "../fireBase/firebase";
+import { doc, onSnapshot } from "firebase/firestore";
+import { reverseGeocoding } from "../utilities/functions";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
+
+
 
   return (
     <div
@@ -43,30 +49,82 @@ function a11yProps(index) {
 }
 
 export default function BasicTabs() {
+
+  const [value, setValue] = React.useState(0);
+  const { currentUser } = useUserStore();
+  const [comments, setComments] = useState([]);
   const { supplierData } = useContext(AppContext);
   const [supplierPackages, setSupplierPackages] = useState([]);
   const { getData, resData } = useFetch();
-  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    if (!currentUser?.id) return;
+
+    const unSub = onSnapshot(doc(db, "supplierComments", currentUser.id), (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        const commentsData = docSnapshot.data().comments || [];
+        const commentsWithDate = commentsData.map(comment => ({
+          ...comment,
+          commentDate: comment.commentTime ? comment.commentTime.toDate().toLocaleDateString('en-GB') : "",
+        }));
+        commentsWithDate.sort((a, b) => b.commentTime - a.commentTime);
+        console.log(commentsWithDate);
+        setComments(commentsWithDate);
+      } else {
+        setComments([]);
+      }
+    });
+
+    // Cleanup the listener on component unmount
+    return () => {
+      unSub();
+    };
+  }, [currentUser?.id]);
+
+
 
   useEffect(() => {
     getData(`/Suppliers/getSupplierEvents/email/${supplierData.supplierEmail}`);
   }, []);
 
   useEffect(() => {
+    const handlePackages = async () => {
     if (resData) {
       const packages = resData.map((item, index) => {
         item.id = index;
         return item;
       });
-      setSupplierPackages(packages);
-    }
+      debugger;
+      const updatedPackages = await  addAddresses(packages);
+      setSupplierPackages(updatedPackages);
+    }}
+    handlePackages();
   }, [resData]);
+
+
+  // Assuming result is the data array you received
+  const addAddresses = async (data) => {
+    // Map over the result and fetch addresses
+    const updatedData = await Promise.all(
+      data.map(async (item) => {
+        const address = await reverseGeocoding(item.latitude, item.longitude);
+        return {
+          ...item,
+          address,
+        };
+      })
+    );
+    debugger;
+    // Set the suppliersEvents state with the updated data
+    return (updatedData);
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   return (
+
     <Box sx={{ width: "100%" }}>
       <Box
         sx={{
@@ -109,18 +167,22 @@ export default function BasicTabs() {
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <Stack sx={{ maxHeight: 500, overflowY: "scroll", rowGap: 4, p: 2 }}>
-          <CommentCard />
-          <CommentCard />
-          <CommentCard />
-          <CommentCard />
-          <CommentCard />
+          {comments.map((comment, index) => (
+            <CommentCard
+              key={index}
+              coupleAvatar={comment.coupleAvatar}
+              coupleNames={comment.coupleNames}
+              text={comment.text}
+              commentDate={comment.commentDate}
+            />
+          ))}
         </Stack>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         <EditSupplier />
       </CustomTabPanel>
     </Box>
-  );
+  )
 }
 
 const tabSX = {
@@ -131,7 +193,7 @@ const tabSX = {
 };
 
 const paperSX = {
-  mt: 2, 
+  mt: 2,
   py: 3,
   px: { xs: 1, sm: 3 },
   backgroundColor: "rgba(255,255,255,0.8)",

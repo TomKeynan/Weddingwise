@@ -8,11 +8,16 @@ import KpiPaper from "../components/KpiPaper";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import { AppContext } from "../store/AppContext";
+import { useUserStore } from "../fireBase/userStore";
+import Loading from "../components/Loading";
 
 function SupplierPrivateProfile() {
+
+  const { isLoading } = useUserStore();
+
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
   const { supplierData } = useContext(AppContext);
-  
+
   const kpis = [
     {
       title: "מספר המדרגים:",
@@ -23,43 +28,45 @@ function SupplierPrivateProfile() {
   ];
 
   return (
-    <Stack spacing={3} sx={stackWrapperSX}>
-      <SupplierBanner />
-      <Stack
-        justifyContent="center"
-        sx={{
-          width: { xs: "90%", sm: "70%" },
-          "&.MuiStack-root": {
-            margin: "0 auto",
-          },
-        }}
-      >
+    isLoading ? (
+      <Loading />
+    ) : (
+      <Stack spacing={3} sx={stackWrapperSX}>
+        <SupplierBanner />
         <Stack
           justifyContent="center"
-          alignItems="center"
-          sx={{ teatAlign: "center", mt: { xs: 0, sm: 3 } }}
+          sx={{
+            width: { xs: "90%", sm: "70%" },
+            "&.MuiStack-root": {
+              margin: "0 auto",
+            },
+          }}
         >
-          <Typography sx={namesSX}>
-            {`${translateSupplierTypeToHebrew(supplierData.supplierType)} - ${
-              supplierData.businessName
-            }`}
-          </Typography>
+          <Stack
+            justifyContent="center"
+            alignItems="center"
+            sx={{ teatAlign: "center", mt: { xs: 0, sm: 3 } }}
+          >
+            <Typography sx={namesSX}>
+              {`${translateSupplierTypeToHebrew(supplierData.supplierType)} - ${supplierData.businessName
+                }`}
+            </Typography>
+          </Stack>
+          <Stack
+            direction={screenAboveSM ? "row" : "column"}
+            justifyContent="center"
+            alignItems="center"
+            spacing={3}
+            sx={{ mb: 15, mt: 10 }}
+          >
+            {kpis.map((kpi, index) => (
+              <KpiPaper key={index} kpi={kpi} />
+            ))}
+          </Stack>
+          <Tabs />
         </Stack>
-        <Stack
-          direction={screenAboveSM ? "row" : "column"}
-          justifyContent="center"
-          alignItems="center"
-          spacing={3}
-          sx={{ mb: 15, mt: 10 }}
-        >
-          {kpis.map((kpi, index) => (
-            <KpiPaper key={index} kpi={kpi} />
-          ))}
-        </Stack>
-        <Tabs />
       </Stack>
-    </Stack>
-  );
+    ));
 }
 
 export default SupplierPrivateProfile;
