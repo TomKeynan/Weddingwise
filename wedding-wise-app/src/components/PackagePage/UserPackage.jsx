@@ -99,6 +99,7 @@ function UserPackage() {
 
 
   const addSuppliersChats = async (suppliers) => {
+    debugger;
     const chatRef = collection(db, "chats");
     const userChatsRef = collection(db, "userChats");
     try {
@@ -625,9 +626,9 @@ function UserPackage() {
     >
 
       {/* {loading && <Loading />} */}
-      {isLoading && loading && <Loading />}
-      {isLoading && error && showErrorMessage(error)}
-      {isLoading && resData && showSuccessMessage(resData)}
+      {(isLoading || loading) && <Loading />}
+      {!isLoading && !loading && error && showErrorMessage(error)}
+      {!isLoading && !loading && resData && showSuccessMessage(resData)}
       {openAltSuppliers && showAltSuppliersDialog()}
       {openConfirm && showConfirmDialog()}
       {openUpdateDetails && showUpdateDetailsDialog()}

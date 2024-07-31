@@ -12,7 +12,7 @@ import { VALIDATIONS } from "../../utilities/collections";
 import InputFileUpload from "../InputFileUpload";
 
 const StepThree = () => {
-  const { userDetails, updateUserDetails } = useContext(RegisterContext);
+  const { userDetails, handleAvatar, avatar,updateUserDetails } = useContext(RegisterContext);
 
   const [check, setCheck] = useState({ isValid: true });
 
@@ -20,20 +20,7 @@ const StepThree = () => {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const [avatar, setAvatar] = useState({
-    file: null,
-    url: "",
-  });
 
-  // Handle avatar file selection
-  const handleAvatar = (e) => {
-    if (e.target.files[0]) {
-      setAvatar({
-        file: e.target.files[0],
-        url: URL.createObjectURL(e.target.files[0]),
-      });
-    }
-  };
 
   // const handleChange = (event) => {
   //   const key = event.target.name;

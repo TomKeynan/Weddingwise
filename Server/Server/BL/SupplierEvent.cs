@@ -2,7 +2,7 @@
 {
     public class SupplierEvent
     {
-
+        private string coupleEmail;
         private double latitude;
         private double longitude;
         private DateTime date;
@@ -10,8 +10,9 @@
         private int numberOfInvitees;
         private int importanceRank;
 
-        public SupplierEvent(double latitude, double longitude, DateTime date, string coupleNames, int numberOfInvitees, int importanceRank)
+        public SupplierEvent(string coupleEmail, double latitude, double longitude, DateTime date, string coupleNames, int numberOfInvitees, int importanceRank)
         {
+            this.CoupleEmail = coupleEmail;
             this.Latitude = latitude;
             this.Longitude = longitude;
             this.Date = date;
@@ -26,5 +27,6 @@
         public string CoupleNames { get => coupleNames; set => coupleNames = value; }
         public int NumberOfInvitees { get => numberOfInvitees; set => numberOfInvitees = value; }
         public int ImportanceRank { get => importanceRank; set => importanceRank = value; }
+        public string CoupleEmail { get => coupleEmail; set => coupleEmail = value; }
     }
 }

@@ -364,7 +364,7 @@ function CoupleTable({supplierPackages}) {
                     <TableCell align="center">{row.address}</TableCell>
                     <TableCell align="center">{row.numberOfInvitees}</TableCell>
                     <TableCell align="center">{row.importanceRank}</TableCell>
-                    <TableCell align="center">{row.email}</TableCell>
+                    <TableCell align="center">{row.coupleEmail}</TableCell>
                   </TableRow>
                 );
               })}

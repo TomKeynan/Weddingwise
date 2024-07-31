@@ -65,19 +65,7 @@ const SupplierSignUp = () => {
   const [currentSupplierData, setCurrentSupplierData] = useState({});
   const { isLoading } = useUserStore(); // Firebase's
 
-  // Omri's
-  // useEffect(() => {
-  //   if (resData) {
-  //     setTimeout(() => {
-  //       sessionStorage.setItem(
-  //         "currentSupplier",
-  //         JSON.stringify(currentSupplierData)
-  //       );
-  //       navigate("/supplier-private-Profile");
-  //     }, 4000);
-  //   }
-  // }, [resData]);
-
+ 
   useEffect(() => {
     const registerAndNavigate = async () => {
       console.log(resData);
@@ -105,7 +93,6 @@ const SupplierSignUp = () => {
     }
   };
 
-  // Handle avatar file selection
   const handleAvatar = (e) => {
     if (e.target.files[0]) {
       setAvatar({
@@ -120,7 +107,6 @@ const SupplierSignUp = () => {
     const email = currentSupplierData.supplierEmail;
     const password = currentSupplierData.Password;
 
-    // Validate unique username
     const usersRef = collection(db, "users");
     const q = query(usersRef, where("email", "==", email));
     const querySnapshot = await getDocs(q);
@@ -129,13 +115,12 @@ const SupplierSignUp = () => {
     }
 
     try {
-      // Create user with email and password using auth of firebase
+
       const res = await createUserWithEmailAndPassword(auth, email, password);
-      // if the creating is succesful res is the user with propreties.
 
       const imgUrl = null;
       if (avatar.file) {
-        const imgUrl = await upload(avatar.file);
+        imgUrl = await upload(avatar.file);
       }
 
       await setDoc(doc(db, "users", res.user.uid), {
@@ -144,7 +129,7 @@ const SupplierSignUp = () => {
         description: supplierDescription,
         avatar:
           imgUrl ||
-          "https://firebasestorage.googleapis.com/v0/b/weddingwisetest-ecd19.appspot.com/o/images%2Favatar.png?alt=media&token=9f7020cf-fb7b-4170-8870-030e6dc9fbba",
+          "assets/chat_pics/avatar.png",
         id: res.user.uid,
         blocked: [],
       });

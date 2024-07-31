@@ -36,5 +36,5 @@ export const useUserStore = create((set) => ({
       return set({ currentUser: null, isLoading: false });
     }
   },
-  
+
 }));

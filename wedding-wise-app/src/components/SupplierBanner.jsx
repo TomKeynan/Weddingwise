@@ -6,7 +6,7 @@ import Loading from "./Loading";
 
 function SupplierBanner() {
   const { currentUser,isLoading } = useUserStore();
-debugger;
+
   return (
     isLoading ? (
       <Loading />

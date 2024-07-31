@@ -1,5 +1,27 @@
 import { VALIDATIONS } from "./collections";
 
+
+export async function reverseGeocoding(lat, lng) {
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1&accept-language=he`
+    );
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    if (data && data.display_name) {
+      return data.display_name;
+    } else {
+      return 'Address not found';
+    }
+  } catch (error) {
+    console.error('Error fetching address:', error);
+    return 'Error fetching address';
+  }
+}
+
 //generic validation function
 export function validationCheck(event) {
   const currentInput = { [event.target.name]: event.target.value };

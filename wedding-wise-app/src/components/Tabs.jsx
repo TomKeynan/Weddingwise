@@ -15,7 +15,7 @@ import { customTheme } from "../store/Theme";
 import { useUserStore } from "../fireBase/userStore";
 import { db } from "../fireBase/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
-
+import { reverseGeocoding } from "../utilities/functions";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -59,7 +59,7 @@ export default function BasicTabs() {
 
   useEffect(() => {
     if (!currentUser?.id) return;
-    debugger;
+
     const unSub = onSnapshot(doc(db, "supplierComments", currentUser.id), (docSnapshot) => {
       if (docSnapshot.exists()) {
         const commentsData = docSnapshot.data().comments || [];
@@ -81,22 +81,43 @@ export default function BasicTabs() {
     };
   }, [currentUser?.id]);
 
-  
+
 
   useEffect(() => {
     getData(`/Suppliers/getSupplierEvents/email/${supplierData.supplierEmail}`);
   }, []);
 
   useEffect(() => {
+    const handlePackages = async () => {
     if (resData) {
       const packages = resData.map((item, index) => {
         item.id = index;
         return item;
       });
-      setSupplierPackages(packages);
-    }
+      debugger;
+      const updatedPackages = await  addAddresses(packages);
+      setSupplierPackages(updatedPackages);
+    }}
+    handlePackages();
   }, [resData]);
 
+
+  // Assuming result is the data array you received
+  const addAddresses = async (data) => {
+    // Map over the result and fetch addresses
+    const updatedData = await Promise.all(
+      data.map(async (item) => {
+        const address = await reverseGeocoding(item.latitude, item.longitude);
+        return {
+          ...item,
+          address,
+        };
+      })
+    );
+    debugger;
+    // Set the suppliersEvents state with the updated data
+    return (updatedData);
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -104,7 +125,7 @@ export default function BasicTabs() {
 
   return (
 
-<Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%" }}>
       <Box
         sx={{
           borderBottom: 1,
@@ -145,23 +166,23 @@ export default function BasicTabs() {
         )}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-          <Stack sx={{ maxHeight: 500, overflowY: "scroll", rowGap: 4, p: 2 }}>
-            {comments.map((comment, index) => (
-              <CommentCard
-                key={index}
-                coupleAvatar={comment.coupleAvatar}
-                coupleNames={comment.coupleNames}
-                text={comment.text}
-                commentDate={comment.commentDate}
-              />
-            ))}
-          </Stack>
-        </CustomTabPanel>
+        <Stack sx={{ maxHeight: 500, overflowY: "scroll", rowGap: 4, p: 2 }}>
+          {comments.map((comment, index) => (
+            <CommentCard
+              key={index}
+              coupleAvatar={comment.coupleAvatar}
+              coupleNames={comment.coupleNames}
+              text={comment.text}
+              commentDate={comment.commentDate}
+            />
+          ))}
+        </Stack>
+      </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         <EditSupplier />
       </CustomTabPanel>
-    </Box>
-  )
+    </Box>
+  )
 }
 
 const tabSX = {
