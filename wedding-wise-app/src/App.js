@@ -70,6 +70,7 @@ function App() {
     // Subscribe to auth state changes
     const unSub = onAuthStateChanged(auth, (user) => {
       fetchUserInfo(user?.uid);
+      console.log(user);
     });
     // Cleanup function to unsubscribe from auth state changes
     return () => {

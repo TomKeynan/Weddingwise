@@ -15,7 +15,7 @@ import { customTheme } from "../store/Theme";
 import { useUserStore } from "../fireBase/userStore";
 import { db } from "../fireBase/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
-import { useState, useEffect } from 'react';
+
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -103,29 +103,48 @@ export default function BasicTabs() {
   };
 
   return (
-    (
-      <Box sx={{ width: "100%" }}>
-        <Box
+
+<Box sx={{ width: "100%" }}>
+      <Box
+        sx={{
+          borderBottom: 1,
+          borderColor: "divider",
+        }}
+      >
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="basic tabs example"
+        >
+          <Tab label="המידע שלי" {...a11yProps(0)} sx={tabSX} />
+          <Tab label="תגובות" {...a11yProps(1)} sx={tabSX} />
+          <Tab label="עריכת פרטים" {...a11yProps(2)} sx={tabSX} />
+        </Tabs>
+      </Box>
+      <CustomTabPanel value={value} index={0}>
+        <EditAvailableDates />
+        <Typography
           sx={{
-            borderBottom: 1,
-            borderColor: "divider",
+            textAlign: "left",
+            fontFamily: customTheme.font.main,
+            color: customTheme.palette.primary.main,
+            fontSize: { xs: 18, sm: 24, md: 30 },
+            fontWeight: "bold",
           }}
         >
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            aria-label="basic tabs example"
-          >
-            <Tab label="המידע שלי" {...a11yProps(0)} sx={tabSX} />
-            <Tab label="תגובות" {...a11yProps(1)} sx={tabSX} />
-            <Tab label="עריכת פרטים" {...a11yProps(2)} sx={tabSX} />
-          </Tabs>
-        </Box>
-        <CustomTabPanel value={value} index={0}>
-          <EditAvailableDates />
-          <CoupleTable />
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={1}>
+          החבילות שלי!
+        </Typography>
+        {supplierPackages.length > 0 ? (
+          <CoupleTable supplierPackages={supplierPackages} />
+        ) : (
+          <Paper variant="elevation" elevation={6} sx={paperSX}>
+            <Alert severity="warning">
+              אתם עדיין לא מופיעים באף חבילה שהומלצה לזוגות{" "}
+            </Alert>
+          </Paper>
+        )}
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={1}>
           <Stack sx={{ maxHeight: 500, overflowY: "scroll", rowGap: 4, p: 2 }}>
             {comments.map((comment, index) => (
               <CommentCard
@@ -138,11 +157,11 @@ export default function BasicTabs() {
             ))}
           </Stack>
         </CustomTabPanel>
-        <CustomTabPanel value={value} index={2}>
-          <EditSupplier />
-        </CustomTabPanel>
-      </Box>
-    ));
+      <CustomTabPanel value={value} index={2}>
+        <EditSupplier />
+      </CustomTabPanel>
+    </Box>
+  )
 }
 
 const tabSX = {
