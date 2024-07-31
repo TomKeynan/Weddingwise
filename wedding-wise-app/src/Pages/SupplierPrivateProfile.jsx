@@ -8,9 +8,13 @@ import KpiPaper from "../components/KpiPaper";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import { AppContext } from "../store/AppContext";
-
+import { useUserStore } from "../fireBase/userStore";
+import Loading from "../components/Loading";
 
 function SupplierPrivateProfile() {
+
+const {isLoading} = useUserStore();
+debugger;
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
   const { supplierData } = useContext(AppContext)
   let rating;
@@ -27,6 +31,9 @@ function SupplierPrivateProfile() {
   ];
   
   return (
+    isLoading ? (
+      <Loading />
+    ) : (
     <Stack spacing={3} sx={stackWrapperSX}>
       <SupplierBanner />
       <Stack
@@ -63,7 +70,7 @@ function SupplierPrivateProfile() {
         <Tabs />
       </Stack>
     </Stack>
-  );
+  ));
 }
 
 export default SupplierPrivateProfile;

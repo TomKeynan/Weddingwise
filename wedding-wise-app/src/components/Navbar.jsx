@@ -29,7 +29,7 @@ function Navbar({ isLayout = true }) {
 
   const { resetChat, changeChatStatus, isSeen, changeIsSeenStatus } =
     useChatStore();
-  const { currentUser } = useUserStore();
+  const { currentUser,isLoading } = useUserStore();
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -85,9 +85,12 @@ function Navbar({ isLayout = true }) {
       resetChat();
     }
   }
+  const {chatStatus} = useChatStore();
 
   // Adam's
   const handleChat = () => {
+    debugger;
+    console.log(chatStatus);
     changeChatStatus();
     handleCloseUserMenu();
   };
@@ -168,7 +171,7 @@ function Navbar({ isLayout = true }) {
                 <Box>
                   <Tooltip title="התחברות / הרשמה">
                       {/* {Adam's} */}
-                      {(!isSeen && currentUser) && (
+                      {(!isSeen && currentUser && !isLoading) && (
                       <img
                         style={{
                           height: "35px",
@@ -253,7 +256,7 @@ function Navbar({ isLayout = true }) {
                         ))}
 
                         {/* {Adam's}  */}
-                        {currentUser && (
+                        {!isLoading && currentUser && (
                           <MenuItem onClick={handleChat} sx={menuItemSX}>
                             <Link
                               onClick={(e) => e.preventDefault()}
@@ -384,9 +387,6 @@ function Navbar({ isLayout = true }) {
                   </Menu>
                 </Box>
               </Stack>
-
-              {/* {Adam's} */}
-              {/* {chatStatus && <Chat />} */}
 
               {/* Pages */}
               <Stack

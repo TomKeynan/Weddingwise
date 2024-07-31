@@ -50,15 +50,6 @@ export default function RegisterContextProvider({ children }) {
   });
 
 
-  // Omri's
-  // useEffect(() => {
-  //   if (resData) {
-  //     updateCoupleData(resData);
-  //     navigate("/profile");
-  //   }
-  // }, [resData]);
-
-
   useEffect(() => {
     const registerAndNavigate = async () => {
       if (resData) {

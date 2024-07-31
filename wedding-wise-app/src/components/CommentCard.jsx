@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import React from "react";
 import { customTheme } from "../store/Theme";
 
-export default function CommentCard() {
+export default function CommentCard({ coupleAvatar,coupleNames, text, commentDate }) {
   return (
     <Stack sx={commentWrapperSX}>
       {/* card-header */}
@@ -14,7 +14,7 @@ export default function CommentCard() {
       >
         <Box
           component="img"
-          src="/assets/login.jpg"
+          src= {coupleAvatar}
           sx={{
             width: { xs: 60, sm: 43 },
             aspectRatio: "1/1",
@@ -35,7 +35,7 @@ export default function CommentCard() {
               fontFamily: customTheme.font.main,
             }}
           >
-            שמות הזוגות
+            {coupleNames}
           </Typography>
           <Typography
             sx={{
@@ -43,15 +43,13 @@ export default function CommentCard() {
               color: "grey",
             }}
           >
-            תאריך התגובה
+            {commentDate}
           </Typography>
         </Stack>
       </Stack>
 
       <Typography sx={{ fontSize: { xs: 16, sm: 20, md: 24 }, px: 1 }}>
-        כאן יבוא תוכן התגובה Lorem ipsum dolor sit amet consectetur adipisicing
-        elit. Hic nemo soluta expedita mollitia aperiam et nobis pariatur!
-        Voluptas sequi odit, eligendi nostrum sapiente iste nisi.
+        {text}
       </Typography>
     </Stack>
   );

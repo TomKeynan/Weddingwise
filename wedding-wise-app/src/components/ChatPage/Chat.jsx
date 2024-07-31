@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../fireBase/firebase';
 import './chat.css';
-
+import Loading from '../Loading';
 
 function Chat() {
   const { currentUser, isLoading, fetchUserInfo } = useUserStore();
@@ -41,7 +41,6 @@ function Chat() {
 
   useEffect(() => {
 
-    debugger;
 
     const currentCouple = sessionStorage.getItem("currentCouple");
     console.log("currentCouple value:", currentCouple);
@@ -71,12 +70,11 @@ function Chat() {
   }, [currentUser?.id]);
 
 
-
-  // If the app is loading, display a loading indicator
-  if (isLoading) return <div className='loading'>Loading...</div>;
-
   // Main return statement of the component
   return (
+    isLoading ? (
+      <Loading />
+    ) : (
     <div className="chat" ref={chatRef}>
  <button onClick={() => changeChatStatus()} className="exit-button">
             &#10005;
@@ -116,7 +114,7 @@ function Chat() {
       ) : (
         <p>Please log in to access this section.</p>
       )}
-    </div>
+    </div>)
   );
 
 };

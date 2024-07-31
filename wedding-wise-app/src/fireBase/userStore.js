@@ -17,6 +17,7 @@ export const useUserStore = create((set) => ({
     }
 
     try {
+      debugger;
       // Reference to the user document in Firestore
       const docRef = doc(db, "users", uid);
       // Fetch the document snapshot from Firestore

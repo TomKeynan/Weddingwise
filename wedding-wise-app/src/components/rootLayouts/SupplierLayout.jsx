@@ -10,7 +10,6 @@ import { useChatStore } from "../../fireBase/chatStore";
 
 const SupplierLayout = () => {
   const {chatStatus} = useChatStore();
-
   return (
     <Container sx={containerSX} maxWidth="xxl">
       <Navbar />

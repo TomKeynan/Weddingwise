@@ -11,6 +11,7 @@ import { useChatStore } from "../../fireBase/chatStore";
 
 const CoupleLayout = () => {
 const {chatStatus} = useChatStore();
+debugger;
 
   return (
     <Container sx={containerSX} maxWidth="xxl">

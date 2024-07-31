@@ -47,6 +47,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import HomeIcon from "@mui/icons-material/Home";
 import { AppContext } from "../store/AppContext";
+import { useUserStore } from "../fireBase/userStore";
 
 const SupplierSignUp = () => {
   const navigate = useNavigate();
@@ -62,6 +63,7 @@ const SupplierSignUp = () => {
   const [errors, setErrors] = useState({});
   const [open, setOpen] = useState(false);
   const [currentSupplierData, setCurrentSupplierData] = useState({});
+  const { isLoading } = useUserStore(); // Firebase's
 
   // Omri's
   // useEffect(() => {
@@ -239,7 +241,7 @@ const SupplierSignUp = () => {
 
   return (
     <RegisterContextProvider>
-      {loading && <Loading />}
+      {(loading || isLoading) && <Loading />}
       {error && showErrorMessage(error)}
       {resData && showSuccessMessage()}
       <Stack

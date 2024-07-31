@@ -1,38 +1,49 @@
 import { Box, Stack } from "@mui/material";
 import React from "react";
 import { customTheme } from "../store/Theme";
+import { useUserStore } from "../fireBase/userStore";
+import Loading from "./Loading";
 
 function SupplierBanner() {
+  const { currentUser,isLoading } = useUserStore();
+debugger;
   return (
-    <Stack spacing={4} direction="row" justifyContent="center" sx={bannerSX}>
-      <Stack
-        justifyContent="center"
-        alignItems="center"
-        sx={{ width: "100%", zIndex: 1, minHeight: 400 }}
-      >
-        <Box
-          sx={{
-            border: "3px solid black",
-            width: { xs: 250, sm: 400 },
-            height: { xs: 250, sm: 400 },
-            borderRadius: "50%",
-            position: "absolute",
-            bottom: { xs: "-20%", sm: "-40%" },
-          }}
-        >
-          <Box
-            component="img"
-            src="/assets/login.jpg"
-            sx={{
-              width: { xs: 250, sm: 400 },
-              height: { xs: 250, sm: 400 },
-              borderRadius: "50%",
-              objectFit: "cover",
-            }}
-          ></Box>
-        </Box>
-      </Stack>
-    </Stack>
+    isLoading ? (
+      <Loading />
+    ) : 
+      (
+        <div>
+          <Stack spacing={4} direction="row" justifyContent="center" sx={bannerSX}>
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              sx={{ width: "100%", zIndex: 1, minHeight: 400 }}
+            >
+              <Box
+                sx={{
+                  border: "3px solid black",
+                  width: { xs: 250, sm: 400 },
+                  height: { xs: 250, sm: 400 },
+                  borderRadius: "50%",
+                  position: "absolute",
+                  bottom: { xs: "-20%", sm: "-40%" },
+                }}
+              >
+                <Box
+                  component="img"
+                  src={currentUser.avatar}
+                  sx={{
+                    width: { xs: 250, sm: 400 },
+                    height: { xs: 250, sm: 400 },
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                  }}
+                />
+              </Box>
+            </Stack>
+          </Stack>
+        </div> 
+      )
   );
 }
 

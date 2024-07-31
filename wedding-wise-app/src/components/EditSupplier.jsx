@@ -44,9 +44,11 @@ import {
   where,
 } from "firebase/firestore";
 import upload from "../fireBase/upload";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import { AppContext } from "../store/AppContext";
 import ConfirmDialog from "./Dialogs/ConfirmDialog";
+import { useUserStore } from "../fireBase/userStore";
+import { updatePassword } from "firebase/auth";
+import { updateDoc, onSnapshot } from "firebase/firestore";
 
 const EditSupplier = () => {
   const { editSupplier, setEditSupplier, setSupplierData } =
@@ -65,48 +67,88 @@ const EditSupplier = () => {
     file: null,
     url: "",
   });
-  // const [openConfirm, setOpenConfirm] = useState(false);
-  // const [imageUrl, setImageUrl] = useState(null); // this state keep the supplies's profile image
+  const { currentUser, isLoading, fetchUserInfo } = useUserStore();
+  const [currentDescription, setCurrentDescription] = useState("");
 
-  // Omri's
+
   useEffect(() => {
-    if (resData) {
-      setSupplierData(currentSupplierData);
-      setOpenUpdateSuccess(true);
-    }
-    return () => {
-      setResData(undefined);
+    const updateUser = async () => {
+      if (resData) {
+        setSupplierData(currentSupplierData);
+        await updateUserFirebase();
+        setOpenUpdateSuccess(true);
+      }
+      return () => {
+        setResData(undefined);
+      };
     };
+
+    updateUser();
   }, [resData, currentSupplierData]);
 
-  //   useEffect(() => {
-  //     const registerAndNavigate = async () => {
-  //       //   console.log(resData);
-  //       if (resData) {
-  //         await registerFireBase();
-  //         await loginFireBase();
-  //         setTimeout(() => {
-  //           sessionStorage.setItem("currentSupplier", JSON.stringify(currentSupplierData));
-  //           navigate("/supplier-private-Profile");
-  //         }, 4000);
-  //       }
-  //     };
-  //     registerAndNavigate();
-  //   }, [resData]);
 
-  const loginFireBase = async () => {
+
+  const updateUserFirebase = async () => {
+    const username = currentSupplierData.businessName;
+    const password = currentSupplierData.Password;
+    const description = currentDescription;
+
+    debugger;
     try {
-      await signInWithEmailAndPassword(
-        auth,
-        currentSupplierData.supplierEmail,
-        currentSupplierData.Password
-      );
+      // Update password in Firebase Authentication
+      const user = auth.currentUser;
+      if (password) {
+        await updatePassword(user, password);
+      }
+
+      // Upload new avatar if provided
+      let imgUrl = null;
+      if (avatar && avatar.file) {
+        imgUrl = await upload(avatar.file);
+      }
+
+      // Update user details in Firestore
+      const userRef = doc(db, "users", currentUser.id);
+      await updateDoc(userRef, {
+        username: username || currentUser.username,
+        description,
+        avatar: imgUrl || currentUser.avatar,
+      });
+
     } catch (err) {
       console.log(err);
     }
   };
 
-  // Handle avatar file selection
+
+  useEffect(() => {
+    if (currentUser && currentUser.description) {
+      setCurrentDescription(currentUser.description);
+    }
+  }, [currentUser]);
+
+
+  useEffect(() => {
+    if (!currentUser?.id) return;
+
+    // Create a reference to the user document
+    const userDocRef = doc(db, 'users', currentUser.id);
+
+    // Set up a Firestore onSnapshot listener
+    const unsub = onSnapshot(userDocRef, (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        // Fetch the user info when the document changes
+        fetchUserInfo(currentUser.id);
+      }
+    });
+
+    // Clean up the listener on component unmount
+    return () => {
+      unsub();
+    };
+  }, [fetchUserInfo]);
+
+
   const handleAvatar = (e) => {
     if (e.target.files[0]) {
       setAvatar({
@@ -116,70 +158,9 @@ const EditSupplier = () => {
     }
   };
 
-  const registerFireBase = async () => {
-    const username = currentSupplierData.businessName;
-    const email = currentSupplierData.supplierEmail;
-    const password = currentSupplierData.Password;
-
-    // Validate unique username
-    const usersRef = collection(db, "users");
-    const q = query(usersRef, where("email", "==", email));
-    const querySnapshot = await getDocs(q);
-    if (!querySnapshot.empty) {
-      return toast.warn("Select another username");
-    }
-
-    try {
-      // Create user with email and password using auth of firebase
-      const res = await createUserWithEmailAndPassword(auth, email, password);
-      // if the creating is succesful res is the user with propreties.
-
-      const imgUrl = null;
-      if (avatar.file) {
-        const imgUrl = await upload(avatar.file);
-      }
-
-      await setDoc(doc(db, "users", res.user.uid), {
-        username,
-        email,
-        description: supplierDescription,
-        avatar:
-          imgUrl ||
-          "https://firebasestorage.googleapis.com/v0/b/weddingwisetest-ecd19.appspot.com/o/images%2Favatar.png?alt=media&token=9f7020cf-fb7b-4170-8870-030e6dc9fbba",
-        id: res.user.uid,
-        blocked: [],
-      });
-
-      await setDoc(doc(db, "userChats", res.user.uid), {
-        chats: [],
-      });
-
-      await setDoc(doc(db, "supplierComments", res.user.uid), {
-        comments: [],
-      });
-
-      toast.success("Account created! You can login now!");
-    } catch (err) {
-      console.log(err);
-      toast.error(err.message);
-    } finally {
-    }
-  };
-
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  // function handelImageUpload(imageObj) {
-  //   debugger;
-  //   console.log(imageObj);
-  //   console.log(URL.createObjectURL(imageObj));
-  //   if (imageObj) {
-  //     const reader = new FileReader();
-  //     reader.onload = () => {
-  //       setImageUrl(reader.result);
-  //     };
-  //     reader.readAsDataURL(imageObj);
-  //   }
-  // }
+
 
   function handleFormSubmit(e) {
     e.preventDefault();
@@ -290,7 +271,7 @@ const EditSupplier = () => {
 
   return (
     <RegisterContextProvider>
-      {loading && <Loading />}
+      {loading  && <Loading />}
       {error && showErrorMessage(error)}
       {openUpdateConfirm && showUpdateConfirmDialog()}
       {openUpdateSuccess && showSuccessMessage()}
@@ -447,7 +428,8 @@ const EditSupplier = () => {
                   name="description"
                   variant="filled"
                   label="תיאור"
-                  value={"פה צריך להציג את התיאור מה-firebase"}
+                  value={currentDescription}
+                  onChange={(e) => setCurrentDescription(e.target.value)}
                   multiline
                   maxRows={5}
                   sx={textareaSX}
