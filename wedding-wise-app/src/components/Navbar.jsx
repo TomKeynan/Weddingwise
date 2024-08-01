@@ -109,7 +109,7 @@ function Navbar({ isLayout = true }) {
 
   // Listen for changes to the current chat and update the local state
   useEffect(() => {
-    debugger;
+
     let unSub = null;
     if (currentUser?.id) {
       unSub = onSnapshot(doc(db, "userChats", currentUser.id), (res) => {

@@ -1,0 +1,16 @@
+import { useEffect } from 'react';
+import useSupplierStore from './supplierStore';
+
+const useSupplierData = (supplierEmail) => {
+  const { suppliers, fetchSupplierData } = useSupplierStore();
+
+  useEffect(() => {
+    if (supplierEmail && !suppliers[supplierEmail]) {
+      fetchSupplierData(supplierEmail);
+    }
+  }, [supplierEmail, suppliers, fetchSupplierData]);
+
+  return suppliers[supplierEmail];
+};
+
+export default useSupplierData;

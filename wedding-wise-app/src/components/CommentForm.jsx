@@ -14,6 +14,9 @@ import useFetch from "../utilities/useFetch";
 import { AppContext } from "../store/AppContext";
 import MessageDialog from "./Dialogs/MessageDialog";
 import { rateSupplierResponse } from "../utilities/collections";
+import { useUserStore } from "../fireBase/userStore";
+import { arrayUnion, doc, updateDoc, getDocs, where, query, collection } from "firebase/firestore";
+import { db } from "../fireBase/firebase";
 
 const testObject = {
   supplierEmail: "test14@gmail.com",
@@ -27,15 +30,57 @@ export default function CommentForm() {
   const [comment, setComment] = useState("");
   const [openUpdateSuccess, setOpenUpdateSuccess] = useState(false);
   const [open, setOpen] = useState(false);
+  const { currentUser } = useUserStore();
+
+
 
   useEffect(() => {
-    if (resData) {
-      setOpenUpdateSuccess(true);
-    }
-    if (error) {
-      setOpen(true);
-    }
+    const updateSuccess = async () => {
+      if (resData) {
+        await handleSendToFirebase();
+        setOpenUpdateSuccess(true);
+      }
+      if (error) {
+        setOpen(true);
+      }
+    };
+    
+    updateSuccess();
   }, [resData, error]);
+
+  const handleSendToFirebase = async () => {
+
+    // Needs to search supplierId via email
+    try {
+      debugger;
+      
+      const coupleNames = coupleData.partner1Name + ' ו' + coupleData.partner2Name;
+
+      const userRef = collection(db, "users");
+      const q = query(userRef, where("email", "==", supplierData.supplierEmail));
+      const querySnapshot = await getDocs(q);
+
+      const user = querySnapshot.docs[0].data();
+      const supplierId = user.id;
+
+      await updateDoc(doc(db, "supplierComments", supplierId), {
+        comments: arrayUnion({
+          commentTime: new Date(),
+          coupleAvatar: currentUser.avatar,
+          coupleNames,
+          rating: rate,
+          text: comment,
+
+        })
+      });
+
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+
+ 
 
   function handleChange(e) {
     setComment(e.target.value);
@@ -44,7 +89,7 @@ export default function CommentForm() {
   function handlePublishComment() {
     sendData("/Suppliers/rateSupplier", "POST", {
       supplierEmail: supplierData.supplierEmail,
-      coupleEmail: "test4@gmail.com",
+      coupleEmail: coupleData.coupleEmail,
       rating: rate,
     });
   }
@@ -66,12 +111,12 @@ export default function CommentForm() {
   }
 
   // ================ error handling ================
-  
+
   function handleCloseErrorDialog() {
     setOpen(false)
     setError(null)
   }
-  
+
   function showErrorMessage(status) {
     return (
       <MessageDialog
@@ -87,7 +132,6 @@ export default function CommentForm() {
       </MessageDialog>
     );
   }
-
 
   return (
     <>
@@ -112,7 +156,7 @@ export default function CommentForm() {
           >
             <Box
               component="img"
-              src="/assets/login.jpg" // comment.image
+              src= {currentUser.avatar}
               sx={{
                 width: { xs: 60, sm: 43 },
                 aspectRatio: "1/1",
@@ -127,9 +171,9 @@ export default function CommentForm() {
                   fontSize: { xs: 16, sm: 18, md: 20 },
                   fontFamily: customTheme.font.main,
                 }}
-                // {comment.names}
+              // {comment.names}
               >
-                שמות הזוגות
+                {currentUser.username}
               </Typography>
               <Typography
                 sx={{
