@@ -8,6 +8,7 @@ import { getRandomSupplierImage } from "../utilities/functions";
 import CheckIcon from "@mui/icons-material/Check";
 import { db } from "../fireBase/firebase";
 import { getDocs, query, where, collection } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 function SupplierCard({
   props,
@@ -22,13 +23,12 @@ function SupplierCard({
   const { businessName, phoneNumber, supplierEmail, price, supplierType } =
     props;
 
+  const navigate = useNavigate();
   const [sticker, setSticker] = useState({});
 
   const [supplierImage, setSupplierImage] = useState("");
 
   const [user, setUser] = useState(null);
-
- 
 
   useEffect(() => {
     const fetchImage = async () => {
@@ -64,8 +64,6 @@ function SupplierCard({
       setSupplierImage(user.avatar);
     }
   }, [user, supplierType, stickers, setSticker, setSupplierImage]);
-
-  
 
   return (
     <Stack
@@ -182,7 +180,11 @@ function SupplierCard({
               </Button>
             ))}
           {showMoreInfoBtn && (
-            <Button variant="contained" sx={actionBtnSX}>
+            <Button
+              variant="contained"
+              sx={actionBtnSX}
+              onClick={() => navigate("/supplier-public-Profile")}
+            >
               מידע נוסף
             </Button>
           )}

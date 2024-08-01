@@ -63,9 +63,8 @@ const SupplierSignUp = () => {
   const [errors, setErrors] = useState({});
   const [open, setOpen] = useState(false);
   const [currentSupplierData, setCurrentSupplierData] = useState({});
-  const { isLoading,fetchUserInfo } = useUserStore(); // Firebase's
+  const { isLoading, fetchUserInfo } = useUserStore(); // Firebase's
 
- 
   // useEffect(() => {
   //   const registerAndNavigate = async () => {
   //     console.log(resData);
@@ -80,10 +79,9 @@ const SupplierSignUp = () => {
   //   };
   //   registerAndNavigate();
   // }, [resData]);
-  
+
   useEffect(() => {
     const registerAndNavigate = async () => {
-      console.log(resData);
       if (resData) {
         try {
           setSupplierData(resData);
@@ -100,7 +98,10 @@ const SupplierSignUp = () => {
           // Navigate after all asynchronous operations are complete
           navigate("/supplier-private-Profile");
         } catch (err) {
-          console.error("Registration, login, or fetching user info failed:", err);
+          console.error(
+            "Registration, login, or fetching user info failed:",
+            err
+          );
           // Show an error message if registration, login, or fetching user info fails
           toast.error("An error occurred. Please try again.");
         }
@@ -144,7 +145,6 @@ const SupplierSignUp = () => {
     }
 
     try {
-
       const res = await createUserWithEmailAndPassword(auth, email, password);
 
       let imgUrl = null;
@@ -156,9 +156,7 @@ const SupplierSignUp = () => {
         username,
         email,
         description: supplierDescription,
-        avatar:
-          imgUrl ||
-          "assets/chat_pics/avatar.png",
+        avatar: imgUrl || "assets/chat_pics/avatar.png",
         id: res.user.uid,
         blocked: [],
       });
@@ -181,7 +179,6 @@ const SupplierSignUp = () => {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
- 
   function handleFormSubmit(e) {
     // debugger;
     e.preventDefault();
@@ -443,7 +440,6 @@ const SupplierSignUp = () => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  name="description"
                   label="תיאור"
                   multiline
                   maxRows={5}
@@ -497,6 +493,46 @@ const SupplierSignUp = () => {
                 >
                   <InputFileUpload isUpload={avatar.file} />
                 </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography
+                  variant="body1"
+                  sx={{ textAlign: "left", color: "grey", pl: 3 }}
+                >
+                  קישורים לרשתות החברתיות
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  variant="outlined"
+                  type="text"
+                  label="קישור ליוטיוב"
+                  sx={textFieldSX}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  variant="outlined"
+                  type="text"
+                  label="קישור לאינסטגרם"
+                  sx={textFieldSX}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  variant="outlined"
+                  type="text"
+                  label="קישור לפייסבוק"
+                  sx={textFieldSX}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  variant="outlined"
+                  type="text"
+                  label="קישור ללינקדין"
+                  sx={textFieldSX}
+                />
               </Grid>
               <Grid item xs={12}>
                 <SupplierOutlineBtn

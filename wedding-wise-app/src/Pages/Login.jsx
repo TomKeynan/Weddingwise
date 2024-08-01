@@ -26,22 +26,21 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Loading from "../components/Loading";
 import { debugErrorMap } from "firebase/auth";
-import { toast } from 'react-toastify';
-import { auth} from '../fireBase/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { toast } from "react-toastify";
+import { auth } from "../fireBase/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useUserStore } from "../fireBase/userStore";
 
 function Login() {
   const { sendData, resData, error, loading } = useFetch();
   const { updateCoupleData } = useContext(AppContext);
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
-  const { isLoading,fetchUserInfo } = useUserStore(); // Firebase's
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { isLoading, fetchUserInfo } = useUserStore(); // Firebase's
   const navigate = useNavigate();
 
   useEffect(() => {
     const loginAndNavigate = async () => {
-      debugger;
       if (resData) {
         try {
           // Update user data
@@ -80,11 +79,10 @@ function Login() {
       throw err;
     }
   };
-  
+
   // useMediaQuery return a boolean that indicates rather the screen size
   // matches the breakpoint/string media query , or not
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
-
 
   function routeToHome() {
     navigate("/");
@@ -109,7 +107,7 @@ function Login() {
 
   return (
     <Container sx={containerSX} maxWidth="xxl">
-      {(loading ) && <Loading />}
+      {loading && <Loading />}
       <Stack direction="row" height="100%">
         <Stack sx={loginStackSX}>
           <Paper variant="elevation" elevation={6} sx={paperSX}>

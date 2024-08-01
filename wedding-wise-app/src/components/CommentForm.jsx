@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   Rating,
@@ -14,6 +15,7 @@ import useFetch from "../utilities/useFetch";
 import { AppContext } from "../store/AppContext";
 import MessageDialog from "./Dialogs/MessageDialog";
 import { rateSupplierResponse } from "../utilities/collections";
+import Loading from "./Loading";
 
 const testObject = {
   supplierEmail: "test14@gmail.com",
@@ -21,12 +23,14 @@ const testObject = {
   rating: 3,
 };
 export default function CommentForm() {
-  const { sendData, resData, loading, error, setError } = useFetch();
+  const { sendData, resData, setResData, loading, error, setError } =
+    useFetch();
   const { coupleData, supplierData } = useContext(AppContext);
   const [rate, setRate] = useState(0);
   const [comment, setComment] = useState("");
   const [openUpdateSuccess, setOpenUpdateSuccess] = useState(false);
   const [open, setOpen] = useState(false);
+  const [isRated, setIsRated] = useState(false);
 
   useEffect(() => {
     if (resData) {
@@ -35,6 +39,9 @@ export default function CommentForm() {
     if (error) {
       setOpen(true);
     }
+    return () => {
+      setResData(undefined);
+    };
   }, [resData, error]);
 
   function handleChange(e) {
@@ -42,11 +49,24 @@ export default function CommentForm() {
   }
 
   function handlePublishComment() {
-    sendData("/Suppliers/rateSupplier", "POST", {
-      supplierEmail: supplierData.supplierEmail,
-      coupleEmail: "test4@gmail.com",
-      rating: rate,
-    });
+    if (rate === 0) {
+      setIsRated(true);
+    } else {
+      setIsRated(false);
+      sendData("/Suppliers/rateSupplier", "POST", {
+        supplierEmail: supplierData.supplierEmail,
+        coupleEmail: "test10@gmail.com",
+        rating: rate,
+      });
+    }
+  }
+
+  function handleRatingChange(rating) {
+    if (rating) {
+      setRate(rating);
+    } else {
+      setRate(0);
+    }
   }
 
   // ================  Updated success handling ================
@@ -66,12 +86,12 @@ export default function CommentForm() {
   }
 
   // ================ error handling ================
-  
+
   function handleCloseErrorDialog() {
-    setOpen(false)
-    setError(null)
+    setOpen(false);
+    setError(null);
   }
-  
+
   function showErrorMessage(status) {
     return (
       <MessageDialog
@@ -79,6 +99,7 @@ export default function CommentForm() {
         btnValue="אוקיי!"
         open={open}
         onClose={handleCloseErrorDialog}
+        xBtn={handleCloseErrorDialog}
         mode="error"
       >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
@@ -88,9 +109,9 @@ export default function CommentForm() {
     );
   }
 
-
   return (
     <>
+      {loading && <Loading />}
       {error && showErrorMessage(error)}
       {openUpdateSuccess && showSuccessMessage()}
       <Stack sx={commentWrapperSX}>
@@ -144,9 +165,14 @@ export default function CommentForm() {
           <Rating
             name="simple-controlled"
             onChange={(event, newValue) => {
-              setRate(newValue);
+              handleRatingChange(newValue);
             }}
           />
+          {isRated && (
+            <Alert severity="error" sx={errorAlertSX}>
+              פרסום התגובה דורש גם דירוג של לפחות כוכב אחד
+            </Alert>
+          )}
         </Stack>
         <Stack>
           <TextField
@@ -179,4 +205,15 @@ const commentWrapperSX = {
   p: { xs: 3, sm: 5 },
   boxShadow: customTheme.shadow.strong,
   borderRadius: 3,
+};
+
+const errorAlertSX = {
+  fontSize: 14,
+  px: 1,
+  justifyContent: "center",
+  width: "90%",
+  "& .MuiAlert-icon": {
+    mr: "3px",
+  },
+  textAlign: "center",
 };

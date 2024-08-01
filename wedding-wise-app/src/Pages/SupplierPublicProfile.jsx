@@ -1,4 +1,4 @@
-import { Paper, Stack, Typography, useMediaQuery } from "@mui/material";
+import { Link, Paper, Stack, Typography, useMediaQuery } from "@mui/material";
 import React, { useContext, useState } from "react";
 import SupplierBanner from "../components/SupplierBanner";
 import YouTubeIcon from "@mui/icons-material/YouTube";
@@ -15,26 +15,17 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CommentForm from "../components/CommentForm";
 import MessageDialog from "../components/Dialogs/MessageDialog";
+import { Navigate } from "react-router-dom";
 
 function SupplierPublicProfile() {
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
 
   const { supplierData } = useContext(AppContext);
 
-  const kpis = [
-    {
-      title: "מספר המדרגים:",
-      data: 234,
-      icon: <PeopleOutlineIcon />,
-    },
-    { title: "דירוג:", data: 3.75, icon: <StarOutlineIcon /> },
-  ];
-
-
-
-  return (
+  return !supplierData ? (
+    <Navigate to="/suppliers" />
+  ) : (
     <Stack alignItems="center" sx={stackWrapperSX}>
-
       <SupplierBanner />
       <Stack
         spacing={10}
@@ -45,10 +36,42 @@ function SupplierPublicProfile() {
       >
         {/* social media links */}
         <Stack direction="row" justifyContent="space-around">
-          <YouTubeIcon sx={socialIconsSX} />
-          <InstagramIcon sx={socialIconsSX} />
-          <LinkedInIcon sx={socialIconsSX} />
-          <FacebookIcon sx={socialIconsSX} />
+          <Link
+            component="button"
+            variant="body1"
+            onClick={() => {
+              window.open("https://www.youtube.com/", "_blank");
+            }}
+          >
+            <YouTubeIcon sx={socialIconsSX} />
+          </Link>
+          <Link
+            component="button"
+            variant="body1"
+            onClick={() => {
+              window.open("https://www.youtube.com/", "_blank");
+            }}
+          >
+            <InstagramIcon sx={socialIconsSX} />
+          </Link>
+          <Link
+            component="button"
+            variant="body1"
+            onClick={() => {
+              window.open("https://www.youtube.com/", "_blank");
+            }}
+          >
+            <LinkedInIcon sx={socialIconsSX} />
+          </Link>
+          <Link
+            component="button"
+            variant="body1"
+            onClick={() => {
+              window.open("https://www.youtube.com/", "_blank");
+            }}
+          >
+            <FacebookIcon sx={socialIconsSX} />
+          </Link>
         </Stack>
         {/* rating and number of raters */}
         <Stack
@@ -58,9 +81,16 @@ function SupplierPublicProfile() {
           spacing={3}
           sx={{ mb: 15, mt: 10 }}
         >
-          {kpis.map((kpi, index) => (
-            <KpiPaper key={index} kpi={kpi} />
-          ))}
+          <KpiPaper
+            title="מספר המדרגים:"
+            data={supplierData.ratedCount}
+            icon={<PeopleOutlineIcon />}
+          />
+          <KpiPaper
+            title="דירוג:"
+            data={supplierData.rating}
+            icon={<StarOutlineIcon />}
+          />
         </Stack>
         {/* supplier description */}
         <Stack>
@@ -84,7 +114,7 @@ function SupplierPublicProfile() {
         <Carousel />
       </Stack>
       {/* comment form */}
-      <Stack sx={{  maxWidth: 700 , width: { xs: "90%", sm: "60%" } }}>
+      <Stack sx={{ maxWidth: 700, width: { xs: "90%", sm: "60%" } }}>
         <Typography sx={{ ...titleSX, mb: 5, px: 2 }}>
           השאירו תגובה מהחוויה שלכם עם שם ספק
         </Typography>

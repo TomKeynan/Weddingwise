@@ -6,13 +6,17 @@ import Loading from "./Loading";
 
 function SupplierBanner() {
   const { currentUser, isLoading } = useUserStore();
-debugger;
   return (
     <>
       {isLoading ? (
         <Loading />
       ) : (
-        <Stack spacing={4} direction="row" justifyContent="center" sx={bannerSX}>
+        <Stack
+          spacing={4}
+          direction="row"
+          justifyContent="center"
+          sx={bannerSX}
+        >
           <Stack
             justifyContent="center"
             alignItems="center"
@@ -44,7 +48,6 @@ debugger;
       )}
     </>
   );
-  
 }
 
 export default SupplierBanner;

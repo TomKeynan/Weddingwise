@@ -2,12 +2,12 @@ import { Box, Paper, Stack, Typography } from "@mui/material";
 import React from "react";
 import { customTheme } from "../store/Theme";
 
-function KpiPaper({ kpi }) {
+function KpiPaper({ title, data, icon }) {
   return (
     <Paper variant="elevation" elevation={10} sx={kpiWrapperSX}>
       <Stack spacing={2}>
         <Typography variant="h5" sx={titleSX}>
-          {kpi.title}
+          {title}
         </Typography>
         <Stack
           direction="row"
@@ -22,10 +22,10 @@ function KpiPaper({ kpi }) {
               mr: 2,
             }}
           >
-            {kpi.data}
+            {data}
           </Typography>
           <Box sx={{ color: customTheme.supplier.colors.primary.dark }}>
-            {kpi.icon}
+            {icon}
           </Box>
         </Stack>
       </Stack>
