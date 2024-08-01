@@ -11,31 +11,17 @@ import { AppContext } from "../store/AppContext";
 import { useUserStore } from "../fireBase/userStore";
 import Loading from "../components/Loading";
 import useFetch from "../utilities/useFetch";
+import { Navigate } from "react-router-dom";
 
 function SupplierPrivateProfile() {
-  const { isLoading,fetchUserInfo} = useUserStore();
+  const { isLoading, fetchUserInfo } = useUserStore();
   const { loading } = useFetch();
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
-  const { supplierData, scrollToTop } = useContext(AppContext);
+  const { supplierData } = useContext(AppContext);
 
-  // useEffect(() => {
-  //   if (scrollToTop) {
-  //     window.scrollTo({ top: 0, behavior: "smooth" });
-  //   }
-  // }, [scrollToTop]);
-
-
-
-  const kpis = [
-    {
-      title: "מספר המדרגים:",
-      data: supplierData.ratedCount,
-      icon: <PeopleOutlineIcon />,
-    },
-    { title: "דירוג:", data: supplierData.rating, icon: <StarOutlineIcon /> },
-  ];
-
-  return isLoading || loading ? (
+  return !supplierData ? (
+    <Navigate to="/suppliers" />
+  ) : isLoading || loading ? (
     <Loading />
   ) : (
     <Stack spacing={3} sx={stackWrapperSX}>
@@ -55,8 +41,9 @@ function SupplierPrivateProfile() {
           sx={{ teatAlign: "center", mt: { xs: 0, sm: 3 } }}
         >
           <Typography sx={namesSX}>
-            {`${translateSupplierTypeToHebrew(supplierData.supplierType)} - ${supplierData.businessName
-              }`}
+            {`${translateSupplierTypeToHebrew(supplierData.supplierType)} - ${
+              supplierData.businessName
+            }`}
           </Typography>
         </Stack>
         <Stack
@@ -66,9 +53,16 @@ function SupplierPrivateProfile() {
           spacing={3}
           sx={{ mb: 15, mt: 10 }}
         >
-          {kpis.map((kpi, index) => (
-            <KpiPaper key={index} kpi={kpi} />
-          ))}
+          <KpiPaper
+            title="מספר המדרגים:"
+            data={supplierData.ratedCount}
+            icon={<PeopleOutlineIcon />}
+          />
+          <KpiPaper
+            title="דירוג:"
+            data={supplierData.rating}
+            icon={<StarOutlineIcon />}
+          />
         </Stack>
         <Tabs />
       </Stack>

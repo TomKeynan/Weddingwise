@@ -4,12 +4,10 @@ export const AppContext = createContext({
   coupleData: {},
   supplierData: {},
   editSupplier: {},
-  scrollToTop: false,
   offeredPackage: {},
   setCoupleData: () => {},
   setSupplierData: () => {},
   setOfferedPackage: () => {},
-  setScrollToTop: () => {},
   updateCoupleData: () => {},
   updateOfferedPackage: () => {},
   setEditSupplier: () => {},
@@ -22,7 +20,6 @@ export const AppContext = createContext({
 const initialStateCoupleData = JSON.parse(
   sessionStorage.getItem("currentCouple")
 );
-
 const initialStateSupplierData = JSON.parse(
   sessionStorage.getItem("currentSupplier")
 );
@@ -37,7 +34,6 @@ export default function AppContextProvider({ children }) {
   const [offeredPackage, setOfferedPackage] = useState(null);
   const [invitees, setInvitees] = useState([]);
 
-  const [scrollToTop, setScrollToTop] = useState(false);
 
   useEffect(() => {
     // setCoupleData(JSON.parse(sessionStorage.getItem("currentCouple")));
@@ -86,12 +82,10 @@ export default function AppContextProvider({ children }) {
     supplierData,
     offeredPackage,
     editSupplier,
-    scrollToTop,
     setEditSupplier,
     updateCoupleData,
     setSupplierData,
     updateOfferedPackage,
-    setScrollToTop,
     setCoupleData,
     setOfferedPackage,
     invitees,

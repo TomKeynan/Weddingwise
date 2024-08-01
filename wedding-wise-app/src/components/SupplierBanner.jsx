@@ -4,16 +4,19 @@ import { customTheme } from "../store/Theme";
 import { useUserStore } from "../fireBase/userStore";
 import Loading from "./Loading";
 
-function SupplierBanner({ supplierFirebase }) {
-  const { isLoading } = useUserStore();
-
-
+function SupplierBanner() {
+  const { currentUser, isLoading } = useUserStore();
   return (
     <>
       {isLoading ? (
         <Loading />
       ) : (
-        <Stack spacing={4} direction="row" justifyContent="center" sx={bannerSX}>
+        <Stack
+          spacing={4}
+          direction="row"
+          justifyContent="center"
+          sx={bannerSX}
+        >
           <Stack
             justifyContent="center"
             alignItems="center"

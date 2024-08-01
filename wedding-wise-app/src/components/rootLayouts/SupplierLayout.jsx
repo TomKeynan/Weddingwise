@@ -12,7 +12,7 @@ const SupplierLayout = () => {
   const {chatStatus} = useChatStore();
   return (
     <Container sx={containerSX} maxWidth="xxl">
-      <Navbar />
+      <Navbar isSupplier={true} />
       <Outlet />
       {chatStatus && <Chat />}
       <Footer />

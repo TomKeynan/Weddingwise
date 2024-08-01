@@ -56,7 +56,6 @@ const EditSupplier = () => {
   const { sendData, resData, setResData, loading, error, setError } =
     useFetch();
   const [isVenue, setIsVenue] = useState(false);
-  const [supplierDescription, setSupplierDescription] = useState("");
   const [errors, setErrors] = useState({});
   const [open, setOpen] = useState(false);
   const [currentSupplierData, setCurrentSupplierData] = useState(null);
@@ -67,7 +66,7 @@ const EditSupplier = () => {
     file: null,
     url: "",
   });
-  const { currentUser, isLoading, fetchUserInfo,setLoading } = useUserStore();
+  const { currentUser, isLoading, fetchUserInfo, setLoading } = useUserStore();
   const [currentDescription, setCurrentDescription] = useState("");
 
   useEffect(() => {
@@ -167,7 +166,6 @@ const EditSupplier = () => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
-    setSupplierDescription(data.description);
     delete data.description;
     delete data.userImage;
 
@@ -309,39 +307,6 @@ const EditSupplier = () => {
                 )}
               </Grid>
               {/* SupplierTypes */}
-              {/* <Grid item xs={12} md={6}>
-                <Autocomplete
-                  options={supplierTypes}
-                  freeSolo={false}
-                  value={translateSupplierTypeToHebrew(
-                    editSupplier.supplierType
-                  )}
-                  onChange={(event, newValue) => {
-                    if (newValue === "אולם שמחות") setIsVenue(true);
-                    else setIsVenue(false);
-                    setEditSupplier((prevData) => {
-                      return {
-                        ...prevData,
-                        supplierType: translateSupplierTypeToEnglish(newValue),
-                      };
-                    });
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="outlined"
-                      label="סוג העסק"
-                      name="supplierType"
-                      sx={textFieldSX}
-                    />
-                  )}
-                />
-                {errors.supplierType && (
-                  <Alert severity="error" sx={errorAlertSX}>
-                    {errors.supplierType}
-                  </Alert>
-                )}
-              </Grid> */}
               <Grid item xs={12} md={6}>
                 <TextField
                   variant="filled"
@@ -503,6 +468,47 @@ const EditSupplier = () => {
                   <InputFileUpload isUpload={avatar.file} />
                 </FormControl>
               </Grid>
+              <Grid item xs={12}>
+                <Typography
+                  variant="body1"
+                  sx={{ textAlign: "left", color: "grey", pl: 3 }}
+                >
+                  קישורים לרשתות החברתיות
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  variant="filled"
+                  type="text"
+                  label="קישור ליוטיוב"
+                  sx={textFieldSX}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  variant="filled"
+                  type="text"
+                  label="קישור לאינסטגרם"
+                  sx={textFieldSX}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  variant="filled"
+                  type="text"
+                  label="קישור לפייסבוק"
+                  sx={textFieldSX}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  variant="filled"
+                  type="text"
+                  label="קישור ללינקדין"
+                  sx={textFieldSX}
+                />
+              </Grid>
+
               <Grid item xs={12}>
                 <SupplierOutlineBtn
                   type="submit"

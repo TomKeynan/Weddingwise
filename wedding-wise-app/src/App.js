@@ -1,5 +1,5 @@
 // ============= LAST UPDATED =================
-// =============   26-7-2024  =================
+// =============   1-8-2024  =================
 // ============= LAST UPDATED =================
 
 import "./App.css";
@@ -69,10 +69,8 @@ const router = createHashRouter([
 ]);
 
 function App() {
-
-
-  const { fetchUserInfo, isLoading, setLoading } = useUserStore();
-
+  const { fetchUserInfo } = useUserStore();
+  // When a user logs in, fetch their data.
   useEffect(() => {
     // Subscribe to auth state changes
     const unSub = onAuthStateChanged(auth, async (user) => {

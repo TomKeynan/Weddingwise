@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   Rating,
@@ -17,6 +18,7 @@ import { rateSupplierResponse } from "../utilities/collections";
 import { useUserStore } from "../fireBase/userStore";
 import { arrayUnion, doc, updateDoc, getDocs, where, query, collection } from "firebase/firestore";
 import { db } from "../fireBase/firebase";
+import Loading from "./Loading";
 
 const testObject = {
   supplierEmail: "test14@gmail.com",
@@ -24,36 +26,42 @@ const testObject = {
   rating: 3,
 };
 export default function CommentForm() {
-  const { sendData, resData, loading, error, setError } = useFetch();
+  const { sendData, resData, setResData, loading, error, setError } =
+    useFetch();
   const { coupleData, supplierData } = useContext(AppContext);
   const [rate, setRate] = useState(0);
   const [comment, setComment] = useState("");
   const [openUpdateSuccess, setOpenUpdateSuccess] = useState(false);
   const [open, setOpen] = useState(false);
-  const { currentUser } = useUserStore();
-
-
+  const [isRated, setIsRated] = useState(false);
 
   useEffect(() => {
-    const updateSuccess = async () => {
+    const updateFirebaseAndSetState = async () => {
       if (resData) {
-        await handleSendToFirebase();
-        setOpenUpdateSuccess(true);
+        try {
+          await handleSendToFirebase();
+          setOpenUpdateSuccess(true);
+        } catch (err) {
+          console.log(err);
+          setOpen(true); // Handle error if needed
+        }
       }
       if (error) {
         setOpen(true);
       }
+      // Clean up
+      return () => {
+        setResData(undefined);
+      };
     };
-    
-    updateSuccess();
+  
+    updateFirebaseAndSetState();
   }, [resData, error]);
 
   const handleSendToFirebase = async () => {
 
-    // Needs to search supplierId via email
     try {
-      debugger;
-      
+    
       const coupleNames = coupleData.partner1Name + ' ו' + coupleData.partner2Name;
 
       const userRef = collection(db, "users");
@@ -87,11 +95,24 @@ export default function CommentForm() {
   }
 
   function handlePublishComment() {
-    sendData("/Suppliers/rateSupplier", "POST", {
-      supplierEmail: supplierData.supplierEmail,
-      coupleEmail: coupleData.coupleEmail,
-      rating: rate,
-    });
+    if (rate === 0) {
+      setIsRated(true);
+    } else {
+      setIsRated(false);
+      sendData("/Suppliers/rateSupplier", "POST", {
+        supplierEmail: supplierData.supplierEmail,
+        coupleEmail: "test10@gmail.com",
+        rating: rate,
+      });
+    }
+  }
+
+  function handleRatingChange(rating) {
+    if (rating) {
+      setRate(rating);
+    } else {
+      setRate(0);
+    }
   }
 
   // ================  Updated success handling ================
@@ -113,8 +134,8 @@ export default function CommentForm() {
   // ================ error handling ================
 
   function handleCloseErrorDialog() {
-    setOpen(false)
-    setError(null)
+    setOpen(false);
+    setError(null);
   }
 
   function showErrorMessage(status) {
@@ -124,6 +145,7 @@ export default function CommentForm() {
         btnValue="אוקיי!"
         open={open}
         onClose={handleCloseErrorDialog}
+        xBtn={handleCloseErrorDialog}
         mode="error"
       >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
@@ -135,6 +157,7 @@ export default function CommentForm() {
 
   return (
     <>
+      {loading && <Loading />}
       {error && showErrorMessage(error)}
       {openUpdateSuccess && showSuccessMessage()}
       <Stack sx={commentWrapperSX}>
@@ -188,9 +211,14 @@ export default function CommentForm() {
           <Rating
             name="simple-controlled"
             onChange={(event, newValue) => {
-              setRate(newValue);
+              handleRatingChange(newValue);
             }}
           />
+          {isRated && (
+            <Alert severity="error" sx={errorAlertSX}>
+              פרסום התגובה דורש גם דירוג של לפחות כוכב אחד
+            </Alert>
+          )}
         </Stack>
         <Stack>
           <TextField
@@ -223,4 +251,15 @@ const commentWrapperSX = {
   p: { xs: 3, sm: 5 },
   boxShadow: customTheme.shadow.strong,
   borderRadius: 3,
+};
+
+const errorAlertSX = {
+  fontSize: 14,
+  px: 1,
+  justifyContent: "center",
+  width: "90%",
+  "& .MuiAlert-icon": {
+    mr: "3px",
+  },
+  textAlign: "center",
 };

@@ -1,5 +1,5 @@
-import { Paper, Stack, Typography, useMediaQuery } from "@mui/material";
-import React, { useContext, useState, useEffect } from "react";
+import { Link, Paper, Stack, Typography, useMediaQuery } from "@mui/material";
+import React, { useContext, useState } from "react";
 import SupplierBanner from "../components/SupplierBanner";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import InstagramIcon from "@mui/icons-material/Instagram";
@@ -19,7 +19,6 @@ import { onSnapshot, doc, getDocs, where, collection, query } from "firebase/fir
 import { db } from "../fireBase/firebase";
 import { useUserStore } from "../fireBase/userStore";
 import Loading from "../components/Loading";
-import { useLocation } from "react-router-dom";
 import useSupplierStore from "../fireBase/supplierStore";
 
 function SupplierPublicProfile() {
@@ -41,83 +40,165 @@ function SupplierPublicProfile() {
   // Access supplier data using currentSupplierEmail
   const supplierFirebase = suppliers[currentSupplierEmail];
 
+//   <>
+//   {loading ? (
+//     <Loading />
+//   ) : (
+//     <Stack alignItems="center" sx={stackWrapperSX}>
+//       <SupplierBanner supplierFirebase={supplierFirebase} />
+//       <Stack
+//         spacing={10}
+//         sx={{
+//           width: { xs: "90%", sm: "60%" },
+//           mt: { xs: 0, sm: 3 },
+//         }}
+//       >
+//         {/* social media links */}
+//         <Stack direction="row" justifyContent="space-around">
+//           <YouTubeIcon sx={socialIconsSX} />
+//           <InstagramIcon sx={socialIconsSX} />
+//           <LinkedInIcon sx={socialIconsSX} />
+//           <FacebookIcon sx={socialIconsSX} />
+//         </Stack>
+//         {/* rating and number of raters */}
+//         <Stack
+//           direction={screenAboveSM ? "row" : "column"}
+//           justifyContent="center"
+//           alignItems="center"
+//           spacing={3}
+//           sx={{ mb: 15, mt: 10 }}
+//         >
+//           {kpis.map((kpi, index) => (
+//             <KpiPaper key={index} kpi={kpi} />
+//           ))}
+//         </Stack>
+//         {/* supplier description */}
+//         <Stack>
+//           <Typography sx={{ ...titleSX, mb: 5 }}>אודות שם ספק </Typography>
+//           <Paper variant="elevation" elevation={6} sx={paperSX}>
+//             <Typography>כאן יבוא התיאור</Typography>
+//             <Typography>
+//               {supplierFirebase.description}
+//             </Typography>
+//           </Paper>
+//         </Stack>
+//       </Stack>
+//       {/* carousel */}
+//       <Stack sx={{ minHeigh: 300, width: { xs: "70%", sm: "80%" }, my: 15 }}>
+//         <Typography sx={{ ...titleSX, mb: 5 }}>
+//           הזוגות של WeddingWise משתפים
+//         </Typography>
+//         <Carousel supplierFirebase={supplierFirebase} />
+//       </Stack>
+//       {/* comment form */}
+//       <Stack sx={{ maxWidth: 700, width: { xs: "90%", sm: "60%" } }}>
+//         <Typography sx={{ ...titleSX, mb: 5, px: 2 }}>
+//           השאירו תגובה מהחוויה שלכם עם שם ספק
+//         </Typography>
+//         <CommentForm />
+//       </Stack>
+//     </Stack>)}
+// </>
 
-
-  const kpis = [
-    {
-      title: "מספר המדרגים:",
-      data: 234,
-      icon: <PeopleOutlineIcon />,
-    },
-    { title: "דירוג:", data: 3.75, icon: <StarOutlineIcon /> },
-  ];
-
-  if (loading || !supplierFirebase) {
-    return <Loading />;
-  }
-
-
-  return (
-    <>
-      {loading ? (
-        <Loading />
-      ) : (
-        <Stack alignItems="center" sx={stackWrapperSX}>
-          <SupplierBanner supplierFirebase={supplierFirebase} />
-          <Stack
-            spacing={10}
-            sx={{
-              width: { xs: "90%", sm: "60%" },
-              mt: { xs: 0, sm: 3 },
+  return !supplierData ? (
+    <Navigate to="/suppliers" />
+  ) : (
+    <Stack alignItems="center" sx={stackWrapperSX}>
+      <SupplierBanner />
+      <Stack
+        spacing={10}
+        sx={{
+          width: { xs: "90%", sm: "60%" },
+          mt: { xs: 0, sm: 3 },
+        }}
+      >
+        {/* social media links */}
+        <Stack direction="row" justifyContent="space-around">
+          <Link
+            component="button"
+            variant="body1"
+            onClick={() => {
+              window.open("https://www.youtube.com/", "_blank");
             }}
           >
-            {/* social media links */}
-            <Stack direction="row" justifyContent="space-around">
-              <YouTubeIcon sx={socialIconsSX} />
-              <InstagramIcon sx={socialIconsSX} />
-              <LinkedInIcon sx={socialIconsSX} />
-              <FacebookIcon sx={socialIconsSX} />
-            </Stack>
-            {/* rating and number of raters */}
-            <Stack
-              direction={screenAboveSM ? "row" : "column"}
-              justifyContent="center"
-              alignItems="center"
-              spacing={3}
-              sx={{ mb: 15, mt: 10 }}
-            >
-              {kpis.map((kpi, index) => (
-                <KpiPaper key={index} kpi={kpi} />
-              ))}
-            </Stack>
-            {/* supplier description */}
-            <Stack>
-              <Typography sx={{ ...titleSX, mb: 5 }}>אודות שם ספק </Typography>
-              <Paper variant="elevation" elevation={6} sx={paperSX}>
-                <Typography>כאן יבוא התיאור</Typography>
-                <Typography>
-                  {supplierFirebase.description}
-                </Typography>
-              </Paper>
-            </Stack>
-          </Stack>
-          {/* carousel */}
-          <Stack sx={{ minHeigh: 300, width: { xs: "70%", sm: "80%" }, my: 15 }}>
-            <Typography sx={{ ...titleSX, mb: 5 }}>
-              הזוגות של WeddingWise משתפים
+            <YouTubeIcon sx={socialIconsSX} />
+          </Link>
+          <Link
+            component="button"
+            variant="body1"
+            onClick={() => {
+              window.open("https://www.youtube.com/", "_blank");
+            }}
+          >
+            <InstagramIcon sx={socialIconsSX} />
+          </Link>
+          <Link
+            component="button"
+            variant="body1"
+            onClick={() => {
+              window.open("https://www.youtube.com/", "_blank");
+            }}
+          >
+            <LinkedInIcon sx={socialIconsSX} />
+          </Link>
+          <Link
+            component="button"
+            variant="body1"
+            onClick={() => {
+              window.open("https://www.youtube.com/", "_blank");
+            }}
+          >
+            <FacebookIcon sx={socialIconsSX} />
+          </Link>
+        </Stack>
+        {/* rating and number of raters */}
+        <Stack
+          direction={screenAboveSM ? "row" : "column"}
+          justifyContent="center"
+          alignItems="center"
+          spacing={3}
+          sx={{ mb: 15, mt: 10 }}
+        >
+          <KpiPaper
+            title="מספר המדרגים:"
+            data={supplierData.ratedCount}
+            icon={<PeopleOutlineIcon />}
+          />
+          <KpiPaper
+            title="דירוג:"
+            data={supplierData.rating}
+            icon={<StarOutlineIcon />}
+          />
+        </Stack>
+        {/* supplier description */}
+        <Stack>
+          <Typography sx={{ ...titleSX, mb: 5 }}>אודות שם ספק </Typography>
+          <Paper variant="elevation" elevation={6} sx={paperSX}>
+            <Typography>כאן יבוא התיאור</Typography>
+            <Typography>
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Illo,
+              laboriosam esse nisi eum asperiores facilis repellat cupiditate
+              distinctio, repellendus mollitia perspiciatis pariatur iste
+              reiciendis itaque?
             </Typography>
-            <Carousel supplierFirebase={supplierFirebase} />
-          </Stack>
-          {/* comment form */}
-          <Stack sx={{ maxWidth: 700, width: { xs: "90%", sm: "60%" } }}>
-            <Typography sx={{ ...titleSX, mb: 5, px: 2 }}>
-              השאירו תגובה מהחוויה שלכם עם שם ספק
-            </Typography>
-            <CommentForm />
-          </Stack>
-        </Stack>)}
-    </>
-
+          </Paper>
+        </Stack>
+      </Stack>
+      {/* carousel */}
+      <Stack sx={{ minHeigh: 300, width: { xs: "70%", sm: "80%" }, my: 15 }}>
+        <Typography sx={{ ...titleSX, mb: 5 }}>
+          הזוגות של WeddingWise משתפים
+        </Typography>
+        <Carousel />
+      </Stack>
+      {/* comment form */}
+      <Stack sx={{ maxWidth: 700, width: { xs: "90%", sm: "60%" } }}>
+        <Typography sx={{ ...titleSX, mb: 5, px: 2 }}>
+          השאירו תגובה מהחוויה שלכם עם שם ספק
+        </Typography>
+        <CommentForm />
+      </Stack>
+    </Stack>
   );
 
 }

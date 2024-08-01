@@ -24,10 +24,12 @@ function SupplierCard({
   const { suppliers, loading, fetchSupplierData } = useSupplierStore();
   const supplierData = suppliers[supplierEmail];
 
+  const navigate = useNavigate();
   const [sticker, setSticker] = useState({});
   const [supplierImage, setSupplierImage] = useState("");
-  const navigate = useNavigate();
 
+
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     fetchSupplierData(supplierEmail);
