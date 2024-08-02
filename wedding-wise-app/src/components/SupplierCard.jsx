@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext  } from "react";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
@@ -8,8 +8,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { useNavigate } from "react-router-dom";
 import useSupplierStore from "../fireBase/supplierStore";
 import Loading from './Loading';
-
-
+import { AppContext } from "../store/AppContext";
 function SupplierCard({
   props,
   showReplaceSupplierBtn,
@@ -22,35 +21,31 @@ function SupplierCard({
 }) {
   const { businessName, phoneNumber, supplierEmail, price, supplierType } = props;
   const { suppliers, loading, fetchSupplierData } = useSupplierStore();
-  const supplierData = suppliers[supplierEmail];
+  const supplierFirebase = suppliers[supplierEmail];
 
   const navigate = useNavigate();
   const [sticker, setSticker] = useState({});
   const [supplierImage, setSupplierImage] = useState("");
 
-
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     fetchSupplierData(supplierEmail);
-  }, [supplierEmail, fetchSupplierData]);
+  }, [supplierEmail]);
 
   useEffect(() => {
-
-    if (supplierData) {
-
+    if (supplierFirebase) {
       const cardSticker = stickers.filter((sticker) => {
         if (sticker.stickerSrc.includes("makeup")) return sticker;
         return sticker.stickerSrc.includes(supplierType);
       });
       setSticker({ ...cardSticker[0] });
-      setSupplierImage(supplierData.avatar);
+      setSupplierImage(supplierFirebase.avatar);
     }
-  }, [supplierData, supplierType]);
+  }, [supplierFirebase, supplierType]);
 
   const handleMoreInformation = () => {
-  
-    sessionStorage.setItem('currentSupplierEmail', supplierEmail);  // Save the email to sessionStorage
+    sessionStorage.setItem('relevantSupplierData', JSON.stringify(props));
     navigate('/supplier-public-profile');  // Navigate to the profile page
   };
 

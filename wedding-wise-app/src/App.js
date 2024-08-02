@@ -68,8 +68,11 @@ const router = createHashRouter([
   { path: "/supplier-login", element: <SupplierLogin /> },
 ]);
 
+
+
 function App() {
-  const { fetchUserInfo } = useUserStore();
+  const { fetchUserInfo,loadingUserFirebase, setLoading  } = useUserStore();
+  
   // When a user logs in, fetch their data.
   useEffect(() => {
     // Subscribe to auth state changes
@@ -86,10 +89,15 @@ function App() {
     return () => {
       unSub();
     };
-  }, [fetchUserInfo, setLoading]);
+  }, [fetchUserInfo]);
 
   // Conditionally render the loading component or the app based on loading state
   
+
+
+  // if (loadingUserFirebase) {
+  //   return <Loading />; // Show loading spinner if data is still loading
+  // }
 
   return (
     <LoadScript

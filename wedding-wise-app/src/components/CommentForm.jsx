@@ -20,20 +20,23 @@ import { arrayUnion, doc, updateDoc, getDocs, where, query, collection } from "f
 import { db } from "../fireBase/firebase";
 import Loading from "./Loading";
 
+
 const testObject = {
   supplierEmail: "test14@gmail.com",
   coupleEmail: "tom1@gmail.com",
   rating: 3,
 };
-export default function CommentForm() {
+export default function CommentForm({ supplierData }) {
   const { sendData, resData, setResData, loading, error, setError } =
     useFetch();
-  const { coupleData, supplierData } = useContext(AppContext);
+  // const { coupleData, supplierData } = useContext(AppContext);
+  const { coupleData } = useContext(AppContext);
   const [rate, setRate] = useState(0);
   const [comment, setComment] = useState("");
   const [openUpdateSuccess, setOpenUpdateSuccess] = useState(false);
   const [open, setOpen] = useState(false);
   const [isRated, setIsRated] = useState(false);
+  const { currentUser } = useUserStore();
 
   useEffect(() => {
     const updateFirebaseAndSetState = async () => {
@@ -54,18 +57,17 @@ export default function CommentForm() {
         setResData(undefined);
       };
     };
-  
+
     updateFirebaseAndSetState();
   }, [resData, error]);
 
   const handleSendToFirebase = async () => {
 
     try {
-    
+     
       const coupleNames = coupleData.partner1Name + ' ו' + coupleData.partner2Name;
-
       const userRef = collection(db, "users");
-      const q = query(userRef, where("email", "==", supplierData.supplierEmail));
+      const q = query(userRef, where("email", "==", supplierData.email));
       const querySnapshot = await getDocs(q);
 
       const user = querySnapshot.docs[0].data();
@@ -88,7 +90,7 @@ export default function CommentForm() {
   }
 
 
- 
+
 
   function handleChange(e) {
     setComment(e.target.value);
@@ -100,7 +102,7 @@ export default function CommentForm() {
     } else {
       setIsRated(false);
       sendData("/Suppliers/rateSupplier", "POST", {
-        supplierEmail: supplierData.supplierEmail,
+        supplierEmail: supplierData.email,
         coupleEmail: "test10@gmail.com",
         rating: rate,
       });
@@ -179,7 +181,7 @@ export default function CommentForm() {
           >
             <Box
               component="img"
-              src= {currentUser.avatar}
+              src={currentUser.avatar}
               sx={{
                 width: { xs: 60, sm: 43 },
                 aspectRatio: "1/1",

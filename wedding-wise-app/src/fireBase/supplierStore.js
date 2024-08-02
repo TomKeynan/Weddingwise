@@ -4,15 +4,24 @@ import { doc, getDocs, onSnapshot, query, where, collection } from "firebase/fir
 
 const useSupplierStore = create((set) => ({
   suppliers: {},
-  loading: false,
+  loadingFirebaseSupplier: false,
+  currentSupplierEmail: '',
+
+  // Method to set loading state
+  setLoading: (isLoading) => set({ loadingFirebaseSupplier: isLoading }),
+
+  // Method to set current supplier email
+  setCurrentSupplierEmail: (email) => set({ currentSupplierEmail: email }),
+
   fetchSupplierData: async (supplierEmail) => {
-  
-    set({ loading: true });
+    set({ loadingFirebaseSupplier: true }); // Start loading
+
     try {
       // Fetch supplier details
       const userRef = collection(db, "users");
       const q = query(userRef, where("email", "==", supplierEmail));
       const querySnapshot = await getDocs(q);
+
       let supplier = null;
       if (!querySnapshot.empty) {
         supplier = querySnapshot.docs[0].data();
@@ -20,8 +29,9 @@ const useSupplierStore = create((set) => ({
 
       if (supplier) {
         // Fetch supplier comments
+        const commentsRef = doc(db, "supplierComments", querySnapshot.docs[0].id);
         const unSub = onSnapshot(
-          doc(db, "supplierComments", querySnapshot.docs[0].id),
+          commentsRef,
           (docSnapshot) => {
             if (docSnapshot.exists()) {
               const commentsData = docSnapshot.data().comments || [];
@@ -40,7 +50,7 @@ const useSupplierStore = create((set) => ({
                     comments: commentsWithDate,
                   },
                 },
-                loading: false,
+                loadingFirebaseSupplier: false, // Stop loading
               }));
             } else {
               set((state) => ({
@@ -48,24 +58,26 @@ const useSupplierStore = create((set) => ({
                   ...state.suppliers,
                   [supplierEmail]: { ...supplier, comments: [] },
                 },
-                loading: false,
+                loadingFirebaseSupplier: false, // Stop loading
               }));
             }
           },
           (error) => {
             console.error("Error fetching comments: ", error);
-            set({ loading: false });
+            set({ loadingFirebaseSupplier: false }); // Stop loading on error
           }
         );
 
         // Cleanup function
         return () => {
-          unSub();
+          unSub(); // Ensure cleanup
         };
+      } else {
+        set({ loadingFirebaseSupplier: false }); // Stop loading if no supplier found
       }
     } catch (error) {
       console.error("Error fetching supplier data: ", error);
-      set({ loading: false });
+      set({ loadingFirebaseSupplier: false }); // Stop loading on error
     }
   },
 }));

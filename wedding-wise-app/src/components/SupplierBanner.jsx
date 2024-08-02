@@ -1,16 +1,21 @@
 import { Box, Stack } from "@mui/material";
-import React from "react";
+import { React, useEffect } from "react";
 import { customTheme } from "../store/Theme";
 import { useUserStore } from "../fireBase/userStore";
 import Loading from "./Loading";
+import useSupplierStore from "../fireBase/supplierStore";
 
 function SupplierBanner() {
-  const { currentUser, isLoading } = useUserStore();
+  const { suppliers } = useSupplierStore();
+  const relevantSupplierData = JSON.parse(sessionStorage.getItem('relevantSupplierData'));
+  const supplierEmail = relevantSupplierData?.supplierEmail;
+  const supplierFirebase = suppliers[supplierEmail];
+
+
+
   return (
     <>
-      {isLoading ? (
-        <Loading />
-      ) : (
+      {(
         <Stack
           spacing={4}
           direction="row"
