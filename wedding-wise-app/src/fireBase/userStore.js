@@ -6,7 +6,7 @@ import { db } from "./firebase";
 export const useUserStore = create((set) => ({
   // Initial state
   currentUser: null,  // Stores the current user information
-  isLoading: true,    // Indicates whether the user information is being loaded
+  loadingUserFirebase: true,    // Indicates whether the user information is being loaded
 
   // Method to fetch user information from Firestore based on user ID (uid)
   fetchUserInfo: async (uid) => {
@@ -37,5 +37,5 @@ export const useUserStore = create((set) => ({
 
   // Method to handle user logout
   logout: () => set({ currentUser: null, isLoading: false }),
-  setLoading: (loading) => set({ isLoading: loading }), 
+  setLoading: (loading) => set({ loadingUserFirebase: loading }), 
 }));

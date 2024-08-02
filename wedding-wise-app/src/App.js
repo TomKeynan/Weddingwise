@@ -23,7 +23,7 @@ import SupplierLogin from "./Pages/SupplierLogin";
 import SupplierLayout from "./components/rootLayouts/SupplierLayout";
 import SupplierLP from "./Pages/SupplierLP";
 import SupplierSignUp from "./Pages/SupplierSignUp";
-
+import Loading from "./components/Loading";
 import { auth } from "./fireBase/firebase";
 import { useUserStore } from "./fireBase/userStore";
 import { onAuthStateChanged } from "firebase/auth";
@@ -70,14 +70,20 @@ const router = createHashRouter([
   { path: "/supplier-login", element: <SupplierLogin /> },
 ]);
 
+
+
 function App() {
-  const { fetchUserInfo } = useUserStore();
+  const { fetchUserInfo,loadingUserFirebase, setLoading  } = useUserStore();
+  
   // When a user logs in, fetch their data.
   useEffect(() => {
     // Subscribe to auth state changes
     const unSub = onAuthStateChanged(auth, async (user) => {
       if (user?.uid) {
+        setLoading(true);  // Set loading state to true before fetching user info
         await fetchUserInfo(user.uid);
+      } else {
+        setLoading(false);  // Set loading state to false if there is no user
       }
     });
 
@@ -86,6 +92,14 @@ function App() {
       unSub();
     };
   }, [fetchUserInfo]);
+
+  // Conditionally render the loading component or the app based on loading state
+  
+
+
+  // if (loadingUserFirebase) {
+  //   return <Loading />; // Show loading spinner if data is still loading
+  // }
 
   return (
     <LoadScript

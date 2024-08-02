@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { Box, Button, Grid, Stack, Typography } from "@mui/material";
+import React, { useEffect, useState,useContext  } from "react";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import { customTheme } from "../store/Theme";
 import { stickers, suppliersImage } from "../utilities/collections";
 import { addCommasToNumber, getRandomSupplierImage } from "../utilities/functions";
+import { stickers } from "../utilities/collections";
 import CheckIcon from "@mui/icons-material/Check";
-import { db } from "../fireBase/firebase";
-import { getDocs, query, where, collection } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-
+import useSupplierStore from "../fireBase/supplierStore";
+import Loading from './Loading';
+import { AppContext } from "../store/AppContext";
 function SupplierCard({
   props, // card data
   showReplaceSupplierBtn, // determine if to show replacement btn or not
@@ -20,50 +21,41 @@ function SupplierCard({
   isAlternative, // detect if this card associated with alternative supplier or not
   isPackage, //detect if this card placed at package page or not
 }) {
-  const { businessName, phoneNumber, supplierEmail, price, supplierType } =
-    props;
+  const { businessName, phoneNumber, supplierEmail, price, supplierType } = props;
+  const { suppliers, loading, fetchSupplierData } = useSupplierStore();
+  const supplierFirebase = suppliers[supplierEmail];
 
   const navigate = useNavigate();
   const [sticker, setSticker] = useState({});
-
   const [supplierImage, setSupplierImage] = useState("");
 
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const fetchImage = async () => {
-      try {
-        // Reference to the 'users' collection
-        const userRef = collection(db, "users");
-
-        // Query to find a user by email
-        const q = query(userRef, where("email", "==", supplierEmail));
-
-        // Execute the query
-        const querySnapshot = await getDocs(q);
-
-        // If a user is found, set the user state
-        if (!querySnapshot.empty) {
-          setUser(querySnapshot.docs[0].data());
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    fetchImage();
+    fetchSupplierData(supplierEmail);
   }, [supplierEmail]);
 
   useEffect(() => {
-    if (user) {
+    if (supplierFirebase) {
       const cardSticker = stickers.filter((sticker) => {
         if (sticker.stickerSrc.includes("makeup")) return sticker;
         return sticker.stickerSrc.includes(supplierType);
       });
       setSticker({ ...cardSticker[0] });
-      setSupplierImage(user.avatar);
+      setSupplierImage(supplierFirebase.avatar);
     }
-  }, [user, supplierType, stickers, setSticker, setSupplierImage]);
+  }, [supplierFirebase, supplierType]);
+
+  const handleMoreInformation = () => {
+    sessionStorage.setItem('relevantSupplierData', JSON.stringify(props));
+    navigate('/supplier-public-profile');  // Navigate to the profile page
+  };
+
+
+ 
+  if (loading) {
+    return <Loading />; // Show loading spinner if data is still loading
+  }
 
   return (
     <Stack
@@ -76,7 +68,6 @@ function SupplierCard({
         borderRadius: 4,
       }}
     >
-      {/* care-image */}
       <Box
         sx={{
           minWidth: "100%",
@@ -93,7 +84,6 @@ function SupplierCard({
         />
       </Box>
 
-      {/* card-content */}
       <Stack
         spacing={1}
         sx={{
@@ -180,11 +170,7 @@ function SupplierCard({
               </Button>
             ))}
           {showMoreInfoBtn && (
-            <Button
-              variant="contained"
-              sx={actionBtnSX}
-              onClick={() => navigate("/supplier-public-Profile")}
-            >
+            <Button onClick={handleMoreInformation} variant="contained" sx={actionBtnSX}>
               מידע נוסף
             </Button>
           )}

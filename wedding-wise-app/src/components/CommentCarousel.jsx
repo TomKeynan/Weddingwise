@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
 import CommentCard from "./CommentCard";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { customTheme } from "../store/Theme";
 
-function CommentCarousel() {
-  var settings = {
+function Carousel({ supplierFirebase }) {
+
+
+  
+  const settings = {
     dots: true,
     infinite: false,
     speed: 500,
@@ -20,7 +23,6 @@ function CommentCarousel() {
           slidesToShow: 2,
           slidesToScroll: 2,
           infinite: true,
-          // dots: true,
         },
       },
       {
@@ -51,28 +53,26 @@ function CommentCarousel() {
         style={{
           ...style,
           display: "block",
-          // background: "#9DD2B9",
           background: "grey",
           borderRadius: "50%",
-          boxShadow: customTheme.shadow.strong
+          boxShadow: customTheme.shadow.strong,
         }}
         onClick={onClick}
-        />
-      );
-    }
-    
-    function SamplePrevArrow(props) {
-      const { className, style, onClick } = props;
-      return (
-        <div
+      />
+    );
+  }
+
+  function SamplePrevArrow(props) {
+    const { className, style, onClick } = props;
+    return (
+      <div
         className={className}
         style={{
           ...style,
           display: "block",
-          // background: "#9DD2B9",
           background: "grey",
           borderRadius: "50%",
-          boxShadow: customTheme.shadow.strong
+          boxShadow: customTheme.shadow.strong,
         }}
         onClick={onClick}
       />
@@ -81,36 +81,17 @@ function CommentCarousel() {
 
   return (
     <Slider {...settings}>
-      <div style={{ overflow: "hidden" }}>
-        <CommentCard />
-      </div>
-      <div style={{ overflow: "hidden" }}>
-        <CommentCard />
-      </div>
-      <div style={{ overflow: "hidden" }}>
-        <CommentCard />
-      </div>
-      <div style={{ overflow: "hidden" }}>
-        <CommentCard />
-      </div>
-      <div style={{ overflow: "hidden" }}>
-        <CommentCard />
-      </div>
-      <div style={{ overflow: "hidden" }}>
-        <CommentCard />
-      </div>
-      <div style={{ overflow: "hidden" }}>
-        <CommentCard />
-      </div>
-      <div style={{ overflow: "hidden" }}>
-        <CommentCard />
-      </div>
-      <div style={{ overflow: "hidden" }}>
-        <CommentCard />
-      </div>
-      <div style={{ overflow: "hidden" }}>
-        <CommentCard />
-      </div>
+      {supplierFirebase.comments.map((comment, index) => (
+        <div style={{ overflow: "hidden" }} key={index}>
+          <CommentCard
+            coupleAvatar={comment.coupleAvatar}
+            coupleNames={comment.coupleNames}
+            text={comment.text}
+            commentDate={comment.commentDate}
+            rating={comment.rating}
+          />
+        </div>
+      ))}
     </Slider>
   );
 }
