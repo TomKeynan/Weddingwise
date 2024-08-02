@@ -10,19 +10,19 @@ import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import KpiPaper from "../components/KpiPaper";
 import { AppContext } from "../store/AppContext";
 import { customTheme } from "../store/Theme";
-import Carousel from "../components/Carousel";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CommentForm from "../components/CommentForm";
 import MessageDialog from "../components/Dialogs/MessageDialog";
 import { Navigate } from "react-router-dom";
+import CommentCarousel from "../components/CommentCarousel";
 
 function SupplierPublicProfile() {
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
 
-  const { supplierData } = useContext(AppContext);
+  const { supplierData, coupleData } = useContext(AppContext);
 
-  return !supplierData ? (
+  return !supplierData && !coupleData ? (
     <Navigate to="/suppliers" />
   ) : (
     <Stack alignItems="center" sx={stackWrapperSX}>
@@ -111,7 +111,7 @@ function SupplierPublicProfile() {
         <Typography sx={{ ...titleSX, mb: 5 }}>
           הזוגות של WeddingWise משתפים
         </Typography>
-        <Carousel />
+        <CommentCarousel />
       </Stack>
       {/* comment form */}
       <Stack sx={{ maxWidth: 700, width: { xs: "90%", sm: "60%" } }}>

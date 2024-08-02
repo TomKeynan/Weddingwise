@@ -120,7 +120,6 @@ export default function RegisterContextProvider({ children }) {
   };
 
   const handleAvatar = (e) => {
-    debugger;
     if (e.target.files[0]) {
       setAvatar({
         file: e.target.files[0],

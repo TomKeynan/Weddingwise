@@ -21,6 +21,7 @@ import { useUserStore } from "../fireBase/userStore";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../fireBase/firebase";
 import { useEffect } from "react";
+import DropDownNavItem from "./DropDownNavItem";
 
 function Navbar({ isLayout = true, isSupplier = false }) {
   const navigate = useNavigate();
@@ -45,13 +46,22 @@ function Navbar({ isLayout = true, isSupplier = false }) {
     { route: "/", text: "דף הבית" },
     { route: "/profile", text: "פרופיל" },
     { route: "/package", text: "חבילה" },
-    { route: "/noPathYet", text: "Planner" },
+    { route: "/", text: 0 },
+  ];
+
+  const connectedCouplePagesSmall = [
+    { route: "/", text: "דף הבית" },
+    { route: "/profile", text: "פרופיל" },
+    { route: "/package", text: "חבילה" },
+    { route: "/tasks", text: "רשימת מטלות" },
+    { route: "/invitees", text: "ניהול מוזמנים" },
+    { route: "/finance", text: "מעקב תקציב" },
   ];
 
   const couplePages = [
     { route: "/", text: "דף הבית" },
     { route: "/package", text: "חבילה" },
-    { route: "/noPathYet", text: "Planner" },
+    { route: "/planner", text: "Planner" },
   ];
 
   const connectedSupplierPages = [
@@ -63,7 +73,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
   const supplierPages = [
     { route: "/", text: "דף הבית" },
     { route: "/package", text: "חבילה" },
-    { route: "/noPathYet", text: "Planner" },
+    // { route: "/planner", text: "Planner" },
   ];
 
   const coupleSettings = [
@@ -201,6 +211,26 @@ function Navbar({ isLayout = true, isSupplier = false }) {
     };
   }
 
+  function renderMenuPages(page) {
+    if (page.text) {
+      return (
+        <NavLink
+          key={page.text}
+          to={page.route}
+          style={isLayout ? navLinkLayoutStyles : navLinkHomeStyles}
+          onClick={handleCloseNavMenu}
+        >
+          {page.text}
+        </NavLink>
+      );
+    } else {
+      return (
+        <Box key={page.route}>
+          <DropDownNavItem isLayout={isLayout} />
+        </Box>
+      );
+    }
+  }
   return (
     <AppBar sx={isLayout ? appBarForLayoutSX : appBarForHomeSX}>
       <Container maxWidth="xxl" sx={{ p: 0 }}>
@@ -309,7 +339,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                                 </Link>
                               </MenuItem>
                             ))
-                        } 
+                        }
                         {
                           // when current user is a supplier and he is logged in show this menu
                           isSupplier &&
@@ -465,18 +495,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                   // when current user is a couple and he is logged in show this menu
                   !isSupplier &&
                     coupleData &&
-                    connectedCouplePages.map((page) => (
-                      <NavLink
-                        key={page.text}
-                        to={page.route}
-                        style={
-                          isLayout ? navLinkLayoutStyles : navLinkHomeStyles
-                        }
-                        onClick={handleCloseNavMenu}
-                      >
-                        {page.text}
-                      </NavLink>
-                    ))
+                    connectedCouplePages.map((page) => renderMenuPages(page))
                 }
               </Stack>
 
@@ -611,64 +630,52 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                       !coupleData &&
                       couplePages.map((page) => (
                         <MenuItem
-                        key={page.text}
-                        onClick={handleCloseNavMenu}
-                        sx={menuItemSX}
-                      >
-                        <Link to={page.route} style={menuLinkStyle}>
-                          <Typography
-                            sx={{
-                              textAlign: "center",
-                              fontWeight: "bold",
-                              fontSize: 16,
-                              color: "#000",
-                              lineHeight: 2.5,
-                            }}
-                          >
-                            {page.text}
-                          </Typography>
-                        </Link>
-                      </MenuItem>
+                          key={page.text}
+                          onClick={handleCloseNavMenu}
+                          sx={menuItemSX}
+                        >
+                          <Link to={page.route} style={menuLinkStyle}>
+                            <Typography
+                              sx={{
+                                textAlign: "center",
+                                fontWeight: "bold",
+                                fontSize: 16,
+                                color: "#000",
+                                lineHeight: 2.5,
+                              }}
+                            >
+                              {page.text}
+                            </Typography>
+                          </Link>
+                        </MenuItem>
                       ))
                   }
                   {
                     // when current user is a couple and he is logged in show this menu
                     !isSupplier &&
                       coupleData &&
-                      connectedCouplePages.map((page) => (
-                        <NavLink
+                      connectedCouplePagesSmall.map((page) => (
+                        <MenuItem
                           key={page.text}
-                          to={page.route}
-                          style={
-                            isLayout ? navLinkLayoutStyles : navLinkHomeStyles
-                          }
                           onClick={handleCloseNavMenu}
+                          sx={menuItemSX}
                         >
-                          {page.text}
-                        </NavLink>
+                          <Link to={page.route} style={menuLinkStyle}>
+                            <Typography
+                              sx={{
+                                textAlign: "center",
+                                fontWeight: "bold",
+                                fontSize: 16,
+                                color: "#000",
+                                lineHeight: 2.5,
+                              }}
+                            >
+                              {page.text}
+                            </Typography>
+                          </Link>
+                        </MenuItem>
                       ))
                   }
-                  {/* {couplePages.map((page) => (
-                    <MenuItem
-                      key={page.text}
-                      onClick={handleCloseNavMenu}
-                      sx={menuItemSX}
-                    >
-                      <Link to={page.route} style={menuLinkStyle}>
-                        <Typography
-                          sx={{
-                            textAlign: "center",
-                            fontWeight: "bold",
-                            fontSize: 16,
-                            color: "#000",
-                            lineHeight: 2.5,
-                          }}
-                        >
-                          {page.text}
-                        </Typography>
-                      </Link>
-                    </MenuItem>
-                  ))} */}
                 </Menu>
               </Box>
               <CardGiftcardIcon
@@ -826,38 +833,6 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                       </Link>
                     </MenuItem>
                   )}
-
-                  {/* {currentSettings.map((setting) => (
-                    <MenuItem
-                      key={setting.text}
-                      onClick={handleCloseUserMenu}
-                      sx={menuItemSX}
-                    >
-                      <Link to={setting.route} style={menuLinkStyle}>
-                        <Typography sx={typographyLinkSX}>
-                          {setting.text}
-                        </Typography>
-                      </Link>
-                    </MenuItem>
-                  ))}
-                  {coupleData &&
-                    connectedCoupleSettings.map((item) => (
-                      <MenuItem
-                        key={item.text}
-                        onClick={handleCloseUserMenu}
-                        sx={menuItemSX}
-                      >
-                        <Link
-                          to={item.route}
-                          // onClick={() => handleClick(item.text)}
-                          style={menuLinkStyle}
-                        >
-                          <Typography sx={typographyLinkSX}>
-                            {item.text}
-                          </Typography>
-                        </Link>
-                      </MenuItem>
-                    ))} */}
                 </Menu>
               </Box>
             </Stack>

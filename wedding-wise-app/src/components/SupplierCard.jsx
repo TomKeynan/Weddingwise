@@ -4,21 +4,21 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import { customTheme } from "../store/Theme";
 import { stickers, suppliersImage } from "../utilities/collections";
-import { getRandomSupplierImage } from "../utilities/functions";
+import { addCommasToNumber, getRandomSupplierImage } from "../utilities/functions";
 import CheckIcon from "@mui/icons-material/Check";
 import { db } from "../fireBase/firebase";
 import { getDocs, query, where, collection } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
 function SupplierCard({
-  props,
-  showReplaceSupplierBtn,
-  showMoreInfoBtn,
+  props, // card data
+  showReplaceSupplierBtn, // determine if to show replacement btn or not
+  showMoreInfoBtn, // determine if to show more info btn or not
   cardBg = "white",
-  onReplacement,
-  onCheckBtnClick,
-  isAlternative,
-  isPackage,
+  onReplacement, // pass a function to onClick event's of replacement btn
+  onCheckBtnClick, // related to approval of supplier replacement
+  isAlternative, // detect if this card associated with alternative supplier or not
+  isPackage, //detect if this card placed at package page or not
 }) {
   const { businessName, phoneNumber, supplierEmail, price, supplierType } =
     props;
@@ -152,7 +152,7 @@ function SupplierCard({
             }}
             variant="body1"
           >
-            מחיר: {price} $
+            ₪מחיר: {addCommasToNumber(price)}
           </Typography>
         </Stack>
         <Stack

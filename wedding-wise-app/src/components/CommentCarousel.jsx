@@ -3,10 +3,9 @@ import Slider from "react-slick";
 import CommentCard from "./CommentCard";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Box } from "@mui/material";
 import { customTheme } from "../store/Theme";
 
-function Carousel() {
+function CommentCarousel() {
   var settings = {
     dots: true,
     infinite: false,
@@ -116,4 +115,4 @@ function Carousel() {
   );
 }
 
-export default Carousel;
+export default CommentCarousel;

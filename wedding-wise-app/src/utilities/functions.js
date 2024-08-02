@@ -180,3 +180,13 @@ export function getTodayDate() {
   const formattedDate = `${day}/${month}/${year}`;
   return formattedDate;
 }
+
+export function addCommasToNumber(number) {
+  // Convert the number to a string
+  let numberString = number.toString();
+  
+  // Use a regular expression to add commas
+  let formattedNumber = numberString.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  
+  return formattedNumber;
+}

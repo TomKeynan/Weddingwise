@@ -30,6 +30,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
 import SupplierPrivateProfile from "./Pages/SupplierPrivateProfile";
 import SupplierPublicProfile from "./Pages/SupplierPublicProfile";
+import PlannerLP from "./Pages/PlannerLP";
 const googleMapsApiKey = "AIzaSyC3QkzXx3mLsG_-IzI67-WVFBAoAZTYWxk";
 // const googleMapsApiKey = "AIzaSyCSXv1ZziH2SJEcGQIp8EJMytapWnPjytQ";
 
@@ -47,6 +48,7 @@ const router = createHashRouter([
       { path: "finance", element: <Finance /> },
       { path: "invitees", element: <Invitees /> },
       { path: "edit", element: <EditDetails /> },
+      { path: "planner", element: <PlannerLP /> },
     ],
   },
   {
@@ -55,11 +57,11 @@ const router = createHashRouter([
       { path: "/suppliers", element: <SupplierLP /> },
       { path: "/supplier-signup", element: <SupplierSignUp /> },
       {
-        path: "/supplier-private-Profile",
+        path: "/supplier-private-profile",
         element: <SupplierPrivateProfile />,
       },
       {
-        path: "/supplier-public-Profile",
+        path: "/supplier-public-profile",
         element: <SupplierPublicProfile />,
       },
     ],
