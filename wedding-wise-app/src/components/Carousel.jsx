@@ -3,13 +3,20 @@ import Slider from "react-slick";
 import CommentCard from "./CommentCard";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Box } from "@mui/material";
 import { customTheme } from "../store/Theme";
 
-function Carousel({ supplierFirebase }) {
+function Carousel({ supplierComments }) {
+  const [sortedComments, setSortedComments] = useState([]);
 
+console.log(supplierComments);
 
-  
+  useEffect(() => {
+    if (supplierComments && supplierComments.length) {
+      const sorted = [...supplierComments].sort((a, b) => a.commentTime - b.commentTime);
+      setSortedComments(sorted);
+    }
+  }, [supplierComments]);
+ 
   const settings = {
     dots: true,
     infinite: false,
@@ -82,7 +89,7 @@ function Carousel({ supplierFirebase }) {
 
   return (
     <Slider {...settings}>
-      {supplierFirebase.comments.map((comment, index) => (
+      {sortedComments.map((comment, index) => (
         <div style={{ overflow: "hidden" }} key={index}>
           <CommentCard
             coupleAvatar={comment.coupleAvatar}

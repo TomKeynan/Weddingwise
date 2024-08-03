@@ -1,16 +1,9 @@
 import { Box, Stack } from "@mui/material";
-import { React, useEffect } from "react";
+import { React} from "react";
 import { customTheme } from "../store/Theme";
-import { useUserStore } from "../fireBase/userStore";
-import Loading from "./Loading";
-import useSupplierStore from "../fireBase/supplierStore";
 
-function SupplierBanner() {
-  const { suppliers } = useSupplierStore();
-  const relevantSupplierData = JSON.parse(sessionStorage.getItem('relevantSupplierData'));
-  const supplierEmail = relevantSupplierData?.supplierEmail;
-  const supplierFirebase = suppliers[supplierEmail];
 
+function SupplierBanner({supplierFirebase}) {
 
 
   return (

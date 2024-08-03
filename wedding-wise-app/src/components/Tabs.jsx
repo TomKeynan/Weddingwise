@@ -19,6 +19,7 @@ import { reverseGeocoding } from "../utilities/functions";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
+  console.log("Tabs");
 
   return (
     <div

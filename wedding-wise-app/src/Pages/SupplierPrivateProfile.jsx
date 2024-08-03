@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import SupplierBanner from "../components/SupplierBanner";
 import { Stack, Typography, useMediaQuery } from "@mui/material";
 import { translateSupplierTypeToHebrew } from "../utilities/functions";
@@ -8,24 +8,57 @@ import KpiPaper from "../components/KpiPaper";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import { AppContext } from "../store/AppContext";
-import { useUserStore } from "../fireBase/userStore";
-import Loading from "../components/Loading";
-import useFetch from "../utilities/useFetch";
 import { Navigate } from "react-router-dom";
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { getAuth } from 'firebase/auth';
+import Loading from "../components/Loading";
+import { fetchSupplierData } from "../fireBase/fetchSupplier";
 
 function SupplierPrivateProfile() {
-  const { isLoading, fetchUserInfo } = useUserStore();
-  const { loading } = useFetch();
+
+  const auth = getAuth();
+  const [user, loading] = useAuthState(auth);
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
   const { supplierData } = useContext(AppContext);
+  const [supplierFirebase, setSupplierFirebase] = useState(null);
+  const [loadingData, setLoadingData] = useState(false);
+  const [error, setError] = useState(null);
 
-  return !supplierData ? (
-    <Navigate to="/suppliers" />
-  ) : isLoading || loading ? (
-    <Loading />
-  ) : (
+
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (supplierData?.supplierEmail) {
+        setLoadingData(true);
+        try {
+          const data = await fetchSupplierData(supplierData.supplierEmail);
+          setSupplierFirebase(data);
+        } catch (err) {
+          setError(err);
+        } finally {
+          setLoadingData(false);
+        }
+      }
+    };
+
+    fetchData();
+  }, [supplierData?.supplierEmail]);
+
+  // Hope it finally works
+  if (loading || loadingData) {
+    return <Loading />;
+  }
+
+  if (!user) {
+    return <Navigate to="/" />;
+  }
+
+  return (
+
     <Stack spacing={3} sx={stackWrapperSX}>
-      <SupplierBanner />
+      <SupplierBanner supplierFirebase={supplierFirebase} />
       <Stack
         justifyContent="center"
         sx={{
@@ -41,9 +74,8 @@ function SupplierPrivateProfile() {
           sx={{ teatAlign: "center", mt: { xs: 0, sm: 3 } }}
         >
           <Typography sx={namesSX}>
-            {`${translateSupplierTypeToHebrew(supplierData.supplierType)} - ${
-              supplierData.businessName
-            }`}
+            {`${translateSupplierTypeToHebrew(supplierData.supplierType)} - ${supplierData.businessName
+              }`}
           </Typography>
         </Stack>
         <Stack

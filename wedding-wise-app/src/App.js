@@ -1,7 +1,3 @@
-// ============= LAST UPDATED =================
-// =============   1-8-2024  =================
-// ============= LAST UPDATED =================
-
 import "./App.css";
 import AppContextProvider from "./store/AppContext";
 import { RouterProvider, createHashRouter } from "react-router-dom";
@@ -30,8 +26,12 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
 import SupplierPrivateProfile from "./Pages/SupplierPrivateProfile";
 import SupplierPublicProfile from "./Pages/SupplierPublicProfile";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "./fireBase/firebase";
+import { useChatStore } from "./fireBase/chatStore";
+
 const googleMapsApiKey = "AIzaSyC3QkzXx3mLsG_-IzI67-WVFBAoAZTYWxk";
-// const googleMapsApiKey = "AIzaSyCSXv1ZziH2SJEcGQIp8EJMytapWnPjytQ";
+const libraries = ["places"];
 
 const router = createHashRouter([
   { path: "/", element: <Home /> },
@@ -68,41 +68,57 @@ const router = createHashRouter([
   { path: "/supplier-login", element: <SupplierLogin /> },
 ]);
 
-
-
 function App() {
-  const { fetchUserInfo,loadingUserFirebase, setLoading  } = useUserStore();
+  const { fetchUserInfo, setLoading,currentUser } = useUserStore();
+  const {  changeChatStatus, isSeen, changeIsSeenStatus } =
+  useChatStore();
+
   
-  // When a user logs in, fetch their data.
   useEffect(() => {
-    // Subscribe to auth state changes
-    const unSub = onAuthStateChanged(auth, async (user) => {
+    let authUnSub = null;
+    let chatUnSub = null;
+
+    const handleAuthChange = async (user) => {
       if (user?.uid) {
-        setLoading(true);  // Set loading state to true before fetching user info
+        setLoading(true);
         await fetchUserInfo(user.uid);
+        setLoading(false);
       } else {
-        setLoading(false);  // Set loading state to false if there is no user
+        setLoading(false);
       }
-    });
-
-    // Cleanup function to unsubscribe from auth state changes
-    return () => {
-      unSub();
     };
-  }, [fetchUserInfo]);
 
-  // Conditionally render the loading component or the app based on loading state
-  
+    const handleChatChange = (res) => {
+      const chatsData = res.data();
+      if (chatsData && Array.isArray(chatsData.chats)) {
+        const hasUnseenChat = chatsData.chats.some((chat) => chat.isSeen === false);
+        changeIsSeenStatus(!hasUnseenChat);
+      }
+    };
 
+    authUnSub = onAuthStateChanged(auth, handleAuthChange);
 
-  // if (loadingUserFirebase) {
-  //   return <Loading />; // Show loading spinner if data is still loading
-  // }
+    if (currentUser?.id) {
+      chatUnSub = onSnapshot(doc(db, "userChats", currentUser.id), handleChatChange);
+    }
+
+    // Cleanup the listeners on component unmount
+    return () => {
+      if (authUnSub) {
+        authUnSub();
+      }
+      if (chatUnSub) {
+        chatUnSub();
+      }
+    };
+  }, [fetchUserInfo, setLoading, changeIsSeenStatus, currentUser?.id]);
+
 
   return (
     <LoadScript
       googleMapsApiKey={googleMapsApiKey}
-      libraries={["places"]}
+      libraries={libraries}
+      loadingElement={<Loading />}
       preventGoogleLibraries
     >
       <AppContextProvider>

@@ -12,7 +12,9 @@ function ChatList() {
     const [input, setInput] = useState("");
 
     const { currentUser } = useUserStore(); // Get the current user from the user store
-    const { changeChat,changeChatStatus } = useChatStore(); // Get the changeChat function from the chat store
+    const { changeChat, changeChatStatus } = useChatStore(); // Get the changeChat function from the chat store
+
+    console.log("ChatList");
 
     useEffect(() => {
         // Set up a Firestore onSnapshot listener for user chats
@@ -42,7 +44,7 @@ function ChatList() {
 
     const handleSelect = async (chat) => {
         // Mark the selected chat as seen
-        debugger;
+   
         const userChats = chats.map((item) => {
             const { user, ...rest } = item;
             return rest;

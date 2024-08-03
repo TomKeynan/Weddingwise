@@ -12,32 +12,17 @@ import Loading from '../Loading';
 
 function Chat() {
   const { currentUser, isLoading, fetchUserInfo } = useUserStore();
-  const { resetChat, chatId, changeChatStatus } = useChatStore();
+  const {  chatId, changeChatStatus } = useChatStore();
 
   const chatRef = useRef(null);
 
-  // Whats better? 
-  // useEffect(() => {
-  //   const handleClickOutside = (event) => {
-  //     if (chatRef.current && !chatRef.current.contains(event.target)) {
-  //       changeChatStatus();
-  //       resetChat();
-  //     }
-  //   };
-
-  //   // Add event listener
-  //   document.addEventListener('mousedown', handleClickOutside);
-
-  //   // Cleanup function to remove event listener
-  //   return () => {
-  //     document.removeEventListener('mousedown', handleClickOutside);
-  //   };
-  // }, [chatRef]);
 
 
   const [isCoupleConnected, setIsCoupleConnected] = useState(false);
 
   const [hasChats, setHasChats] = useState(false);
+
+  console.log("Chat");
 
   useEffect(() => {
 
@@ -73,46 +58,46 @@ function Chat() {
     isLoading ? (
       <Loading />
     ) : (
-    <div className="chat" ref={chatRef}>
- <button onClick={() => changeChatStatus()} className="exit-button">
-            &#10005;
-          </button>
-      {currentUser ? (
-        <>
-         
-          {hasChats ? (
-            <>
-              <ChatList />
-              {chatId && <Window />}
-              {chatId && <Detail />}
-            </>
-          ) : (
-            isCoupleConnected ? (
-              <div>
-                <p className="paragraph">
-                  על מנת להשתמש בצ'אט, אתם צריכים קודם להשיג את נבחרת הספקים המושלמת עבורכם!
-                </p>
-                <Link
-                  to={'/package'}
-                  className="button-link"
-                  onClick={() => { changeChatStatus(); }}
-                >
-                  השיגו חבילה כעת!
-                </Link>
-              </div>
+      <div className="chat" ref={chatRef}>
+        <button onClick={() => changeChatStatus()} className="exit-button">
+          &#10005;
+        </button>
+        {currentUser ? (
+          <>
+
+            {hasChats ? (
+              <>
+                <ChatList />
+                {chatId && <Window />}
+                {chatId && <Detail />}
+              </>
             ) : (
-              <div>
-                <p className="paragraph">
-                  על מנת להשתמש בצ'אט, על זוג ליצור אתכם קשר!
-                </p>
-              </div>
-            )
-          )}
-        </>
-      ) : (
-        <p>Please log in to access this section.</p>
-      )}
-    </div>)
+              isCoupleConnected ? (
+                <div>
+                  <p className="paragraph">
+                    על מנת להשתמש בצ'אט, אתם צריכים קודם להשיג את נבחרת הספקים המושלמת עבורכם!
+                  </p>
+                  <Link
+                    to={'/package'}
+                    className="button-link"
+                    onClick={() => { changeChatStatus(); }}
+                  >
+                    השיגו חבילה כעת!
+                  </Link>
+                </div>
+              ) : (
+                <div>
+                  <p className="paragraph">
+                    על מנת להשתמש בצ'אט, על זוג ליצור אתכם קשר!
+                  </p>
+                </div>
+              )
+            )}
+          </>
+        ) : (
+          <p>Please log in to access this section.</p>
+        )}
+      </div>)
   );
 
 };
@@ -123,3 +108,20 @@ function Chat() {
 export default Chat;
 
 
+ // Whats better? 
+  // useEffect(() => {
+  //   const handleClickOutside = (event) => {
+  //     if (chatRef.current && !chatRef.current.contains(event.target)) {
+  //       changeChatStatus();
+  //       resetChat();
+  //     }
+  //   };
+
+  //   // Add event listener
+  //   document.addEventListener('mousedown', handleClickOutside);
+
+  //   // Cleanup function to remove event listener
+  //   return () => {
+  //     document.removeEventListener('mousedown', handleClickOutside);
+  //   };
+  // }, [chatRef]);

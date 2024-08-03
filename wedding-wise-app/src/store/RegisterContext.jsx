@@ -29,6 +29,8 @@ export const RegisterContext = createContext({
 export default function RegisterContextProvider({ children }) {
   const navigate = useNavigate();
 
+
+  
   const { sendData, resData, error, loading } = useFetch();
 
   const { updateCoupleData } = useContext(AppContext);

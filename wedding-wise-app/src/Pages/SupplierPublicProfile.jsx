@@ -1,5 +1,5 @@
 import { Link, Paper, Stack, Typography, useMediaQuery } from "@mui/material";
-import React, {  useState, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import SupplierBanner from "../components/SupplierBanner";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import InstagramIcon from "@mui/icons-material/Instagram";
@@ -15,55 +15,91 @@ import "slick-carousel/slick/slick-theme.css";
 import CommentForm from "../components/CommentForm";
 import MessageDialog from "../components/Dialogs/MessageDialog";
 import Loading from "../components/Loading";
-import useSupplierStore from "../fireBase/supplierStore";
-
-
+import { Navigate } from "react-router-dom";
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { getAuth } from 'firebase/auth';
+import { AppContext } from "../store/AppContext";
+import { fetchSupplierData } from "../fireBase/fetchSupplier";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "../fireBase/firebase";
 
 function SupplierPublicProfile() {
+
+  const auth = getAuth();
+  const [user, loading] = useAuthState(auth);
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
-  const { suppliers, fetchSupplierData, loadingFirebaseSupplier } = useSupplierStore();
-  const [relevantSupplierData, setRelevantSupplierData] = useState(null);
+  const { supplierData } = useContext(AppContext);
   const [supplierFirebase, setSupplierFirebase] = useState(null);
+  const [loadingData, setLoadingData] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Fetch the relevantSupplierData from session storage on mount
-    const data = JSON.parse(sessionStorage.getItem('relevantSupplierData'));
-    if (data) {
-      setRelevantSupplierData(data);
-      // Fetch supplier data if it's not already in the suppliers state
-      if (!suppliers[data.supplierEmail]) {
-        fetchSupplierData(data.supplierEmail);
-      } else {
-        // Set supplierFirebase if supplier data is already in the state
-        setSupplierFirebase(suppliers[data.supplierEmail]);
+    const fetchData = async () => {
+      if (supplierData?.supplierEmail) {
+        setLoadingData(true);
+        try {
+          const data = await fetchSupplierData(supplierData.supplierEmail);
+          setSupplierFirebase(data);
+        } catch (err) {
+          console.error("Error fetching supplier data: ", err);
+        } finally {
+          setLoadingData(false);
+        }
       }
-    }
-  }, [fetchSupplierData, suppliers]);
+    };
+  
+    fetchData();
+  }, [supplierData?.supplierEmail]); 
+  
 
+
+  // A listner for comments
   useEffect(() => {
-    if (relevantSupplierData?.supplierEmail) {
-      // Update supplierFirebase when suppliers state changes
-      const supplier = suppliers[relevantSupplierData.supplierEmail];
-      if (supplier) {
-        setSupplierFirebase(supplier);
+    if (!supplierData?.supplierEmail || !supplierFirebase?.id) return;
+  
+    const commentsRef = doc(db, "supplierComments", supplierFirebase.id);
+  
+    const unsubscribe = onSnapshot(commentsRef, async (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        setLoadingData(true);
+        try {
+         
+          const data = await fetchSupplierData(supplierData.supplierEmail);
+          setSupplierFirebase(data);
+        } catch (error) {
+          console.error("Error fetching supplier data on comments change: ", error);
+        } finally {
+          setLoadingData(false);
+        }
       }
-    }
-  }, [suppliers, relevantSupplierData]);
+    }, (error) => {
+      console.error("Error listening to comments: ", error);
+      setLoadingData(false);
+    });
+  
+    return () => {
+      unsubscribe();
+    };
+  }, [supplierData?.supplierEmail, supplierFirebase?.id]); 
+  
 
-  if (loadingFirebaseSupplier || !relevantSupplierData || !supplierFirebase) {
+
+
+
+  // Hope it finally works
+  if (loading || loadingData) {
     return <Loading />;
   }
 
+  if (!user) {
+    return <Navigate to="/" />;
+  }
 
-console.log("Shalom");
 
-// return !currentUser ? (
-  //   <Navigate to="/" />
-  // ) : (
 
   return (
     <Stack alignItems="center" sx={stackWrapperSX}>
-      <SupplierBanner />
+      <SupplierBanner supplierFirebase={supplierFirebase} />
       <Stack
         spacing={10}
         sx={{
@@ -120,12 +156,12 @@ console.log("Shalom");
         >
           <KpiPaper
             title="מספר המדרגים:"
-            data={relevantSupplierData.ratedCount}
+            data={supplierData.ratedCount}
             icon={<PeopleOutlineIcon />}
           />
           <KpiPaper
             title="דירוג:"
-            data={relevantSupplierData.rating}
+            data={supplierData.rating}
             icon={<StarOutlineIcon />}
           />
         </Stack>
@@ -135,7 +171,7 @@ console.log("Shalom");
           <Paper variant="elevation" elevation={6} sx={paperSX}>
             <Typography>כאן יבוא התיאור</Typography>
             <Typography>
-              {supplierFirebase.description}
+              {supplierFirebase?.description}
             </Typography>
           </Paper>
         </Stack>
@@ -145,14 +181,14 @@ console.log("Shalom");
         <Typography sx={{ ...titleSX, mb: 5 }}>
           הזוגות של WeddingWise משתפים
         </Typography>
-        <Carousel  supplierFirebase={supplierFirebase} />
+        <Carousel  supplierComments ={supplierFirebase.comments} />
       </Stack>
       {/* comment form */}
       <Stack sx={{ maxWidth: 700, width: { xs: "90%", sm: "60%" } }}>
         <Typography sx={{ ...titleSX, mb: 5, px: 2 }}>
           השאירו תגובה מהחוויה שלכם עם שם ספק
         </Typography>
-        <CommentForm supplierData={supplierFirebase} />
+        <CommentForm supplierFirebase={supplierFirebase} />
       </Stack>
     </Stack>
   );
@@ -196,66 +232,3 @@ const titleSX = {
 
 
 
- //   <>
-  //   {loading ? (
-  //     <Loading />
-  //   ) : (
-  //     <Stack alignItems="center" sx={stackWrapperSX}>
-  //       <SupplierBanner supplierFirebase={supplierFirebase} />
-  //       <Stack
-  //         spacing={10}
-  //         sx={{
-  //           width: { xs: "90%", sm: "60%" },
-  //           mt: { xs: 0, sm: 3 },
-  //         }}
-  //       >
-  //         {/* social media links */}
-  //         <Stack direction="row" justifyContent="space-around">
-  //           <YouTubeIcon sx={socialIconsSX} />
-  //           <InstagramIcon sx={socialIconsSX} />
-  //           <LinkedInIcon sx={socialIconsSX} />
-  //           <FacebookIcon sx={socialIconsSX} />
-  //         </Stack>
-  //         {/* rating and number of raters */}
-  //         <Stack
-  //           direction={screenAboveSM ? "row" : "column"}
-  //           justifyContent="center"
-  //           alignItems="center"
-  //           spacing={3}
-  //           sx={{ mb: 15, mt: 10 }}
-  //         >
-  //           {kpis.map((kpi, index) => (
-  //             <KpiPaper key={index} kpi={kpi} />
-  //           ))}
-  //         </Stack>
-  //         {/* supplier description */}
-  //         <Stack>
-  //           <Typography sx={{ ...titleSX, mb: 5 }}>אודות שם ספק </Typography>
-  //           <Paper variant="elevation" elevation={6} sx={paperSX}>
-  //             <Typography>כאן יבוא התיאור</Typography>
-  //             <Typography>
-  //               {supplierFirebase.description}
-  //             </Typography>
-  //           </Paper>
-  //         </Stack>
-  //       </Stack>
-  //       {/* carousel */}
-  //       <Stack sx={{ minHeigh: 300, width: { xs: "70%", sm: "80%" }, my: 15 }}>
-  //         <Typography sx={{ ...titleSX, mb: 5 }}>
-  //           הזוגות של WeddingWise משתפים
-  //         </Typography>
-  //         <Carousel supplierFirebase={supplierFirebase} />
-  //       </Stack>
-  //       {/* comment form */}
-  //       <Stack sx={{ maxWidth: 700, width: { xs: "90%", sm: "60%" } }}>
-  //         <Typography sx={{ ...titleSX, mb: 5, px: 2 }}>
-  //           השאירו תגובה מהחוויה שלכם עם שם ספק
-  //         </Typography>
-  //         <CommentForm />
-  //       </Stack>
-  //     </Stack>)}
-  // </>
-
-
-
-  

@@ -34,6 +34,9 @@ function Window() {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
+  console.log("Window");
+
+
   // Listen for changes to the current chat and update the local state
   useEffect(() => {
     const unSub = onSnapshot(

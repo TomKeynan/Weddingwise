@@ -19,6 +19,7 @@ import { useUserStore } from "../fireBase/userStore";
 import { arrayUnion, doc, updateDoc, getDocs, where, query, collection } from "firebase/firestore";
 import { db } from "../fireBase/firebase";
 import Loading from "./Loading";
+import { fetchSupplierData } from "../fireBase/fetchSupplier";
 
 
 const testObject = {
@@ -26,17 +27,20 @@ const testObject = {
   coupleEmail: "tom1@gmail.com",
   rating: 3,
 };
-export default function CommentForm({ supplierData }) {
+export default function CommentForm({supplierFirebase}) {
   const { sendData, resData, setResData, loading, error, setError } =
     useFetch();
-  // const { coupleData, supplierData } = useContext(AppContext);
-  const { coupleData } = useContext(AppContext);
+  const { coupleData,supplierData } = useContext(AppContext);
   const [rate, setRate] = useState(0);
   const [comment, setComment] = useState("");
   const [openUpdateSuccess, setOpenUpdateSuccess] = useState(false);
   const [open, setOpen] = useState(false);
   const [isRated, setIsRated] = useState(false);
   const { currentUser } = useUserStore();
+  const [loadingData, setLoadingData] = useState(false);
+
+
+
 
   useEffect(() => {
     const updateFirebaseAndSetState = async () => {
@@ -46,13 +50,12 @@ export default function CommentForm({ supplierData }) {
           setOpenUpdateSuccess(true);
         } catch (err) {
           console.log(err);
-          setOpen(true); // Handle error if needed
+          setOpen(true); 
         }
       }
       if (error) {
         setOpen(true);
       }
-      // Clean up
       return () => {
         setResData(undefined);
       };
@@ -61,35 +64,31 @@ export default function CommentForm({ supplierData }) {
     updateFirebaseAndSetState();
   }, [resData, error]);
 
+
+
   const handleSendToFirebase = async () => {
-
+    setLoadingData(true); 
+  
     try {
-     
       const coupleNames = coupleData.partner1Name + ' ו' + coupleData.partner2Name;
-      const userRef = collection(db, "users");
-      const q = query(userRef, where("email", "==", supplierData.email));
-      const querySnapshot = await getDocs(q);
-
-      const user = querySnapshot.docs[0].data();
-      const supplierId = user.id;
-
-      await updateDoc(doc(db, "supplierComments", supplierId), {
+  
+      await updateDoc(doc(db, "supplierComments", supplierFirebase.id), {
         comments: arrayUnion({
           commentTime: new Date(),
           coupleAvatar: currentUser.avatar,
           coupleNames,
           rating: rate,
           text: comment,
-
         })
       });
-
+  
     } catch (err) {
-      console.log(err);
+      console.error( err);
+
+    } finally {
+      setLoadingData(false); 
     }
-  }
-
-
+  };
 
 
   function handleChange(e) {
@@ -102,8 +101,8 @@ export default function CommentForm({ supplierData }) {
     } else {
       setIsRated(false);
       sendData("/Suppliers/rateSupplier", "POST", {
-        supplierEmail: supplierData.email,
-        coupleEmail: "test10@gmail.com",
+        supplierEmail: supplierData.supplierEmail,
+        coupleEmail: currentUser.email,
         rating: rate,
       });
     }
@@ -157,9 +156,13 @@ export default function CommentForm({ supplierData }) {
     );
   }
 
+  if ( loadingData  || loading ) {
+    return <Loading />;
+  }
+
   return (
     <>
-      {loading && <Loading />}
+     
       {error && showErrorMessage(error)}
       {openUpdateSuccess && showSuccessMessage()}
       <Stack sx={commentWrapperSX}>
@@ -181,7 +184,7 @@ export default function CommentForm({ supplierData }) {
           >
             <Box
               component="img"
-              src={currentUser.avatar}
+              src={currentUser?.avatar}
               sx={{
                 width: { xs: 60, sm: 43 },
                 aspectRatio: "1/1",
@@ -198,7 +201,7 @@ export default function CommentForm({ supplierData }) {
                 }}
               // {comment.names}
               >
-                {currentUser.username}
+                {currentUser?.username}
               </Typography>
               <Typography
                 sx={{

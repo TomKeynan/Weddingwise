@@ -18,17 +18,15 @@ import { useNavigate } from "react-router-dom";
 import { getAuth, signOut } from 'firebase/auth';
 import { useChatStore } from "../fireBase/chatStore";
 import { useUserStore } from "../fireBase/userStore";
-import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "../fireBase/firebase";
-import { useEffect } from "react";
 
 function Navbar({ isLayout = true, isSupplier = false }) {
   const navigate = useNavigate();
   // isLayout detect rather navbar's style should be for home page or all other pages
   const screenAboveMD = useMediaQuery("(min-width: 900px)");
 
-  const { resetChat, changeChatStatus, isSeen, changeIsSeenStatus } =
+  const {  changeChatStatus, isSeen, changeIsSeenStatus } =
     useChatStore();
+    
   const { currentUser, isLoading, logout } = useUserStore();
 
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -121,8 +119,8 @@ function Navbar({ isLayout = true, isSupplier = false }) {
     if (linkText === "התנתק") {
 
       handleLogout();
-      sessionStorage.setItem("currentSupplier", JSON.stringify(null));
       setSupplierData(null);
+
     }
   }
   
@@ -145,28 +143,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
     handleCloseUserMenu();
   };
 
-  // Listen for changes to the current chat and update the local state
-  useEffect(() => {
-    let unSub = null;
-    if (currentUser?.id) {
-      unSub = onSnapshot(doc(db, "userChats", currentUser.id), (res) => {
-        const chatsData = res.data();
-        if (chatsData && Array.isArray(chatsData.chats)) {
-          const hasUnseenChat = chatsData.chats.some(
-            (chat) => chat.isSeen === false
-          );
-          changeIsSeenStatus(!hasUnseenChat);
-        }
-      });
-    }
-
-    // Cleanup the listener on component unmount
-    return () => {
-      if (unSub) {
-        unSub();
-      }
-    };
-  }, [currentUser?.id]);
+ 
 
   // isActive = boolean property which destructured form the NavLink component.
   function navLinkLayoutStyles({ isActive }) {

@@ -53,11 +53,7 @@ function UserPackage() {
 
   const formRef = useRef(null);
 
-  const { currentUser,isLoading } = useUserStore();
-
-  const { isSeen, changeIsSeenStatus } = useChatStore();
-
-
+  const { currentUser, isLoading } = useUserStore();
 
 
   useEffect(() => {
@@ -76,7 +72,7 @@ function UserPackage() {
   }, [coupleData]);
 
 
- 
+
 
   useEffect(() => {
     const updateCoupleData = async () => {
@@ -175,7 +171,7 @@ function UserPackage() {
             chats: arrayUnion({
               chatId: newChatRef.id,
               lastMessage: firstMessage,
-                isSeen: false,
+              isSeen: false,
               receiverId: currentUser.id,
               updatedAt: Date.now(),
             }),
@@ -204,7 +200,7 @@ function UserPackage() {
     } catch (err) {
       console.error(err);
     }
-  
+
   };
 
 
