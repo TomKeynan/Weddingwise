@@ -1,54 +1,124 @@
-import React from "react";
-import { Paper, Stack, Typography, useMediaQuery } from "@mui/material";
-import { supplierCards } from "../../utilities/collections";
-// import SupplierCard from "../SupplierCard";
-import { carouselTheme } from "../../utilities/collections";
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
+import React, { useEffect, useState } from "react";
+import { Paper, Stack, Typography } from "@mui/material";
 import { customTheme } from "../../store/Theme";
-import SuppliersCardDemo from "../suppliersCardDemo";
+import Slider from "react-slick";
+import SupplierCard from "../SupplierCard";
+import useFetch from "../../utilities/useFetch";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 function SuppliersCarousel() {
-  const screenUnderSM = useMediaQuery("(max-width: 600px)");
-  if (screenUnderSM) {
+  // const screenUnderSM = useMediaQuery("(max-width: 600px)");
+  const { getData, resData, loading, error } = useFetch();
+
+  const [suppliersList, setSuppliersList] = useState([]);
+
+  useEffect(() => {
+    getData("/Suppliers/getTopSuppliers");
+  }, []);
+
+  useEffect(() => {
+    if (resData) {
+      setSuppliersList(resData);
+    }
+  }, [resData]);
+
+  var settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 3,
+    initialSlide: 0,
+    responsive: [
+      {
+        breakpoint: 1200,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          infinite: true,
+          // dots: true,
+        },
+      },
+      {
+        breakpoint: 800,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          initialSlide: 1,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
+    nextArrow: <SampleNextArrow />,
+    prevArrow: <SamplePrevArrow />,
+  };
+
+  function SampleNextArrow(props) {
+    const { className, style, onClick } = props;
     return (
-      <Stack rowGap={3} sx={{ textAlign: "center", py: 5 }}>
-        <Typography sx={carouselTextSX}>
-          נותני השירות המקוצעיים ביותר
-        </Typography>
-        <Carousel
-          responsive={carouselTheme}
-          containerClass="carousel-container"
-        >
-          {supplierCards.map((supplier, index) => (
-            <SuppliersCardDemo key={index} props={supplier} showActionBtn={true} />
-          ))}
-        </Carousel>
-      </Stack>
+      <div
+        className={className}
+        style={{
+          ...style,
+          display: "block",
+          // background: "#9DD2B9",
+          background: "grey",
+          borderRadius: "50%",
+          boxShadow: customTheme.shadow.strong,
+        }}
+        onClick={onClick}
+      />
     );
-  } else {
+  }
+
+  function SamplePrevArrow(props) {
+    const { className, style, onClick } = props;
     return (
-      <Paper variant="elevation" elevation={6} sx={paperSX}>
-        <Stack rowGap={5}>
+      <div
+        className={className}
+        style={{
+          ...style,
+          display: "block",
+          // background: "#9DD2B9",
+          background: "grey",
+          borderRadius: "50%",
+          boxShadow: customTheme.shadow.strong,
+        }}
+        onClick={onClick}
+      />
+    );
+  }
+
+  return (
+    <Stack justifyContent="center" sx={{ textAlign: "center", my: 10 }}>
+      {!error && (
+        <Stack>
           <Typography sx={carouselTextSX}>
             נותני השירות המקוצעיים ביותר
           </Typography>
-          <Carousel
-            responsive={carouselTheme}
-            containerClass="carousel-container"
-          >
-            {supplierCards.map((supplier, index) => (
-              <SuppliersCardDemo
-                key={index}
-                props={supplier}
-                showMoreInfoBtn={true}
-              />
-            ))}
-          </Carousel>
+          <Paper variant="elevation" elevation={6} sx={paperSX}>
+            <Slider {...settings}>
+              {suppliersList.map((supplier) => (
+                <div
+                  key={supplier.supplierEmail}
+                  style={{ overflow: "hidden" }}
+                >
+                  <SupplierCard showMoreInfoBtn={true} props={supplier} />
+                </div>
+              ))}
+            </Slider>
+          </Paper>
         </Stack>
-      </Paper>
-    );
-  }
+      )}
+    </Stack>
+  );
 }
 
 export default SuppliersCarousel;
@@ -57,19 +127,31 @@ const paperSX = {
   width: "80%",
   px: { xs: 2, sm: 4, md: 5 },
   py: 5,
+  // p: 10,
   backgroundColor: "rgba(255,255,255, 0.6)",
   borderTopLeftRadius: 50,
   borderBottomRightRadius: 50,
   position: "relative",
   textAlign: "center",
   height: "100%",
-  margin: "60px auto",
+  margin: "0 auto",
 };
 
 const carouselTextSX = {
-  fontSize: { xs: 22, sm: 24, md: 35 },
-  fontFamily: "Varela Round",
+  textAlign: "center",
+  fontSize: { xs: 26, sm: 30, md: 36 },
+  fontFamily: customTheme.font.main,
   fontWeight: "bold",
   color: customTheme.palette.primary.main,
+  WebkitTextStrokeWidth: { xs: 1.5, sm: 0.7 },
   textShadow: " 0px 1px 1px #282828",
+  mb: 3,
 };
+// const carouselTextSX = {
+//   fontSize: { xs: 22, sm: 24, md: 35 },
+//   fontFamily: "Varela Round",
+//   fontWeight: "bold",
+//   color: customTheme.palette.primary.main,
+//   textShadow: " 0px 1px 1px #282828",
+//   mb:5,
+// };

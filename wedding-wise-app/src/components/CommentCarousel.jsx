@@ -104,4 +104,4 @@ console.log(supplierComments);
   );
 }
 
-export default Carousel;
+export default CommentCarousel;

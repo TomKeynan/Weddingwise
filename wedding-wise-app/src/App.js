@@ -30,6 +30,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "./fireBase/firebase";
 import { useChatStore } from "./fireBase/chatStore";
 
+import PlannerLP from "./Pages/PlannerLP";
 const googleMapsApiKey = "AIzaSyC3QkzXx3mLsG_-IzI67-WVFBAoAZTYWxk";
 const libraries = ["places"];
 
@@ -47,6 +48,7 @@ const router = createHashRouter([
       { path: "finance", element: <Finance /> },
       { path: "invitees", element: <Invitees /> },
       { path: "edit", element: <EditDetails /> },
+      { path: "planner", element: <PlannerLP /> },
     ],
   },
   {
@@ -55,11 +57,11 @@ const router = createHashRouter([
       { path: "/suppliers", element: <SupplierLP /> },
       { path: "/supplier-signup", element: <SupplierSignUp /> },
       {
-        path: "/supplier-private-Profile",
+        path: "/supplier-private-profile",
         element: <SupplierPrivateProfile />,
       },
       {
-        path: "/supplier-public-Profile",
+        path: "/supplier-public-profile",
         element: <SupplierPublicProfile />,
       },
     ],
