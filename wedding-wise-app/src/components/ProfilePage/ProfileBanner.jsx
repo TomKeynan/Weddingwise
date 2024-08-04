@@ -76,7 +76,7 @@ export default ProfileBanner;
 
 const bannerSX = {
   position: "relative",
-  minHeight: { xs: 320, sm: 400, md: 500 },
+  minHeight: { xs: 320, sm: 400, md: 500, lg: 700 },
   top: -90,
   minWidth: "100%",
   backgroundImage: `url(assets/profileBanner.png)`,
@@ -102,7 +102,7 @@ const namesSX = {
   color: { sm: "secondary.main" },
   WebkitTextStrokeWidth: { xs: 2, sm: 0.7 },
   // WebkitTextStrokeColor: "black",
-  fontWeight: "bold"
+  fontWeight: "bold",
 };
 
 const weddingDateSX = {
@@ -113,6 +113,6 @@ const weddingDateSX = {
   fontFamily: customTheme.font.main,
   WebkitTextStrokeWidth: { xs: 2, sm: 0.5 },
   // WebkitTextStrokeColor: "black",
-  fontWeight: "bold"
+  fontWeight: "bold",
   // fontFamily: "system-ui",
 };

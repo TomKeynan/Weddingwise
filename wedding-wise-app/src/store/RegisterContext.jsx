@@ -178,16 +178,16 @@ export default function RegisterContextProvider({ children }) {
   // checks if all fields are valid.
   function isEditFormValid(userDetails) {
     const filteredKeys = filterNonRequiredFields();
-    const newKeys = filteredKeys.filter((key) => {
-      return key !== "password";
-    });
+    // const newKeys = filteredKeys.filter((key) => {
+    //   return key !== "password";
+    // });
     //result is counting how many fields passed test validation.
-    const result = newKeys.reduce((acc, currentKey) => {
+    const result = filteredKeys.reduce((acc, currentKey) => {
       if (VALIDATIONS[currentKey].regex.test(userDetails[currentKey]))
         return (acc += 1);
       else return acc;
     }, 0);
-    return result === newKeys.length;
+    return result === filteredKeys.length;
   }
 
   function saveDateValue(dateInput) {

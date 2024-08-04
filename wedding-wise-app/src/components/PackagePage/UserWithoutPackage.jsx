@@ -2,7 +2,7 @@ import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 import React, { useContext } from "react";
 import { customTheme } from "../../store/Theme";
 import { useNavigate } from "react-router-dom";
-import OutlinedButton from "../OutlinedButton";
+import OutlinedButton from "../buttons/OutlinedButton";
 import { AppContext } from "../../store/AppContext";
 function UserWithoutPackage() {
   const navigate = useNavigate();
