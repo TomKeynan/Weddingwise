@@ -76,6 +76,7 @@
   object-fit: contain;
   border-radius: 10%;
   background-position: center;
+  box-shadow: 20px 15px 15px -3px rgba(0,0,0,0.1);
 }
 
 @media screen and (max-width: 900px) {
@@ -104,41 +105,3 @@
   margin: 0 -10px;
 }
 
-/* Navbar.css */
-.navbar {
-  /* display: flex; */
-  /* background-color: #333; */
-  /* padding: 10px; */
-}
-
-/* .navbar-item {
-  color: white;
-  padding: 10px;
-  position: relative;
-  cursor: pointer;
-} */
-
-/* .navbar-item:hover {
-  background-color: #575757;
-} */
-
-/* .dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background-color: #333;
-  padding: 10px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-} */
-
-/* .dropdown a {
-  color: white;
-  padding: 10px;
-  display: block;
-  text-decoration: none;
-}
-
-.dropdown a:hover {
-  background-color: #575757;
-} */

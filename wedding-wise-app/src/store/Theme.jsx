@@ -33,7 +33,8 @@ export const customTheme = createTheme(
       },
     },
     colorBg: {
-      main: "linear-gradient(220deg, rgba(218,212,251,1) 90%, rgba(247,244,255,1) 60%, rgba(253,250,255,1) 70%)",
+      main: "linear-gradient(35deg, rgba(253,250,255,1) 30%, rgba(235,231,253,1) 80%)",
+      // main: "linear-gradient(220deg, rgba(218,212,251,1) 90%, rgba(247,244,255,1) 60%, rgba(253,250,255,1) 70%)",
       threeColors:
         "linear-gradient(165deg, rgba(255,255,255,0.9) 60%, rgba(255,214,135,0.6) 60%, rgba(227,220,252,0.8) 85%);",
       footer:

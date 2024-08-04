@@ -25,9 +25,6 @@ function SupplierPrivateProfile() {
   const [error, setError] = useState(null);
 
 
-
-
-
   useEffect(() => {
     const fetchData = async () => {
       if (supplierData?.supplierEmail) {

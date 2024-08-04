@@ -1,4 +1,11 @@
-import { Link, Paper, Stack, Typography, useMediaQuery } from "@mui/material";
+import {
+  Alert,
+  Link,
+  Paper,
+  Stack,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import React, { useState, useContext, useEffect } from "react";
 import SupplierBanner from "../components/SupplierBanner";
 import YouTubeIcon from "@mui/icons-material/YouTube";
@@ -12,20 +19,17 @@ import { customTheme } from "../store/Theme";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CommentForm from "../components/CommentForm";
-import MessageDialog from "../components/Dialogs/MessageDialog";
 import { Navigate } from "react-router-dom";
 import CommentCarousel from "../components/CommentCarousel";
 import Loading from "../components/Loading";
-import { Navigate } from "react-router-dom";
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { getAuth } from 'firebase/auth';
 import { AppContext } from "../store/AppContext";
 import { fetchSupplierData } from "../fireBase/fetchSupplier";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../fireBase/firebase";
+import { getAuth } from "firebase/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 function SupplierPublicProfile() {
-
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
@@ -48,44 +52,44 @@ function SupplierPublicProfile() {
         }
       }
     };
-  
-    fetchData();
-  }, [supplierData?.supplierEmail]); 
-  
 
+    fetchData();
+  }, [supplierData?.supplierEmail]);
 
   // A listner for comments
   useEffect(() => {
     if (!supplierData?.supplierEmail || !supplierFirebase?.id) return;
-  
+
     const commentsRef = doc(db, "supplierComments", supplierFirebase.id);
-  
-    const unsubscribe = onSnapshot(commentsRef, async (docSnapshot) => {
-      if (docSnapshot.exists()) {
-        setLoadingData(true);
-        try {
-         
-          const data = await fetchSupplierData(supplierData.supplierEmail);
-          setSupplierFirebase(data);
-        } catch (error) {
-          console.error("Error fetching supplier data on comments change: ", error);
-        } finally {
-          setLoadingData(false);
+
+    const unsubscribe = onSnapshot(
+      commentsRef,
+      async (docSnapshot) => {
+        if (docSnapshot.exists()) {
+          setLoadingData(true);
+          try {
+            const data = await fetchSupplierData(supplierData.supplierEmail);
+            setSupplierFirebase(data);
+          } catch (error) {
+            console.error(
+              "Error fetching supplier data on comments change: ",
+              error
+            );
+          } finally {
+            setLoadingData(false);
+          }
         }
+      },
+      (error) => {
+        console.error("Error listening to comments: ", error);
+        setLoadingData(false);
       }
-    }, (error) => {
-      console.error("Error listening to comments: ", error);
-      setLoadingData(false);
-    });
-  
+    );
+
     return () => {
       unsubscribe();
     };
-  }, [supplierData?.supplierEmail, supplierFirebase?.id]); 
-  
-
-
-
+  }, [supplierData?.supplierEmail, supplierFirebase?.id]);
 
   // Hope it finally works
   if (loading || loadingData) {
@@ -95,8 +99,6 @@ function SupplierPublicProfile() {
   if (!user) {
     return <Navigate to="/" />;
   }
-
-
 
   return (
     <Stack alignItems="center" sx={stackWrapperSX}>
@@ -170,20 +172,35 @@ function SupplierPublicProfile() {
         <Stack>
           <Typography sx={{ ...titleSX, mb: 5 }}>אודות שם ספק </Typography>
           <Paper variant="elevation" elevation={6} sx={paperSX}>
-            <Typography>כאן יבוא התיאור</Typography>
-            <Typography>
+            <Typography sx={{ textAlign: "center" }}>
               {supplierFirebase?.description}
             </Typography>
           </Paper>
         </Stack>
       </Stack>
       {/* carousel */}
-      <Stack sx={{ minHeigh: 300, width: { xs: "70%", sm: "80%" }, my: 15 }}>
-        <Typography sx={{ ...titleSX, mb: 5 }}>
-          הזוגות של WeddingWise משתפים
-        </Typography>
-        <Carousel  supplierComments ={supplierFirebase.comments} />
-      </Stack>
+      {supplierFirebase && supplierFirebase["comments"].length > 0 ? (
+        <Stack sx={{ minHeigh: 300, width: { xs: "70%", sm: "80%" }, my: 15 }}>
+          <Typography sx={{ ...titleSX, mb: 5 }}>
+            הזוגות של <span style={{ color: "#eb77e2" }}>W</span>edding
+            <span>W</span>ise משתפים
+          </Typography>
+          <CommentCarousel supplierComments={supplierFirebase.comments} />
+        </Stack>
+      ) : (
+        <Stack sx={{ width: { xs: "90%", sm: "60%" }, my: 10 }}>
+          <Typography sx={{ ...titleSX, mb: 5 }}>
+            הזוגות של <span style={{ color: "#eb77e2" }}>W</span>edding
+            <span style={{ color: "#eb77e2" }}>W</span>ise משתפים
+          </Typography>
+          <Paper variant="elevation" elevation={6} sx={paperSX}>
+            <Alert severity="warning" sx={alertSX}>
+              תהיו הראשנים לשתף את דעתכם על השירות שקיבלתם מ"
+              {supplierData.businessName}"
+            </Alert>
+          </Paper>
+        </Stack>
+      )}
       {/* comment form */}
       <Stack sx={{ maxWidth: 700, width: { xs: "90%", sm: "60%" } }}>
         <Typography sx={{ ...titleSX, mb: 5, px: 2 }}>
@@ -193,14 +210,9 @@ function SupplierPublicProfile() {
       </Stack>
     </Stack>
   );
-
 }
 
 export default SupplierPublicProfile;
-
-
-
-
 
 const stackWrapperSX = {
   minHeight: "inherit",
@@ -231,5 +243,12 @@ const titleSX = {
   // WebkitTextStrokeColor: "black",
 };
 
-
-
+const alertSX = {
+  fontSize: 14,
+  px: 1,
+  justifyContent: "center",
+  "& .MuiAlert-icon": {
+    mr: "3px",
+  },
+  textAlign: "center",
+};

@@ -221,7 +221,7 @@ export default function CommentForm({supplierFirebase}) {
           />
           {isRated && (
             <Alert severity="error" sx={errorAlertSX}>
-              פרסום התגובה דורש גם דירוג של לפחות כוכב אחד
+              פרסום התגובה דורש דירוג של לפחות כוכב אחד
             </Alert>
           )}
         </Stack>

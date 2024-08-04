@@ -2,7 +2,7 @@ import { Button, Grid, Stack, Typography } from "@mui/material";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { stickers, insertPackageResponse } from "../../utilities/collections";
 import TypeWeightCard from "./TypeWeightCard";
-import OutlinedButton from "../OutlinedButton";
+import OutlinedButton from "../buttons/OutlinedButton";
 import SupplierCard from "../SupplierCard";
 import { customTheme } from "../../store/Theme";
 import useFetch from "../../utilities/useFetch";
@@ -15,12 +15,23 @@ import EditCouple from "../EditCouple";
 import RegisterContextProvider from "../../store/RegisterContext";
 import { useNavigate } from "react-router-dom";
 
-import { arrayUnion, collection, doc, deleteDoc, arrayRemove, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
-import { db } from '../../fireBase/firebase';
+import {
+  arrayUnion,
+  collection,
+  doc,
+  deleteDoc,
+  arrayRemove,
+  getDoc,
+  getDocs,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { db } from "../../fireBase/firebase";
 import { useUserStore } from "../../fireBase/userStore";
 import { useChatStore } from "../../fireBase/chatStore";
-
-
 
 function UserPackage() {
   const navigate = useNavigate();
@@ -55,7 +66,6 @@ function UserPackage() {
 
   const { currentUser, isLoading } = useUserStore();
 
-
   useEffect(() => {
     // check if couple ever approve a package
     if (coupleData.package)
@@ -71,13 +81,9 @@ function UserPackage() {
     sessionStorage.setItem("currentCouple", JSON.stringify(coupleData));
   }, [coupleData]);
 
-
-
-
   useEffect(() => {
     const updateCoupleData = async () => {
       if (resData === 204 || resData === 200) {
-
         const { typeWeights, ...rest } = offeredPackage;
         await addSuppliersChats(rest.selectedSuppliers); // Wait for this to complete
         setCoupleData((prevData) => {
@@ -92,15 +98,15 @@ function UserPackage() {
     updateCoupleData();
   }, [resData]);
 
-
-
   const addSuppliersChats = async (suppliers) => {
     debugger;
     const chatRef = collection(db, "chats");
     const userChatsRef = collection(db, "userChats");
     try {
       // Get the current package from sessionStorage
-      const supplierPackage = JSON.parse(sessionStorage.getItem('currentCouple')).package;
+      const supplierPackage = JSON.parse(
+        sessionStorage.getItem("currentCouple")
+      ).package;
 
       if (supplierPackage != null) {
         // Step 1: Delete existing chats
@@ -114,16 +120,18 @@ function UserPackage() {
           await deleteDoc(doc(chatRef, chatId));
         }
 
-
         // Clear the chats array in the current user's userChats document
         await updateDoc(userChatsDocRef, {
-          chats: []
+          chats: [],
         });
 
         // Step 2: Remove chat references from each supplier's userChats document
         for (const supplier of supplierPackage.selectedSuppliers) {
           const userRef = collection(db, "users");
-          const q = query(userRef, where("email", "==", supplier.supplierEmail));
+          const q = query(
+            userRef,
+            where("email", "==", supplier.supplierEmail)
+          );
           const querySnapshot = await getDocs(q);
 
           if (!querySnapshot.empty) {
@@ -140,7 +148,7 @@ function UserPackage() {
               if (chat.receiverId === currentUser.id) {
                 // Remove chat from the supplier's userChats document
                 await updateDoc(supplierUserChatsDocRef, {
-                  chats: arrayRemove(chat)
+                  chats: arrayRemove(chat),
                 });
               }
             }
@@ -200,15 +208,7 @@ function UserPackage() {
     } catch (err) {
       console.error(err);
     }
-
   };
-
-
-
-
-
-
-
 
   // =============== UPDATE DETAILS =====================
 
@@ -304,7 +304,7 @@ function UserPackage() {
         title="שימו לב..."
         open={openUpdateConfirm}
         onCancel={handleCancelUpdateConfirm}
-      // disabledBtn={isUpdateDetailsValid}
+        // disabledBtn={isUpdateDetailsValid}
       >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
           לחיצה על אישור תוביל להמלצה על חבילה חדשה לגמרי.
@@ -620,7 +620,6 @@ function UserPackage() {
         margin: "0 auto",
       }}
     >
-
       {/* {loading && <Loading />} */}
       {(isLoading || loading) && <Loading />}
       {!isLoading && !loading && error && showErrorMessage(error)}
@@ -723,7 +722,8 @@ function UserPackage() {
           handleClick={handleOpenUpdateDetails}
         /> */}
         <Typography sx={{ typography: { xs: "body1", sm: "h5", md: "h4" } }}>
-          לא התחברתם לחבילה המומלצת? מעדיפים תאריך אחר ליום שלכם?  לא לדאוג... ניתן לקבל חבילה חדשה לגמרי.
+          לא התחברתם לחבילה המומלצת? מעדיפים תאריך אחר ליום שלכם? לא לדאוג...
+          ניתן לקבל חבילה חדשה לגמרי.
         </Typography>
         <OutlinedButton
           btnValue="החלף חבילה"

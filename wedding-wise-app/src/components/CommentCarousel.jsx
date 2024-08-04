@@ -5,10 +5,10 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { customTheme } from "../store/Theme";
 
-function Carousel({ supplierComments }) {
+function CommentCarousel({ supplierComments }) {
   const [sortedComments, setSortedComments] = useState([]);
 
-console.log(supplierComments);
+// console.log(supplierComments);
 
   useEffect(() => {
     if (supplierComments && supplierComments.length) {

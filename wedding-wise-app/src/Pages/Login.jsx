@@ -39,15 +39,8 @@ function Login() {
   const { isLoading, fetchUserInfo } = useUserStore(); // Firebase's
   const navigate = useNavigate();
 
-
-
   useEffect(() => {
-
-    console.log("Login");
-
     const loginAndNavigate = async () => {
-
-
       if (resData) {
         try {
           // Update user data

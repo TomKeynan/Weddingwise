@@ -5,6 +5,7 @@ import RegisterContextProvider from "../store/RegisterContext";
 import EditCouple from "../components/EditCouple";
 import AppContextProvider from "../store/AppContext";
 import QuestionsContextProvider from "../store/QuestionsContext";
+import { customTheme } from "../store/Theme";
 
 function EditDetails() {
   return (
@@ -17,8 +18,12 @@ function EditDetails() {
           spacing={3}
           sx={{ margin: "auto 0", minHeight: "100vh" }}
         >
-          <Stack spacing={2}>
-            <Typography variant="h4" sx={{ textAlign: "center" }}>
+          <Stack
+            spacing={2}
+            justifyContent="center"
+            sx={{ textAlign: "center" }}
+          >
+            <Typography variant="h4" sx={titleSX}>
               עריכה ועדכון פרטים
             </Typography>
             <Typography variant="h5">
@@ -36,3 +41,13 @@ function EditDetails() {
 }
 
 export default EditDetails;
+
+const titleSX = {
+  textAlign: "center",
+  fontSize: { xs: 26, sm: 30, md: 36 },
+  fontFamily: customTheme.font.main,
+  fontWeight: "bold",
+  color: customTheme.palette.primary.main,
+  WebkitTextStrokeWidth: { xs: 1.5, sm: 0.7 },
+  // WebkitTextStrokeColor: "black",
+};

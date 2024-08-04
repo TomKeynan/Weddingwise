@@ -3,7 +3,11 @@ import { RegisterContext } from "../store/RegisterContext";
 import {
   Autocomplete,
   Button,
+  FormControl,
   Grid,
+  IconButton,
+  InputAdornment,
+  Paper,
   Stack,
   TextField,
   Typography,
@@ -22,6 +26,8 @@ import Loading from "./Loading";
 import MessageDialog from "./Dialogs/MessageDialog";
 import { useNavigate } from "react-router-dom";
 import { QuestionsContext } from "../store/QuestionsContext";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import InputFileUpload from "./InputFileUpload";
 
 function EditCouple() {
   const navigate = useNavigate();
@@ -50,6 +56,11 @@ function EditCouple() {
   const [openSuccessMessage, setOpenSuccessMessage] = useState(false);
 
   const [openErrorMessage, setOpenErrorMessage] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [avatar, setAvatar] = useState({
+    file: null,
+    url: "",
+  });
 
   useEffect(() => {
     let counter = 0;
@@ -70,13 +81,14 @@ function EditCouple() {
 
   useEffect(() => {
     if (resData) {
-      debugger;
       setOpenSuccessMessage(true);
       updateCoupleData(editValue);
     } else if (error) {
       setOpenErrorMessage(true);
     }
   }, [resData, error]);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   function handleWeddingDateChange(dateInput) {
     let weddingDateObject = getFullDate(dateInput);
@@ -85,6 +97,15 @@ function EditCouple() {
     });
     saveDateValue(dateInput);
   }
+
+  const handleAvatar = (e) => {
+    if (e.target.files[0]) {
+      setAvatar({
+        file: e.target.files[0],
+        url: URL.createObjectURL(e.target.files[0]),
+      });
+    }
+  };
 
   // ======================= CONFIRM UPDATE =======================
 
@@ -97,7 +118,6 @@ function EditCouple() {
   }
 
   function handleUpdateApproval() {
-    debugger;
     sendData("/Couples/updateCouple", "PUT", editValue);
     setResData(undefined);
     setOpenUpdateConfirm(false);
@@ -220,93 +240,136 @@ function EditCouple() {
   }
 
   return (
-    <Grid
-      container
-      sx={{ maxWidth: { xs: "80%", sm: "60%" }, margin: "0 auto" }}
-      spacing={2}
-    >
-      {openUpdateConfirm && showUpdateConfirmDialog()}
-      {loading && <Loading />}
-      {error && showErrorMessage(error)}
-      {openSuccessMessage && showSuccessMessage(resData)}
-      {openQuestionsConfirm && showQuestionsConfirm()}
-      <Grid item xs={12} md={6}>
-        <TextInput
-          variant="standard"
-          type="text"
-          value={editValue.numberOfInvitees}
-          name="numberOfInvitees"
-          label="כמות מוזמנים"
-          textFieldSX={textFieldSX}
-          editMode={true}
-        />
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <TextInput
-          variant="standard"
-          type="text"
-          value={Number(editValue.budget)}
-          name="budget"
-          label="תקציב"
-          textFieldSX={textFieldSX}
-          editMode={true}
-        />
-      </Grid>
-
-      <Grid item xs={12} md={6}>
-        <Autocomplete
-          options={regions}
-          freeSolo={false}
-          value={editValue.desiredRegion}
-          onChange={(event, newValue) => {
-            updateEditValue({ desiredRegion: newValue });
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant="standard"
-              name="desiredRegion"
-              label="איזור"
-              sx={textFieldSX}
-              helperText="בחרו את האיזור בו תערך החתונה"
-            />
-          )}
-        />
-      </Grid>
-
-      <Grid item xs={12} md={6}>
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
-          <DatePicker
-            label="תאריך"
-            showDaysOutsideCurrentMonth
-            value={dayjs(editValue.desiredDate)}
-            onChange={(newValue) => handleWeddingDateChange(newValue)}
-            required
-            disablePast={true}
-            slotProps={{
-              textField: {
-                name: "desiredDate",
-                variant: "standard",
-                helperText: "בחרו את התאריך בו תתקיים החתונה",
-                sx: textFieldSX,
-              },
-            }}
+    <Paper variant="elevation" elevation={6} sx={paperSX}>
+      <Grid
+        container
+        // sx={{ maxWidth: { xs: "80%", sm: "60%" }, margin: "0 auto" }}
+        spacing={2}
+      >
+        {openUpdateConfirm && showUpdateConfirmDialog()}
+        {loading && <Loading />}
+        {error && showErrorMessage(error)}
+        {openSuccessMessage && showSuccessMessage(resData)}
+        {openQuestionsConfirm && showQuestionsConfirm()}
+        <Grid item xs={12} md={6}>
+          <TextInput
+            variant="standard"
+            type="text"
+            value={editValue.numberOfInvitees}
+            name="numberOfInvitees"
+            label="כמות מוזמנים"
+            textFieldSX={textFieldSX}
+            editMode={true}
           />
-        </LocalizationProvider>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextInput
+            variant="standard"
+            type="text"
+            value={Number(editValue.budget)}
+            name="budget"
+            label="תקציב"
+            textFieldSX={textFieldSX}
+            editMode={true}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Autocomplete
+            options={regions}
+            freeSolo={false}
+            value={editValue.desiredRegion}
+            onChange={(event, newValue) => {
+              updateEditValue({ desiredRegion: newValue });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                name="desiredRegion"
+                label="איזור"
+                sx={textFieldSX}
+                helperText="בחרו את האיזור בו תערך החתונה"
+              />
+            )}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <LocalizationProvider
+            dateAdapter={AdapterDayjs}
+            adapterLocale="en-gb"
+          >
+            <DatePicker
+              label="תאריך"
+              showDaysOutsideCurrentMonth
+              value={dayjs(editValue.desiredDate)}
+              onChange={(newValue) => handleWeddingDateChange(newValue)}
+              required
+              disablePast={true}
+              slotProps={{
+                textField: {
+                  name: "desiredDate",
+                  variant: "standard",
+                  helperText: "בחרו את התאריך בו תתקיים החתונה",
+                  sx: textFieldSX,
+                },
+              }}
+            />
+          </LocalizationProvider>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <FormControl color="primary" sx={textFieldSX}>
+            <TextInput
+              variant="standard"
+              name="password"
+              label="סיסמא"
+              type={showPassword ? "text" : "password"}
+              editMode={true}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      edge="end"
+                      sx={{
+                        "& .MuiSvgIcon-root": {
+                          fill: customTheme.palette.primary.main,
+                        },
+                      }}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <FormControl
+            name="userImage"
+            sx={textFieldSX}
+            onChange={handleAvatar}
+          >
+            <InputFileUpload isUpload={avatar.file} />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sx={{ margin: "0 auto" }}>
+          <Button
+            variant="outlined"
+            type="button"
+            sx={submitBtnSX}
+            // ref={formRef}
+            onClick={startUpdateCoupleDetails}
+            disabled={!isUpdateDetailsValid}
+          >
+            עדכן פרטים
+          </Button>
+        </Grid>
       </Grid>
-      <Grid item xs={12} sx={{ margin: "0 auto" }}>
-        <Button
-          variant="outlined"
-          type="button"
-          sx={submitBtnSX}
-          // ref={formRef}
-          onClick={startUpdateCoupleDetails}
-          disabled={!isUpdateDetailsValid}
-        >
-          עדכן פרטים
-        </Button>
-      </Grid>
-    </Grid>
+    </Paper>
   );
 }
 
@@ -318,7 +381,7 @@ const textFieldSX = {
   p: 0,
   width: "100%",
   "& .MuiFormLabel-root": {
-    fontSize: { xs: 18, sm: 20 },
+    fontSize: 18,
     color: customTheme.palette.primary.main,
   },
   "& .MuiFormHelperText-root": {
@@ -343,6 +406,15 @@ const submitBtnSX = {
     color: "white",
     borderWidth: 3,
   },
+};
+
+const paperSX = {
+  width: { xs: "90%", sm: "60%" },
+  p: 5,
+  mt: 2,
+  // py: 3,
+  // px: { xs: 1, sm: 3 },
+  backgroundColor: "rgba(255,255,255,0.8)",
 };
 
 // import React, { useContext, useEffect, useRef, useState } from "react";

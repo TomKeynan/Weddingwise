@@ -18,28 +18,17 @@ function PlannerLP() {
   const navigate = useNavigate();
   return (
     <Container maxWidth="xxl" sx={{ pb: 8, minHeight: "100vh" }}>
-      <Stack>
+      <Stack spacing={3} alignItems="center">
         <Typography sx={heroText}>
           תכננו את החתונה המושלמת שלכם בקלות וביעילות!
         </Typography>
-        <Typography sx={{ ...heroText, fontSize: 16 }}>
+        <Typography
+          sx={{ ...heroText, fontSize: { xs: 16, sm: 20, md: 24 }, pb: 13 }}
+        >
           כל הכלים שאתם צריכים במקום אחד לניהול חתונה בלתי נשכחת.{" "}
         </Typography>
       </Stack>
       <Box sx={{ width: { xs: "100%", sm: "80%" }, margin: "0 auto" }}>
-        <Typography
-          sx={{
-            textAlign: "center",
-            px: { xs: 2, sm: 6, md: 8 },
-            pb: 10,
-            fontSize: { xs: 18, sm: 24, md: 30 },
-            fontWeight: "bold",
-            color: customTheme.supplier.colors.primary.dark,
-          }}
-        >
-          הפכו להיות חלק ממערכת ההמלצות המובילה, שתעזור לכם להגיע ללקוחות
-          פוטנציאליים בצורה פשוטה ואפקטיבית.
-        </Typography>
         <Stack
           alignItems="center"
           spacing={1}
@@ -54,7 +43,7 @@ function PlannerLP() {
             >
               <Typography variant="h3" sx={bodyTextSX}>
                 תכננו בקלות עם רשימה מובנית. קבלו רשימה מקיפה של מטלות, הוסיפו
-                מטלות חדשות ותת-מטלות לכל מטלה קיימת.
+                מטלות חדשות והערות לכל מטלה קיימת.
               </Typography>
               <img
                 src="./assets/taskList.jpg"
@@ -104,7 +93,7 @@ function PlannerLP() {
               value="הצטרפו אלינו עכשיו!"
               width="100%"
               fontSize={{ xs: 16, sm: 20 }}
-              onClick={() => navigate("/supplier-signup")}
+              onClick={() => navigate("/sign-up")}
             />
           </Box>
         </Stack>
@@ -132,9 +121,13 @@ const heroContentSX = {
 };
 
 const heroText = {
-  fontSize: { xs: 24, sm: 32, md: 40 },
-  fontFamily: "Varela Round",
+  textAlign: "center",
+  fontSize: { xs: 26, sm: 30, md: 36 },
+  fontFamily: customTheme.font.main,
   fontWeight: "bold",
+  color: customTheme.palette.primary.main,
+  WebkitTextStrokeWidth: { xs: 1.5, sm: 0.7 },
+  // WebkitTextStrokeColor: "black",
 };
 
 const heroBtnStackSX = {

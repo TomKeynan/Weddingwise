@@ -5,7 +5,6 @@ import { customTheme } from "../store/Theme";
 
 function SupplierBanner({supplierFirebase}) {
 
-
   return (
     <>
       {(
