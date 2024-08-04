@@ -64,10 +64,12 @@ export const VALIDATIONS = Object.freeze({
     valid: "ציינו כמות המקסימילית (לפחות 100)",
   },
   venueAddress: {
-    regex: /^.{5,30}$/,
+    // regex: /^.{5,30}$/,   Hey Omri I changed it. Thanks.
+    regex: /^[א-ת\s0-9,"׳]{5,}$/,
     error: "שם העסק חייב להכיל לפחות 5 תווים",
   },
 });
+
 
 // export const supplierTypes = [
 //   "venue",

@@ -121,22 +121,20 @@ function Navbar({ isLayout = true, isSupplier = false }) {
       setCoupleData(null);
       sessionStorage.setItem("offeredPackage", JSON.stringify(null));
       setOfferedPackage(null);
-
+      setSupplierData(null);
+      
     }
   }
 
   function handleSupplierLogout(linkText) {
     if (linkText === "התנתק") {
-
       handleLogout();
       setSupplierData(null);
-
     }
   }
   
 // Adam's
   async function handleLogout() {
-    sessionStorage.setItem("relevantSupplierData", JSON.stringify(null));
     try {
       const auth = getAuth();
       await signOut(auth);

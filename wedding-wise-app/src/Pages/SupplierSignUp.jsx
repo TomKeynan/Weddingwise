@@ -35,19 +35,15 @@ import { toast } from "react-toastify";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../fireBase/firebase";
 import {
-  collection,
   doc,
-  getDocs,
-  query,
-  setDoc,
-  where,
+  setDoc
 } from "firebase/firestore";
 import upload from "../fireBase/upload";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import HomeIcon from "@mui/icons-material/Home";
 import { AppContext } from "../store/AppContext";
-import { useUserStore } from "../fireBase/userStore";
+import { geocodeAddress } from "../utilities/functions";
 
 const SupplierSignUp = () => {
   const navigate = useNavigate();
@@ -63,22 +59,7 @@ const SupplierSignUp = () => {
   const [errors, setErrors] = useState({});
   const [open, setOpen] = useState(false);
   const [currentSupplierData, setCurrentSupplierData] = useState({});
-  const { isLoading, fetchUserInfo } = useUserStore(); // Firebase's
-
-  // useEffect(() => {
-  //   const registerAndNavigate = async () => {
-  //     console.log(resData);
-  //     if (resData) {
-  //       setSupplierData(resData);
-  //       await registerFireBase();
-  //       await loginFireBase();
-  //       setTimeout(() => {
-  //         navigate("/supplier-private-Profile");
-  //       }, 3000);
-  //     }
-  //   };
-  //   registerAndNavigate();
-  // }, [resData]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const registerAndNavigate = async () => {
@@ -90,11 +71,6 @@ const SupplierSignUp = () => {
           await registerFireBase();
           await loginFireBase();
 
-          // Fetch user info after logging in
-          if (auth.currentUser?.uid) {
-            await fetchUserInfo(auth.currentUser.uid);
-          }
-
           // Navigate after all asynchronous operations are complete
           navigate("/supplier-private-Profile");
         } catch (err) {
@@ -102,14 +78,15 @@ const SupplierSignUp = () => {
             "Registration, login, or fetching user info failed:",
             err
           );
-          // Show an error message if registration, login, or fetching user info fails
-          toast.error("An error occurred. Please try again.");
+        }
+        finally {
+          setIsLoading(false);
         }
       }
     };
 
     registerAndNavigate();
-  }, [resData, fetchUserInfo, navigate]);
+  }, [resData]);
 
   const loginFireBase = async () => {
     try {
@@ -136,14 +113,6 @@ const SupplierSignUp = () => {
     const username = currentSupplierData.businessName;
     const email = currentSupplierData.supplierEmail;
     const password = currentSupplierData.Password;
-
-    const usersRef = collection(db, "users");
-    const q = query(usersRef, where("email", "==", email));
-    const querySnapshot = await getDocs(q);
-    if (!querySnapshot.empty) {
-      return toast.warn("Select another username");
-    }
-
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
 
@@ -155,7 +124,7 @@ const SupplierSignUp = () => {
       await setDoc(doc(db, "users", res.user.uid), {
         username,
         email,
-        description: supplierDescription,
+        description: supplierDescription || "",
         avatar: imgUrl || "assets/chat_pics/avatar.png",
         id: res.user.uid,
         blocked: [],
@@ -173,14 +142,12 @@ const SupplierSignUp = () => {
     } catch (err) {
       console.log(err);
       toast.error(err.message);
-    } finally {
     }
   };
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  function handleFormSubmit(e) {
-    // debugger;
+  async function handleFormSubmit(e) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
@@ -188,6 +155,14 @@ const SupplierSignUp = () => {
     data.supplierType = translateSupplierTypeToEnglish(data.supplierType);
     delete data.userImage;
 
+    setIsLoading(true);
+    if (data.venueAddress) {
+      const { latitude, longitude } = await geocodeAddress(data.venueAddress); // Need to address bad input if got time
+      data.latitude = latitude;
+      data.longitude = longitude;
+    }
+
+    // Validate fields
     const newErrors = {};
     for (let field in data) {
       if (
@@ -209,7 +184,6 @@ const SupplierSignUp = () => {
       sendData("/Suppliers/registerSupplier", "POST", data);
     }
   }
-
   // ================ error handling ================
   function handleCloseMessage() {
     setOpen(false);
@@ -250,9 +224,14 @@ const SupplierSignUp = () => {
     );
   }
 
+
+
+  if (loading || isLoading) {
+    return <Loading />;
+  }
+
   return (
     <RegisterContextProvider>
-      {(loading || isLoading) && <Loading />}
       {error && showErrorMessage(error)}
       {resData && showSuccessMessage()}
       <Stack
@@ -444,6 +423,7 @@ const SupplierSignUp = () => {
                   multiline
                   maxRows={5}
                   sx={textareaSX}
+                  name="description"
                   helperText="תיאור זה יופיע בפרופיל - כתבו תיאור הולם עבור העסק והשירות שאתם מציעים"
                 />
               </Grid>

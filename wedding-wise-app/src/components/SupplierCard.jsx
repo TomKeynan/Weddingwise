@@ -5,7 +5,6 @@ import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import { customTheme } from "../store/Theme";
 import { stickers, suppliersImage } from "../utilities/collections";
 import { addCommasToNumber, getRandomSupplierImage } from "../utilities/functions";
-import { stickers } from "../utilities/collections";
 import CheckIcon from "@mui/icons-material/Check";
 import { useNavigate } from "react-router-dom";
 import Loading from './Loading';
@@ -14,14 +13,14 @@ import { getDocs, query, where, collection } from "firebase/firestore";
 import { AppContext } from "../store/AppContext";
 
 function SupplierCard({
-  props, // card data
-  showReplaceSupplierBtn, // determine if to show replacement btn or not
-  showMoreInfoBtn, // determine if to show more info btn or not
+  props, 
+  showReplaceSupplierBtn, 
+  showMoreInfoBtn, 
   cardBg = "white",
-  onReplacement, // pass a function to onClick event's of replacement btn
-  onCheckBtnClick, // related to approval of supplier replacement
-  isAlternative, // detect if this card associated with alternative supplier or not
-  isPackage, //detect if this card placed at package page or not
+  onReplacement, 
+  onCheckBtnClick, 
+  isAlternative, 
+  isPackage, 
 }) {
   const { businessName, phoneNumber, supplierEmail, price, supplierType } = props;
   const navigate = useNavigate();

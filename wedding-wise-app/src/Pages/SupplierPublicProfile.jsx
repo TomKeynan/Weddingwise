@@ -16,13 +16,13 @@ import MessageDialog from "../components/Dialogs/MessageDialog";
 import { Navigate } from "react-router-dom";
 import CommentCarousel from "../components/CommentCarousel";
 import Loading from "../components/Loading";
-import { Navigate } from "react-router-dom";
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { getAuth } from 'firebase/auth';
 import { AppContext } from "../store/AppContext";
 import { fetchSupplierData } from "../fireBase/fetchSupplier";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../fireBase/firebase";
+
 
 function SupplierPublicProfile() {
 
@@ -32,7 +32,9 @@ function SupplierPublicProfile() {
   const { supplierData } = useContext(AppContext);
   const [supplierFirebase, setSupplierFirebase] = useState(null);
   const [loadingData, setLoadingData] = useState(false);
-  const [error, setError] = useState(null);
+
+
+// Need to fix re-render problem 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -182,7 +184,7 @@ function SupplierPublicProfile() {
         <Typography sx={{ ...titleSX, mb: 5 }}>
           הזוגות של WeddingWise משתפים
         </Typography>
-        <Carousel  supplierComments ={supplierFirebase.comments} />
+        <CommentCarousel  supplierComments ={supplierFirebase?.comments} />
       </Stack>
       {/* comment form */}
       <Stack sx={{ maxWidth: 700, width: { xs: "90%", sm: "60%" } }}>

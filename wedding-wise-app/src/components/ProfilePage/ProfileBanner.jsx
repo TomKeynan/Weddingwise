@@ -2,11 +2,28 @@ import { Box, Stack, Typography, useMediaQuery } from "@mui/material";
 import React from "react";
 import { customTheme } from "../../store/Theme";
 import { convertDateToClientFormat } from "../../utilities/functions";
+import Loading from "../Loading";
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { getAuth } from 'firebase/auth';
+import { Navigate } from "react-router-dom";
 
 function ProfileBanner({ props }) {
   const screenAboveSM = useMediaQuery("(min-width: 900px)");
   const { partner1Name, partner2Name, desiredDate } = props;
+//   const auth = getAuth();
+//   const [user, loading] = useAuthState(auth);
 
+
+// // Hope it finally works
+//   if (loading ) {
+//     return <Loading />;
+//   }
+
+//   if (!user) {
+//     return <Navigate to="/" />;
+//   }
+
+  
   return (
     <Stack
       direction={screenAboveSM ? "row" : "column"}

@@ -224,7 +224,7 @@ EnhancedTableToolbar.propTypes = {
 
 
 function CoupleTable({supplierPackages}) {
-console.log(supplierPackages)
+
 
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("calories");

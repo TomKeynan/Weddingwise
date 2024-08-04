@@ -21,6 +21,31 @@ export async function reverseGeocoding(lat, lng) {
   }
 }
 
+export async function geocodeAddress(address) {
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&addressdetails=1&accept-language=he`
+    );
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+
+    if (data && data.length > 0) {
+      const { lat, lon } = data[0];
+      return { latitude: lat, longitude: lon };
+    } else {
+      return { latitude: null, longitude: null, message: "Address not found" };
+    }
+  } catch (error) {
+    console.error("Error fetching coordinates:", error);
+    return { latitude: null, longitude: null, message: "Error fetching coordinates" };
+  }
+}
+
+
 //generic validation function
 export function validationCheck(event) {
   const currentInput = { [event.target.name]: event.target.value };

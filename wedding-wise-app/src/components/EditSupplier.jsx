@@ -32,25 +32,17 @@ import {
 } from "../utilities/functions";
 import MessageDialog from "../components/Dialogs/MessageDialog";
 import ReadOnlyPopup from "../components/Dialogs/ReadOnlyPopup";
-import { toast } from "react-toastify";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../fireBase/firebase";
-import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  where,
-} from "firebase/firestore";
+import { doc} from "firebase/firestore";
 import upload from "../fireBase/upload";
 import { AppContext } from "../store/AppContext";
 import ConfirmDialog from "./Dialogs/ConfirmDialog";
 import { useUserStore } from "../fireBase/userStore";
 import { updatePassword } from "firebase/auth";
-import { updateDoc, onSnapshot } from "firebase/firestore";
+import { updateDoc } from "firebase/firestore";
+import { geocodeAddress } from "../utilities/functions";
 
-const EditSupplier = () => {
+const EditSupplier = ({ supplierFirebase }) => {
   const { editSupplier, setEditSupplier, setSupplierData, setScrollToTop } =
     useContext(AppContext);
   const { sendData, resData, setResData, loading, error, setError } =
@@ -66,15 +58,17 @@ const EditSupplier = () => {
     file: null,
     url: "",
   });
-  const { currentUser, isLoading, fetchUserInfo, setLoading } = useUserStore();
+  const {  isLoading, setLoading } = useUserStore();
   const [currentDescription, setCurrentDescription] = useState("");
+  const [currentAddress, setCurrentAddress] = useState("");
 
   useEffect(() => {
+
     const updateUser = async () => {
       if (resData) {
         const { Password, ...rest } = currentSupplierData;
         setSupplierData(rest);
-        setLoading(true); // Set loading to true
+       
 
         try {
           await updateUserFirebase();
@@ -83,7 +77,7 @@ const EditSupplier = () => {
         } catch (error) {
           console.error("Error updating user:", error);
         } finally {
-          setLoading(false); // Set loading to false
+          setLoading(false); 
         }
       }
       return () => {
@@ -93,6 +87,11 @@ const EditSupplier = () => {
 
     updateUser();
   }, [resData, currentSupplierData]);
+
+  useEffect(() => {
+    setCurrentDescription(supplierFirebase.description);
+    setCurrentAddress(supplierFirebase.address);
+  }, [supplierFirebase]);
 
   const updateUserFirebase = async () => {
     const username = currentSupplierData.businessName;
@@ -113,42 +112,17 @@ const EditSupplier = () => {
       }
 
       // Update user details in Firestore
-      const userRef = doc(db, "users", currentUser.id);
+      const userRef = doc(db, "users", supplierFirebase.id);
       await updateDoc(userRef, {
-        username: username || currentUser.username,
-        description,
-        avatar: imgUrl || currentUser.avatar,
+        username: username || supplierFirebase.username,
+        description: description || supplierFirebase.description,
+        avatar: imgUrl || supplierFirebase.avatar,
       });
     } catch (err) {
       console.log(err);
     }
   };
 
-  useEffect(() => {
-    if (currentUser && currentUser.description) {
-      setCurrentDescription(currentUser.description);
-    }
-  }, [currentUser]);
-
-  useEffect(() => {
-    if (!currentUser?.id) return;
-
-    // Create a reference to the user document
-    const userDocRef = doc(db, "users", currentUser.id);
-
-    // Set up a Firestore onSnapshot listener
-    const unsub = onSnapshot(userDocRef, (docSnapshot) => {
-      if (docSnapshot.exists()) {
-        // Fetch the user info when the document changes
-        fetchUserInfo(currentUser.id);
-      }
-    });
-
-    // Clean up the listener on component unmount
-    return () => {
-      unsub();
-    };
-  }, [fetchUserInfo]);
 
   const handleAvatar = (e) => {
     if (e.target.files[0]) {
@@ -161,13 +135,20 @@ const EditSupplier = () => {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  function handleFormSubmit(e) {
-    // debugger;
+ async function handleFormSubmit(e) {
+  
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
     delete data.description;
     delete data.userImage;
+
+    setLoading(true);
+    if (data.venueAddress) {
+      const { latitude, longitude } = await geocodeAddress(data.venueAddress); // Need to address bad input if got time
+      data.latitude = latitude;
+      data.longitude = longitude;
+    }
 
     // data validation
     const newErrors = {};
@@ -331,7 +312,7 @@ const EditSupplier = () => {
                       label="כמות אורחים"
                       name="capacity"
                       sx={textFieldSX}
-                      value={editSupplier.capacity === null && 0}
+                      value={editSupplier.capacity === null ? 0 : editSupplier.capacity}
                       onChange={handleInputChange}
                     />
                     {errors.capacity && (
@@ -344,7 +325,9 @@ const EditSupplier = () => {
                     <TextField
                       variant="filled"
                       type="text"
+                      value={currentAddress}
                       label="כתובת"
+                      onChange={(e) => setCurrentAddress(e.target.value)}
                       name="venueAddress"
                       sx={textFieldSX}
                     />

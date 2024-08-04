@@ -13,6 +13,10 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { getAuth } from 'firebase/auth';
 import Loading from "../components/Loading";
 import { fetchSupplierData } from "../fireBase/fetchSupplier";
+import { reverseGeocoding } from "../utilities/functions";
+import { useUserStore } from "../fireBase/userStore";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "../fireBase/firebase";
 
 function SupplierPrivateProfile() {
 
@@ -22,31 +26,51 @@ function SupplierPrivateProfile() {
   const { supplierData } = useContext(AppContext);
   const [supplierFirebase, setSupplierFirebase] = useState(null);
   const [loadingData, setLoadingData] = useState(false);
-  const [error, setError] = useState(null);
-
-
-
+  const { currentUser } = useUserStore();
 
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (supplierData?.supplierEmail) {
-        setLoadingData(true);
-        try {
-          const data = await fetchSupplierData(supplierData.supplierEmail);
-          setSupplierFirebase(data);
-        } catch (err) {
-          setError(err);
-        } finally {
-          setLoadingData(false);
-        }
+    if (!currentUser?.id) return;
+
+    // Create a reference to the user document
+    const userDocRef = doc(db, "users", currentUser.id);
+
+    // Set up a Firestore onSnapshot listener
+    const unsub = onSnapshot(userDocRef, (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        // Define an asynchronous function to fetch data and reverse geocode
+        const fetchDataAndReverseGeocode = async () => {
+          try {
+            setLoadingData(true);
+            const data = await fetchSupplierData(supplierData.supplierEmail);
+            if (supplierData.latitude && supplierData.longitude) {
+              const address = await reverseGeocoding(supplierData.latitude, supplierData.longitude); 
+              data.address = address;
+            }
+            setSupplierFirebase(data);
+          } catch (error) {
+            console.error("Error fetching supplier data or reverse geocoding:", error);
+          }
+          finally {
+            setLoadingData(false);
+          }
+        };
+
+        // Call the async function
+        fetchDataAndReverseGeocode();
       }
+    });
+
+    // Clean up the listener on component unmount
+    return () => {
+      unsub();
     };
+  }, [currentUser?.id, supplierData?.supplierEmail, supplierData?.latitude, supplierData?.longitude]);
 
-    fetchData();
-  }, [supplierData?.supplierEmail]);
 
-  // Hope it finally works
+
+
+
   if (loading || loadingData) {
     return <Loading />;
   }
@@ -96,7 +120,7 @@ function SupplierPrivateProfile() {
             icon={<StarOutlineIcon />}
           />
         </Stack>
-        <Tabs />
+        <Tabs supplierFirebase={supplierFirebase} />
       </Stack>
     </Stack>
   );

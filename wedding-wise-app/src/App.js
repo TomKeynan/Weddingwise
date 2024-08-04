@@ -71,16 +71,15 @@ const router = createHashRouter([
 ]);
 
 function App() {
-  const { fetchUserInfo, setLoading,currentUser } = useUserStore();
-  const {  changeChatStatus, isSeen, changeIsSeenStatus } =
-  useChatStore();
+  const { fetchUserInfo, setLoading, currentUser  } = useUserStore();
+  const { changeIsSeenStatus } = useChatStore();
 
-  
+
   useEffect(() => {
-    let authUnSub = null;
-    let chatUnSub = null;
 
-    const handleAuthChange = async (user) => {
+    
+    // Function to handle fetching user info and setting loading state
+    const handleAuthStateChanged = async (user) => {
       if (user?.uid) {
         setLoading(true);
         await fetchUserInfo(user.uid);
@@ -90,30 +89,33 @@ function App() {
       }
     };
 
-    const handleChatChange = (res) => {
-      const chatsData = res.data();
-      if (chatsData && Array.isArray(chatsData.chats)) {
-        const hasUnseenChat = chatsData.chats.some((chat) => chat.isSeen === false);
-        changeIsSeenStatus(!hasUnseenChat);
-      }
-    };
+    // Set up the authentication state change listener
+    const unSubAuth = onAuthStateChanged(auth, handleAuthStateChanged);
 
-    authUnSub = onAuthStateChanged(auth, handleAuthChange);
-
+    // Set up the listener for changes to the current chat
+    let unSubChat = null;
     if (currentUser?.id) {
-      chatUnSub = onSnapshot(doc(db, "userChats", currentUser.id), handleChatChange);
+      unSubChat = onSnapshot(doc(db, "userChats", currentUser.id), (res) => {
+        const chatsData = res.data();
+        if (chatsData && Array.isArray(chatsData.chats)) {
+          const hasUnseenChat = chatsData.chats.some(
+            (chat) => chat.isSeen === false
+          );
+          changeIsSeenStatus(!hasUnseenChat);
+        }
+      });
     }
 
-    // Cleanup the listeners on component unmount
+    // Cleanup function to unsubscribe from both listeners
     return () => {
-      if (authUnSub) {
-        authUnSub();
+      if (unSubAuth) {
+        unSubAuth();
       }
-      if (chatUnSub) {
-        chatUnSub();
+      if (unSubChat) {
+        unSubChat();
       }
     };
-  }, [fetchUserInfo, setLoading, changeIsSeenStatus, currentUser?.id]);
+  }, [fetchUserInfo, setLoading]);
 
 
   return (

@@ -19,7 +19,6 @@ import { useUserStore } from "../fireBase/userStore";
 import { arrayUnion, doc, updateDoc, getDocs, where, query, collection } from "firebase/firestore";
 import { db } from "../fireBase/firebase";
 import Loading from "./Loading";
-import { fetchSupplierData } from "../fireBase/fetchSupplier";
 
 
 const testObject = {
@@ -156,9 +155,9 @@ export default function CommentForm({supplierFirebase}) {
     );
   }
 
-  if ( loadingData  || loading ) {
-    return <Loading />;
-  }
+  // if ( loadingData  || loading ) {
+  //   return <Loading />;
+  // }
 
   return (
     <>

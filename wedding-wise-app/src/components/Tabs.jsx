@@ -19,7 +19,6 @@ import { reverseGeocoding } from "../utilities/functions";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
-  console.log("Tabs");
 
   return (
     <div
@@ -47,7 +46,7 @@ function a11yProps(index) {
   };
 }
 
-export default function BasicTabs() {
+export default function BasicTabs({ supplierFirebase }) {
   const [value, setValue] = React.useState(0);
   const { currentUser } = useUserStore();
   const [comments, setComments] = useState([]);
@@ -55,37 +54,6 @@ export default function BasicTabs() {
   const [supplierPackages, setSupplierPackages] = useState([]);
   const { getData, resData } = useFetch();
 
-  useEffect(() => {
-    if (!currentUser?.id) return;
-
-    const unSub = onSnapshot(
-      doc(db, "supplierComments", currentUser.id),
-      (docSnapshot) => {
-        if (docSnapshot.exists()) {
-          const commentsData = docSnapshot.data().comments || [];
-          const commentsWithDate = commentsData.map((comment) => ({
-            ...comment,
-            commentDate: comment.commentTime
-              ? comment.commentTime.toDate().toLocaleDateString("en-GB")
-              : "",
-          }));
-          commentsWithDate.sort((a, b) => b.commentTime - a.commentTime);
-          setComments(commentsWithDate);
-        } else {
-          setComments([]);
-        }
-      }
-    );
-
-    // Cleanup the listener on component unmount
-    return () => {
-      unSub();
-    };
-  }, [currentUser?.id]);
-
-  useEffect(() => {
-    getData(`/Suppliers/getSupplierEvents/email/${supplierData.supplierEmail}`);
-  }, []);
 
   useEffect(() => {
     const handlePackages = async () => {
@@ -101,9 +69,9 @@ export default function BasicTabs() {
     handlePackages();
   }, [resData]);
 
-  // Assuming result is the data array you received
+
   const addAddresses = async (data) => {
-    // Map over the result and fetch addresses
+
     const updatedData = await Promise.all(
       data.map(async (item) => {
         const address = await reverseGeocoding(item.latitude, item.longitude);
@@ -163,30 +131,36 @@ export default function BasicTabs() {
         )}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <Stack
-          sx={{
-            maxHeight: 500,
-            overflowY: "scroll",
-            rowGap: 4,
-            p: 2,
-            width: "70%",
-            margin: "0 auto",
-          }}
-        >
-          {comments.map((comment, index) => (
-            <CommentCard
-              key={index}
-              coupleAvatar={comment.coupleAvatar}
-              coupleNames={comment.coupleNames}
-              text={comment.text}
-              commentDate={comment.commentDate}
-              rating = {comment.rating}
-            />
-          ))}
-        </Stack>
+        {supplierFirebase?.comments && supplierFirebase.comments.length > 0 ? (
+          <Stack
+            sx={{
+              maxHeight: 500,
+              overflowY: "scroll",
+              rowGap: 4,
+              p: 2,
+              width: "70%",
+              margin: "0 auto",
+            }}
+          >
+            {supplierFirebase?.comments.map((comment, index) => (
+              <CommentCard
+                key={index}
+                coupleAvatar={comment.coupleAvatar}
+                coupleNames={comment.coupleNames}
+                text={comment.text}
+                commentDate={comment.commentDate}
+                rating={comment.rating}
+              />
+            ))}
+          </Stack>
+        ) : (
+          <Alert severity="warning">
+            עדיין אין לכם תגובות!{" "}
+          </Alert>
+        )}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <EditSupplier />
+        <EditSupplier supplierFirebase={supplierFirebase} />
       </CustomTabPanel>
     </Box>
   );

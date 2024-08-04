@@ -6,7 +6,7 @@ import { db } from "./firebase";
 export const useUserStore = create((set) => ({
   // Initial state
   currentUser: null,  // Stores the current user information
-  loadingUserFirebase: true,    // Indicates whether the user information is being loaded
+  loadingUserFirebase: false,    // Indicates whether the user information is being loaded
 
   // Method to fetch user information from Firestore based on user ID (uid)
   fetchUserInfo: async (uid) => {
