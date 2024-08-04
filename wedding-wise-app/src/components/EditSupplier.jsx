@@ -33,7 +33,7 @@ import {
 import MessageDialog from "../components/Dialogs/MessageDialog";
 import ReadOnlyPopup from "../components/Dialogs/ReadOnlyPopup";
 import { auth, db } from "../fireBase/firebase";
-import { doc} from "firebase/firestore";
+import { doc } from "firebase/firestore";
 import upload from "../fireBase/upload";
 import { AppContext } from "../store/AppContext";
 import ConfirmDialog from "./Dialogs/ConfirmDialog";
@@ -58,7 +58,7 @@ const EditSupplier = ({ supplierFirebase }) => {
     file: null,
     url: "",
   });
-  const {  isLoading, setLoading } = useUserStore();
+  const { isLoading, setLoading } = useUserStore();
   const [currentDescription, setCurrentDescription] = useState("");
   const [currentAddress, setCurrentAddress] = useState("");
 
@@ -68,7 +68,7 @@ const EditSupplier = ({ supplierFirebase }) => {
       if (resData) {
         const { Password, ...rest } = currentSupplierData;
         setSupplierData(rest);
-       
+
 
         try {
           await updateUserFirebase();
@@ -77,7 +77,7 @@ const EditSupplier = ({ supplierFirebase }) => {
         } catch (error) {
           console.error("Error updating user:", error);
         } finally {
-          setLoading(false); 
+          setLoading(false);
         }
       }
       return () => {
@@ -135,8 +135,8 @@ const EditSupplier = ({ supplierFirebase }) => {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
- async function handleFormSubmit(e) {
-  
+  async function handleFormSubmit(e) {
+
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
@@ -248,9 +248,14 @@ const EditSupplier = ({ supplierFirebase }) => {
   //   );
   // }
 
+
+  if (isLoading) {
+    return <Loading />
+  }
+
   return (
     <RegisterContextProvider>
-      {isLoading && <Loading />}
+
       {error && showErrorMessage(error)}
       {openUpdateConfirm && showUpdateConfirmDialog()}
       {/* {openUpdateSuccess && showSuccessMessage()} */}
