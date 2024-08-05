@@ -70,15 +70,20 @@ export const VALIDATIONS = Object.freeze({
   },
 });
 
-
-// export const supplierTypes = [
-//   "venue",
-//   "dj",
-//   "photographer",
-//   "dress",
-//   "rabbi",
-//   "hair and makeup"
-// ];
+export const inviteesValidations = Object.freeze({
+  name: {
+    regex: /^$|^[ \u05D0-\u05EAa-zA-Z]{2,}$/,
+    error: "יש להקליד אותיות בלבד",
+  },
+  email: {
+    regex: /^$|^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/,
+    error: "אנא בדק שנית את כתובת המייל שהזנת",
+  },
+  numberOfInvitees: {
+    regex: /^(1[0-9]|20|[1-9])$/,
+    error: "מקסימום 20 מוזמנים לאורח",
+  },
+})
 
 export const supplierTypes = [
   "אולם שמחות",

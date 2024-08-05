@@ -61,11 +61,11 @@ namespace Server.Controllers
                 int result = dbServicesTask.DeleteTask(taskId);
                 if (result > 0)
                 {
-                    return Ok($"Task with ID {taskId} deleted successfully.");
+                    return Ok();
                 }
                 else
                 {
-                    return NotFound($"Task with ID {taskId} not found or could not be deleted.");
+                    return NotFound();
                 }
             }
             catch (Exception ex)
@@ -106,11 +106,11 @@ namespace Server.Controllers
                 int result = dbServicesTask.DeleteSubTask(subTaskId);
                 if (result > 0)
                 {
-                    return Ok($"SubTask with ID {subTaskId} deleted successfully.");
+                    return Ok();
                 }
                 else
                 {
-                    return NotFound($"SubTask with ID {subTaskId} not found or could not be deleted.");
+                    return NotFound();
                 }
             }
             catch (Exception ex)

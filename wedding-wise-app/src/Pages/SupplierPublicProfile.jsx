@@ -38,7 +38,6 @@ function SupplierPublicProfile() {
   const [supplierFirebase, setSupplierFirebase] = useState(null);
   const [loadingData, setLoadingData] = useState(false);
 
-console.log(user);
 
 // Need to fix re-render problem 
 
