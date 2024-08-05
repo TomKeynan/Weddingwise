@@ -99,7 +99,7 @@ function UserPackage() {
   }, [resData]);
 
   const addSuppliersChats = async (suppliers) => {
-    debugger;
+
     const chatRef = collection(db, "chats");
     const userChatsRef = collection(db, "userChats");
     try {
@@ -304,7 +304,7 @@ function UserPackage() {
         title="שימו לב..."
         open={openUpdateConfirm}
         onCancel={handleCancelUpdateConfirm}
-        // disabledBtn={isUpdateDetailsValid}
+      // disabledBtn={isUpdateDetailsValid}
       >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
           לחיצה על אישור תוביל להמלצה על חבילה חדשה לגמרי.
@@ -620,7 +620,6 @@ function UserPackage() {
         margin: "0 auto",
       }}
     >
-      {/* {loading && <Loading />} */}
       {(isLoading || loading) && <Loading />}
       {!isLoading && !loading && error && showErrorMessage(error)}
       {!isLoading && !loading && resData && showSuccessMessage(resData)}

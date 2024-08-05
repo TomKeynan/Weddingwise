@@ -60,18 +60,24 @@ const SupplierSignUp = () => {
   const [open, setOpen] = useState(false);
   const [currentSupplierData, setCurrentSupplierData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [socialLinks, setSocialLinks] = useState({
+    Instagram: '',
+    Facebook: '',
+    YouTube: '',
+    LinkedIn: ''
+  });
+
 
   useEffect(() => {
     const registerAndNavigate = async () => {
       if (resData) {
         try {
           setSupplierData(resData);
+          setIsLoading(true);
 
-          // Perform registration and login, awaiting both
           await registerFireBase();
           await loginFireBase();
 
-          // Navigate after all asynchronous operations are complete
           navigate("/supplier-private-Profile");
         } catch (err) {
           console.error(
@@ -121,6 +127,7 @@ const SupplierSignUp = () => {
         imgUrl = await upload(avatar.file);
       }
 
+
       await setDoc(doc(db, "users", res.user.uid), {
         username,
         email,
@@ -128,14 +135,12 @@ const SupplierSignUp = () => {
         avatar: imgUrl || "assets/chat_pics/avatar.png",
         id: res.user.uid,
         blocked: [],
+        comments: [],
+        socialLinks
       });
 
       await setDoc(doc(db, "userChats", res.user.uid), {
         chats: [],
-      });
-
-      await setDoc(doc(db, "supplierComments", res.user.uid), {
-        comments: [],
       });
 
       toast.success("Account created! You can login now!");
@@ -155,7 +160,14 @@ const SupplierSignUp = () => {
     data.supplierType = translateSupplierTypeToEnglish(data.supplierType);
     delete data.userImage;
 
-    setIsLoading(true);
+    setSocialLinks({
+      Instagram: data.Instagram,
+      Facebook: data.Facebook,
+      Youtube: data.Youtube,
+      LinkedIn: data.LinkedIn,
+    });
+
+
     if (data.venueAddress) {
       const { latitude, longitude } = await geocodeAddress(data.venueAddress); // Need to address bad input if got time
       data.latitude = latitude;
@@ -181,6 +193,7 @@ const SupplierSignUp = () => {
       setCurrentSupplierData(data);
       setOpen(true);
       setErrors({});
+      debugger;
       sendData("/Suppliers/registerSupplier", "POST", data);
     }
   }
@@ -486,6 +499,7 @@ const SupplierSignUp = () => {
                 <TextField
                   variant="outlined"
                   type="text"
+                  name="YouTube"
                   label="קישור ליוטיוב"
                   sx={textFieldSX}
                 />
@@ -494,6 +508,7 @@ const SupplierSignUp = () => {
                 <TextField
                   variant="outlined"
                   type="text"
+                  name="Instagram"
                   label="קישור לאינסטגרם"
                   sx={textFieldSX}
                 />
@@ -503,6 +518,7 @@ const SupplierSignUp = () => {
                   variant="outlined"
                   type="text"
                   label="קישור לפייסבוק"
+                  name="Facebook"
                   sx={textFieldSX}
                 />
               </Grid>
@@ -510,6 +526,7 @@ const SupplierSignUp = () => {
                 <TextField
                   variant="outlined"
                   type="text"
+                  name="LinkedIn"
                   label="קישור ללינקדין"
                   sx={textFieldSX}
                 />

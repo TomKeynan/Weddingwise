@@ -35,6 +35,8 @@ function SupplierPrivateProfile() {
     // Create a reference to the user document
     const userDocRef = doc(db, "users", currentUser.id);
 
+
+    console.log(currentUser);
     // Set up a Firestore onSnapshot listener
     const unsub = onSnapshot(userDocRef, (docSnapshot) => {
       if (docSnapshot.exists()) {

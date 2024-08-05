@@ -27,10 +27,11 @@ function SupplierCard({
   const [sticker, setSticker] = useState({});
   const [avatar, setAvatar] = useState(null);
   const { setSupplierData } = useContext(AppContext);
+  const [loadingData, setLoadingData] = useState(false);
 
   useEffect(() => {
     const fetchSupplierDataAsync = async () => {
-      
+      setSupplierData(props);
       if (avatar) {
         const cardSticker = stickers.find((sticker) =>
           sticker.stickerSrc.includes(supplierType) || sticker.stickerSrc.includes("makeup")
@@ -39,6 +40,8 @@ function SupplierCard({
       }
 
       try {
+        setLoadingData(true);
+
         const userRef = collection(db, "users");
         const q = query(userRef, where("email", "==", supplierEmail));
         const querySnapshot = await getDocs(q);
@@ -49,6 +52,9 @@ function SupplierCard({
         setAvatar(supplier.avatar);
       } catch (error) {
         console.error("Error fetching supplier data: ", error);
+      }
+      finally{
+        setLoadingData(false);
       }
     };
 
@@ -62,9 +68,9 @@ function SupplierCard({
   };
 
 
-  if (!avatar) {
-    return <Loading />;
-  }
+  // if (!avatar) {
+  //   return <Loading />;
+  // }
 
   return (
     <Stack

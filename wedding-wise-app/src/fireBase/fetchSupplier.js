@@ -14,7 +14,7 @@ export const fetchSupplierData = async (supplierEmail) => {
 
     const supplier = querySnapshot.docs[0].data();
     const supplierId = querySnapshot.docs[0].id;
-    const commentsRef = doc(db, "supplierComments", supplierId);
+    const commentsRef = doc(db, "users", supplierId);
     const commentsSnapshot = await getDoc(commentsRef);
 
     const commentsData = commentsSnapshot.exists()
@@ -27,7 +27,6 @@ export const fetchSupplierData = async (supplierEmail) => {
         : "",
     }));
     commentsWithDate.sort((a, b) => (b.commentTime || 0) - (a.commentTime || 0));
-
     return {
       ...supplier,
       comments: commentsWithDate,

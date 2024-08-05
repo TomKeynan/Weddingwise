@@ -68,8 +68,6 @@ const EditSupplier = ({ supplierFirebase }) => {
       if (resData) {
         const { Password, ...rest } = currentSupplierData;
         setSupplierData(rest);
-
-
         try {
           await updateUserFirebase();
           setOpenUpdateSuccess(true);

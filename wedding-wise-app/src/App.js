@@ -71,13 +71,13 @@ const router = createHashRouter([
 ]);
 
 function App() {
-  const { fetchUserInfo, setLoading, currentUser  } = useUserStore();
+  const { fetchUserInfo, setLoading, currentUser } = useUserStore();
   const { changeIsSeenStatus } = useChatStore();
 
 
   useEffect(() => {
 
-    
+
     // Function to handle fetching user info and setting loading state
     const handleAuthStateChanged = async (user) => {
       if (user?.uid) {
@@ -118,6 +118,7 @@ function App() {
   }, [fetchUserInfo, setLoading]);
 
 
+  console.log(currentUser);
   return (
     <LoadScript
       googleMapsApiKey={googleMapsApiKey}
