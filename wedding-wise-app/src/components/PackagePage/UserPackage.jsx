@@ -85,7 +85,7 @@ function UserPackage() {
     const updateCoupleData = async () => {
       if (resData === 204 || resData === 200) {
         const { typeWeights, ...rest } = offeredPackage;
-        await addSuppliersChats(rest.selectedSuppliers); // Wait for this to complete
+        await addSuppliersChats(rest.selectedSuppliers); 
         setCoupleData((prevData) => {
           return {
             ...prevData,

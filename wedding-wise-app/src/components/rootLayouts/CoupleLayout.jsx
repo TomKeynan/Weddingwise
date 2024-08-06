@@ -10,19 +10,19 @@ import { useChatStore } from "../../fireBase/chatStore";
 
 
 const CoupleLayout = () => {
-const {chatStatus} = useChatStore();
-
+  const { chatStatus } = useChatStore();
 
   return (
     <Container sx={containerSX} maxWidth="xxl">
       <Navbar />
       <Outlet />
-      {chatStatus && <Chat />}
       <Footer />
+      {chatStatus && <Chat />} 
       <ScrollRestoration />
     </Container>
   );
 };
+
 
 export default CoupleLayout;
 

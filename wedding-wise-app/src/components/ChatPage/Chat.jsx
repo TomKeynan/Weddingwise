@@ -9,10 +9,14 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../fireBase/firebase';
 import './chat.css';
 import Loading from '../Loading';
+import { getAuth } from "firebase/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 function Chat() {
   const { currentUser, isLoading, fetchUserInfo } = useUserStore();
-  const {  chatId, changeChatStatus } = useChatStore();
+  const { chatId, changeChatStatus, chatStatus } = useChatStore();
+  const auth = getAuth();
+  const [user, loading] = useAuthState(auth);
 
   const chatRef = useRef(null);
 
@@ -22,13 +26,13 @@ function Chat() {
 
   const [hasChats, setHasChats] = useState(false);
 
-  console.log("Chat");
 
   useEffect(() => {
 
 
-    const currentCouple = sessionStorage.getItem("currentCouple");
+    const currentCouple = JSON.parse(sessionStorage.getItem('supplier'));
     if (currentCouple) {
+      console.log(currentCouple);
       setIsCoupleConnected(true);
     } else {
       setIsCoupleConnected(false);
@@ -37,7 +41,7 @@ function Chat() {
 
     // Set up a Firestore onSnapshot listener for user chats
     const unsub = onSnapshot(
-      doc(db, "userChats", currentUser.id),
+      doc(db, "userChats", currentUser?.id),
       async (docSnapshot) => {
         const chatData = docSnapshot.data();
         if (chatData && chatData.chats && chatData.chats.length > 0) {
@@ -52,6 +56,9 @@ function Chat() {
     };
   }, [currentUser?.id]);
 
+
+  if (!user)
+    return (<Loading />)
 
   // Main return statement of the component
   return (
@@ -108,20 +115,20 @@ function Chat() {
 export default Chat;
 
 
- // Whats better? 
-  // useEffect(() => {
-  //   const handleClickOutside = (event) => {
-  //     if (chatRef.current && !chatRef.current.contains(event.target)) {
-  //       changeChatStatus();
-  //       resetChat();
-  //     }
-  //   };
+// Whats better?
+// useEffect(() => {
+//   const handleClickOutside = (event) => {
+//     if (chatRef.current && !chatRef.current.contains(event.target)) {
+//       changeChatStatus();
+//       resetChat();
+//     }
+//   };
 
-  //   // Add event listener
-  //   document.addEventListener('mousedown', handleClickOutside);
+//   // Add event listener
+//   document.addEventListener('mousedown', handleClickOutside);
 
-  //   // Cleanup function to remove event listener
-  //   return () => {
-  //     document.removeEventListener('mousedown', handleClickOutside);
-  //   };
-  // }, [chatRef]);
+//   // Cleanup function to remove event listener
+//   return () => {
+//     document.removeEventListener('mousedown', handleClickOutside);
+//   };
+// }, [chatRef]);

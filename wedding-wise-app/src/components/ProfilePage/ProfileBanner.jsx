@@ -9,21 +9,19 @@ import { Navigate } from "react-router-dom";
 
 function ProfileBanner({ props }) {
   const screenAboveSM = useMediaQuery("(min-width: 900px)");
+  const auth = getAuth();
+  const [user, loading] = useAuthState(auth);
+
+  if (loading ) {
+    return <Loading />;
+  }
+
+  if (!user ) {
+    return <Navigate to="/" />;
+  }
+
   const { partner1Name, partner2Name, desiredDate } = props;
-//   const auth = getAuth();
-//   const [user, loading] = useAuthState(auth);
-
-
-// // Hope it finally works
-//   if (loading ) {
-    // return <Loading />;
-//   }
-
-//   if (!user) {
-//     return <Navigate to="/" />;
-//   }
-
-  
+ 
   return (
     <Stack
       direction={screenAboveSM ? "row" : "column"}

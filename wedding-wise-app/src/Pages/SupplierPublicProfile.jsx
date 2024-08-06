@@ -28,21 +28,23 @@ import { AppContext } from "../store/AppContext";
 import { fetchSupplierData } from "../fireBase/fetchSupplier";
 import { db } from "../fireBase/firebase";
 import { doc, onSnapshot, getDocs, query, where, collection } from "firebase/firestore";
+import { useSupplierData } from "../fireBase/supplierData";
 
 function SupplierPublicProfile() {
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
-  const { supplierData } = useContext(AppContext);
+  // const { supplierData } = useContext(AppContext);
   const [supplierFirebase, setSupplierFirebase] = useState(null);
   const [loadingData, setLoadingData] = useState(false);
+  const { supplierData } = useSupplierData();
 
-
+  console.log(supplierData);
   useEffect(() => {
     const fetchAndSetData = async () => {
       try {
         setLoadingData(true);
-        
+
         // Fetch supplier ID based on email
         const userRef = collection(db, "users");
         const q = query(userRef, where("email", "==", supplierData?.supplierEmail));
@@ -91,7 +93,7 @@ function SupplierPublicProfile() {
     if (supplierData?.supplierEmail) {
       fetchAndSetData();
     }
-  }, [supplierData?.supplierEmail]);
+  }, []);
 
 
 

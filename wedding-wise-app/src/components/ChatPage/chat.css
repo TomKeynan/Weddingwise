@@ -13,7 +13,7 @@
     position: fixed;
     right: 12%;
     top: 13%;
-    z-index: 2;
+    z-index: 1000;
     box-sizing: border-box;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', Geneva, Verdana, sans-serif;
     text-align: right;

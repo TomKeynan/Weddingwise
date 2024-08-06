@@ -7,9 +7,25 @@ import SupplierCard from "../components/SupplierCard";
 import ProfileBanner from "../components/ProfilePage/ProfileBanner";
 import { AppContext } from "../store/AppContext";
 import InviteesKpis from "../components/Planner/InviteeList/InviteesKpis";
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { getAuth } from 'firebase/auth';
+import { Navigate } from "react-router-dom";
+import Loading from "../components/Loading";
+
 
 function Profile() {
+
   const { coupleData } = useContext(AppContext);
+  const auth = getAuth();
+  const [user, loading] = useAuthState(auth);
+
+  if (loading  ) {
+    return <Loading />;
+  }
+
+  if (!user || !coupleData ) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <Stack alignItems="center" sx={loginStackSX}>
@@ -27,7 +43,7 @@ function Profile() {
               columnGap={2}
               sx={{ width: "90%", margin: "0 auto" }}
             >
-              {coupleData.package["selectedSuppliers"].map(
+              {coupleData.package["selectedSuppliers"]?.map(
                 (supplier, index) => (
                   <SupplierCard
                     key={index}

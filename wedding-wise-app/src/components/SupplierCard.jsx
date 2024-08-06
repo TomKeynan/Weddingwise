@@ -11,27 +11,29 @@ import Loading from './Loading';
 import { db } from "../fireBase/firebase";
 import { getDocs, query, where, collection } from "firebase/firestore";
 import { AppContext } from "../store/AppContext";
+import { useSupplierData } from "../fireBase/supplierData";
 
 function SupplierCard({
-  props, 
-  showReplaceSupplierBtn, 
-  showMoreInfoBtn, 
+  props,
+  showReplaceSupplierBtn,
+  showMoreInfoBtn,
   cardBg = "white",
-  onReplacement, 
-  onCheckBtnClick, 
-  isAlternative, 
-  isPackage, 
+  onReplacement,
+  onCheckBtnClick,
+  isAlternative,
+  isPackage,
 }) {
   const { businessName, phoneNumber, supplierEmail, price, supplierType } = props;
   const navigate = useNavigate();
   const [sticker, setSticker] = useState({});
   const [avatar, setAvatar] = useState(null);
-  const { setSupplierData } = useContext(AppContext);
+  // const { setSupplierData } = useContext(AppContext);
   const [loadingData, setLoadingData] = useState(false);
-
+  const { setSupplier } = useSupplierData(); 
+ 
   useEffect(() => {
     const fetchSupplierDataAsync = async () => {
-      setSupplierData(props);
+
       if (avatar) {
         const cardSticker = stickers.find((sticker) =>
           sticker.stickerSrc.includes(supplierType) || sticker.stickerSrc.includes("makeup")
@@ -53,7 +55,7 @@ function SupplierCard({
       } catch (error) {
         console.error("Error fetching supplier data: ", error);
       }
-      finally{
+      finally {
         setLoadingData(false);
       }
     };
@@ -63,14 +65,14 @@ function SupplierCard({
 
 
   const handleMoreInformation = () => {
-    setSupplierData(props);
+    setSupplier(props);
     navigate('/supplier-public-profile');
   };
 
 
-  // if (!avatar) {
-  //   return <Loading />;
-  // }
+  if (!avatar  ){
+    return <Loading />;
+  }
 
   return (
     <Stack
@@ -185,7 +187,7 @@ function SupplierCard({
               </Button>
             ))}
           {showMoreInfoBtn && (
-            <Button onClick={  handleMoreInformation} variant="contained" sx={actionBtnSX}>
+            <Button onClick={handleMoreInformation} variant="contained" sx={actionBtnSX}>
               מידע נוסף
             </Button>
           )}

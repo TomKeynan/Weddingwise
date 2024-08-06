@@ -44,10 +44,12 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import HomeIcon from "@mui/icons-material/Home";
 import { AppContext } from "../store/AppContext";
 import { geocodeAddress } from "../utilities/functions";
+import { useSupplierData } from "../fireBase/supplierData";
 
 const SupplierSignUp = () => {
   const navigate = useNavigate();
   const { sendData, resData, loading, error, setError } = useFetch();
+  const { setSupplier } = useSupplierData(); 
   const { setSupplierData } = useContext(AppContext);
   const [showPassword, setShowPassword] = useState(false);
   const [isVenue, setIsVenue] = useState(false);
@@ -73,6 +75,7 @@ const SupplierSignUp = () => {
       if (resData) {
         try {
           setSupplierData(resData);
+          setSupplier(resData);
           setIsLoading(true);
 
           await registerFireBase();
@@ -199,7 +202,6 @@ const SupplierSignUp = () => {
       setCurrentSupplierData(data);
       setOpen(true);
       setErrors({});
-      debugger;
       sendData("/Suppliers/registerSupplier", "POST", data);
     }
   }

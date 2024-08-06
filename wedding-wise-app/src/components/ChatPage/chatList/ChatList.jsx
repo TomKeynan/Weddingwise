@@ -12,9 +12,7 @@ function ChatList() {
     const [input, setInput] = useState("");
 
     const { currentUser } = useUserStore(); // Get the current user from the user store
-    const { changeChat, changeChatStatus } = useChatStore(); // Get the changeChat function from the chat store
-
-    console.log("ChatList");
+    const { changeChat } = useChatStore(); // Get the changeChat function from the chat store
 
     useEffect(() => {
         // Set up a Firestore onSnapshot listener for user chats
@@ -24,7 +22,7 @@ function ChatList() {
                 const chatList = res.data().chats; // Retrieve the list of chats
 
                 // Retrieve user data for each chat asynchronously
-                const promises = chatList.map(async (chat) => {
+                const promises = chatList?.map(async (chat) => {
                     const userDocRef = doc(db, "users", chat.receiverId);
                     const userDocSnap = await getDoc(userDocRef);
                     const user = userDocSnap.data();
@@ -44,8 +42,8 @@ function ChatList() {
 
     const handleSelect = async (chat) => {
         // Mark the selected chat as seen
-   
-        const userChats = chats.map((item) => {
+
+        const userChats = chats?.map((item) => {
             const { user, ...rest } = item;
             return rest;
         });
@@ -111,7 +109,7 @@ function ChatList() {
                 </div>
 
                 {/* Render the list of filtered chats */}
-                {filteredChats.map((chat) => (
+                {filteredChats?.map((chat) => (
                     <div
                         className="item"
                         key={chat.chatId}

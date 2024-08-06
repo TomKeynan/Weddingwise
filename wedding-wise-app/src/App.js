@@ -26,9 +26,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
 import SupplierPrivateProfile from "./Pages/SupplierPrivateProfile";
 import SupplierPublicProfile from "./Pages/SupplierPublicProfile";
-import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "./fireBase/firebase";
-import { useChatStore } from "./fireBase/chatStore";
+
 
 import PlannerLP from "./Pages/PlannerLP";
 import ExpenseTracking from "./Pages/ExpenseTracking";
@@ -73,52 +71,27 @@ const router = createHashRouter([
 
 function App() {
   const { fetchUserInfo, setLoading, currentUser } = useUserStore();
-  const { changeIsSeenStatus,chatStatus,isSeen } = useChatStore();
 
 
-  useEffect(() => {
-
-
-    // Function to handle fetching user info and setting loading state
-    const handleAuthStateChanged = async (user) => {
-      if (user?.uid) {
-        setLoading(true);
-        await fetchUserInfo(user.uid);
-        setLoading(false);
-      } else {
-        setLoading(false);
-      }
-    };
-
-    // Set up the authentication state change listener
-    const unSubAuth = onAuthStateChanged(auth, handleAuthStateChanged);
-
-    // Set up the listener for changes to the current chat
-    let unSubChat = null;
-    if (currentUser?.id) {
-      unSubChat = onSnapshot(doc(db, "userChats", currentUser.id), (res) => {
-        const chatsData = res.data();
-        if (chatsData && Array.isArray(chatsData.chats)) {
-          debugger;
-          const hasUnseenChat = chatsData.chats.some(
-            (chat) => chat.isSeen === false
-          );
-          changeIsSeenStatus(!hasUnseenChat);
-        }
-      });
+ useEffect(() => {
+  const handleAuthStateChanged = async (user) => {
+    if (user?.uid) {
+      setLoading(true);
+      await fetchUserInfo(user.uid);
+      setLoading(false);
+    } else {
+      setLoading(false);
     }
+  };
 
-    // Cleanup function to unsubscribe from both listeners
-    return () => {
-      if (unSubAuth) {
-        unSubAuth();
-      }
-      if (unSubChat) {
-        unSubChat();
-      }
-    };
-  }, [fetchUserInfo, setLoading,isSeen,chatStatus]);
+  const unSubAuth = onAuthStateChanged(auth, handleAuthStateChanged);
 
+  return () => {
+    if (unSubAuth) {
+      unSubAuth();
+    }
+  };
+}, [fetchUserInfo, setLoading]);
 
 
   return (

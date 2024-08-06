@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState,useEffect } from "react";
 import { NavLink, Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import { Box, Button, Stack, useMediaQuery } from "@mui/material/";
@@ -20,16 +20,19 @@ import { useChatStore } from "../fireBase/chatStore";
 import { useUserStore } from "../fireBase/userStore";
 import DropDownNavItem from "./DropDownNavItem";
 import { useAuthState } from "react-firebase-hooks/auth";
-
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "../fireBase/firebase";
 function Navbar({ isLayout = true, isSupplier = false }) {
   const navigate = useNavigate();
   // isLayout detect rather navbar's style should be for home page or all other pages
   const screenAboveMD = useMediaQuery("(min-width: 900px)");
 
-  const { changeChatStatus, isSeen, changeIsSeenStatus } = useChatStore();
+  const { changeChatStatus, isSeen, changeIsSeenStatus,chatStatus } = useChatStore();
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
   const { currentUser, isLoading, logout } = useUserStore();
+
+  // console.log(chatStatus);
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -114,19 +117,19 @@ function Navbar({ isLayout = true, isSupplier = false }) {
 
   function handleCoupleLogout(linkText) {
     if (linkText === "התנתק") {
-      handleLogout();
       sessionStorage.setItem("currentCouple", JSON.stringify(null));
       setCoupleData(null);
       sessionStorage.setItem("offeredPackage", JSON.stringify(null));
       setOfferedPackage(null);
       setSupplierData(null);
+      handleLogout();
     }
   }
 
   function handleSupplierLogout(linkText) {
     if (linkText === "התנתק") {
-      handleLogout();
       setSupplierData(null);
+      handleLogout();
     }
   }
 
@@ -147,6 +150,32 @@ function Navbar({ isLayout = true, isSupplier = false }) {
     changeChatStatus();
     handleCloseUserMenu();
   };
+
+
+  useEffect(() => {
+    let unSubChat = null;
+  
+    // Set up the listener for changes to the current chat
+    if (currentUser?.id) {
+      unSubChat = onSnapshot(doc(db, "userChats", currentUser.id), (res) => {
+        const chatsData = res.data();
+        if (chatsData && Array.isArray(chatsData.chats)) {
+          const hasUnseenChat = chatsData.chats.some(
+            (chat) => chat.isSeen === false
+          );
+          changeIsSeenStatus(!hasUnseenChat);
+        }
+      });
+    }
+  
+    // Cleanup function to unsubscribe from the chat listener
+    return () => {
+      if (unSubChat) {
+        unSubChat();
+      }
+    };
+  }, [currentUser?.id, changeIsSeenStatus]);
+
 
   // isActive = boolean property which destructured form the NavLink component.
   function navLinkLayoutStyles({ isActive }) {
@@ -223,7 +252,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                     <IconButton onClick={handleOpenUserMenu} disableRipple>
                       {/* Icon */}
                       {/* {Adam's} */}
-                      {!isSeen && user && !isLoading ? (
+                      {!isSeen && currentUser && !isLoading ? (
                         <img
                           style={{
                             height: "35px",
@@ -373,7 +402,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                         }
 
                         {/* {Adam's}  */}
-                        {!isLoading && user && (
+                        {!isLoading && currentUser && (
                           <MenuItem onClick={handleChat} sx={menuItemSX}>
                             <Link
                               onClick={(e) => e.preventDefault()}
@@ -782,7 +811,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                       ))
                   }
                   {/* {Adam's}  */}
-                  {!isLoading && user && (
+                  {!isLoading && currentUser && (
                     <MenuItem onClick={handleChat} sx={menuItemSX}>
                       <Link
                         onClick={(e) => e.preventDefault()}

@@ -17,7 +17,7 @@ function Detail() {
   } = useChatStore();
 
   const { currentUser } = useUserStore();
-  console.log("Detail");
+  
 
   const handleBlock = async () => {
     if (!user) return;

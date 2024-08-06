@@ -29,43 +29,33 @@ import { debugErrorMap } from "firebase/auth";
 import { toast } from "react-toastify";
 import { auth } from "../fireBase/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { useUserStore } from "../fireBase/userStore";
 
 function Login() {
   const { sendData, resData, error, loading } = useFetch();
   const { updateCoupleData } = useContext(AppContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { isLoading, fetchUserInfo } = useUserStore(); // Firebase's
   const navigate = useNavigate();
 
   useEffect(() => {
     const loginAndNavigate = async () => {
       if (resData) {
         try {
-          // Update user data
+      
           updateCoupleData(resData);
 
-          // Perform login and wait for it to complete
           await loginFireBase();
 
-          // Fetch user info after login
-          if (auth.currentUser?.uid) {
-            await fetchUserInfo(auth.currentUser.uid);
-          }
-
-          // Navigate only if login is successful and user info is fetched
           navigate("/profile");
         } catch (err) {
           console.error("Login or fetching user info failed:", err);
-          // Show an error message if login or fetching user info fails
-          toast.error("Login failed. Please try again.");
+        
         }
       }
     };
 
     loginAndNavigate();
-  }, [resData, fetchUserInfo, navigate]);
+  }, [resData, navigate]);
 
   // Handle user login
   const loginFireBase = async () => {
