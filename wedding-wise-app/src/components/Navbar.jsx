@@ -52,7 +52,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
     { route: "/package", text: "חבילה" },
     { route: "/tasks", text: "רשימת מטלות" },
     { route: "/invitees", text: "ניהול מוזמנים" },
-    { route: "/finance", text: "מעקב תקציב" },
+    { route: "/expense-tracking", text: "מעקב הוצאות" },
   ];
 
   const couplePages = [
