@@ -29,9 +29,88 @@ export const VALIDATIONS = Object.freeze({
     error: "שדה לא חוקי. הסיסמא חייב להכיל לפחות 6 תוים",
     valid: "",
   },
+});
+
+export const signupCoupleValidations = Object.freeze({
+  partner1Name: {
+    regex: /^$|^[ \u05D0-\u05EAa-zA-Z]{2,}$/,
+    error: "שדה לא חוקי. יש להקליד אותיות בלבד.",
+    valid: "",
+  },
+  partner2Name: {
+    regex: /^$|^[ \u05D0-\u05EAa-zA-Z]{2,}$/,
+    error: "שדה לא חוקי. יש להקליד אותיות בלבד.",
+    valid: "",
+  },
+  numberOfInvitees: {
+    regex: /^$|^[1-9]\d{2,}$/,
+    error: "שדה לא חוקי. יש להכניס רק מספרים.",
+    valid: "ציינו כמות המקסימילית (לפחות 100)",
+  },
+  budget: {
+    regex: /^$|^[1-9]\d{5,}$/,
+    error: "שדה לא חוקי. יש להכניס רק מספרים.",
+    valid: "ציינו סכום מקסימלי (לפחות 100,000)",
+  },
+  email: {
+    regex: /^$|^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/,
+    error: "שדה לא חוקי. אנא בדק שנית את כתובת המייל שהזנת",
+    valid: "",
+  },
+  password: {
+    regex: /^(\s*|\S.{5,})$/,
+    error: "שדה לא חוקי. הסיסמא חייב להכיל לפחות 6 תוים",
+    valid: "",
+  },
+});
+
+export const editCoupleValidations = Object.freeze({
+  partner1Name: {
+    regex: /^$|^[ \u05D0-\u05EAa-zA-Z]{2,}$/,
+    error: "שדה לא חוקי. יש להקליד אותיות בלבד.",
+    valid: "",
+  },
+  partner2Name: {
+    regex: /^$|^[ \u05D0-\u05EAa-zA-Z]{2,}$/,
+    error: "שדה לא חוקי. יש להקליד אותיות בלבד.",
+    valid: "",
+  },
+  numberOfInvitees: {
+    regex: /^$|^[1-9]\d{2,}$/,
+    error: "שדה לא חוקי. יש להכניס רק מספרים.",
+    valid: "ציינו כמות המקסימילית (לפחות 100)",
+  },
+  budget: {
+    regex: /^$|^[1-9]\d{5,}$/,
+    error: "שדה לא חוקי. יש להכניס רק מספרים.",
+    valid: "ציינו סכום מקסימלי (לפחות 100,000)",
+  },
+  email: {
+    regex: /^$|^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/,
+    error: "שדה לא חוקי. אנא בדק שנית את כתובת המייל שהזנת",
+    valid: "",
+  },
+  password: {
+    regex: /^$|^.{6,}$/,
+    error: "שדה הסיסמא חייב להכיל לפחות 6 תווים",
+    valid: "",
+  },
+});
+
+export const signupSupplierValidations = Object.freeze({
   businessName: {
     regex: /^.{2,30}$/,
     error: "שם העסק חייב להכיל לפחות 2 תווים",
+  },
+  phoneNumber: {
+    regex: /^\d{9,10}$/,
+    error: "ניתן להכניס מספר בין 9 עד 10 ספרות",
+    // valid: "ציינו סכום מקסימלי (לפחות 100,000)",
+  },
+  venueAddress: {
+    // regex: /^.{5,30}$/,   Hey Omri I changed it. Thanks.
+    regex: /^[א-ת\s0-9,"׳]{5,}$/,
+    error: "שם העסק חייב להכיל לפחות 5 תווים",
   },
   capacity: {
     regex: /^$|^[1-9]\d{2,}$/,
@@ -43,30 +122,50 @@ export const VALIDATIONS = Object.freeze({
     error: "יש להכניס רק מספרים",
     // valid: "ציינו סכום מקסימלי (לפחות 100,000)",
   },
+  description: {
+    regex: /^.{5,}$/,
+    error: "תיאור חייב להכיל לפחות 5 תווים",
+  },
+  password: {
+    regex: /^.{6,}$/,
+    error: "שדה הסיסמא חייב להכיל לפחות 6 תווים",
+    valid: "",
+  },
+});
+
+export const editSupplierValidations = Object.freeze({
+  businessName: {
+    regex: /^.{2,30}$/,
+    error: "שם העסק חייב להכיל לפחות 2 תווים",
+  },
   phoneNumber: {
     regex: /^\d{9,10}$/,
     error: "ניתן להכניס מספר בין 9 עד 10 ספרות",
     // valid: "ציינו סכום מקסימלי (לפחות 100,000)",
   },
-  Password: {
-    regex: /^.{5,}$/,
-    error: "שדה הסיסמא חייב להכיל לפחות 6 תווים",
-    valid: "",
-  },
-  supplierEmail: {
-    regex: /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/,
-    error: "אנא בדק שנית את כתובת המייל שהזנת",
-    valid: "",
-  },
-  capacity: {
-    regex: /^\d{2,4}$/,
-    error: "שדה לא חוקי. יש להכניס רק מספרים.",
-    valid: "ציינו כמות המקסימילית (לפחות 100)",
-  },
   venueAddress: {
     // regex: /^.{5,30}$/,   Hey Omri I changed it. Thanks.
     regex: /^[א-ת\s0-9,"׳]{5,}$/,
     error: "שם העסק חייב להכיל לפחות 5 תווים",
+  },
+  capacity: {
+    regex: /^$|^[1-9]\d{2,}$/,
+    error: "יש להכניס רק מספרים",
+    // valid: "ציינו כמות המקסימילית (לפחות 100)",
+  },
+  price: {
+    regex: /^\d{3,6}$/,
+    error: "יש להכניס רק מספרים",
+    // valid: "ציינו סכום מקסימלי (לפחות 100,000)",
+  },
+  description: {
+    regex: /^.{5,}$/,
+    error: "תיאור חייב להכיל לפחות 5 תווים",
+  },
+  password: {
+    regex: /^$|^.{6,}$/,
+    error: "שדה הסיסמא חייב להכיל לפחות 6 תווים",
+    valid: "",
   },
 });
 
@@ -83,7 +182,7 @@ export const inviteesValidations = Object.freeze({
     regex: /^(1[0-9]|20|[1-9])$/,
     error: "מקסימום 20 מוזמנים לאורח",
   },
-})
+});
 
 export const supplierTypes = [
   "אולם שמחות",
@@ -456,5 +555,5 @@ export const budgetData = [
     sponsorName: "עומרי",
     totalCost: 13500,
     downPayment: 500,
-  }
-]
+  },
+];

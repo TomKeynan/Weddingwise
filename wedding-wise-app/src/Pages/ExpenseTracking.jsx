@@ -3,6 +3,7 @@ import Expances from "../components/Planner/ExpenseTracking/Expances";
 import SourcesOfMoney from "../components/Planner/ExpenseTracking/SourcesOfMoney";
 import { Stack, Typography } from "@mui/material";
 import { customTheme } from "../store/Theme";
+import ExpensesTable from "../components/Planner/ExpenseTracking/ExpensesTable";
 //import SourcesOFMoney from '../components/Planner/FinanceTracking/SourcesOFMoney'
 
 function ExpenseTracking() {
@@ -18,9 +19,12 @@ function ExpenseTracking() {
           width: { xs: "80%", sm: "70%", md: "60%" },
         }}
       >
-        כאן תוכלו לעקוב ולשלוט בקלות אחר כל ההוצאות של החתונה,
-        לנהל את התקציב בצורה יעילה ולהבטיח שהכל מתנהל בהתאם לתכנון הכספי שלכם.
+        כאן תוכלו לעקוב ולשלוט בקלות אחר כל ההוצאות של החתונה, לנהל את התקציב
+        בצורה יעילה ולהבטיח שהכל מתנהל בהתאם לתכנון הכספי שלכם.
       </Typography>
+      <Stack>
+        <ExpensesTable />
+      </Stack>
     </Stack>
     // <>
     // <Expances />

@@ -12,6 +12,7 @@ import { getAuth } from 'firebase/auth';
 import { Navigate } from "react-router-dom";
 import Loading from "../components/Loading";
 
+import ProfileKpis from "../components/ProfilePage/ProfileKpis";
 
 function Profile() {
 
@@ -30,7 +31,7 @@ function Profile() {
   return (
     <Stack alignItems="center" sx={loginStackSX}>
       <ProfileBanner props={coupleData} />
-
+      <ProfileKpis />
       <Box sx={{ width: { xs: "80%", sm: "70%" }, marginTop: 10 }}>
         <AccordionLayout title="חבילת נותני שירות" btnValue="/package">
           {coupleData !== null && coupleData.package !== null ? (

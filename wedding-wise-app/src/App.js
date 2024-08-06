@@ -30,6 +30,7 @@ import { useSupplierData } from "./fireBase/supplierData";
 
 import PlannerLP from "./Pages/PlannerLP";
 import ExpenseTracking from "./Pages/ExpenseTracking";
+import EditCoupleDetails from "./components/EditCoupleDetails";
 const googleMapsApiKey = "AIzaSyC3QkzXx3mLsG_-IzI67-WVFBAoAZTYWxk";
 const libraries = ["places"];
 
@@ -48,6 +49,7 @@ const router = createHashRouter([
       { path: "invitees", element: <Invitees /> },
       { path: "edit", element: <EditDetails /> },
       { path: "planner", element: <PlannerLP /> },
+      { path: "edit-details", element: <EditCoupleDetails /> },
     ],
   },
   {

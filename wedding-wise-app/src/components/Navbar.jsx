@@ -78,7 +78,6 @@ function Navbar({ isLayout = true, isSupplier = false }) {
   const supplierPages = [
     { route: "/", text: "דף הבית" },
     { route: "/package", text: "חבילה" },
-    // { route: "/planner", text: "Planner" },
   ];
 
   const coupleSettings = [
@@ -99,7 +98,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
   ];
 
   const connectedCoupleSettings = [
-    { route: "/edit", text: "עדכן פרטים" },
+    { route: "/edit-details", text: "עדכן פרטים" },
     { route: "/", text: "התנתק" },
   ];
 
@@ -321,7 +320,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                         onClose={handleCloseUserMenu}
                       >
                         {
-                          // when current user is a supplier but he isn't logged in yet show this menu
+                          // when current user is a supplier but he hasn't logged in yet show this menu
                           isSupplier &&
                             !supplierData &&
                             supplierSettings.map((setting) => (

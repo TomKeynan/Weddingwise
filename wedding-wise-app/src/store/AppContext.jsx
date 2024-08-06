@@ -29,11 +29,10 @@ export default function AppContextProvider({ children }) {
 
   const [supplierData, setSupplierData] = useState(initialStateSupplierData);
 
-  const [editSupplier, setEditSupplier] = useState(supplierData);
+  const [editSupplier, setEditSupplier] = useState(initialStateSupplierData);
 
   const [offeredPackage, setOfferedPackage] = useState(null);
   const [invitees, setInvitees] = useState([]);
-
 
   useEffect(() => {
     // setCoupleData(JSON.parse(sessionStorage.getItem("currentCouple")));
@@ -45,6 +44,7 @@ export default function AppContextProvider({ children }) {
   }, [supplierData]);
 
   function updateCoupleData(data) {
+    if (data.hasOwnProperty("password")) data.password = null;
     // debugger;
     if (data.package === null) {
       sessionStorage.setItem("currentCouple", JSON.stringify(data));

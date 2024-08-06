@@ -1,7 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { RegisterContext } from "../store/RegisterContext";
 import { TextField } from "@mui/material";
-import { VALIDATIONS } from "../utilities/collections";
+import {
+  editCoupleValidations,
+  signupCoupleValidations,
+} from "../utilities/collections";
 
 const initialCheckState = {
   name: null,
@@ -26,7 +29,9 @@ const TextInput = ({
 
   useEffect(() => {
     if (editMode) {
-      validationCheck(name, editValue[name]);
+      if (name !== "password") {
+        validationCheck(name, editValue[name]);
+      }
     } else {
       validationCheck(name, userDetails[name]);
     }
@@ -43,11 +48,15 @@ const TextInput = ({
   }
 
   function validationCheck(key, value) {
-    // debugger;
-    if (VALIDATIONS[key].regex.test(value))
-      setCheck({ name: key, isValid: true, validMsg: VALIDATIONS[key].valid });
-    else
-      setCheck({ name: key, isValid: false, errorMsg: VALIDATIONS[key].error });
+    let validator = signupCoupleValidations;
+    if (editMode === true) {
+      validator = editCoupleValidations;
+    }
+
+    if (validator[key].regex.test(value)) {
+      setCheck({ name: key, isValid: true, validMsg: validator[key].valid });
+    } else
+      setCheck({ name: key, isValid: false, errorMsg: validator[key].error });
   }
 
   return (

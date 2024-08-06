@@ -34,7 +34,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import upload from "../fireBase/upload";
 import { updatePassword } from "firebase/auth";
 
-function EditCouple() {
+function EditCoupleForm() {
   const navigate = useNavigate();
 
   const {
@@ -46,8 +46,6 @@ function EditCouple() {
   } = useContext(RegisterContext);
 
   const { coupleData, updateCoupleData } = useContext(AppContext);
-
-  const { handleCreateNewPackage } = useContext(QuestionsContext);
 
   const { resData, loading, error, sendData, setResData, setError } =
     useFetch();
@@ -69,27 +67,13 @@ function EditCouple() {
 
   const { currentUser, loadingUserFirebase, setLoading } = useUserStore();
 
-
-
   useEffect(() => {
-    let counter = 0;
-    const { typeWeights, package: couplePackage, ...rest } = coupleData;
-    for (const key in rest) {
-      if (rest[key] != editValue[key]) counter++;
-    }
-    // console.log(editValue)
-    if (
-      isFormCompleted(editValue, true) &&
-      isEditFormValid(editValue) &&
-      counter > 0
-    ) {
+    if (isFormCompleted(editValue, true) && isEditFormValid(editValue)) {
       setIsUpdateDetailsValid(true);
     } else {
       setIsUpdateDetailsValid(false);
     }
   }, [editValue, openSuccessMessage]);
-
-
 
   useEffect(() => {
     if (resData) {
@@ -108,7 +92,6 @@ function EditCouple() {
         try {
           setLoading(true);
           await updateUserFirebase();
-
         } catch (error) {
           setOpenErrorMessage(true);
           console.error("Error updating user:", error);
@@ -121,17 +104,12 @@ function EditCouple() {
     updateUser();
   }, [resData, error]);
 
-
-
-
   const updateUserFirebase = async () => {
-    const username = editValue.partner1Name + ' ו' + editValue.partner2Name;  // Need to fix?
+    const username = editValue.partner1Name + " ו" + editValue.partner2Name; // Need to fix?
     const password = editValue.password;
 
     // Missing the names of the couple.
     try {
-      
-      console.log(avatar);
       const user = auth.currentUser;
       if (password) {
         await updatePassword(user, password);
@@ -152,7 +130,6 @@ function EditCouple() {
       console.log(err);
     }
   };
-
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -197,7 +174,7 @@ function EditCouple() {
         open={openUpdateConfirm}
         onCancel={handleCancelUpdateConfirm}
         onApproval={handleUpdateApproval}
-      // disabledBtn={isUpdateDetailsValid}
+        // disabledBtn={isUpdateDetailsValid}
       >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
           לחיצה על אישור תוביל לשינוי פרטי החתונה הקיימים באלו שעכשיו בחרתם.
@@ -209,50 +186,11 @@ function EditCouple() {
     );
   }
 
-  function handleQuestionsApproval() {
-    navigate("/questionnaire");
-    setOpenQuestionsConfirm(false);
-  }
-
-  function handleQuestionsCancel() {
-    handleCreateNewPackage();
-    setOpenQuestionsConfirm(false);
-  }
-
-  function showQuestionsConfirm() {
-    return (
-      <ConfirmDialog
-        title="שימו לב..."
-        open={openQuestionsConfirm}
-        onCancel={handleQuestionsCancel}
-        onApproval={handleQuestionsApproval}
-        approvalBtn="נמלא שאלון"
-        cancelBtn="נבחרת חדשה"
-      >
-        <Typography variant="h5" sx={{ textAlign: "center", mb: 1 }}>
-          שנייה לפני שנמליץ לכם על נבחרת ספקים חדשה , באפשרותכם למלא את השאלון
-          מחדש
-        </Typography>
-        <Typography variant="h5" sx={{ textAlign: "center", mb: 1 }}>
-          ------
-        </Typography>
-        <Typography variant="h6" sx={{ textAlign: "center" }}>
-          לתשובות שלכם יש משקל חשוב בהרכבת החבילה המתאימה ביותר עבורכם
-        </Typography>
-      </ConfirmDialog>
-    );
-  }
-
   // ======================= Message Dialog =======================
 
   function handleCloseMessage() {
     setOpenErrorMessage(false);
     setError(undefined);
-  }
-
-  function handleCloseSuccessMsg() {
-    setOpenSuccessMessage(false);
-    setOpenQuestionsConfirm(true);
   }
 
   function showErrorMessage(status) {
@@ -286,6 +224,12 @@ function EditCouple() {
     );
   }
 
+  function handleCloseSuccessMsg() {
+    setOpenSuccessMessage(false);
+    setOpenQuestionsConfirm(true);
+    navigate("/profile");
+  }
+
   function showSuccessMessage(resData) {
     return (
       <MessageDialog
@@ -317,7 +261,7 @@ function EditCouple() {
         {loading && <Loading />}
         {error && showErrorMessage(error)}
         {openSuccessMessage && showSuccessMessage(resData)}
-        {openQuestionsConfirm && showQuestionsConfirm()}
+        {/* {openQuestionsConfirm && showQuestionsConfirm()} */}
         <Grid item xs={12} md={6}>
           <TextInput
             variant="standard"
@@ -462,7 +406,7 @@ function EditCouple() {
   );
 }
 
-export default EditCouple;
+export default EditCoupleForm;
 
 // ============================== styles ==============================
 
@@ -505,4 +449,3 @@ const paperSX = {
   // px: { xs: 1, sm: 3 },
   backgroundColor: "rgba(255,255,255,0.8)",
 };
-

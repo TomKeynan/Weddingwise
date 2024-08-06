@@ -6,8 +6,9 @@ import EditCouple from "../components/EditCouple";
 import AppContextProvider from "../store/AppContext";
 import QuestionsContextProvider from "../store/QuestionsContext";
 import { customTheme } from "../store/Theme";
+import EditCoupleForm from "./EditCoupleForm";
 
-function EditDetails() {
+function EditCoupleDetails() {
   return (
     <RegisterContextProvider>
       <QuestionsContextProvider>
@@ -26,28 +27,15 @@ function EditDetails() {
             <Typography variant="h4" sx={titleSX}>
               עריכה ועדכון פרטים
             </Typography>
-            <Typography
-              sx={{
-                fontSize: { xs: 18, sm: 22, md: 28 },
-                textAlign: "center",
-                p: { xs: 1, sm: 3 },
-                width: { xs: "80%", sm: "70%" },
-                margin: "0 auto",
-              }}
-            >
-              על מנת להחליף חבילה עליכם לשנות לפחות אחד מפרטי החתונה שהזנתם.
-              בנוסף תוכלו למלא את השאלון מחדש לאחר מכן. יש לוודא שבחירת הפרטים
-              החדשים הגיונית
-            </Typography>
           </Stack>
-          <EditCouple />
+          <EditCoupleForm />
         </Stack>
       </QuestionsContextProvider>
     </RegisterContextProvider>
   );
 }
 
-export default EditDetails;
+export default EditCoupleDetails;
 
 const titleSX = {
   textAlign: "center",

@@ -1,13 +1,20 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { VALIDATIONS } from "../utilities/collections";
+import { editCoupleValidations, VALIDATIONS } from "../utilities/collections";
 import { useNavigate } from "react-router-dom";
 import useFetch from "../utilities/useFetch";
 import { AppContext } from "./AppContext";
 // import useFetch from "../utilities/useFetch";
-import { toast } from 'react-toastify';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth, db } from '../fireBase/firebase';
-import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
+import { toast } from "react-toastify";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../fireBase/firebase";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import upload from "../fireBase/upload";
 
 export const RegisterContext = createContext({
@@ -17,21 +24,19 @@ export const RegisterContext = createContext({
   error: null,
   loading: false,
   avatar: null,
-  updateUserDetails: () => { },
-  updateEditValue: () => { },
-  saveDateValue: () => { },
-  isFormCompleted: () => { },
-  isFormValid: () => { },
-  isEditFormValid: () => { },
-  handleSubmit: () => { },
-  handleAvatar: () => { },
+  updateUserDetails: () => {},
+  updateEditValue: () => {},
+  saveDateValue: () => {},
+  isFormCompleted: () => {},
+  isFormValid: () => {},
+  isEditFormValid: () => {},
+  handleSubmit: () => {},
+  handleAvatar: () => {},
 });
 export default function RegisterContextProvider({ children }) {
   const navigate = useNavigate();
 
-
-  
-  const { sendData, resData, error, loading } = useFetch();
+  const { sendData, resData, error, setError, loading } = useFetch();
 
   const { updateCoupleData } = useContext(AppContext);
 
@@ -67,16 +72,13 @@ export default function RegisterContextProvider({ children }) {
         navigate("/profile");
       }
     };
-
     registerAndNavigate();
-  }, [resData]);
+  }, [resData, error]);
 
   const registerFireBase = async () => {
-
-    const username = userDetails.partner1Name + ' ו' + userDetails.partner2Name;  // Need to fix?
+    const username = userDetails.partner1Name + " ו" + userDetails.partner2Name; // Need to fix?
     const email = userDetails.email;
-    const password = userDetails.password
-
+    const password = userDetails.password;
 
     // Validate unique username
     const usersRef = collection(db, "users");
@@ -94,30 +96,23 @@ export default function RegisterContextProvider({ children }) {
         imgUrl = await upload(avatar.file);
       }
 
-     
       await setDoc(doc(db, "users", res.user.uid), {
         username,
         email,
-        avatar:
-          imgUrl ||
-          "assets/chat_pics/avatar.png",
+        avatar: imgUrl || "assets/chat_pics/avatar.png",
         id: res.user.uid,
         blocked: [],
       });
 
-
       await setDoc(doc(db, "userChats", res.user.uid), {
         chats: [],
       });
-
-
 
       toast.success("Account created! You can login now!");
     } catch (err) {
       console.log(err);
       toast.error(err.message);
     } finally {
-
     }
   };
 
@@ -144,10 +139,13 @@ export default function RegisterContextProvider({ children }) {
   }
 
   //checks if all fields has been filled by the user.
-  function isFormCompleted(userDetails) {
+  function isFormCompleted(userDetails, isEditMode = false) {
     const keys = Object.keys(userDetails);
     //result is counting how many fields still empty
     const result = keys.reduce((acc, currentKey) => {
+      if (isEditMode && currentKey === "password") {
+        return acc;
+      }
       if (userDetails[currentKey] === "") return (acc += 1);
       else return acc;
     }, 0);
@@ -155,17 +153,21 @@ export default function RegisterContextProvider({ children }) {
   }
 
   // filter all fields that don't need to pass validation check.
-  function filterNonRequiredFields() {
+  function filterNonRequiredFields(isEditMode) {
+    let validator = VALIDATIONS;
+    if (isEditMode) {
+      validator = editCoupleValidations;
+    }
     const keys = Object.keys(userDetails);
     const filteredKeys = keys.filter((key) => {
-      if (VALIDATIONS.hasOwnProperty(key)) return key;
+      if (validator.hasOwnProperty(key)) return key;
     });
     return filteredKeys;
   }
 
   // checks if all fields are valid.
   function isFormValid(userDetails) {
-    const filteredKeys = filterNonRequiredFields();
+    const filteredKeys = filterNonRequiredFields(false);
     //result is counting how many fields passed test validation.
     const result = filteredKeys.reduce((acc, currentKey) => {
       if (VALIDATIONS[currentKey].regex.test(userDetails[currentKey]))
@@ -177,17 +179,18 @@ export default function RegisterContextProvider({ children }) {
 
   // checks if all fields are valid.
   function isEditFormValid(userDetails) {
-    const filteredKeys = filterNonRequiredFields();
-    // const newKeys = filteredKeys.filter((key) => {
-    //   return key !== "password";
-    // });
+    if (userDetails.password === null) {
+      userDetails.password = "";
+    }
+    const filteredKeys = filterNonRequiredFields(true);
     //result is counting how many fields passed test validation.
     const result = filteredKeys.reduce((acc, currentKey) => {
-      if (VALIDATIONS[currentKey].regex.test(userDetails[currentKey]))
+      if (editCoupleValidations[currentKey].regex.test(userDetails[currentKey]))
         return (acc += 1);
       else return acc;
     }, 0);
     return result === filteredKeys.length;
+
   }
 
   function saveDateValue(dateInput) {
