@@ -72,7 +72,6 @@ function Navbar({ isLayout = true, isSupplier = false }) {
   const supplierPages = [
     { route: "/", text: "דף הבית" },
     { route: "/package", text: "חבילה" },
-    // { route: "/planner", text: "Planner" },
   ];
 
   const coupleSettings = [
@@ -93,7 +92,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
   ];
 
   const connectedCoupleSettings = [
-    { route: "/edit", text: "עדכן פרטים" },
+    { route: "/edit-details", text: "עדכן פרטים" },
     { route: "/", text: "התנתק" },
   ];
 

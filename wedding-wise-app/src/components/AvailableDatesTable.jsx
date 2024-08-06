@@ -22,7 +22,6 @@ const rows = [
 ];
 
 export default function AvailableDatesTable({ dates, onDelete }) {
-  
   function sortDates(dateArray) {
     return dateArray.sort((a, b) => new Date(a) - new Date(b));
   }

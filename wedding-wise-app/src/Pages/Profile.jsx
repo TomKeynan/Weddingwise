@@ -7,6 +7,7 @@ import SupplierCard from "../components/SupplierCard";
 import ProfileBanner from "../components/ProfilePage/ProfileBanner";
 import { AppContext } from "../store/AppContext";
 import InviteesKpis from "../components/Planner/InviteeList/InviteesKpis";
+import ProfileKpis from "../components/ProfilePage/ProfileKpis";
 
 function Profile() {
   const { coupleData } = useContext(AppContext);
@@ -14,7 +15,7 @@ function Profile() {
   return (
     <Stack alignItems="center" sx={loginStackSX}>
       <ProfileBanner props={coupleData} />
-
+      <ProfileKpis />
       <Box sx={{ width: { xs: "80%", sm: "70%" }, marginTop: 10 }}>
         <AccordionLayout title="חבילת נותני שירות" btnValue="/package">
           {coupleData !== null && coupleData.package !== null ? (

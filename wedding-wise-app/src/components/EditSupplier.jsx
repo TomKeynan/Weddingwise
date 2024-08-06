@@ -15,6 +15,7 @@ import RegisterContextProvider from "../store/RegisterContext";
 import { customTheme } from "../store/Theme";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
+  editSupplierValidations,
   regions,
   signupSupplierErrors,
   supplierTypes,
@@ -43,7 +44,7 @@ import { updateDoc } from "firebase/firestore";
 import { geocodeAddress } from "../utilities/functions";
 
 const EditSupplier = ({ supplierFirebase }) => {
-  const { editSupplier, setEditSupplier, setSupplierData, setScrollToTop } =
+  const { editSupplier, setEditSupplier, setSupplierData } =
     useContext(AppContext);
   const { sendData, resData, setResData, loading, error, setError } =
     useFetch();
@@ -63,7 +64,6 @@ const EditSupplier = ({ supplierFirebase }) => {
   const [currentAddress, setCurrentAddress] = useState("");
 
   useEffect(() => {
-
     const updateUser = async () => {
       if (resData) {
         const { Password, ...rest } = currentSupplierData;
@@ -121,7 +121,6 @@ const EditSupplier = ({ supplierFirebase }) => {
     }
   };
 
-
   const handleAvatar = (e) => {
     if (e.target.files[0]) {
       setAvatar({
@@ -134,11 +133,10 @@ const EditSupplier = ({ supplierFirebase }) => {
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   async function handleFormSubmit(e) {
-
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
-    delete data?.description;
+    // delete data?.description;
     delete data.userImage;
 
     setLoading(true);
@@ -152,12 +150,14 @@ const EditSupplier = ({ supplierFirebase }) => {
     const newErrors = {};
     for (let field in data) {
       if (
-        VALIDATIONS.hasOwnProperty(field) &&
-        !VALIDATIONS[field].regex.test(data[field])
+        editSupplierValidations.hasOwnProperty(field) &&
+        !editSupplierValidations[field].regex.test(data[field])
       ) {
-        newErrors[field] = VALIDATIONS[field].error;
+        newErrors[field] = editSupplierValidations[field].error;
       } else {
-        if (data[field] === "") newErrors[field] = "שדה זה נדרש להיות מלא";
+        if (data[field] === "" && field !== "password") {
+          newErrors[field] = "שדה זה נדרש להיות מלא";
+        }
       }
     }
     if (Object.keys(newErrors).length > 0) {
@@ -246,14 +246,12 @@ const EditSupplier = ({ supplierFirebase }) => {
   //   );
   // }
 
-
   if (isLoading) {
-    return <Loading />
+    return <Loading />;
   }
 
   return (
     <RegisterContextProvider>
-
       {error && showErrorMessage(error)}
       {openUpdateConfirm && showUpdateConfirmDialog()}
       {/* {openUpdateSuccess && showSuccessMessage()} */}
@@ -315,7 +313,11 @@ const EditSupplier = ({ supplierFirebase }) => {
                       label="כמות אורחים"
                       name="capacity"
                       sx={textFieldSX}
-                      value={editSupplier.capacity === null ? 0 : editSupplier.capacity}
+                      value={
+                        editSupplier.capacity === null
+                          ? 0
+                          : editSupplier.capacity
+                      }
                       onChange={handleInputChange}
                     />
                     {errors.capacity && (
@@ -416,7 +418,7 @@ const EditSupplier = ({ supplierFirebase }) => {
                 >
                   <TextField
                     id="password-input"
-                    name="Password"
+                    name="password"
                     label="סיסמא"
                     type={showPassword ? "text" : "password"}
                     InputProps={{
@@ -439,9 +441,9 @@ const EditSupplier = ({ supplierFirebase }) => {
                     }}
                   />
                 </FormControl>
-                {errors.Password && (
+                {errors.password && (
                   <Alert severity="error" sx={errorAlertSX}>
-                    {errors.Password}
+                    {errors.password}
                   </Alert>
                 )}
               </Grid>
@@ -466,6 +468,7 @@ const EditSupplier = ({ supplierFirebase }) => {
                 <TextField
                   variant="filled"
                   type="text"
+                  //value={פה תכניס את הקישורים שנקלטו בהרשמה - בהתאמה}
                   label="קישור ליוטיוב"
                   sx={textFieldSX}
                 />
@@ -474,6 +477,7 @@ const EditSupplier = ({ supplierFirebase }) => {
                 <TextField
                   variant="filled"
                   type="text"
+                  //value={פה תכניס את הקישורים שנקלטו בהרשמה - בהתאמה}
                   label="קישור לאינסטגרם"
                   sx={textFieldSX}
                 />
@@ -482,6 +486,7 @@ const EditSupplier = ({ supplierFirebase }) => {
                 <TextField
                   variant="filled"
                   type="text"
+                  //value={פה תכניס את הקישורים שנקלטו בהרשמה - בהתאמה}
                   label="קישור לפייסבוק"
                   sx={textFieldSX}
                 />
@@ -490,6 +495,7 @@ const EditSupplier = ({ supplierFirebase }) => {
                 <TextField
                   variant="filled"
                   type="text"
+                  //value={פה תכניס את הקישורים שנקלטו בהרשמה - בהתאמה}
                   label="קישור ללינקדין"
                   sx={textFieldSX}
                 />

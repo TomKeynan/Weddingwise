@@ -18,8 +18,10 @@ import RegisterContextProvider from "../store/RegisterContext";
 import { customTheme } from "../store/Theme";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
+  editSupplierValidations,
   regions,
   signupSupplierErrors,
+  signupSupplierValidations,
   supplierTypes,
   VALIDATIONS,
 } from "../utilities/collections";
@@ -34,10 +36,7 @@ import ReadOnlyPopup from "../components/Dialogs/ReadOnlyPopup";
 import { toast } from "react-toastify";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../fireBase/firebase";
-import {
-  doc,
-  setDoc
-} from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import upload from "../fireBase/upload";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
@@ -61,12 +60,11 @@ const SupplierSignUp = () => {
   const [currentSupplierData, setCurrentSupplierData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [socialLinks, setSocialLinks] = useState({
-    Instagram: '',
-    Facebook: '',
-    YouTube: '',
-    LinkedIn: ''
+    Instagram: "",
+    Facebook: "",
+    YouTube: "",
+    LinkedIn: "",
   });
-
 
   useEffect(() => {
     const registerAndNavigate = async () => {
@@ -84,8 +82,7 @@ const SupplierSignUp = () => {
             "Registration, login, or fetching user info failed:",
             err
           );
-        }
-        finally {
+        } finally {
           setIsLoading(false);
         }
       }
@@ -128,10 +125,10 @@ const SupplierSignUp = () => {
       }
 
       const socialLinksWithDefaults = {
-        Instagram: socialLinks.Instagram || '',
-        Facebook: socialLinks.Facebook || '',
-        YouTube: socialLinks.YouTube || '',
-        LinkedIn: socialLinks.LinkedIn || ''
+        Instagram: socialLinks.Instagram || "",
+        Facebook: socialLinks.Facebook || "",
+        YouTube: socialLinks.YouTube || "",
+        LinkedIn: socialLinks.LinkedIn || "",
       };
 
       await setDoc(doc(db, "users", res.user.uid), {
@@ -142,7 +139,7 @@ const SupplierSignUp = () => {
         id: res.user.uid,
         blocked: [],
         comments: [],
-        socialLinks: socialLinksWithDefaults
+        socialLinks: socialLinksWithDefaults,
       });
 
       await setDoc(doc(db, "userChats", res.user.uid), {
@@ -169,10 +166,14 @@ const SupplierSignUp = () => {
     setSocialLinks({
       Instagram: data.Instagram,
       Facebook: data.Facebook,
-      Youtube: data.Youtube,
+      Youtube: data.YouTube,
       LinkedIn: data.LinkedIn,
     });
 
+    delete data.Instagram;
+    delete data.Facebook;
+    delete data.YouTube;
+    delete data.LinkedIn;
 
     if (data.venueAddress) {
       const { latitude, longitude } = await geocodeAddress(data.venueAddress); // Need to address bad input if got time
@@ -180,16 +181,20 @@ const SupplierSignUp = () => {
       data.longitude = longitude;
     }
 
+    console.log(data);
     // Validate fields
     const newErrors = {};
     for (let field in data) {
       if (
-        VALIDATIONS.hasOwnProperty(field) &&
-        !VALIDATIONS[field].regex.test(data[field])
+        signupSupplierValidations.hasOwnProperty(field) &&
+        !signupSupplierValidations[field].regex.test(data[field])
       ) {
-        newErrors[field] = VALIDATIONS[field].error;
+        newErrors[field] = signupSupplierValidations[field].error;
       } else {
-        if (data[field] === "") newErrors[field] = "שדה זה נדרש להיות מלא";
+        if (data[field] === "") {
+          console.log(field);
+          newErrors[field] = "שדה זה נדרש להיות מלא";
+        }
       }
     }
     if (Object.keys(newErrors).length > 0) {
@@ -199,7 +204,6 @@ const SupplierSignUp = () => {
       setCurrentSupplierData(data);
       setOpen(true);
       setErrors({});
-      debugger;
       sendData("/Suppliers/registerSupplier", "POST", data);
     }
   }
@@ -242,8 +246,6 @@ const SupplierSignUp = () => {
       </ReadOnlyPopup>
     );
   }
-
-
 
   if (loading || isLoading) {
     return <Loading />;
@@ -445,6 +447,11 @@ const SupplierSignUp = () => {
                   name="description"
                   helperText="תיאור זה יופיע בפרופיל - כתבו תיאור הולם עבור העסק והשירות שאתם מציעים"
                 />
+                {errors.description && (
+                  <Alert severity="error" sx={errorAlertSX}>
+                    {errors.description}
+                  </Alert>
+                )}
               </Grid>
               {/* Password */}
               <Grid item xs={12} md={6}>
@@ -455,7 +462,7 @@ const SupplierSignUp = () => {
                 >
                   <TextField
                     id="password-input"
-                    name="Password"
+                    name="password"
                     label="סיסמא"
                     type={showPassword ? "text" : "password"}
                     InputProps={{
@@ -478,9 +485,9 @@ const SupplierSignUp = () => {
                     }}
                   />
                 </FormControl>
-                {errors.Password && (
+                {errors.password && (
                   <Alert severity="error" sx={errorAlertSX}>
-                    {errors.Password}
+                    {errors.password}
                   </Alert>
                 )}
               </Grid>

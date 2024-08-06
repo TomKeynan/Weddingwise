@@ -105,7 +105,7 @@ function UserWithoutPackage() {
             <Button
               variant="contained"
               sx={{ width: "50%" }}
-              onClick={() => navigate("/edit")}
+              onClick={() => navigate("/edit-details")}
             >
               עדכן פרטים
             </Button>
