@@ -26,7 +26,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
 import SupplierPrivateProfile from "./Pages/SupplierPrivateProfile";
 import SupplierPublicProfile from "./Pages/SupplierPublicProfile";
-
+import { useSupplierData } from "./fireBase/supplierData";
 
 import PlannerLP from "./Pages/PlannerLP";
 import ExpenseTracking from "./Pages/ExpenseTracking";
@@ -72,6 +72,9 @@ const router = createHashRouter([
 function App() {
   const { fetchUserInfo, setLoading, currentUser } = useUserStore();
 
+  const { supplierData } = useSupplierData();
+
+  console.log(supplierData);
 
  useEffect(() => {
   const handleAuthStateChanged = async (user) => {

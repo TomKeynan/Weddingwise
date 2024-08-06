@@ -22,6 +22,8 @@ import DropDownNavItem from "./DropDownNavItem";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../fireBase/firebase";
+import { useSupplierData } from "../fireBase/supplierData";
+
 function Navbar({ isLayout = true, isSupplier = false }) {
   const navigate = useNavigate();
   // isLayout detect rather navbar's style should be for home page or all other pages
@@ -31,8 +33,9 @@ function Navbar({ isLayout = true, isSupplier = false }) {
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
   const { currentUser, isLoading, logout } = useUserStore();
+  const { clearSupplier,setSupplier } = useSupplierData();
 
-  // console.log(chatStatus);
+
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -136,6 +139,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
   // Adam's
   async function handleLogout() {
     try {
+      clearSupplier();
       const auth = getAuth();
       await signOut(auth);
       logout();

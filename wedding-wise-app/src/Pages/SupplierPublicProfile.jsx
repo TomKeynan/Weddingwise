@@ -34,12 +34,10 @@ function SupplierPublicProfile() {
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
-  // const { supplierData } = useContext(AppContext);
   const [supplierFirebase, setSupplierFirebase] = useState(null);
   const [loadingData, setLoadingData] = useState(false);
   const { supplierData } = useSupplierData();
 
-  console.log(supplierData);
   useEffect(() => {
     const fetchAndSetData = async () => {
       try {
