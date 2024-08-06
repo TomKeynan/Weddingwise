@@ -1,13 +1,17 @@
 import { Box, Stack } from "@mui/material";
-import { React} from "react";
+import { React } from "react";
 import { customTheme } from "../store/Theme";
+import Loading from "./Loading";
+
+function SupplierBanner({ supplierFirebase }) {
+
+ 
 
 
-function SupplierBanner({supplierFirebase}) {
 
   return (
     <>
-      {(
+      {supplierFirebase?.avatar && (
         <Stack
           spacing={4}
           direction="row"
@@ -29,17 +33,18 @@ function SupplierBanner({supplierFirebase}) {
                 bottom: { xs: "-20%", sm: "-40%" },
               }}
             >
-              <Box
-                component="img"
-                src={supplierFirebase?.avatar || '/path/to/default/avatar.png'} // Add a fallback image URL
-                alt="Supplier Avatar"
-                sx={{
-                  width: { xs: 250, sm: 400 },
-                  height: { xs: 250, sm: 400 },
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                }}
-              />
+                <Box
+                  component="img"
+                  src={supplierFirebase?.avatar} 
+                  alt="Supplier Avatar"
+                  sx={{
+                    width: { xs: 250, sm: 400 },
+                    height: { xs: 250, sm: 400 },
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                  }}
+                />
+            
             </Box>
           </Stack>
         </Stack>

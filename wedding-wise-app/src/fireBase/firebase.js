@@ -5,15 +5,14 @@ import {getStorage} from "firebase/storage"
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDlcdTfTQn9aatH1g1qcMHelXm8TykR5Jc",
-  // apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: "weddingwisetest-ecd19.firebaseapp.com",
-  projectId: "weddingwisetest-ecd19",
-  storageBucket: "weddingwisetest-ecd19.appspot.com",
-  messagingSenderId: "560977532088",
-  appId: "1:560977532088:web:71a9b0f07659fa9e6cd04d",
-  measurementId: "G-QRFPDTG4LD"
+  apiKey: "AIzaSyCBLvJL86svHk5D7pcmBdUZBynz5zDsF8s",
+  authDomain: "weddingwise-3965d.firebaseapp.com",
+  projectId: "weddingwise-3965d",
+  storageBucket: "weddingwise-3965d.appspot.com",
+  messagingSenderId: "944069345523",
+  appId: "1:944069345523:web:a7cbf57677291b09def786"
 };
+
 
 const app = initializeApp(firebaseConfig);
 

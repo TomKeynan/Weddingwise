@@ -28,6 +28,11 @@ import { useNavigate } from "react-router-dom";
 import { QuestionsContext } from "../store/QuestionsContext";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import InputFileUpload from "./InputFileUpload";
+import { useUserStore } from "../fireBase/userStore";
+import { auth, db } from "../fireBase/firebase";
+import { doc, updateDoc } from "firebase/firestore";
+import upload from "../fireBase/upload";
+import { updatePassword } from "firebase/auth";
 
 function EditCouple() {
   const navigate = useNavigate();
@@ -62,6 +67,10 @@ function EditCouple() {
     url: "",
   });
 
+  const { currentUser, loadingUserFirebase, setLoading } = useUserStore();
+
+
+
   useEffect(() => {
     let counter = 0;
     const { typeWeights, package: couplePackage, ...rest } = coupleData;
@@ -79,6 +88,8 @@ function EditCouple() {
     }
   }, [editValue, openSuccessMessage]);
 
+
+
   useEffect(() => {
     if (resData) {
       setOpenSuccessMessage(true);
@@ -87,6 +98,60 @@ function EditCouple() {
       setOpenErrorMessage(true);
     }
   }, [resData, error]);
+
+  useEffect(() => {
+    const updateUser = async () => {
+      if (resData) {
+        setOpenSuccessMessage(true);
+        updateCoupleData(editValue);
+        try {
+          setLoading(true);
+          await updateUserFirebase();
+
+        } catch (error) {
+          setOpenErrorMessage(true);
+          console.error("Error updating user:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    updateUser();
+  }, [resData, error]);
+
+
+
+
+  const updateUserFirebase = async () => {
+    const username = editValue.partner1Name + ' ו' + editValue.partner2Name;  // Need to fix?
+    const password = editValue.password;
+
+    // Missing the names of the couple.
+    try {
+      
+      console.log(avatar);
+      const user = auth.currentUser;
+      if (password) {
+        await updatePassword(user, password);
+      }
+
+      let imgUrl = null;
+      if (avatar && avatar.file) {
+        imgUrl = await upload(avatar.file);
+      }
+
+      // Update user details in Firestore
+      const userRef = doc(db, "users", currentUser.id);
+      await updateDoc(userRef, {
+        username: username || currentUser.username,
+        avatar: imgUrl || currentUser.avatar,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -119,6 +184,7 @@ function EditCouple() {
 
   function handleUpdateApproval() {
     sendData("/Couples/updateCouple", "PUT", editValue);
+    console.log(editValue);
     setResData(undefined);
     setOpenUpdateConfirm(false);
   }
@@ -130,7 +196,7 @@ function EditCouple() {
         open={openUpdateConfirm}
         onCancel={handleCancelUpdateConfirm}
         onApproval={handleUpdateApproval}
-        // disabledBtn={isUpdateDetailsValid}
+      // disabledBtn={isUpdateDetailsValid}
       >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
           לחיצה על אישור תוביל לשינוי פרטי החתונה הקיימים באלו שעכשיו בחרתם.

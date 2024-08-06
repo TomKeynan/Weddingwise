@@ -16,7 +16,7 @@ function ProfileBanner({ props }) {
 
 // // Hope it finally works
 //   if (loading ) {
-//     return <Loading />;
+    // return <Loading />;
 //   }
 
 //   if (!user) {

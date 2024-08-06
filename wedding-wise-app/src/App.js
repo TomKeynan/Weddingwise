@@ -72,13 +72,13 @@ const router = createHashRouter([
 ]);
 
 function App() {
-  const { fetchUserInfo, setLoading, currentUser  } = useUserStore();
-  const { changeIsSeenStatus } = useChatStore();
+  const { fetchUserInfo, setLoading, currentUser } = useUserStore();
+  const { changeIsSeenStatus,chatStatus,isSeen } = useChatStore();
 
 
   useEffect(() => {
 
-    
+
     // Function to handle fetching user info and setting loading state
     const handleAuthStateChanged = async (user) => {
       if (user?.uid) {
@@ -99,6 +99,7 @@ function App() {
       unSubChat = onSnapshot(doc(db, "userChats", currentUser.id), (res) => {
         const chatsData = res.data();
         if (chatsData && Array.isArray(chatsData.chats)) {
+          debugger;
           const hasUnseenChat = chatsData.chats.some(
             (chat) => chat.isSeen === false
           );
@@ -116,7 +117,8 @@ function App() {
         unSubChat();
       }
     };
-  }, [fetchUserInfo, setLoading]);
+  }, [fetchUserInfo, setLoading,isSeen]);
+
 
 
   return (

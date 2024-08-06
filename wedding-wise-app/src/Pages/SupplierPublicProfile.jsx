@@ -26,8 +26,8 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { getAuth } from "firebase/auth";
 import { AppContext } from "../store/AppContext";
 import { fetchSupplierData } from "../fireBase/fetchSupplier";
-import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../fireBase/firebase";
+import { doc, onSnapshot, getDocs, query, where, collection } from "firebase/firestore";
 
 function SupplierPublicProfile() {
   const auth = getAuth();
@@ -37,60 +37,68 @@ function SupplierPublicProfile() {
   const [supplierFirebase, setSupplierFirebase] = useState(null);
   const [loadingData, setLoadingData] = useState(false);
 
-  // Need to fix re-render problem
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (supplierData?.supplierEmail) {
+    const fetchAndSetData = async () => {
+      try {
         setLoadingData(true);
-        try {
-          const data = await fetchSupplierData(supplierData.supplierEmail);
-          setSupplierFirebase(data);
-        } catch (err) {
-          console.error("Error fetching supplier data: ", err);
-        } finally {
+  
+        // Fetch supplier ID based on email
+        const userRef = collection(db, "users");
+        const q = query(userRef, where("email", "==", supplierData?.supplierEmail));
+        const querySnapshot = await getDocs(q);
+  
+        if (querySnapshot.empty) {
+          console.log('No supplier found with this email.');
           setLoadingData(false);
+          return;
         }
-      }
-    };
-
-    fetchData();
-  }, [supplierData?.supplierEmail]);
-
-  // A listner for comments
-  useEffect(() => {
-    if (!supplierData?.supplierEmail || !supplierFirebase?.id) return;
-
-    const commentsRef = doc(db, "supplierComments", supplierFirebase.id);
-
-    const unsubscribe = onSnapshot(
-      commentsRef,
-      async (docSnapshot) => {
-        if (docSnapshot.exists()) {
-          setLoadingData(true);
-          try {
-            const data = await fetchSupplierData(supplierData.supplierEmail);
-            setSupplierFirebase(data);
-          } catch (error) {
-            console.error(
-              "Error fetching supplier data on comments change: ",
-              error
-            );
-          } finally {
-            setLoadingData(false);
+  
+        const supplierId = querySnapshot.docs[0].id;
+        const userDocRef = doc(db, "users", supplierId);
+  
+        // Set up a Firestore onSnapshot listener for the user document
+        const unsubscribe = onSnapshot(userDocRef, (docSnapshot) => {
+          if (docSnapshot.exists()) {
+            // Define an asynchronous function to fetch data and reverse geocode
+            const fetchDataAndSetFirebase = async () => {
+              try {
+                setLoadingData(true);
+                const data = await fetchSupplierData(supplierData.supplierEmail);
+                setSupplierFirebase(data);
+              } catch (error) {
+                console.error("Error fetching supplier data:", error);
+              } finally {
+                setLoadingData(false);
+              }
+            };
+  
+            // Call the async function
+            fetchDataAndSetFirebase();
           }
-        }
-      },
-      (error) => {
-        console.error("Error listening to comments: ", error);
+        });
+  
+        // Clean up the listener on component unmount
+        return () => {
+          unsubscribe();
+        };
+      } catch (error) {
+        console.error("Error fetching user data: ", error);
         setLoadingData(false);
       }
-    );
-
-    return () => {
-      unsubscribe();
     };
-  }, [supplierData?.supplierEmail, supplierFirebase?.id]);
+  
+    if (supplierData?.supplierEmail) {
+      fetchAndSetData();
+    }
+  }, [supplierData?.supplierEmail]);
+  
+
+
+  
+
+
+
 
   // Hope it finally works
   if (loading || loadingData) {
@@ -100,6 +108,8 @@ function SupplierPublicProfile() {
   if (!user) {
     return <Navigate to="/" />;
   }
+
+
 
   return (
     <Stack alignItems="center" sx={stackWrapperSX}>
@@ -113,7 +123,7 @@ function SupplierPublicProfile() {
       >
         {/* social media links */}
         <Stack direction="row" justifyContent="space-around">
-          <Link
+        {supplierFirebase?.socialLinks?.Youtube &&  <Link
             component="button"
             variant="body1"
             onClick={() => {
@@ -121,8 +131,8 @@ function SupplierPublicProfile() {
             }}
           >
             <YouTubeIcon sx={socialIconsSX} />
-          </Link>
-          <Link
+          </Link> }
+          {supplierFirebase?.socialLinks?.Instagram &&<Link
             component="button"
             variant="body1"
             onClick={() => {
@@ -130,8 +140,8 @@ function SupplierPublicProfile() {
             }}
           >
             <InstagramIcon sx={socialIconsSX} />
-          </Link>
-          <Link
+          </Link>}
+          {supplierFirebase?.socialLinks?.LinkedIn && <Link
             component="button"
             variant="body1"
             onClick={() => {
@@ -139,8 +149,8 @@ function SupplierPublicProfile() {
             }}
           >
             <LinkedInIcon sx={socialIconsSX} />
-          </Link>
-          <Link
+          </Link>}
+          {supplierFirebase?.socialLinks?.Facebook &&   <Link
             component="button"
             variant="body1"
             onClick={() => {
@@ -148,7 +158,7 @@ function SupplierPublicProfile() {
             }}
           >
             <FacebookIcon sx={socialIconsSX} />
-          </Link>
+          </Link>}
         </Stack>
         {/* rating and number of raters */}
         <Stack
