@@ -87,8 +87,8 @@ const EditSupplier = ({ supplierFirebase }) => {
   }, [resData, currentSupplierData]);
 
   useEffect(() => {
-    setCurrentDescription(supplierFirebase.description);
-    setCurrentAddress(supplierFirebase.address);
+    setCurrentDescription(supplierFirebase?.description);
+    setCurrentAddress(supplierFirebase?.address);
   }, [supplierFirebase]);
 
   const updateUserFirebase = async () => {
@@ -113,7 +113,7 @@ const EditSupplier = ({ supplierFirebase }) => {
       const userRef = doc(db, "users", supplierFirebase.id);
       await updateDoc(userRef, {
         username: username || supplierFirebase.username,
-        description: description || supplierFirebase.description,
+        description: description || supplierFirebase?.description,
         avatar: imgUrl || supplierFirebase.avatar,
       });
     } catch (err) {
@@ -138,7 +138,7 @@ const EditSupplier = ({ supplierFirebase }) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
-    delete data.description;
+    delete data?.description;
     delete data.userImage;
 
     setLoading(true);
