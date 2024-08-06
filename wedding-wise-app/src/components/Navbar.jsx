@@ -19,6 +19,7 @@ import { getAuth, signOut } from "firebase/auth";
 import { useChatStore } from "../fireBase/chatStore";
 import { useUserStore } from "../fireBase/userStore";
 import DropDownNavItem from "./DropDownNavItem";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 function Navbar({ isLayout = true, isSupplier = false }) {
   const navigate = useNavigate();
@@ -26,7 +27,8 @@ function Navbar({ isLayout = true, isSupplier = false }) {
   const screenAboveMD = useMediaQuery("(min-width: 900px)");
 
   const { changeChatStatus, isSeen, changeIsSeenStatus } = useChatStore();
-
+  const auth = getAuth();
+  const [user, loading] = useAuthState(auth);
   const { currentUser, isLoading, logout } = useUserStore();
 
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -221,7 +223,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                     <IconButton onClick={handleOpenUserMenu} disableRipple>
                       {/* Icon */}
                       {/* {Adam's} */}
-                      {!isSeen && currentUser && !isLoading ? (
+                      {!isSeen && user && !isLoading ? (
                         <img
                           style={{
                             height: "35px",
@@ -371,7 +373,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                         }
 
                         {/* {Adam's}  */}
-                        {!isLoading && currentUser && (
+                        {!isLoading && user && (
                           <MenuItem onClick={handleChat} sx={menuItemSX}>
                             <Link
                               onClick={(e) => e.preventDefault()}
@@ -780,7 +782,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                       ))
                   }
                   {/* {Adam's}  */}
-                  {!isLoading && currentUser && (
+                  {!isLoading && user && (
                     <MenuItem onClick={handleChat} sx={menuItemSX}>
                       <Link
                         onClick={(e) => e.preventDefault()}

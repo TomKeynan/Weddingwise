@@ -117,7 +117,7 @@ function App() {
         unSubChat();
       }
     };
-  }, [fetchUserInfo, setLoading,isSeen]);
+  }, [fetchUserInfo, setLoading,isSeen,chatStatus]);
 
 
 

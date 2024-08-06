@@ -42,21 +42,21 @@ function SupplierPublicProfile() {
     const fetchAndSetData = async () => {
       try {
         setLoadingData(true);
-  
+        
         // Fetch supplier ID based on email
         const userRef = collection(db, "users");
         const q = query(userRef, where("email", "==", supplierData?.supplierEmail));
         const querySnapshot = await getDocs(q);
-  
+        console.log(supplierData);
         if (querySnapshot.empty) {
           console.log('No supplier found with this email.');
           setLoadingData(false);
           return;
         }
-  
+
         const supplierId = querySnapshot.docs[0].id;
         const userDocRef = doc(db, "users", supplierId);
-  
+
         // Set up a Firestore onSnapshot listener for the user document
         const unsubscribe = onSnapshot(userDocRef, (docSnapshot) => {
           if (docSnapshot.exists()) {
@@ -72,12 +72,12 @@ function SupplierPublicProfile() {
                 setLoadingData(false);
               }
             };
-  
+
             // Call the async function
             fetchDataAndSetFirebase();
           }
         });
-  
+
         // Clean up the listener on component unmount
         return () => {
           unsubscribe();
@@ -87,15 +87,15 @@ function SupplierPublicProfile() {
         setLoadingData(false);
       }
     };
-  
+
     if (supplierData?.supplierEmail) {
       fetchAndSetData();
     }
   }, [supplierData?.supplierEmail]);
-  
 
 
-  
+
+
 
 
 
@@ -123,7 +123,7 @@ function SupplierPublicProfile() {
       >
         {/* social media links */}
         <Stack direction="row" justifyContent="space-around">
-        {supplierFirebase?.socialLinks?.Youtube &&  <Link
+          {supplierFirebase?.socialLinks?.Youtube && <Link
             component="button"
             variant="body1"
             onClick={() => {
@@ -131,8 +131,8 @@ function SupplierPublicProfile() {
             }}
           >
             <YouTubeIcon sx={socialIconsSX} />
-          </Link> }
-          {supplierFirebase?.socialLinks?.Instagram &&<Link
+          </Link>}
+          {supplierFirebase?.socialLinks?.Instagram && <Link
             component="button"
             variant="body1"
             onClick={() => {
@@ -150,7 +150,7 @@ function SupplierPublicProfile() {
           >
             <LinkedInIcon sx={socialIconsSX} />
           </Link>}
-          {supplierFirebase?.socialLinks?.Facebook &&   <Link
+          {supplierFirebase?.socialLinks?.Facebook && <Link
             component="button"
             variant="body1"
             onClick={() => {

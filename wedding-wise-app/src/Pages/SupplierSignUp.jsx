@@ -127,6 +127,12 @@ const SupplierSignUp = () => {
         imgUrl = await upload(avatar.file);
       }
 
+      const socialLinksWithDefaults = {
+        Instagram: socialLinks.Instagram || '',
+        Facebook: socialLinks.Facebook || '',
+        YouTube: socialLinks.YouTube || '',
+        LinkedIn: socialLinks.LinkedIn || ''
+      };
 
       await setDoc(doc(db, "users", res.user.uid), {
         username,
@@ -136,7 +142,7 @@ const SupplierSignUp = () => {
         id: res.user.uid,
         blocked: [],
         comments: [],
-        socialLinks
+        socialLinks: socialLinksWithDefaults
       });
 
       await setDoc(doc(db, "userChats", res.user.uid), {
