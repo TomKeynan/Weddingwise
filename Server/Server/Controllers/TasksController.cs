@@ -52,6 +52,28 @@ namespace Server.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+        [HttpDelete("deleteTask/{taskId}")]
+        public ActionResult DeleteTask(int taskId)
+        {
+            try
+            {
+                DBServicesTask dbServicesTask = new DBServicesTask();
+                int result = dbServicesTask.DeleteTask(taskId);
+                if (result > 0)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
 
         [HttpPost("addSubTask")]
         public ActionResult AddSubTask([FromBody] SubTask subTask)
@@ -75,6 +97,28 @@ namespace Server.Controllers
             }
         }
 
+        [HttpDelete("deleteSubTask/{subTaskId}")]
+        public ActionResult DeleteSubTask(int subTaskId)
+        {
+            try
+            {
+                DBServicesTask dbServicesTask = new DBServicesTask();
+                int result = dbServicesTask.DeleteSubTask(subTaskId);
+                if (result > 0)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
         [HttpGet("getTasks")]
         public ActionResult<List<Tasks>> GetTasks(string coupleEmail)
         {
@@ -89,5 +133,6 @@ namespace Server.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
     }
 }

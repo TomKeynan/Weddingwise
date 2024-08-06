@@ -19,14 +19,18 @@ import useFetch from "../utilities/useFetch";
 import AddIcon from "@mui/icons-material/Add";
 import SettingsMenu from "./SettingsMenu";
 import CloseIcon from "@mui/icons-material/Close";
+import MessageDialog from "./Dialogs/MessageDialog";
 
-function TaskItem({ data, onCheck, onAddComment }) {
+function TaskItem({ data, onCheck, onAddComment, onDeleteTask }) {
   //   const screenUnderSM = useMediaQuery("(max-width: 600px)");
-
-  const { sendData, resData, loading, error } = useFetch();
+  const { sendData, resData, setResData, error, setError, loading } =
+    useFetch();
   const [openComment, setOpenComment] = useState(false);
   const [task, setTask] = useState(data);
   const [comment, setComment] = useState("");
+  const [commentId, setCommentId] = useState(null);
+  const [openErrorMessage, setOpenErrorMessage] = useState(false);
+
   useEffect(() => {
     if (data) {
       setTask(data);
@@ -36,20 +40,24 @@ function TaskItem({ data, onCheck, onAddComment }) {
   useEffect(() => {
     if (resData) {
       const resDataLength = Object.keys(resData).length;
-      switch (resDataLength) {
-        case 5:
-          onCheck();
-          setTask(resData);
-          break;
-        case 3:
-          onAddComment();
-          setComment("");
-          break;
-        default:
-          break;
+      if (resDataLength === 5) {
+        onCheck();
+        setTask(resData);
+      } else if (resDataLength === 3) {
+        onAddComment();
+        setComment("");
+      } else {
+        removeDeletedComment();
+        setResData(undefined);
       }
+    } else if (error) {
+      setOpenErrorMessage(true);
     }
-  }, [resData]);
+    return () => {
+      setError(undefined);
+      setResData(undefined);
+    };
+  }, [resData, error]);
 
   function handleChecked() {
     sendData("/Tasks/updateTask", "PUT", {
@@ -71,6 +79,24 @@ function TaskItem({ data, onCheck, onAddComment }) {
 
   function handleClose() {
     setOpenComment((prev) => !prev);
+  }
+
+  function handleDeleteComment(commentId) {
+    setCommentId(commentId);
+    sendData(`/Tasks/deleteSubTask/${commentId}`, "DELETE");
+  }
+
+  function removeDeletedComment() {
+    const subTasksCopy = [...task.subTasks];
+    const filteredSubTasksList = subTasksCopy.filter(
+      (comment) => comment.subTaskId !== commentId
+    );
+    setTask((prevData) => {
+      return {
+        ...prevData,
+        subTasks: filteredSubTasksList,
+      };
+    });
   }
 
   function handleShowComments(comments) {
@@ -98,7 +124,9 @@ function TaskItem({ data, onCheck, onAddComment }) {
                   <Typography sx={{ ml: 2, maxWidth: "60%" }}>
                     {item.subTaskName}
                   </Typography>
-                  <Button>מחק הערה</Button>
+                  <Button onClick={() => handleDeleteComment(item.subTaskId)}>
+                    מחק הערה
+                  </Button>
                 </Stack>
               </Box>
             ))}
@@ -115,6 +143,19 @@ function TaskItem({ data, onCheck, onAddComment }) {
   }
   return (
     <Paper variant="elevation" elevation={3} sx={paperSX}>
+      {openErrorMessage && (
+        <MessageDialog
+          title="שגיאה!"
+          btnValue="אוקיי!"
+          open={openErrorMessage}
+          onClose={() => setOpenErrorMessage(false)}
+          mode="error"
+        >
+          <Typography variant="body1" color="grey">
+            אופס! משהו השתבש, נסה שנית.{" "}
+          </Typography>
+        </MessageDialog>
+      )}
       <Stack>
         <ListItem>
           <Checkbox checked={task.completed} onChange={handleChecked} />
@@ -128,7 +169,10 @@ function TaskItem({ data, onCheck, onAddComment }) {
           />
           <ListItemSecondaryAction>
             {!openComment ? (
-              <SettingsMenu onAddComment={openComments} />
+              <SettingsMenu
+                onAddComment={openComments}
+                onDeleteTask={() => onDeleteTask(task.taskID)}
+              />
             ) : (
               <Tooltip title="סגור">
                 <IconButton onClick={handleClose}>

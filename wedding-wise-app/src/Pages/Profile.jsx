@@ -6,6 +6,7 @@ import AccordionLayout from "../components/AccordionLayout";
 import SupplierCard from "../components/SupplierCard";
 import ProfileBanner from "../components/ProfilePage/ProfileBanner";
 import { AppContext } from "../store/AppContext";
+import InviteesKpis from "../components/Planner/InviteeList/InviteesKpis";
 
 function Profile() {
   const { coupleData } = useContext(AppContext);
@@ -51,10 +52,9 @@ function Profile() {
         <AccordionLayout title="מעקב אחר הוצאות" btnValue="/package">
           {/* <CostsChart /> */}
         </AccordionLayout>
-        <AccordionLayout
-          title="ניהול מוזמנים"
-          btnValue="/package"
-        ></AccordionLayout>
+        <AccordionLayout title="ניהול מוזמנים" btnValue="/invitees">
+          <InviteesKpis />
+        </AccordionLayout>
         <AccordionLayout
           title="רשימת מטלות"
           btnValue="/package"

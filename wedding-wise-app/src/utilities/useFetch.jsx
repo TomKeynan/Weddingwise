@@ -42,7 +42,6 @@ function useFetch() {
         },
         body: JSON.stringify(bodyData),
       });
-
       if (!response.ok) {
         return setError(response.status);
       }
@@ -52,7 +51,8 @@ function useFetch() {
       var responseData;
       // first read the response content
       const textRes = await response.text();
-      // then check if the response has a content
+      // then check if the response has no a content 
+      // it's means that the server send back only status code
       if (!textRes) {
         return setResData(response.status);
       } else {

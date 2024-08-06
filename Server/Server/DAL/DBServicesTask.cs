@@ -117,5 +117,30 @@ namespace Server.DAL
                 }
             }
         }
+        public int DeleteTask(int taskId)
+{
+    using (SqlConnection con = Connect())
+    {
+        using (SqlCommand cmd = new SqlCommand("SPDeleteTask", con))
+        {
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@task_id", taskId);
+            return cmd.ExecuteNonQuery();
+        }
+    }
+}
+
+public int DeleteSubTask(int subTaskId)
+{
+    using (SqlConnection con = Connect())
+    {
+        using (SqlCommand cmd = new SqlCommand("SPDeleteSubTask", con))
+        {
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@subtask_id", subTaskId);
+            return cmd.ExecuteNonQuery();
+        }
+    }
+}
     }
 }

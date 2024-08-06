@@ -8,6 +8,7 @@ import {
   TextField,
   Paper,
   useMediaQuery,
+  Alert,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { AppContext } from "../store/AppContext";
@@ -22,30 +23,39 @@ function Tasks() {
   const screenUnderSM = useMediaQuery("(max-width: 600px)");
 
   const { coupleData } = useContext(AppContext);
-  const { sendData, resData, error, loading } = useFetch();
-  const [open, setOpen] = useState(false);
+  const { sendData, resData, setResData, error, setError, loading } =
+    useFetch();
+  const [openErrorMessage, setOpenErrorMessage] = useState(false);
   const [tasksList, setTasksList] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
   const [isCommentAdded, setIsCommentAdded] = useState(false);
   const [openNewTask, setOpenNewTask] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
-  const [isTaskAdded, setIsTaskAdded] = useState(false);
-
+  const [getTasksList, setGetTasksList] = useState(false);
   useEffect(() => {
     sendData(`/Tasks/getTasks?coupleEmail=${coupleData.email}`, "GET");
-  }, [isChecked, isCommentAdded, isTaskAdded]);
+  }, [isChecked, isCommentAdded, getTasksList]);
 
   useEffect(() => {
     if (resData) {
       if (Array.isArray(resData)) setTasksList(resData);
       else {
-        setIsTaskAdded((prev) => !prev);
+        setGetTasksList((prev) => !prev);
         setNewTaskTitle("");
         setOpenNewTask(false);
       }
+    } else if (error) {
+      setOpenErrorMessage(true);
     }
-  }, [resData]);
+    return () => {
+      setError(undefined);
+      setResData(undefined);
+    };
+  }, [resData, error]);
 
+  function handleDeleteTask(taskId) {
+    sendData(`/Tasks/deleteTask/${taskId}`, "DELETE");
+  }
   //compute linear progressbar's value
   const progress = useMemo(() => {
     const checkedTasks = tasksList
@@ -71,17 +81,18 @@ function Tasks() {
   }
 
   return (
-    <Stack justifyContent="center" alignItems="center">
-      {/* {loading && <Loading />} */}
-      {error && (
+    <Stack alignItems="center" sx={loginStackSX}>
+      {loading && <Loading />}
+      {openErrorMessage && (
         <MessageDialog
           title="שגיאה!"
           btnValue="אוקיי!"
-          open={open}
-          onClose={() => setOpen(false)}
+          open={openErrorMessage}
+          onClose={() => setOpenErrorMessage(false)}
+          mode="error"
         >
           <Typography variant="body1" color="grey">
-            {error}
+            אופס! משהו השתבש, נסה שנית.{" "}
           </Typography>
         </MessageDialog>
       )}
@@ -102,36 +113,39 @@ function Tasks() {
         direction={screenUnderSM ? "column-reverse" : "row"}
         justifyContent="space-around"
         spacing={2}
-        sx={{
-          textAlign: "center",
-          pb: 10,
-          pt: 3,
-          width: "95%",
-          margin: "15px auto",
-          px: 1,
-        }}
+        sx={stackMainContentSX}
       >
-        <Stack
-          justifyContent="space-around"
-          alignItems="center"
-          sx={{ flexGrow: 1 }}
-        >
-          <LinearProgress
-            variant="determinate"
-            value={progress}
-            sx={{ width: "90%" }}
-          />
-          <List sx={{ width: "100%" }}>
-            {tasksList?.map((task) => (
-              <TaskItem
-                key={task.taskID}
-                data={task}
-                onCheck={handleTaskChecked}
-                onAddComment={handleAddComment}
-              />
-            ))}
-          </List>
-        </Stack>
+        {tasksList.length > 0 ? (
+          <Stack
+            justifyContent="space-around"
+            alignItems="center"
+            sx={{ flexGrow: 1 }}
+          >
+            <LinearProgress
+              variant="determinate"
+              value={progress}
+              sx={{ width: "90%" }}
+            />
+            <List sx={{ width: "100%" }}>
+              {tasksList?.map((task) => (
+                <TaskItem
+                  key={task.taskID}
+                  data={task}
+                  onCheck={handleTaskChecked}
+                  onAddComment={handleAddComment}
+                  onDeleteTask={handleDeleteTask}
+                />
+              ))}
+            </List>
+          </Stack>
+        ) : (
+          <Stack>
+            <Alert severity="warning" sx={alertSX}>
+              הוסיפו משימות חדשות שיעזרו לכם לתכנן את החתונה שלכם בצורה מאורגנת
+              יותר
+            </Alert>
+          </Stack>
+        )}
         <Stack sx={{ width: { xs: "100%", sm: "35%", md: "40%" } }}>
           <OutlinedButton
             btnValue=" משימה חדשה + "
@@ -170,6 +184,10 @@ function Tasks() {
 
 export default Tasks;
 
+const loginStackSX = {
+  minHeight: "inherit",
+};
+
 const paperSX = {
   width: { xs: "90%", sm: "80%" },
   margin: "20px auto 0",
@@ -188,6 +206,15 @@ const titleSX = {
   // WebkitTextStrokeColor: "black",
 };
 
+const stackMainContentSX = {
+  textAlign: "center",
+  pb: 10,
+  pt: 3,
+  width: "95%",
+  margin: "15px auto",
+  px: 1,
+};
+
 const newTaskTitleSX = {
   textAlign: "center",
   fontSize: { xs: 16, sm: 18, md: 20 },
@@ -197,6 +224,17 @@ const newTaskTitleSX = {
   textDecoration: "underline",
   // WebkitTextStrokeWidth: { xs: 1.5, sm: 0.7 },
   // WebkitTextStrokeColor: "black",
+};
+
+const alertSX = {
+  fontSize: 14,
+  px: 2,
+  justifyContent: "center",
+  "& .MuiAlert-icon": {
+    mr: "3px",
+  },
+  textAlign: "center",
+  // maxHeight: 80,
 };
 
 // import React, { useState, useEffect, useContext } from "react";

@@ -22,7 +22,7 @@ namespace Server.Controllers
                 }
                 else
                 {
-                    return BadRequest("Failed to add invitee.");
+                    return BadRequest();
                 }
             }
             catch (Exception ex)
@@ -58,7 +58,7 @@ namespace Server.Controllers
                 }
                 else
                 {
-                    return NotFound("Invitee not found.");
+                    return NotFound();
                 }
             }
             catch (Exception ex)

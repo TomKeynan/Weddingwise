@@ -6,7 +6,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { taskSettings } from "../utilities/collections";
 import { Tooltip } from "@mui/material";
 
-export default function SettingsMenu({ onAddComment }) {
+export default function SettingsMenu({ onAddComment, onDeleteTask }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -22,7 +22,7 @@ export default function SettingsMenu({ onAddComment }) {
         onAddComment();
         break;
       case 2:
-        console.log("wait to delete task function");
+        onDeleteTask();
         break;
       default:
         break;
@@ -56,7 +56,6 @@ export default function SettingsMenu({ onAddComment }) {
         {taskSettings.map((option) => (
           <MenuItem
             key={option.id}
-            // selected={option === "Pyxis"}
             onClick={() => handleOptionSelected(option.id)}
           >
             {option.text}
