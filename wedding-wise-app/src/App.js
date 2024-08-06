@@ -72,7 +72,7 @@ const router = createHashRouter([
 
 function App() {
   const { fetchUserInfo, setLoading, currentUser } = useUserStore();
-  const { changeIsSeenStatus } = useChatStore();
+  const { changeIsSeenStatus,chatStatus,isSeen } = useChatStore();
 
 
   useEffect(() => {
@@ -98,6 +98,7 @@ function App() {
       unSubChat = onSnapshot(doc(db, "userChats", currentUser.id), (res) => {
         const chatsData = res.data();
         if (chatsData && Array.isArray(chatsData.chats)) {
+          debugger;
           const hasUnseenChat = chatsData.chats.some(
             (chat) => chat.isSeen === false
           );
@@ -115,10 +116,10 @@ function App() {
         unSubChat();
       }
     };
-  }, [fetchUserInfo, setLoading]);
+  }, [fetchUserInfo, setLoading,isSeen]);
 
 
-  console.log(currentUser);
+
   return (
     <LoadScript
       googleMapsApiKey={googleMapsApiKey}

@@ -200,6 +200,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
       );
     }
   }
+  
   return (
     <AppBar sx={isLayout ? appBarForLayoutSX : appBarForHomeSX}>
       <Container maxWidth="xxl" sx={{ p: 0 }}>
