@@ -22,13 +22,12 @@ import CommentForm from "../components/CommentForm";
 import { Navigate } from "react-router-dom";
 import CommentCarousel from "../components/CommentCarousel";
 import Loading from "../components/Loading";
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { getAuth } from 'firebase/auth';
+import { useAuthState } from "react-firebase-hooks/auth";
+import { getAuth } from "firebase/auth";
 import { AppContext } from "../store/AppContext";
 import { fetchSupplierData } from "../fireBase/fetchSupplier";
 import { db } from "../fireBase/firebase";
 import { doc, onSnapshot, getDocs, query, where, collection } from "firebase/firestore";
-
 
 function SupplierPublicProfile() {
   const auth = getAuth();
@@ -182,7 +181,9 @@ function SupplierPublicProfile() {
         </Stack>
         {/* supplier description */}
         <Stack>
-          <Typography sx={{ ...titleSX, mb: 5 }}>אודות שם ספק </Typography>
+          <Typography sx={{ ...titleSX, mb: 5 }}>
+            אודות {supplierData.businessName}{" "}
+          </Typography>
           <Paper variant="elevation" elevation={6} sx={paperSX}>
             <Typography sx={{ textAlign: "center" }}>
               {supplierFirebase?.description}
@@ -216,7 +217,7 @@ function SupplierPublicProfile() {
       {/* comment form */}
       <Stack sx={{ maxWidth: 700, width: { xs: "90%", sm: "60%" } }}>
         <Typography sx={{ ...titleSX, mb: 5, px: 2 }}>
-          השאירו תגובה מהחוויה שלכם עם שם ספק
+          השאירו תגובה מהחוויה שלכם עם {supplierData.businessName}
         </Typography>
         <CommentForm supplierFirebase={supplierFirebase} />
       </Stack>

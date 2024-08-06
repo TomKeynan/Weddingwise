@@ -82,7 +82,7 @@ function Tasks() {
 
   return (
     <Stack alignItems="center" sx={loginStackSX}>
-      {loading && <Loading />}
+      {/* {loading && <Loading />} */}
       {openErrorMessage && (
         <MessageDialog
           title="שגיאה!"
@@ -121,6 +121,7 @@ function Tasks() {
             alignItems="center"
             sx={{ flexGrow: 1 }}
           >
+            <Typography variant="body1" sx={{pb: 2}}>השלמתם {parseInt(progress)}% מהמשימות</Typography>
             <LinearProgress
               variant="determinate"
               value={progress}

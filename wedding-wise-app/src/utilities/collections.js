@@ -449,3 +449,12 @@ export const stickers = [
 //     "assets/suppliers_pics/Makeup6.jpeg",
 //   ],
 // };
+
+export const budgetData = [
+  {
+    serviceName: "אלון צילום",
+    sponsorName: "עומרי",
+    totalCost: 13500,
+    downPayment: 500,
+  }
+]

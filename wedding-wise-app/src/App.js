@@ -11,7 +11,7 @@ import CustomThemeProvider from "./store/Theme";
 import RtlProvider from "./store/RtlProvider";
 import Questionnaire from "./Pages/Questionnaire";
 import Package from "./Pages/Package";
-import Finance from "./Pages/Finance";
+import Finance from "./Pages/ExpenseTracking";
 import EditDetails from "./Pages/EditDetails";
 import { LoadScript } from "@react-google-maps/api";
 import Invitees from "./Pages/Invitees";
@@ -31,6 +31,7 @@ import { db } from "./fireBase/firebase";
 import { useChatStore } from "./fireBase/chatStore";
 
 import PlannerLP from "./Pages/PlannerLP";
+import ExpenseTracking from "./Pages/ExpenseTracking";
 const googleMapsApiKey = "AIzaSyC3QkzXx3mLsG_-IzI67-WVFBAoAZTYWxk";
 const libraries = ["places"];
 
@@ -45,7 +46,7 @@ const router = createHashRouter([
       { path: "questionnaire", element: <Questionnaire /> },
       { path: "package", element: <Package /> },
       { path: "tasks", element: <Tasks /> },
-      { path: "finance", element: <Finance /> },
+      { path: "expense-tracking", element: <ExpenseTracking /> },
       { path: "invitees", element: <Invitees /> },
       { path: "edit", element: <EditDetails /> },
       { path: "planner", element: <PlannerLP /> },

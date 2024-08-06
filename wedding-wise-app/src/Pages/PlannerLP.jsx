@@ -93,7 +93,7 @@ function PlannerLP() {
               value="הצטרפו אלינו עכשיו!"
               width="100%"
               fontSize={{ xs: 16, sm: 20 }}
-              onClick={() => navigate("/sign-up")}
+              onClick={() => navigate("/login")}
             />
           </Box>
         </Stack>

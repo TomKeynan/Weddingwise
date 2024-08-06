@@ -18,9 +18,9 @@ function DropDownNavItem({ isLayout }) {
   const plannerPages = [
     { id: 1, route: "tasks", text: "רשימת מטלות" },
     { id: 2, route: "invitees", text: "ניהול מוזמנים" },
-    { id: 3, route: "finance", text: "מעקב תקציב" },
-    ];
-    
+    { id: 3, route: "/expense-tracking", text: "מעקב הוצאות" },
+  ];
+
   return (
     <Box
       sx={
