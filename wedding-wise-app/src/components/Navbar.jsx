@@ -286,7 +286,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                         onClose={handleCloseUserMenu}
                       >
                         {
-                          // when current user is a supplier but he isn't logged in yet show this menu
+                          // when current user is a supplier but he hasn't logged in yet show this menu
                           isSupplier &&
                             !supplierData &&
                             supplierSettings.map((setting) => (

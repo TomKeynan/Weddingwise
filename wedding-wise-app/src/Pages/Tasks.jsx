@@ -18,6 +18,7 @@ import MessageDialog from "../components/Dialogs/MessageDialog";
 import TaskItem from "../components/TaskItem";
 import OutlinedButton from "../components/buttons/OutlinedButton";
 import { customTheme } from "../store/Theme";
+import ConfirmDialog from "../components/Dialogs/ConfirmDialog";
 
 function Tasks() {
   const screenUnderSM = useMediaQuery("(max-width: 600px)");
@@ -27,11 +28,14 @@ function Tasks() {
     useFetch();
   const [openErrorMessage, setOpenErrorMessage] = useState(false);
   const [tasksList, setTasksList] = useState([]);
+  const [taskId, setTaskId] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
   const [isCommentAdded, setIsCommentAdded] = useState(false);
   const [openNewTask, setOpenNewTask] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [getTasksList, setGetTasksList] = useState(false);
+  const [openUpdateConfirm, setOpenUpdateConfirm] = useState(false);
+
   useEffect(() => {
     sendData(`/Tasks/getTasks?coupleEmail=${coupleData.email}`, "GET");
   }, [isChecked, isCommentAdded, getTasksList]);
@@ -53,9 +57,6 @@ function Tasks() {
     };
   }, [resData, error]);
 
-  function handleDeleteTask(taskId) {
-    sendData(`/Tasks/deleteTask/${taskId}`, "DELETE");
-  }
   //compute linear progressbar's value
   const progress = useMemo(() => {
     const checkedTasks = tasksList
@@ -68,9 +69,13 @@ function Tasks() {
     setIsChecked((prev) => !prev);
   }
 
+  // =============== ADD COMMENT =====================
+
   function handleAddComment() {
     setIsCommentAdded((prev) => !prev);
   }
+
+  // =============== ADD TASK =====================
 
   function handleAddNewTask(taskTitle) {
     sendData("/Tasks/addTask", "POST", {
@@ -80,9 +85,44 @@ function Tasks() {
     });
   }
 
+  // =============== DELETE TASK =====================
+
+  function handleDeleteTask(taskId) {
+    setTaskId(taskId);
+    setOpenUpdateConfirm(true);
+  }
+
+  function handleApprovalDeleteTask() {
+    sendData(`/Tasks/deleteTask/${taskId}`, "DELETE");
+    setOpenUpdateConfirm(false);
+  }
+
+  // =============== CONFIRM UPDATE =====================
+
+  function handleCancelUpdateConfirm() {
+    setOpenUpdateConfirm(false);
+  }
+
+  function showUpdateConfirmDialog() {
+    return (
+      <ConfirmDialog
+        title="שימו לב..."
+        open={openUpdateConfirm}
+        onCancel={handleCancelUpdateConfirm}
+        onApproval={handleApprovalDeleteTask}
+        // disabledBtn={isUpdateDetailsValid}
+      >
+        <Typography variant="h5" sx={{ textAlign: "center" }}>
+          בטוחים שאתם רוצים למחוק משימה זו?{" "}
+        </Typography>
+      </ConfirmDialog>
+    );
+  }
+
   return (
     <Stack alignItems="center" sx={loginStackSX}>
       {/* {loading && <Loading />} */}
+      {openUpdateConfirm && showUpdateConfirmDialog()}
       {openErrorMessage && (
         <MessageDialog
           title="שגיאה!"
@@ -121,7 +161,9 @@ function Tasks() {
             alignItems="center"
             sx={{ flexGrow: 1 }}
           >
-            <Typography variant="body1" sx={{pb: 2}}>השלמתם {parseInt(progress)}% מהמשימות</Typography>
+            <Typography variant="body1" sx={{ pb: 2 }}>
+              השלמתם {parseInt(progress)}% מהמשימות
+            </Typography>
             <LinearProgress
               variant="determinate"
               value={progress}
