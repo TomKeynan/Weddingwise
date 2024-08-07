@@ -47,6 +47,7 @@ function SupplierPublicProfile() {
     }
   }, [supplierData, setRelevantSupplier]);
 
+ 
   useEffect(() => {
     const fetchAndSetData = async () => {
       try {
@@ -95,7 +96,6 @@ function SupplierPublicProfile() {
   }, [relevantSupplier]);
 
 
-  // Hope it finally works
   if (loading || loadingData) {
     return <Loading />;
   }
@@ -187,7 +187,7 @@ function SupplierPublicProfile() {
         </Stack>
       </Stack>
       {/* carousel */}
-      {supplierFirebase && supplierFirebase["comments"].length > 0 ? (
+      {supplierFirebase && supplierFirebase["comments"]?.length > 0 ? (
         <Stack sx={{ minHeigh: 300, width: { xs: "70%", sm: "80%" }, my: 15 }}>
           <Typography sx={{ ...titleSX, mb: 5 }}>
             הזוגות של <span style={{ color: "#eb77e2" }}>W</span>edding

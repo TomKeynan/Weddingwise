@@ -8,9 +8,11 @@ import { customTheme } from "../store/Theme";
 function CommentCarousel({ supplierComments }) {
   const [sortedComments, setSortedComments] = useState([]);
 
+  // console.log("CommentCarousel")
+
 
   useEffect(() => {
-    if (supplierComments && supplierComments.length) {
+    if (supplierComments && supplierComments?.length) {
       const sorted = [...supplierComments].sort((a, b) => a.commentTime - b.commentTime);
       setSortedComments(sorted);
     }
@@ -88,7 +90,7 @@ function CommentCarousel({ supplierComments }) {
 
   return (
     <Slider {...settings}>
-      {sortedComments.map((comment, index) => (
+      {sortedComments?.map((comment, index) => (
         <div style={{ overflow: "hidden" }} key={index}>
           <CommentCard
             coupleAvatar={comment.coupleAvatar}

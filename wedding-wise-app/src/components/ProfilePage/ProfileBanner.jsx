@@ -6,22 +6,23 @@ import Loading from "../Loading";
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { getAuth } from 'firebase/auth';
 import { Navigate } from "react-router-dom";
+import { useUserStore } from "../../fireBase/userStore";
 
 function ProfileBanner({ props }) {
   const screenAboveSM = useMediaQuery("(min-width: 900px)");
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
-
-  if (loading ) {
+  const { currentUser, loadingUserFirebase } = useUserStore();
+  if (loading || loadingUserFirebase) {
     return <Loading />;
   }
 
-  if (!user ) {
+  if (!user) {
     return <Navigate to="/" />;
   }
 
   const { partner1Name, partner2Name, desiredDate } = props;
- 
+
   return (
     <Stack
       direction={screenAboveSM ? "row" : "column"}
@@ -55,7 +56,7 @@ function ProfileBanner({ props }) {
         >
           <Box
             component="img"
-            src="/assets/login.jpg"
+            src={currentUser?.avatar}
             sx={{
               width: { xs: 250, sm: 300, lg: 400 },
               // height: { xs: 250, sm: 400 , md: 350, lg: 400},

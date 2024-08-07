@@ -44,6 +44,7 @@ function Chat() {
       doc(db, "userChats", currentUser?.id),
       async (docSnapshot) => {
         const chatData = docSnapshot.data();
+        console.log("hey");
         if (chatData && chatData.chats && chatData.chats.length > 0) {
           setHasChats(true);
         } else {
@@ -54,7 +55,7 @@ function Chat() {
     return () => {
       unsub();
     };
-  }, [currentUser?.id]);
+  }, [currentUser]);
 
 
   if (!user)

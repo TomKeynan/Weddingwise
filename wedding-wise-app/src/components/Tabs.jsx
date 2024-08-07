@@ -48,9 +48,6 @@ function a11yProps(index) {
 
 export default function BasicTabs({ supplierFirebase }) {
   const [value, setValue] = React.useState(0);
-  const { currentUser } = useUserStore();
-  const [comments, setComments] = useState([]);
-  const { supplierData } = useContext(AppContext);
   const [supplierPackages, setSupplierPackages] = useState([]);
   const { getData, resData } = useFetch();
 
@@ -58,7 +55,7 @@ export default function BasicTabs({ supplierFirebase }) {
   useEffect(() => {
     const handlePackages = async () => {
       if (resData) {
-        const packages = resData.map((item, index) => {
+        const packages = resData?.map((item, index) => {
           item.id = index;
           return item;
         });
@@ -73,7 +70,7 @@ export default function BasicTabs({ supplierFirebase }) {
   const addAddresses = async (data) => {
 
     const updatedData = await Promise.all(
-      data.map(async (item) => {
+      data?.map(async (item) => {
         const address = await reverseGeocoding(item.latitude, item.longitude);
         return {
           ...item,
@@ -142,7 +139,7 @@ export default function BasicTabs({ supplierFirebase }) {
               margin: "0 auto",
             }}
           >
-            {supplierFirebase?.comments.map((comment, index) => (
+            {supplierFirebase?.comments?.map((comment, index) => (
               <CommentCard
                 key={index}
                 coupleAvatar={comment.coupleAvatar}

@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import RegisterContextProvider from "../store/RegisterContext";
 import { customTheme } from "../store/Theme";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Visibility, VisibilityOff, YouTube } from "@mui/icons-material";
 import {
   editSupplierValidations,
   regions,
@@ -59,23 +59,37 @@ const EditSupplier = ({ supplierFirebase }) => {
     file: null,
     url: "",
   });
-  const { isLoading, setLoading } = useUserStore();
+  const { loadingUserFirebase, setLoading } = useUserStore();
   const [currentDescription, setCurrentDescription] = useState("");
   const [currentAddress, setCurrentAddress] = useState("");
+  const [InstagramLink, setInstagramLink] = useState("");
+  const [FacebookLink, setFacebookLink] = useState("");
+  const [YouTubeLink, setYouTubeLink] = useState("");
+  const [LinkedInLink, setLinkedInLink] = useState("");
+
+  useEffect(() => {
+    if (supplierFirebase) {
+      setInstagramLink(supplierFirebase.socialLinks?.Instagram || "");
+      setFacebookLink(supplierFirebase.socialLinks?.Facebook || "");
+      setYouTubeLink(supplierFirebase.socialLinks?.YouTube || "");
+      setLinkedInLink(supplierFirebase.socialLinks?.LinkedIn || "");
+    }
+    console.log(supplierFirebase.socialLinks?.YouTube);
+  }, [supplierFirebase]);
 
   useEffect(() => {
     const updateUser = async () => {
       if (resData) {
         const { Password, ...rest } = currentSupplierData;
-        setSupplierData(rest);
         try {
           await updateUserFirebase();
-          setOpenUpdateSuccess(true);
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          // window.scrollTo({ top: 0, behavior: "smooth" });
         } catch (error) {
           console.error("Error updating user:", error);
         } finally {
           setLoading(false);
+          setSupplierData(rest);
+          setOpenUpdateSuccess(true);
         }
       }
       return () => {
@@ -85,6 +99,7 @@ const EditSupplier = ({ supplierFirebase }) => {
 
     updateUser();
   }, [resData, currentSupplierData]);
+
 
   useEffect(() => {
     setCurrentDescription(supplierFirebase?.description);
@@ -96,26 +111,40 @@ const EditSupplier = ({ supplierFirebase }) => {
     const password = currentSupplierData.Password;
     const description = currentDescription;
 
+    const socialLinksWithDefaults = {
+      Instagram: InstagramLink || "",
+      Facebook: FacebookLink || "",
+      YouTube: YouTubeLink || "",
+      LinkedIn: LinkedInLink || "",
+    };
+
+    console.log(socialLinksWithDefaults);
+    setLoading(true);
+
+    const timeout = new Promise((resolve, reject) => {
+      setTimeout(() => reject(new Error('Timeout')), 3000);
+    });
+
     try {
-      // Update password in Firebase Authentication
-      const user = auth.currentUser;
-      if (password) {
-        await updatePassword(user, password);
-      }
+      await Promise.race([timeout, (async () => {
+        const user = auth.currentUser;
+        if (password) {
+          await updatePassword(user, password);
+        }
 
-      // Upload new avatar if provided
-      let imgUrl = null;
-      if (avatar && avatar.file) {
-        imgUrl = await upload(avatar.file);
-      }
+        let imgUrl = null;
+        if (avatar && avatar.file) {
+          imgUrl = await upload(avatar.file);
+        }
 
-      // Update user details in Firestore
-      const userRef = doc(db, "users", supplierFirebase.id);
-      await updateDoc(userRef, {
-        username: username || supplierFirebase.username,
-        description: description || supplierFirebase?.description,
-        avatar: imgUrl || supplierFirebase.avatar,
-      });
+        const userRef = doc(db, "users", supplierFirebase.id);
+        await updateDoc(userRef, {
+          username: username || supplierFirebase.username,
+          description: description || supplierFirebase?.description,
+          avatar: imgUrl || supplierFirebase.avatar,
+          socialLinks: socialLinksWithDefaults,
+        });
+      })()]);
     } catch (err) {
       console.log(err);
     }
@@ -136,12 +165,16 @@ const EditSupplier = ({ supplierFirebase }) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
-    // delete data?.description;
+    delete data.description;
     delete data.userImage;
+    delete data.Instagram;
+    delete data.Facebook;
+    delete data.YouTube;
+    delete data.LinkedIn;
 
-    setLoading(true);
+
     if (data.venueAddress) {
-      const { latitude, longitude } = await geocodeAddress(data.venueAddress); // Need to address bad input if got time
+      const { latitude, longitude } = await geocodeAddress(data.venueAddress);
       data.latitude = latitude;
       data.longitude = longitude;
     }
@@ -207,9 +240,14 @@ const EditSupplier = ({ supplierFirebase }) => {
   }
 
   function handleApprovalUpdateConfirm() {
-    sendData("/Suppliers/updateSupplier", "PUT", currentSupplierData);
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+
+    sendData("/Suppliers/updateSupplier", "PUT", currentSupplierData).finally(() => {
+      clearTimeout(timer);
+    });
     setOpenUpdateConfirm(false);
-    // setOpen(true);
   }
 
   function showUpdateConfirmDialog() {
@@ -229,24 +267,25 @@ const EditSupplier = ({ supplierFirebase }) => {
 
   // ================  Updated success handling ================
 
-  // function showSuccessMessage() {
-  //   return (
-  //     <MessageDialog
-  //       title="כל הכבוד!"
-  //       btnValue="אוקיי!"
-  //       open={open}
-  //       onClose={() => setOpenUpdateSuccess(false)}
-  //       xBtn={() => setOpenUpdateSuccess(false)}
-  //       mode="success"
-  //     >
-  //       <Typography variant="h6" sx={{ textAlign: "center" }}>
-  //         עדכון הפרטים החדשים שלך עבר בהצלחה
-  //       </Typography>
-  //     </MessageDialog>
-  //   );
-  // }
+  function showSuccessMessage() {
+    return (
+      <MessageDialog
+        title="כל הכבוד!"
+        btnValue="אוקיי!"
+        open={open}
+        onClose={() => setOpenUpdateSuccess(false)}
+        xBtn={() => setOpenUpdateSuccess(false)}
+        mode="success"
+      >
+        <Typography variant="h6" sx={{ textAlign: "center" }}>
+          עדכון הפרטים החדשים שלך עבר בהצלחה
+        </Typography>
+      </MessageDialog>
+    );
+  }
 
-  if (isLoading) {
+
+  if (loadingUserFirebase) {
     return <Loading />;
   }
 
@@ -254,7 +293,7 @@ const EditSupplier = ({ supplierFirebase }) => {
     <RegisterContextProvider>
       {error && showErrorMessage(error)}
       {openUpdateConfirm && showUpdateConfirmDialog()}
-      {/* {openUpdateSuccess && showSuccessMessage()} */}
+      {openUpdateSuccess && showSuccessMessage()}
       <Stack
         spacing={2}
         textAlign="center"
@@ -468,8 +507,10 @@ const EditSupplier = ({ supplierFirebase }) => {
                 <TextField
                   variant="filled"
                   type="text"
-                  //value={פה תכניס את הקישורים שנקלטו בהרשמה - בהתאמה}
+                  value={YouTubeLink}
+                  name="YouTube"
                   label="קישור ליוטיוב"
+                  onChange={(e) => setYouTubeLink(e.target.value)}
                   sx={textFieldSX}
                 />
               </Grid>
@@ -477,8 +518,10 @@ const EditSupplier = ({ supplierFirebase }) => {
                 <TextField
                   variant="filled"
                   type="text"
-                  //value={פה תכניס את הקישורים שנקלטו בהרשמה - בהתאמה}
+                  value={InstagramLink}
+                  name="Instagram"
                   label="קישור לאינסטגרם"
+                  onChange={(e) => setInstagramLink(e.target.value)}
                   sx={textFieldSX}
                 />
               </Grid>
@@ -486,8 +529,10 @@ const EditSupplier = ({ supplierFirebase }) => {
                 <TextField
                   variant="filled"
                   type="text"
-                  //value={פה תכניס את הקישורים שנקלטו בהרשמה - בהתאמה}
+                  value={FacebookLink}
+                  name="Facebook"
                   label="קישור לפייסבוק"
+                  onChange={(e) => setFacebookLink(e.target.value)}
                   sx={textFieldSX}
                 />
               </Grid>
@@ -495,8 +540,10 @@ const EditSupplier = ({ supplierFirebase }) => {
                 <TextField
                   variant="filled"
                   type="text"
-                  //value={פה תכניס את הקישורים שנקלטו בהרשמה - בהתאמה}
+                  value={LinkedInLink}
+                  name="LinkedIn"
                   label="קישור ללינקדין"
+                  onChange={(e) => setLinkedInLink(e.target.value)}
                   sx={textFieldSX}
                 />
               </Grid>

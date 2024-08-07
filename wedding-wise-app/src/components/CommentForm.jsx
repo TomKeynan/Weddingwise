@@ -19,7 +19,7 @@ import { useUserStore } from "../fireBase/userStore";
 import { arrayUnion, doc, updateDoc, getDocs, where, query, collection } from "firebase/firestore";
 import { db } from "../fireBase/firebase";
 import Loading from "./Loading";
-
+import { useSupplierData } from "../fireBase/supplierData";
 
 const testObject = {
   supplierEmail: "test14@gmail.com",
@@ -37,9 +37,10 @@ export default function CommentForm({supplierFirebase}) {
   const [isRated, setIsRated] = useState(false);
   const { currentUser } = useUserStore();
   const [loadingData, setLoadingData] = useState(false);
+  const { relevantSupplier,setRelevantSupplier } = useSupplierData();
 
 
-
+// console.log("CommentForm")
 
   useEffect(() => {
     const updateFirebaseAndSetState = async () => {
@@ -100,7 +101,7 @@ export default function CommentForm({supplierFirebase}) {
     } else {
       setIsRated(false);
       sendData("/Suppliers/rateSupplier", "POST", {
-        supplierEmail: supplierData.supplierEmail,
+        supplierEmail: relevantSupplier.supplierEmail,
         coupleEmail: currentUser.email,
         rating: rate,
       });

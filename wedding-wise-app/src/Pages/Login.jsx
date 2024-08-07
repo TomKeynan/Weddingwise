@@ -49,7 +49,6 @@ function Login() {
           navigate("/profile");
         } catch (err) {
           console.error("Login or fetching user info failed:", err);
-        
         }
       }
     };
@@ -57,16 +56,12 @@ function Login() {
     loginAndNavigate();
   }, [resData, navigate]);
 
-  // Handle user login
+ 
   const loginFireBase = async () => {
     try {
-      // Sign in user with email and password
       await signInWithEmailAndPassword(auth, email, password);
     } catch (err) {
       console.log(err);
-      toast.error(err.message);
-      // Rethrow error to be handled in loginAndNavigate
-      throw err;
     }
   };
 

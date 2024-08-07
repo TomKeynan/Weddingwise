@@ -66,6 +66,7 @@ const SupplierSignUp = () => {
     YouTube: "",
     LinkedIn: "",
   });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const registerAndNavigate = async () => {
@@ -77,12 +78,10 @@ const SupplierSignUp = () => {
           await registerFireBase();
           await loginFireBase();
 
-          navigate("/supplier-private-Profile");
+          // Mark as authenticated
+          setIsAuthenticated(true);
         } catch (err) {
-          console.error(
-            "Registration, login, or fetching user info failed:",
-            err
-          );
+          console.error("Registration, login, or fetching user info failed:", err);
         } finally {
           setIsLoading(false);
         }
@@ -92,12 +91,18 @@ const SupplierSignUp = () => {
     registerAndNavigate();
   }, [resData]);
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/supplier-private-Profile");
+    }
+  }, [isAuthenticated, navigate]);
+
   const loginFireBase = async () => {
     try {
       await signInWithEmailAndPassword(
         auth,
         currentSupplierData.supplierEmail,
-        currentSupplierData.Password
+        currentSupplierData.password
       );
     } catch (err) {
       console.log(err);
@@ -113,10 +118,12 @@ const SupplierSignUp = () => {
     }
   };
 
+
   const registerFireBase = async () => {
     const username = currentSupplierData.businessName;
     const email = currentSupplierData.supplierEmail;
-    const password = currentSupplierData.Password;
+    const password = currentSupplierData.password;
+
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
 
@@ -147,10 +154,9 @@ const SupplierSignUp = () => {
         chats: [],
       });
 
-      toast.success("Account created! You can login now!");
     } catch (err) {
       console.log(err);
-      toast.error(err.message);
+
     }
   };
 
@@ -165,10 +171,10 @@ const SupplierSignUp = () => {
     delete data.userImage;
 
     setSocialLinks({
-      Instagram: data.Instagram,
-      Facebook: data.Facebook,
-      Youtube: data.YouTube,
-      LinkedIn: data.LinkedIn,
+      Instagram: data.Instagram || "",
+      Facebook: data.Facebook || "",
+      YouTube: data.YouTube || "",
+      LinkedIn: data.LinkedIn || "",
     });
 
     delete data.Instagram;
@@ -178,14 +184,12 @@ const SupplierSignUp = () => {
 
     if (data.venueAddress) {
       const { latitude, longitude } = await geocodeAddress(data.venueAddress);
-      if(latitude == null || longitude == null)
-      {
+      if (latitude == null || longitude == null) {
         console.log("הכתובת שהנכנסתם לא טובה")
       }
-      else
-      {
-      data.latitude = latitude;
-      data.longitude = longitude;
+      else {
+        data.latitude = latitude;
+        data.longitude = longitude;
       }
     }
 

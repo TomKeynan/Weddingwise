@@ -36,6 +36,8 @@ function Tasks() {
   const [getTasksList, setGetTasksList] = useState(false);
   const [openUpdateConfirm, setOpenUpdateConfirm] = useState(false);
 
+  // console.log("Tasks");
+
   useEffect(() => {
     sendData(`/Tasks/getTasks?coupleEmail=${coupleData.email}`, "GET");
   }, [isChecked, isCommentAdded, getTasksList]);

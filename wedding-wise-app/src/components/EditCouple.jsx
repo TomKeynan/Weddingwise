@@ -67,7 +67,7 @@ function EditCouple() {
     url: "",
   });
 
-  const { currentUser, loadingUserFirebase, setLoading } = useUserStore();
+  const { currentUser, loadingUserFirebase, setLoading, fetchUserInfo } = useUserStore();
 
 
 
@@ -108,7 +108,7 @@ function EditCouple() {
         try {
           setLoading(true);
           await updateUserFirebase();
-
+          await fetchUserInfo(currentUser.id);
         } catch (error) {
           setOpenErrorMessage(true);
           console.error("Error updating user:", error);
@@ -130,7 +130,7 @@ function EditCouple() {
 
     // Missing the names of the couple.
     try {
-      
+
       console.log(avatar);
       const user = auth.currentUser;
       if (password) {

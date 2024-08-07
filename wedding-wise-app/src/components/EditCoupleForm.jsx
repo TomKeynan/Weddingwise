@@ -65,7 +65,8 @@ function EditCoupleForm() {
     url: "",
   });
 
-  const { currentUser, loadingUserFirebase, setLoading } = useUserStore();
+
+  const { currentUser, loadingUserFirebase, setLoading,fetchUserInfo } = useUserStore();
 
   useEffect(() => {
     if (isFormCompleted(editValue, true) && isEditFormValid(editValue)) {
@@ -92,6 +93,7 @@ function EditCoupleForm() {
         try {
           setLoading(true);
           await updateUserFirebase();
+          await fetchUserInfo(currentUser.id);
         } catch (error) {
           setOpenErrorMessage(true);
           console.error("Error updating user:", error);

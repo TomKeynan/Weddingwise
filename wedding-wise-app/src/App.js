@@ -27,7 +27,6 @@ import { useEffect } from "react";
 import SupplierPrivateProfile from "./Pages/SupplierPrivateProfile";
 import SupplierPublicProfile from "./Pages/SupplierPublicProfile";
 import { useSupplierData } from "./fireBase/supplierData";
-
 import PlannerLP from "./Pages/PlannerLP";
 import ExpenseTracking from "./Pages/ExpenseTracking";
 import EditCoupleDetails from "./components/EditCoupleDetails";
@@ -72,30 +71,28 @@ const router = createHashRouter([
 ]);
 
 function App() {
-  const { fetchUserInfo, setLoading, currentUser } = useUserStore();
+  const { fetchUserInfo, setLoading, logout } = useUserStore();
+  const { clearRelevantSupplier} = useSupplierData();
 
-  const { supplierData } = useSupplierData();
+  useEffect(() => {
+    const handleAuthStateChanged = async (user) => {
+      if (user?.uid) {
+        await fetchUserInfo(user.uid);
+      } else {
+        setLoading(false);
+      }
+    };
+    const unSubAuth = onAuthStateChanged(auth, handleAuthStateChanged);
 
+    return () => {
+      if (unSubAuth) {
+        unSubAuth();
+        logout();
+        clearRelevantSupplier();
+      }
+    };
+  }, [fetchUserInfo]);
 
- useEffect(() => {
-  const handleAuthStateChanged = async (user) => {
-    if (user?.uid) {
-      setLoading(true);
-      await fetchUserInfo(user.uid);
-      setLoading(false);
-    } else {
-      setLoading(false);
-    }
-  };
-
-  const unSubAuth = onAuthStateChanged(auth, handleAuthStateChanged);
-
-  return () => {
-    if (unSubAuth) {
-      unSubAuth();
-    }
-  };
-}, [fetchUserInfo, setLoading]);
 
 
   return (

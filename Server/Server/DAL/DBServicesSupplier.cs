@@ -185,7 +185,7 @@ namespace Server.DAL
             };
 
                     // Check if password is provided, hash it using BCrypt and update the password
-                    if (supplier.Password != null)
+                    if (supplier.Password != "" && supplier.Password != null)
                     {
                         parameters.Add("@password_hash", BCrypt.Net.BCrypt.EnhancedHashPassword(supplier.Password, 10));
                     }

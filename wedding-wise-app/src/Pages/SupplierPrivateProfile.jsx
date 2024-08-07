@@ -28,12 +28,12 @@ function SupplierPrivateProfile() {
   const [loadingData, setLoadingData] = useState(false);
   const { currentUser } = useUserStore();
 
-
+  
   useEffect(() => {
-    if (!currentUser?.id) return;
+    if (!user?.uid) return;
 
     // Create a reference to the user document
-    const userDocRef = doc(db, "users", currentUser.id);
+    const userDocRef = doc(db, "users", user?.uid);
 
     // Set up a Firestore onSnapshot listener
     const unsub = onSnapshot(userDocRef, (docSnapshot) => {
@@ -41,13 +41,14 @@ function SupplierPrivateProfile() {
         // Define an asynchronous function to fetch data and reverse geocode
         const fetchDataAndReverseGeocode = async () => {
           try {
-            setLoadingData(true);
             const data = await fetchSupplierData(supplierData.supplierEmail);
             if (supplierData.latitude && supplierData.longitude) {
               const address = await reverseGeocoding(supplierData.latitude, supplierData.longitude); 
               data.address = address;
             }
             setSupplierFirebase(data);
+            console.log(data);
+
           } catch (error) {
             console.error("Error fetching supplier data or reverse geocoding:", error);
           }
@@ -65,11 +66,7 @@ function SupplierPrivateProfile() {
     return () => {
       unsub();
     };
-  }, [currentUser?.id, supplierData?.supplierEmail, supplierData?.latitude, supplierData?.longitude]);
-
-
-
-
+  }, [user?.uid,supplierData,supplierData?.supplierEmail, supplierData?.latitude, supplierData?.longitude]);
 
   if (loading || loadingData) {
     return <Loading />;
@@ -78,6 +75,7 @@ function SupplierPrivateProfile() {
   if (!user) {
     return <Navigate to="/" />;
   }
+
 
   return (
 
@@ -98,7 +96,7 @@ function SupplierPrivateProfile() {
           sx={{ teatAlign: "center", mt: { xs: 0, sm: 3 } }}
         >
           <Typography sx={namesSX}>
-            {`${translateSupplierTypeToHebrew(supplierData.supplierType)} - ${supplierData.businessName
+            {`${translateSupplierTypeToHebrew(supplierData?.supplierType)} - ${supplierData?.businessName
               }`}
           </Typography>
         </Stack>
@@ -111,7 +109,7 @@ function SupplierPrivateProfile() {
         >
           <KpiPaper
             title="מספר המדרגים:"
-            data={supplierData.ratedCount}
+            data={supplierData?.ratedCount}
             icon={<PeopleOutlineIcon />}
           />
           <KpiPaper

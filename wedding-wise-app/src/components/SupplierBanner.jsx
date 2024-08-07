@@ -5,9 +5,8 @@ import Loading from "./Loading";
 
 function SupplierBanner({ supplierFirebase }) {
 
- 
 
-
+  // console.log("SupplierBanner");
 
   return (
     <>
