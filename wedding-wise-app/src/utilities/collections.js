@@ -184,6 +184,25 @@ export const inviteesValidations = Object.freeze({
   },
 });
 
+export const expensesValidations = Object.freeze({
+  serviceName: {
+    regex: /^$|^[ \u05D0-\u05EAa-zA-Z]{2,}$/,
+    error: "יש להקליד אותיות בלבד",
+  },
+  sponsorName: {
+    regex: /^$|^[ \u05D0-\u05EAa-zA-Z]{2,}$/,
+    error: "יש להקליד אותיות בלבד",
+  },
+  totalCost: {
+    regex: /^(0*[1-9]\d*)$/,
+    error: "עלות השירות חייב להיות יותר מ-0 ₪",
+  },
+  downPayment: {
+    regex: /^(0*[1-9]\d*)$/,
+    error: " המקדמה חייבת להיות יותר מ-0 ₪",
+  },
+});
+
 export const supplierTypes = [
   "אולם שמחות",
   "דיי ג'יי",
@@ -551,9 +570,39 @@ export const stickers = [
 
 export const budgetData = [
   {
+    id: 0,
     serviceName: "אלון צילום",
     sponsorName: "עומרי",
     totalCost: 13500,
     downPayment: 500,
   },
+  {
+    id: 1,
+    serviceName: "דור תקליטן",
+    sponsorName: "עומרי",
+    totalCost: 10500,
+    downPayment: 1500,
+  },
+  {
+    id: 2,
+    serviceName: "לורנס אולם",
+    sponsorName: "שרון",
+    totalCost: 140000,
+    downPayment: 40000,
+  },
+  {
+    id: 3,
+    serviceName: "יסמין עיצוב",
+    sponsorName: "רוני",
+    totalCost: 9500,
+    downPayment: 1000,
+  },
 ];
+
+// const tempArr = budgetData.map((item, index) => {
+//   return {id: index, value: item.totalCost, label: item.serviceName}
+// })
+
+// console.log(tempArr)
+
+

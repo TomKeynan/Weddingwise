@@ -1,36 +1,68 @@
 import React from "react";
-import Expances from "../components/Planner/ExpenseTracking/Expances";
-import SourcesOfMoney from "../components/Planner/ExpenseTracking/SourcesOfMoney";
 import { Stack, Typography } from "@mui/material";
 import { customTheme } from "../store/Theme";
 import ExpensesTable from "../components/Planner/ExpenseTracking/ExpensesTable";
-//import SourcesOFMoney from '../components/Planner/FinanceTracking/SourcesOFMoney'
+import ExpensesPeiChart from "../components/ExpensesPeiChart";
+
+export const budgetData = [
+  {
+    id: 0,
+    serviceName: "אלון צילום",
+    sponsorName: "עומרי",
+    totalCost: 13500,
+    downPayment: 500,
+  },
+  {
+    id: 1,
+    serviceName: "דור תקליטן",
+    sponsorName: "עומרי",
+    totalCost: 10500,
+    downPayment: 1500,
+  },
+  {
+    id: 2,
+    serviceName: "לורנס אולם",
+    sponsorName: "שרון",
+    totalCost: 140000,
+    downPayment: 40000,
+  },
+  {
+    id: 3,
+    serviceName: "יסמין עיצוב",
+    sponsorName: "רוני",
+    totalCost: 9500,
+    downPayment: 1000,
+  },
+];
+
+const tempArr = budgetData.map((item, index) => {
+  return { id: index, value: item.totalCost, label: item.serviceName };
+});
 
 function ExpenseTracking() {
   return (
-    <Stack alignItems="center" sx={loginStackSX}>
+    <Stack sx={loginStackSX}>
       <Typography sx={titleSX}>מעקב אחר הוצאות</Typography>
       <Typography
         sx={{
           fontSize: { xs: 18, sm: 22, md: 28 },
           textAlign: "center",
           p: { xs: 1, sm: 3 },
-          mb: { xs: 5, sm: 8 },
+          margin: "0 auto 5px ",
           width: { xs: "80%", sm: "70%", md: "60%" },
         }}
       >
         כאן תוכלו לעקוב ולשלוט בקלות אחר כל ההוצאות של החתונה, לנהל את התקציב
         בצורה יעילה ולהבטיח שהכל מתנהל בהתאם לתכנון הכספי שלכם.
       </Typography>
+
       <Stack>
         <ExpensesTable />
       </Stack>
+      <Stack>
+        <ExpensesPeiChart data={tempArr} />
+      </Stack>
     </Stack>
-    // <>
-    // <Expances />
-    // <br />
-    // <SourcesOfMoney />
-    // </>
   );
 }
 

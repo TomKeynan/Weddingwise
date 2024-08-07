@@ -166,7 +166,6 @@ function InviteesTable() {
           variant="contained"
           onClick={toggleInputs}
           sx={{
-            // mb: 3,
             alignSelf: "flex-start",
             minWidth: { xs: "100%", sm: 200 },
           }}
@@ -305,7 +304,7 @@ function InviteesTable() {
         }}
       >
         <TableContainer component="div">
-          <Table stickyHeader aria-label="sticky table">
+          <Table>
             <TableHead>
               <TableRow>
                 <TableCell align="left">שם</TableCell>
