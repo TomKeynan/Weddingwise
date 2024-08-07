@@ -48,7 +48,6 @@ import { useSupplierData } from "../fireBase/supplierData";
 const SupplierSignUp = () => {
   const navigate = useNavigate();
   const { sendData, resData, loading, error, setError } = useFetch();
-  const { setSupplier } = useSupplierData(); 
   const { setSupplierData } = useContext(AppContext);
   const [showPassword, setShowPassword] = useState(false);
   const [isVenue, setIsVenue] = useState(false);
@@ -73,7 +72,6 @@ const SupplierSignUp = () => {
       if (resData) {
         try {
           setSupplierData(resData);
-          setSupplier(resData);
           setIsLoading(true);
 
           await registerFireBase();
@@ -179,12 +177,18 @@ const SupplierSignUp = () => {
     delete data.LinkedIn;
 
     if (data.venueAddress) {
-      const { latitude, longitude } = await geocodeAddress(data.venueAddress); // Need to address bad input if got time
+      const { latitude, longitude } = await geocodeAddress(data.venueAddress);
+      if(latitude == null || longitude == null)
+      {
+        console.log("הכתובת שהנכנסתם לא טובה")
+      }
+      else
+      {
       data.latitude = latitude;
       data.longitude = longitude;
+      }
     }
 
-    console.log(data);
     // Validate fields
     const newErrors = {};
     for (let field in data) {

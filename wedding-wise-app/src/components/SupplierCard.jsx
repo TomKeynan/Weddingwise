@@ -29,7 +29,7 @@ function SupplierCard({
   const [avatar, setAvatar] = useState(null);
   // const { setSupplierData } = useContext(AppContext);
   const [loadingData, setLoadingData] = useState(false);
-  const { setSupplier } = useSupplierData(); 
+  const { setRelevantSupplier } = useSupplierData(); 
  
   useEffect(() => {
     const fetchSupplierDataAsync = async () => {
@@ -65,7 +65,7 @@ function SupplierCard({
 
 
   const handleMoreInformation = () => {
-    setSupplier(props);
+    setRelevantSupplier(props);
     navigate('/supplier-public-profile');
   };
 

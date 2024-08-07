@@ -36,7 +36,16 @@ function SupplierPublicProfile() {
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
   const [supplierFirebase, setSupplierFirebase] = useState(null);
   const [loadingData, setLoadingData] = useState(false);
-  const { supplierData } = useSupplierData();
+  const { relevantSupplier,setRelevantSupplier } = useSupplierData();
+  const { supplierData } = useContext(AppContext);
+
+
+   // Ensure relevantSupplier is set from supplierData if it exists
+  useEffect(() => {
+    if (supplierData) {
+      setRelevantSupplier(supplierData);
+    }
+  }, [supplierData, setRelevantSupplier]);
 
   useEffect(() => {
     const fetchAndSetData = async () => {
@@ -45,9 +54,9 @@ function SupplierPublicProfile() {
 
         // Fetch supplier ID based on email
         const userRef = collection(db, "users");
-        const q = query(userRef, where("email", "==", supplierData?.supplierEmail));
+        const q = query(userRef, where("email", "==", relevantSupplier?.supplierEmail));
         const querySnapshot = await getDocs(q);
-        console.log(supplierData);
+
         if (querySnapshot.empty) {
           console.log('No supplier found with this email.');
           setLoadingData(false);
@@ -58,24 +67,16 @@ function SupplierPublicProfile() {
         const userDocRef = doc(db, "users", supplierId);
 
         // Set up a Firestore onSnapshot listener for the user document
-        const unsubscribe = onSnapshot(userDocRef, (docSnapshot) => {
+        const unsubscribe = onSnapshot(userDocRef, async (docSnapshot) => {
           if (docSnapshot.exists()) {
-            // Define an asynchronous function to fetch data and reverse geocode
-            const fetchDataAndSetFirebase = async () => {
-              try {
-                setLoadingData(true);
-                const data = await fetchSupplierData(supplierData.supplierEmail);
-                setSupplierFirebase(data);
-              } catch (error) {
-                console.error("Error fetching supplier data:", error);
-              } finally {
-                setLoadingData(false);
-              }
-            };
-
-            // Call the async function
-            fetchDataAndSetFirebase();
+            try {
+              const data = await fetchSupplierData(relevantSupplier.supplierEmail);
+              setSupplierFirebase(data);
+            } catch (error) {
+              console.error("Error fetching supplier data:", error);
+            }
           }
+          setLoadingData(false);
         });
 
         // Clean up the listener on component unmount
@@ -88,16 +89,10 @@ function SupplierPublicProfile() {
       }
     };
 
-    if (supplierData?.supplierEmail) {
+    if (relevantSupplier?.supplierEmail) {
       fetchAndSetData();
     }
-  }, []);
-
-
-
-
-
-
+  }, [relevantSupplier]);
 
 
   // Hope it finally works
@@ -170,19 +165,19 @@ function SupplierPublicProfile() {
         >
           <KpiPaper
             title="מספר המדרגים:"
-            data={supplierData.ratedCount}
+            data={relevantSupplier.ratedCount}
             icon={<PeopleOutlineIcon />}
           />
           <KpiPaper
             title="דירוג:"
-            data={supplierData.rating}
+            data={relevantSupplier.rating}
             icon={<StarOutlineIcon />}
           />
         </Stack>
         {/* supplier description */}
         <Stack>
           <Typography sx={{ ...titleSX, mb: 5 }}>
-            אודות {supplierData.businessName}{" "}
+            אודות {relevantSupplier?.businessName}{" "}
           </Typography>
           <Paper variant="elevation" elevation={6} sx={paperSX}>
             <Typography sx={{ textAlign: "center" }}>
@@ -209,7 +204,7 @@ function SupplierPublicProfile() {
           <Paper variant="elevation" elevation={6} sx={paperSX}>
             <Alert severity="warning" sx={alertSX}>
               תהיו הראשנים לשתף את דעתכם על השירות שקיבלתם מ"
-              {supplierData.businessName}"
+              {relevantSupplier?.businessName}"
             </Alert>
           </Paper>
         </Stack>
@@ -217,7 +212,7 @@ function SupplierPublicProfile() {
       {/* comment form */}
       <Stack sx={{ maxWidth: 700, width: { xs: "90%", sm: "60%" } }}>
         <Typography sx={{ ...titleSX, mb: 5, px: 2 }}>
-          השאירו תגובה מהחוויה שלכם עם {supplierData.businessName}
+          השאירו תגובה מהחוויה שלכם עם {relevantSupplier.businessName}
         </Typography>
         <CommentForm supplierFirebase={supplierFirebase} />
       </Stack>

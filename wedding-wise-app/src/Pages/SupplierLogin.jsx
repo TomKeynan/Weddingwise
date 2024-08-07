@@ -37,7 +37,7 @@ function SupplierLogin() {
   const { setSupplierData, setEditSupplier } = useContext(AppContext)
   const { isLoading, fetchUserInfo}  = useUserStore(); // Firebase's
   const navigate = useNavigate();
-  const { setSupplier } = useSupplierData(); 
+  // const { setSupplier } = useSupplierData(); 
 
     useEffect(() => {
       const loginAndNavigate = async () => {
@@ -55,7 +55,6 @@ function SupplierLogin() {
             sessionStorage.setItem("currentSupplier", JSON.stringify(resData));
             setSupplierData(resData);
             setEditSupplier(resData);
-            setSupplier(resData);
 
             // Navigate after all asynchronous operations are complete
             navigate("/supplier-private-Profile");

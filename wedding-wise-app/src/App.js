@@ -76,7 +76,6 @@ function App() {
 
   const { supplierData } = useSupplierData();
 
-  console.log(supplierData);
 
  useEffect(() => {
   const handleAuthStateChanged = async (user) => {

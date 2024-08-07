@@ -1,12 +1,26 @@
-
+// supplierStore.js
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
+// Define the Zustand store for managing a single supplier
+export const useSupplierData = create(
+  persist(
+    (set) => ({
+      // Initial state for the supplier
+      relevantSupplier: {},
 
-export const useSupplierData = create((set) => ({
+      // Method to set the supplier data
+      setRelevantSupplier: (supplierData) => set({ relevantSupplier: supplierData }),
 
-  supplierData: {},
-
-  setSupplier: (supplierData) => set({ supplierData }),
-
-  clearSupplier: () => set({ supplierData: {} }),
-}));
+      // Method to clear the supplier data and session storage
+      clearRelevantSupplier: () => {
+        set({ relevantSupplier: {} });
+        sessionStorage.removeItem('relevant-supplier-storage'); // Clear the session storage
+      },
+    }),
+    {
+      name: 'relevant-supplier-storage', // Name of the item in session storage
+      getStorage: () => sessionStorage,  // Use sessionStorage instead of localStorage
+    }
+  )
+);

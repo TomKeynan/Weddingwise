@@ -33,7 +33,8 @@ function Navbar({ isLayout = true, isSupplier = false }) {
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
   const { currentUser, isLoading, logout } = useUserStore();
-  const { clearSupplier,setSupplier } = useSupplierData();
+  const { clearRelevantSupplier} = useSupplierData();
+
 
 
 
@@ -138,7 +139,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
   // Adam's
   async function handleLogout() {
     try {
-      clearSupplier();
+      clearRelevantSupplier();
       const auth = getAuth();
       await signOut(auth);
       logout();
