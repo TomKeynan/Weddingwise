@@ -47,7 +47,6 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 
 function SupplierPublicProfile() {
-
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
@@ -70,11 +69,11 @@ function SupplierPublicProfile() {
   }, [supplierFirebase]);
 
   // Ensure relevantSupplier is set from supplierData if it exists
-  useEffect(() => {
-    if (supplierData) {
-      setRelevantSupplier(supplierData);
-    }
-  }, [supplierData, setRelevantSupplier]);
+  // useEffect(() => {
+  //   if (supplierData) {
+  //     setRelevantSupplier(supplierData);
+  //   }
+  // }, [supplierData, setRelevantSupplier]);
 
   useEffect(() => {
     const fetchAndSetData = async () => {
@@ -152,8 +151,110 @@ function SupplierPublicProfile() {
           {`${translateSupplierTypeToHebrew(relevantSupplier?.supplierType)}`}
         </Typography>
       </Stack>
-      {showLinks && (
-        <Stack
+      {/* social media links */}
+      <Stack
+        direction="column"
+        // direction={screenUnderMD ? "column" : "row"}
+        alignItems="center"
+        justifyContent="space-between"
+        sx={{ width: "80%", margin: "0 auto", pt: 10, pb: { xs: 3, sm: 6 } }}
+      >
+        <Stack>
+          <Typography
+            sx={{
+              // width: 220,
+              textAlign: "center",
+              fontSize: { xs: 16, sm: 20, md: 24 },
+              fontFamily: customTheme.font.main,
+              fontWeight: "bold",
+            }}
+          >
+            כאן תוכלו למצוא את {relevantSupplier.businessName}{" "}
+          </Typography>
+        </Stack>
+        {showLinks && (
+          <Stack
+            direction="row"
+            alignContent="center"
+            justifyContent="center"
+            spacing={5}
+            sx={{
+              flexGrow: { xs: 0, sm: 1 },
+              width: "100%",
+              mt: { xs: 0, sm: 3 },
+            }}
+          >
+            {supplierFirebase?.socialLinks?.YouTube && (
+              <Link
+                component="button"
+                variant="body1"
+                onClick={() => {
+                  const youtubeLink =
+                    supplierFirebase.socialLinks.YouTube.startsWith("http")
+                      ? supplierFirebase.socialLinks.YouTube
+                      : `https://${supplierFirebase.socialLinks.YouTube}`;
+
+                  window.open(youtubeLink, "_blank");
+                }}
+              >
+                <YouTubeIcon sx={socialIconsSX} />
+              </Link>
+            )}
+            {supplierFirebase?.socialLinks?.Instagram && (
+              <Link
+                component="button"
+                variant="body1"
+                onClick={() => {
+                  const instagramLink =
+                    supplierFirebase.socialLinks.Instagram.startsWith("http")
+                      ? supplierFirebase.socialLinks.Instagram
+                      : `https://${supplierFirebase.socialLinks.Instagram}`;
+
+                  window.open(instagramLink, "_blank");
+                }}
+              >
+                <InstagramIcon sx={socialIconsSX} />
+              </Link>
+            )}
+
+            {supplierFirebase?.socialLinks?.LinkedIn && (
+              <Link
+                component="button"
+                variant="body1"
+                onClick={() => {
+                  const linkedInLink =
+                    supplierFirebase.socialLinks.LinkedIn.startsWith("http")
+                      ? supplierFirebase.socialLinks.LinkedIn
+                      : `https://${supplierFirebase.socialLinks.LinkedIn}`;
+
+                  window.open(linkedInLink, "_blank");
+                }}
+              >
+                <LinkedInIcon sx={socialIconsSX} />
+              </Link>
+            )}
+
+            {supplierFirebase?.socialLinks?.Facebook && (
+              <Link
+                component="button"
+                variant="body1"
+                onClick={() => {
+                  const facebookLink =
+                    supplierFirebase.socialLinks.Facebook.startsWith("http")
+                      ? supplierFirebase.socialLinks.Facebook
+                      : `https://${supplierFirebase.socialLinks.Facebook}`;
+
+                  window.open(facebookLink, "_blank");
+                }}
+              >
+                <FacebookIcon sx={socialIconsSX} />
+              </Link>
+            )}
+          </Stack>
+        )}
+      </Stack>
+      {/* rating and number of raters */}
+      {/* <Stack
           direction="column"
           // direction={screenUnderMD ? "column" : "row"}
           alignItems="center"
@@ -184,7 +285,6 @@ function SupplierPublicProfile() {
               mt: { xs: 0, sm: 3 },
             }}
           >
-            {/* social media links */}
             {supplierFirebase?.socialLinks?.YouTube && (
               <Link
                 component="button"
@@ -239,8 +339,8 @@ function SupplierPublicProfile() {
               </Link>
             )}
           </Stack>
-        </Stack>
-      )}
+        </Stack> */}
+
       {/* rating and number of raters */}
       <Stack
         direction={screenAboveSM ? "row" : "column"}

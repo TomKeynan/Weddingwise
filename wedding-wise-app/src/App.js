@@ -31,9 +31,10 @@ import PlannerLP from "./Pages/PlannerLP";
 import ExpenseTracking from "./Pages/ExpenseTracking";
 import EditCoupleDetails from "./Pages/EditCoupleDetails";
 import EditDetailsOnReplace from "./Pages/EditDetailsOnReplace";
+import EditCoupleDetails from "./components/EditCoupleDetails";
+import { getAuth, signOut } from "firebase/auth";
 const googleMapsApiKey = "AIzaSyC3QkzXx3mLsG_-IzI67-WVFBAoAZTYWxk";
 const libraries = ["places"];
-
 const router = createHashRouter([
   { path: "/", element: <Home /> },
   {
@@ -72,8 +73,7 @@ const router = createHashRouter([
 ]);
 
 function App() {
-  const { fetchUserInfo, setLoading, logout } = useUserStore();
-  const { clearRelevantSupplier } = useSupplierData();
+  const { fetchUserInfo, setLoading, logout,currentUser } = useUserStore();
 
   useEffect(() => {
     const handleAuthStateChanged = async (user) => {
@@ -88,11 +88,35 @@ function App() {
     return () => {
       if (unSubAuth) {
         unSubAuth();
-        logout();
-        clearRelevantSupplier();
+       
       }
     };
   }, [fetchUserInfo]);
+
+ // useEffect for handling logout on window close
+ useEffect(() => {
+  let timeout;
+
+  const handleVisibilityChange = async () => {
+    if (document.visibilityState === 'hidden') {
+      timeout = setTimeout(async () => {
+        await signOut(auth);
+      }, 5000); // Adjust the timeout as needed
+    } else if (document.visibilityState === 'visible') {
+      clearTimeout(timeout);
+    }
+  };
+
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+
+  return () => {
+    document.removeEventListener("visibilitychange", handleVisibilityChange);
+    clearTimeout(timeout);
+  };
+}, []);
+
+  
+console.log(currentUser)
 
   return (
     <LoadScript

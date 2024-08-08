@@ -18,6 +18,8 @@ function CommentCarousel({ supplierComments }) {
     }
   }, [supplierComments]);
  
+
+  
   const settings = {
     dots: true,
     infinite: false,
@@ -93,8 +95,8 @@ function CommentCarousel({ supplierComments }) {
       {sortedComments?.map((comment, index) => (
         <div style={{ overflow: "hidden" }} key={index}>
           <CommentCard
-            coupleAvatar={comment.coupleAvatar}
-            coupleNames={comment.coupleNames}
+            giverAvatar={comment.giverAvatar}
+            giverName={comment.giverName}
             text={comment.text}
             commentDate={comment.commentDate}
             rating={comment.rating}

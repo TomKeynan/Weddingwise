@@ -70,13 +70,12 @@ export default function CommentForm({supplierFirebase}) {
     setLoadingData(true); 
   
     try {
-      const coupleNames = coupleData.partner1Name + ' ו' + coupleData.partner2Name;
   
       await updateDoc(doc(db, "users", supplierFirebase.id), {
         comments: arrayUnion({
           commentTime: new Date(),
-          coupleAvatar: currentUser.avatar,
-          coupleNames,
+          giverAvatar: currentUser.avatar,
+          giverName:currentUser.username,
           rating: rate,
           text: comment,
         })
