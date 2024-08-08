@@ -3,13 +3,12 @@ import React from "react";
 import { customTheme } from "../store/Theme";
 
 export default function CommentCard({
-  coupleAvatar,
-  coupleNames,
+  giverAvatar,
+  giverName,
   text,
   commentDate,
   rating,
 }) {
-
 
 
   return (
@@ -31,7 +30,7 @@ export default function CommentCard({
         >
           <Box
             component="img"
-            src={coupleAvatar}
+            src={giverAvatar}
             sx={{
               width: { xs: 60, sm: 43 },
               aspectRatio: "1/1",
@@ -47,7 +46,7 @@ export default function CommentCard({
                 fontSize: { xs: 16, sm: 18, md: 20 },
               }}
             >
-              {coupleNames}
+              {giverName}
             </Typography>
             <Typography
               sx={{

@@ -459,13 +459,13 @@ namespace Server.DAL
                 {
                     Dictionary<string, object> parameters = new Dictionary<string, object>
                     {
-                        { "@supplier_email", supplierEmail },
-                        { "@couple_email", coupleEmail },
+                        { "@receiver_email", supplierEmail },
+                        { "@giver_email", coupleEmail },
                         { "@rating_given", rating }
 
                     };
 
-                    using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPInsertSupplierRatingsForCouple", parameters))
+                    using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPInsertSupplierRatings", parameters))
                     {
                         successIndicator = cmd.ExecuteNonQuery();
                     }

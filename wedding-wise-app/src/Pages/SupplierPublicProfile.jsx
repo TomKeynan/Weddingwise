@@ -36,18 +36,9 @@ function SupplierPublicProfile() {
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
   const [supplierFirebase, setSupplierFirebase] = useState(null);
   const [loadingData, setLoadingData] = useState(false);
-  const { relevantSupplier,setRelevantSupplier } = useSupplierData();
-  const { supplierData } = useContext(AppContext);
+  const { relevantSupplier, setRelevantSupplier } = useSupplierData();
 
 
-   // Ensure relevantSupplier is set from supplierData if it exists
-  useEffect(() => {
-    if (supplierData) {
-      setRelevantSupplier(supplierData);
-    }
-  }, [supplierData, setRelevantSupplier]);
-
- 
   useEffect(() => {
     const fetchAndSetData = async () => {
       try {
@@ -95,6 +86,7 @@ function SupplierPublicProfile() {
     }
   }, [relevantSupplier]);
 
+  console.log(supplierFirebase);
 
   if (loading || loadingData) {
     return <Loading />;
@@ -118,42 +110,68 @@ function SupplierPublicProfile() {
       >
         {/* social media links */}
         <Stack direction="row" justifyContent="space-around">
-          {supplierFirebase?.socialLinks?.Youtube && <Link
-            component="button"
-            variant="body1"
-            onClick={() => {
-              window.open("https://www.youtube.com/", "_blank");
-            }}
-          >
-            <YouTubeIcon sx={socialIconsSX} />
-          </Link>}
-          {supplierFirebase?.socialLinks?.Instagram && <Link
-            component="button"
-            variant="body1"
-            onClick={() => {
-              window.open("https://www.youtube.com/", "_blank");
-            }}
-          >
-            <InstagramIcon sx={socialIconsSX} />
-          </Link>}
-          {supplierFirebase?.socialLinks?.LinkedIn && <Link
-            component="button"
-            variant="body1"
-            onClick={() => {
-              window.open("https://www.youtube.com/", "_blank");
-            }}
-          >
-            <LinkedInIcon sx={socialIconsSX} />
-          </Link>}
-          {supplierFirebase?.socialLinks?.Facebook && <Link
-            component="button"
-            variant="body1"
-            onClick={() => {
-              window.open("https://www.youtube.com/", "_blank");
-            }}
-          >
-            <FacebookIcon sx={socialIconsSX} />
-          </Link>}
+          {supplierFirebase?.socialLinks?.YouTube && (
+            <Link
+              component="button"
+              variant="body1"
+              onClick={() => {
+                const youtubeLink = supplierFirebase.socialLinks.YouTube.startsWith('http')
+                  ? supplierFirebase.socialLinks.YouTube
+                  : `https://${supplierFirebase.socialLinks.YouTube}`;
+
+                window.open(youtubeLink, "_blank");
+              }}
+            >
+              <YouTubeIcon sx={socialIconsSX} />
+            </Link>
+          )}
+          {supplierFirebase?.socialLinks?.Instagram && (
+            <Link
+              component="button"
+              variant="body1"
+              onClick={() => {
+                const instagramLink = supplierFirebase.socialLinks.Instagram.startsWith('http')
+                  ? supplierFirebase.socialLinks.Instagram
+                  : `https://${supplierFirebase.socialLinks.Instagram}`;
+
+                window.open(instagramLink, "_blank");
+              }}
+            >
+              <InstagramIcon sx={socialIconsSX} />
+            </Link>
+          )}
+
+          {supplierFirebase?.socialLinks?.LinkedIn && (
+            <Link
+              component="button"
+              variant="body1"
+              onClick={() => {
+                const linkedInLink = supplierFirebase.socialLinks.LinkedIn.startsWith('http')
+                  ? supplierFirebase.socialLinks.LinkedIn
+                  : `https://${supplierFirebase.socialLinks.LinkedIn}`;
+
+                window.open(linkedInLink, "_blank");
+              }}
+            >
+              <LinkedInIcon sx={socialIconsSX} />
+            </Link>
+          )}
+
+          {supplierFirebase?.socialLinks?.Facebook && (
+            <Link
+              component="button"
+              variant="body1"
+              onClick={() => {
+                const facebookLink = supplierFirebase.socialLinks.Facebook.startsWith('http')
+                  ? supplierFirebase.socialLinks.Facebook
+                  : `https://${supplierFirebase.socialLinks.Facebook}`;
+
+                window.open(facebookLink, "_blank");
+              }}
+            >
+              <FacebookIcon sx={socialIconsSX} />
+            </Link>
+          )}
         </Stack>
         {/* rating and number of raters */}
         <Stack
