@@ -67,7 +67,7 @@ function Expances() {
     });
   };
 
-  const handleAddRow = () => {
+  const   handleAddRow = () => {
     if (newRow.name && newRow.amount) {
       setRows((prevRows) => [...prevRows, newRow]);
       setNewRow({ name: "", amount: "", notes: "" });

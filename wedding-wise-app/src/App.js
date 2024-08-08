@@ -31,7 +31,6 @@ import PlannerLP from "./Pages/PlannerLP";
 import ExpenseTracking from "./Pages/ExpenseTracking";
 import EditCoupleDetails from "./Pages/EditCoupleDetails";
 import EditDetailsOnReplace from "./Pages/EditDetailsOnReplace";
-import EditCoupleDetails from "./components/EditCoupleDetails";
 import { getAuth, signOut } from "firebase/auth";
 const googleMapsApiKey = "AIzaSyC3QkzXx3mLsG_-IzI67-WVFBAoAZTYWxk";
 const libraries = ["places"];

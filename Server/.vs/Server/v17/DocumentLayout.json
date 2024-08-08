@@ -1,22 +1,14 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\",
+  "WorkspaceRootPath": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\adam\\desktop\\react\\weddingwise\\server\\server\\dal\\dbservicessupplier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\dal\\dbservicessupplier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\tomk1\\desktop\\weddingwise\\server\\server\\controllers\\expensescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\controllers\\expensescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\adam\\desktop\\react\\weddingwise\\server\\server\\controllers\\supplierscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\controllers\\supplierscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\adam\\desktop\\react\\weddingwise\\server\\server\\bl\\supplier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\bl\\supplier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\adam\\desktop\\react\\weddingwise\\server\\server\\bl\\supplierevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\bl\\supplierevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\tomk1\\desktop\\weddingwise\\server\\server\\bl\\expense.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|solutionrelative:server\\bl\\expense.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -31,51 +23,28 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "DBServicesSupplier.cs",
-              "DocumentMoniker": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\DAL\\DBServicesSupplier.cs",
-              "RelativeDocumentMoniker": "Server\\DAL\\DBServicesSupplier.cs",
-              "ToolTip": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\DAL\\DBServicesSupplier.cs",
-              "RelativeToolTip": "Server\\DAL\\DBServicesSupplier.cs",
-              "ViewState": "AQIAAJsAAAAAAAAAAAApwKwAAAAXAAAA",
+              "Title": "ExpensesController.cs",
+              "DocumentMoniker": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\Controllers\\ExpensesController.cs",
+              "RelativeDocumentMoniker": "Server\\Controllers\\ExpensesController.cs",
+              "ToolTip": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\Controllers\\ExpensesController.cs",
+              "RelativeToolTip": "Server\\Controllers\\ExpensesController.cs",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAAAEcAAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-25T13:29:40.817Z",
+              "WhenOpened": "2024-08-08T18:13:16.814Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "SuppliersController.cs",
-              "DocumentMoniker": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\Controllers\\SuppliersController.cs",
-              "RelativeDocumentMoniker": "Server\\Controllers\\SuppliersController.cs",
-              "ToolTip": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\Controllers\\SuppliersController.cs",
-              "RelativeToolTip": "Server\\Controllers\\SuppliersController.cs",
-              "ViewState": "AQIAAIYAAAAAAAAAAAApwKMAAAAUAAAA",
+              "Title": "Expense.cs",
+              "DocumentMoniker": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\BL\\Expense.cs",
+              "RelativeDocumentMoniker": "Server\\BL\\Expense.cs",
+              "ToolTip": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\Server\\BL\\Expense.cs",
+              "RelativeToolTip": "Server\\BL\\Expense.cs",
+              "ViewState": "AQIAAA4AAAAAAAAAAAAAwAoAAAAkAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-20T07:58:24.546Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "SupplierEvent.cs",
-              "DocumentMoniker": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\BL\\SupplierEvent.cs",
-              "RelativeDocumentMoniker": "Server\\BL\\SupplierEvent.cs",
-              "ToolTip": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\BL\\SupplierEvent.cs",
-              "RelativeToolTip": "Server\\BL\\SupplierEvent.cs",
-              "ViewState": "AQIAAAYAAAAAAAAAAAAAwAoAAAAjAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-27T08:45:51.233Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Supplier.cs",
-              "DocumentMoniker": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\BL\\Supplier.cs",
-              "RelativeDocumentMoniker": "Server\\BL\\Supplier.cs",
-              "ToolTip": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\BL\\Supplier.cs",
-              "RelativeToolTip": "Server\\BL\\Supplier.cs",
-              "ViewState": "AQIAANgAAAAAAAAAAAAtwOsAAAAIAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-25T13:20:30.509Z"
+              "WhenOpened": "2024-08-08T18:05:50.057Z",
+              "EditorCaption": ""
             }
           ]
         }
