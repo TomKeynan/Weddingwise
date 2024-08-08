@@ -47,7 +47,7 @@ function EditCouple() {
 
   const { coupleData, updateCoupleData } = useContext(AppContext);
 
-  const { handleCreateNewPackage } = useContext(QuestionsContext);
+  const { handleCreateNewPackage, isLoading } = useContext(QuestionsContext);
 
   const { resData, loading, error, sendData, setResData, setError } =
     useFetch();
@@ -67,9 +67,8 @@ function EditCouple() {
     url: "",
   });
 
-  const { currentUser, loadingUserFirebase, setLoading, fetchUserInfo } = useUserStore();
-
-
+  const { currentUser, loadingUserFirebase, setLoading, fetchUserInfo } =
+    useUserStore();
 
   useEffect(() => {
     let counter = 0;
@@ -88,8 +87,6 @@ function EditCouple() {
       setIsUpdateDetailsValid(false);
     }
   }, [editValue, openSuccessMessage]);
-
-
 
   useEffect(() => {
     if (resData) {
@@ -121,17 +118,12 @@ function EditCouple() {
     updateUser();
   }, [resData, error]);
 
-
-
-
   const updateUserFirebase = async () => {
-    const username = editValue.partner1Name + ' ו' + editValue.partner2Name;  // Need to fix?
+    const username = editValue.partner1Name + " ו" + editValue.partner2Name; // Need to fix?
     const password = editValue.password;
 
     // Missing the names of the couple.
     try {
-
-      console.log(avatar);
       const user = auth.currentUser;
       if (password) {
         await updatePassword(user, password);
@@ -152,7 +144,6 @@ function EditCouple() {
       console.log(err);
     }
   };
-
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -197,7 +188,7 @@ function EditCouple() {
         open={openUpdateConfirm}
         onCancel={handleCancelUpdateConfirm}
         onApproval={handleUpdateApproval}
-      // disabledBtn={isUpdateDetailsValid}
+        // disabledBtn={isUpdateDetailsValid}
       >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
           לחיצה על אישור תוביל לשינוי פרטי החתונה הקיימים באלו שעכשיו בחרתם.
@@ -314,11 +305,11 @@ function EditCouple() {
         spacing={2}
       >
         {openUpdateConfirm && showUpdateConfirmDialog()}
-        {loading && <Loading />}
+        {isLoading && <Loading />}
         {error && showErrorMessage(error)}
         {openSuccessMessage && showSuccessMessage(resData)}
         {openQuestionsConfirm && showQuestionsConfirm()}
-        <Grid item xs={12} md={6}>
+        {/* <Grid item xs={12} md={6}>
           <TextInput
             variant="standard"
             type="text"
@@ -339,7 +330,7 @@ function EditCouple() {
             textFieldSX={textFieldSX}
             editMode={true}
           />
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} md={6}>
           <TextInput
             variant="standard"
@@ -407,7 +398,7 @@ function EditCouple() {
             />
           </LocalizationProvider>
         </Grid>
-        <Grid item xs={12} md={6}>
+        {/* <Grid item xs={12} md={6}>
           <FormControl color="primary" sx={textFieldSX}>
             <TextInput
               variant="standard"
@@ -444,7 +435,7 @@ function EditCouple() {
           >
             <InputFileUpload isUpload={avatar.file} />
           </FormControl>
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} sx={{ margin: "0 auto" }}>
           <Button
             variant="outlined"
@@ -498,11 +489,7 @@ const submitBtnSX = {
 };
 
 const paperSX = {
-  width: { xs: "90%", sm: "60%" },
   p: 5,
   mt: 2,
-  // py: 3,
-  // px: { xs: 1, sm: 3 },
   backgroundColor: "rgba(255,255,255,0.8)",
 };
-

@@ -47,7 +47,6 @@ function SupplierPrivateProfile() {
               data.address = address;
             }
             setSupplierFirebase(data);
-            console.log(data);
 
           } catch (error) {
             console.error("Error fetching supplier data or reverse geocoding:", error);
@@ -93,7 +92,7 @@ function SupplierPrivateProfile() {
         <Stack
           justifyContent="center"
           alignItems="center"
-          sx={{ teatAlign: "center", mt: { xs: 0, sm: 3 } }}
+          sx={{ mt: { xs: 0, sm: 3 } }}
         >
           <Typography sx={namesSX}>
             {`${translateSupplierTypeToHebrew(supplierData?.supplierType)} - ${supplierData?.businessName

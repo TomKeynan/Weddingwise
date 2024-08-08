@@ -1,28 +1,21 @@
 import React from "react";
 import { Stack, Typography } from "@mui/material";
-
 import RegisterContextProvider from "../store/RegisterContext";
 import EditCouple from "../components/EditCouple";
-import AppContextProvider from "../store/AppContext";
 import QuestionsContextProvider from "../store/QuestionsContext";
 import { customTheme } from "../store/Theme";
 
-function EditDetails() {
+function EditDetailsOnReplace() {
   return (
     <RegisterContextProvider>
       <QuestionsContextProvider>
+
         <Stack
-          maxWidth="xl"
-          // justifyContent="space-around"
           alignItems="center"
           spacing={3}
-          sx={{ margin: "auto 0", minHeight: "100vh" }}
+          sx={{ width: "90%", margin: "0 auto", minHeight: "100vh" }}
         >
-          <Stack
-            // spacing={2}
-            justifyContent="center"
-            sx={{ textAlign: "center" }}
-          >
+          <Stack alignItems="center" sx={{ textAlign: "center" }}>
             <Typography variant="h4" sx={titleSX}>
               עריכה ועדכון פרטים
             </Typography>
@@ -40,14 +33,19 @@ function EditDetails() {
               החדשים הגיונית
             </Typography>
           </Stack>
-          <EditCouple />
+          <Stack
+            alignItems="center"
+            sx={{ width: { xs: "90%", sm: "80%", lg: "60%" } }}
+          >
+            <EditCouple />
+          </Stack>
         </Stack>
       </QuestionsContextProvider>
     </RegisterContextProvider>
   );
 }
 
-export default EditDetails;
+export default EditDetailsOnReplace;
 
 const titleSX = {
   textAlign: "center",
@@ -56,5 +54,4 @@ const titleSX = {
   fontWeight: "bold",
   color: customTheme.palette.primary.main,
   WebkitTextStrokeWidth: { xs: 1.5, sm: 0.7 },
-  // WebkitTextStrokeColor: "black",
 };

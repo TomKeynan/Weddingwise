@@ -45,7 +45,7 @@ function EditCoupleForm() {
     isEditFormValid,
   } = useContext(RegisterContext);
 
-  const { coupleData, updateCoupleData } = useContext(AppContext);
+  const { coupleData, updateCoupleData, editCoupleComeFrom } = useContext(AppContext);
 
   const { resData, loading, error, sendData, setResData, setError } =
     useFetch();
@@ -65,8 +65,8 @@ function EditCoupleForm() {
     url: "",
   });
 
-
-  const { currentUser, loadingUserFirebase, setLoading,fetchUserInfo } = useUserStore();
+  const { currentUser, loadingUserFirebase, setLoading, fetchUserInfo } =
+    useUserStore();
 
   useEffect(() => {
     if (isFormCompleted(editValue, true) && isEditFormValid(editValue)) {
@@ -164,7 +164,6 @@ function EditCoupleForm() {
 
   function handleUpdateApproval() {
     sendData("/Couples/updateCouple", "PUT", editValue);
-    console.log(editValue);
     setResData(undefined);
     setOpenUpdateConfirm(false);
   }
@@ -229,7 +228,11 @@ function EditCoupleForm() {
   function handleCloseSuccessMsg() {
     setOpenSuccessMessage(false);
     setOpenQuestionsConfirm(true);
-    navigate("/profile");
+    if (editCoupleComeFrom === "navbar") navigate("/profile");
+    else {
+      navigate("/questionnaire");
+      
+    }
   }
 
   function showSuccessMessage(resData) {

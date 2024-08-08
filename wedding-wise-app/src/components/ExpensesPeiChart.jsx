@@ -1,7 +1,7 @@
 import React from "react";
 import { PieChart } from "@mui/x-charts/PieChart";
 
-export default function ExpensesPeiChart({data}) {
+export default function ExpensesPeiChart({ data }) {
   return (
     <PieChart
       series={[

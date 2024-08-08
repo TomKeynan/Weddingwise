@@ -4,13 +4,20 @@ import { customTheme } from "../../store/Theme";
 import { useNavigate } from "react-router-dom";
 import OutlinedButton from "../buttons/OutlinedButton";
 import { AppContext } from "../../store/AppContext";
+import { Update } from "@mui/icons-material";
 function UserWithoutPackage() {
   const navigate = useNavigate();
 
-  const { coupleData } = useContext(AppContext);
+  const { coupleData, setEditCoupleComeFrom } = useContext(AppContext);
   function handleClick() {
     navigate("/questionnaire");
   }
+
+  function handleUpdateDetails() {
+    setEditCoupleComeFrom('questionnaire')
+    navigate("/edit-couple-details")
+  }
+
   return (
     <Box
       sx={{
@@ -105,7 +112,7 @@ function UserWithoutPackage() {
             <Button
               variant="contained"
               sx={{ width: "50%" }}
-              onClick={() => navigate("/edit-details")}
+              onClick={handleUpdateDetails}
             >
               עדכן פרטים
             </Button>

@@ -12,7 +12,7 @@ import RtlProvider from "./store/RtlProvider";
 import Questionnaire from "./Pages/Questionnaire";
 import Package from "./Pages/Package";
 import Finance from "./Pages/ExpenseTracking";
-import EditDetails from "./Pages/EditDetails";
+import EditDetails from "./Pages/EditDetailsOnReplace";
 import { LoadScript } from "@react-google-maps/api";
 import Invitees from "./Pages/Invitees";
 import SupplierLogin from "./Pages/SupplierLogin";
@@ -28,6 +28,8 @@ import SupplierPrivateProfile from "./Pages/SupplierPrivateProfile";
 import SupplierPublicProfile from "./Pages/SupplierPublicProfile";
 import PlannerLP from "./Pages/PlannerLP";
 import ExpenseTracking from "./Pages/ExpenseTracking";
+import EditCoupleDetails from "./Pages/EditCoupleDetails";
+import EditDetailsOnReplace from "./Pages/EditDetailsOnReplace";
 import EditCoupleDetails from "./components/EditCoupleDetails";
 const googleMapsApiKey = "AIzaSyC3QkzXx3mLsG_-IzI67-WVFBAoAZTYWxk";
 const libraries = ["places"];
@@ -44,9 +46,9 @@ const router = createHashRouter([
       { path: "tasks", element: <Tasks /> },
       { path: "expense-tracking", element: <ExpenseTracking /> },
       { path: "invitees", element: <Invitees /> },
-      { path: "edit", element: <EditDetails /> },
+      { path: "edit-replace", element: <EditDetailsOnReplace /> },
       { path: "planner", element: <PlannerLP /> },
-      { path: "edit-details", element: <EditCoupleDetails /> },
+      { path: "edit-couple-details", element: <EditCoupleDetails /> },
     ],
   },
   {

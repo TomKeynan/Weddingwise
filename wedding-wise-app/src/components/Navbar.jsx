@@ -44,6 +44,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
     supplierData,
     setSupplierData,
     setOfferedPackage,
+    setEditCoupleComeFrom,
   } = useContext(AppContext);
 
   const connectedCouplePages = [
@@ -77,6 +78,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
   const supplierPages = [
     { route: "/", text: "דף הבית" },
     { route: "/package", text: "חבילה" },
+    { route: "/planner", text: "Planner" },
   ];
 
   const coupleSettings = [
@@ -97,7 +99,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
   ];
 
   const connectedCoupleSettings = [
-    { route: "/edit-details", text: "עדכן פרטים" },
+    { route: "/edit-couple-details", text: "עדכן פרטים" },
     { route: "/", text: "התנתק" },
   ];
 
@@ -114,6 +116,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+    setEditCoupleComeFrom("navbar");
   };
 
   function handleCoupleLogout(linkText) {
@@ -184,7 +187,6 @@ function Navbar({ isLayout = true, isSupplier = false }) {
       }
     };
   }, [currentUser?.id, changeIsSeenStatus]);
-
 
   // isActive = boolean property which destructured form the NavLink component.
   function navLinkLayoutStyles({ isActive }) {
@@ -344,7 +346,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                           ))
                         }
                         {
-                          // when current user is a supplier and he is logged in show this menu
+                          // when current user is a supplier and he has logged in show this menu
                           isSupplier &&
                           supplierData &&
                           connectedSupplierSettings.map((setting) => (

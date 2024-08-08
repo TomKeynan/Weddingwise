@@ -24,8 +24,8 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Loading from "../components/Loading";
 import SupplierContainBtn from "../components/buttons/SupplierContainBtn";
 import SupplierOutlineBtn from "../components/buttons/SupplierOutlineBtn";
-import { auth } from '../fireBase/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from "../fireBase/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { AppContext } from "../store/AppContext";
 import { useUserStore } from "../fireBase/userStore";
 import { useSupplierData } from "../fireBase/supplierData";
@@ -34,53 +34,53 @@ function SupplierLogin() {
   const { sendData, resData, error, loading } = useFetch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setSupplierData, setEditSupplier } = useContext(AppContext)
-  const { isLoading, fetchUserInfo}  = useUserStore(); // Firebase's
+  const [firebaseError, setFirebaseError] = useState(false);
+  const { setSupplierData, setEditSupplier } = useContext(AppContext);
+  const { isLoading, fetchUserInfo } = useUserStore(); // Firebase's
   const navigate = useNavigate();
-  // const { setSupplier } = useSupplierData(); 
+  // const { setSupplier } = useSupplierData();
 
-    useEffect(() => {
-      const loginAndNavigate = async () => {
-        if (resData) {
-          try {
-            // Await loginFireBase to ensure login is complete
-            await loginFireBase();
-            
-            // Fetch user info
-            if (auth.currentUser?.uid) {
-              await fetchUserInfo(auth.currentUser.uid);
-            }
-            
-            // Optionally, handle additional operations like saving data
-            sessionStorage.setItem("currentSupplier", JSON.stringify(resData));
-            setSupplierData(resData);
-            setEditSupplier(resData);
+  useEffect(() => {
+    const loginAndNavigate = async () => {
+      if (resData) {
+        try {
+          // Await loginFireBase to ensure login is complete
+          await loginFireBase();
 
-            // Navigate after all asynchronous operations are complete
-            navigate("/supplier-private-Profile");
-          } catch (err) {
-            console.error("Login or navigation failed:", err);
+          // Fetch user info
+          if (auth.currentUser?.uid) {
+            await fetchUserInfo(auth.currentUser.uid);
           }
+
+          // Optionally, handle additional operations like saving data
+          sessionStorage.setItem("currentSupplier", JSON.stringify(resData));
+          setSupplierData(resData);
+          setEditSupplier(resData);
+
+          // Navigate after all asynchronous operations are complete
+          navigate("/supplier-private-Profile");
+        } catch (err) {
+          console.error("Login or navigation failed:", err);
         }
-      };
-  
-      loginAndNavigate();
-    }, [resData, email, password, fetchUserInfo, navigate]);
-  
-    const loginFireBase = async () => {
-      try {
-        // Sign in user with email and password
-        await signInWithEmailAndPassword(auth, email, password);
-      } catch (err) {
-        console.log(err);
-        throw new Error("Login failed. Please check your credentials.");
       }
     };
+
+    loginAndNavigate();
+  }, [resData, email, password, fetchUserInfo, navigate]);
+
+  const loginFireBase = async () => {
+    try {
+      // Sign in user with email and password
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      setFirebaseError(true);
+      throw new Error("Login failed. Please check your credentials.");
+    }
+  };
 
   // useMediaQuery return a boolean that indicates rather the screen size
   // matches the breakpoint/string media query , or not
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
-
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -89,6 +89,7 @@ function SupplierLogin() {
     setEmail(data.Email);
     setPassword(data.Password);
     sendData("/Suppliers/getSupplier", "POST", data);
+    setFirebaseError(false);
   }
 
   const [showPassword, setShowPassword] = useState(false);
@@ -180,6 +181,11 @@ function SupplierLogin() {
                   {error && (
                     <Alert severity="error" sx={{ fontSize: 16, mt: 0 }}>
                       {loginResponse[error]}
+                    </Alert>
+                  )}
+                  {firebaseError && (
+                    <Alert severity="error" sx={{ fontSize: 16, mt: 0 }}>
+                      סיסמא או אימייל אינם נכונים{" "}
                     </Alert>
                   )}
                   <SupplierOutlineBtn
