@@ -48,9 +48,9 @@ const EditSupplier = ({ supplierFirebase }) => {
     useContext(AppContext);
   const { sendData, resData, setResData, loading, error, setError } =
     useFetch();
-  const [isVenue, setIsVenue] = useState(false);
   const [errors, setErrors] = useState({});
   const [open, setOpen] = useState(false);
+  const [openAddressError, setOpenAddressError] = useState(false);
   const [currentSupplierData, setCurrentSupplierData] = useState(null);
   const [openUpdateConfirm, setOpenUpdateConfirm] = useState(false);
   const [openUpdateSuccess, setOpenUpdateSuccess] = useState(false);
@@ -74,7 +74,6 @@ const EditSupplier = ({ supplierFirebase }) => {
       setYouTubeLink(supplierFirebase.socialLinks?.YouTube || "");
       setLinkedInLink(supplierFirebase.socialLinks?.LinkedIn || "");
     }
-    console.log(supplierFirebase.socialLinks?.YouTube);
   }, [supplierFirebase]);
 
   useEffect(() => {
@@ -83,13 +82,13 @@ const EditSupplier = ({ supplierFirebase }) => {
         const { Password, ...rest } = currentSupplierData;
         try {
           await updateUserFirebase();
-          // window.scrollTo({ top: 0, behavior: "smooth" });
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          setOpenUpdateSuccess(true);
         } catch (error) {
           console.error("Error updating user:", error);
         } finally {
           setLoading(false);
           setSupplierData(rest);
-          setOpenUpdateSuccess(true);
         }
       }
       return () => {
@@ -98,8 +97,10 @@ const EditSupplier = ({ supplierFirebase }) => {
     };
 
     updateUser();
+    return () => {
+      setResData(undefined);
+    };
   }, [resData, currentSupplierData]);
-
 
   useEffect(() => {
     setCurrentDescription(supplierFirebase?.description);
@@ -118,33 +119,30 @@ const EditSupplier = ({ supplierFirebase }) => {
       LinkedIn: LinkedInLink || "",
     };
 
-    console.log(socialLinksWithDefaults);
     setLoading(true);
 
-    const timeout = new Promise((resolve, reject) => {
-      setTimeout(() => reject(new Error('Timeout')), 3000);
-    });
-
     try {
-      await Promise.race([timeout, (async () => {
-        const user = auth.currentUser;
-        if (password) {
-          await updatePassword(user, password);
-        }
+      await Promise.race([
+        (async () => {
+          const user = auth.currentUser;
+          if (password) {
+            await updatePassword(user, password);
+          }
 
-        let imgUrl = null;
-        if (avatar && avatar.file) {
-          imgUrl = await upload(avatar.file);
-        }
+          let imgUrl = null;
+          if (avatar && avatar.file) {
+            imgUrl = await upload(avatar.file);
+          }
 
-        const userRef = doc(db, "users", supplierFirebase.id);
-        await updateDoc(userRef, {
-          username: username || supplierFirebase.username,
-          description: description || supplierFirebase?.description,
-          avatar: imgUrl || supplierFirebase.avatar,
-          socialLinks: socialLinksWithDefaults,
-        });
-      })()]);
+          const userRef = doc(db, "users", supplierFirebase.id);
+          await updateDoc(userRef, {
+            username: username || supplierFirebase.username,
+            description: description || supplierFirebase?.description,
+            avatar: imgUrl || supplierFirebase.avatar,
+            socialLinks: socialLinksWithDefaults,
+          });
+        })(),
+      ]);
     } catch (err) {
       console.log(err);
     }
@@ -172,13 +170,21 @@ const EditSupplier = ({ supplierFirebase }) => {
     delete data.YouTube;
     delete data.LinkedIn;
 
-
+    // if (data.venueAddress) {
+    //   const { latitude, longitude } = await geocodeAddress(data.venueAddress);
+    //   data.latitude = latitude;
+    //   data.longitude = longitude;
+    // }
     if (data.venueAddress) {
       const { latitude, longitude } = await geocodeAddress(data.venueAddress);
-      data.latitude = latitude;
-      data.longitude = longitude;
+      if (latitude == null || longitude == null) {
+        setOpenAddressError(true);
+        return;
+      } else {
+        data.latitude = latitude;
+        data.longitude = longitude;
+      }
     }
-
     // data validation
     const newErrors = {};
     for (let field in data) {
@@ -210,8 +216,28 @@ const EditSupplier = ({ supplierFirebase }) => {
     });
   }
 
+  // ================  handling incorrect venue address ================
+
+  function showAddressErrorMessage() {
+    return (
+      <MessageDialog
+        title="שגיאה!"
+        btnValue="אוקיי!"
+        open={openAddressError}
+        onClose={handleCloseMessage}
+        xBtn={handleCloseMessage}
+        mode="error"
+      >
+        <Typography variant="h6" sx={{ textAlign: "center" }}>
+          הכתובת שהזנת לא נמצאה. אנא כתבו כתובת אחרת או נסו שנית
+        </Typography>
+      </MessageDialog>
+    );
+  }
+
   // ================ error handling ================
   function handleCloseMessage() {
+    setOpenAddressError(false);
     setOpen(false);
     setError(undefined);
   }
@@ -240,13 +266,16 @@ const EditSupplier = ({ supplierFirebase }) => {
   }
 
   function handleApprovalUpdateConfirm() {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 3000);
+    // const timer = setTimeout(() => {
+    //   setLoading(false);
+    // }, 3000);
 
-    sendData("/Suppliers/updateSupplier", "PUT", currentSupplierData).finally(() => {
-      clearTimeout(timer);
-    });
+    // sendData("/Suppliers/updateSupplier", "PUT", currentSupplierData).finally(
+    //   () => {
+    //     clearTimeout(timer);
+    //   }
+    // );
+    sendData("/Suppliers/updateSupplier", "PUT", currentSupplierData);
     setOpenUpdateConfirm(false);
   }
 
@@ -272,7 +301,7 @@ const EditSupplier = ({ supplierFirebase }) => {
       <MessageDialog
         title="כל הכבוד!"
         btnValue="אוקיי!"
-        open={open}
+        open={openUpdateSuccess}
         onClose={() => setOpenUpdateSuccess(false)}
         xBtn={() => setOpenUpdateSuccess(false)}
         mode="success"
@@ -284,7 +313,6 @@ const EditSupplier = ({ supplierFirebase }) => {
     );
   }
 
-
   if (loadingUserFirebase) {
     return <Loading />;
   }
@@ -294,6 +322,7 @@ const EditSupplier = ({ supplierFirebase }) => {
       {error && showErrorMessage(error)}
       {openUpdateConfirm && showUpdateConfirmDialog()}
       {openUpdateSuccess && showSuccessMessage()}
+      {openAddressError && showAddressErrorMessage()}
       <Stack
         spacing={2}
         textAlign="center"

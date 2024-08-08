@@ -1,4 +1,4 @@
-import React, { useContext, useState,useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { NavLink, Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import { Box, Button, Stack, useMediaQuery } from "@mui/material/";
@@ -29,14 +29,13 @@ function Navbar({ isLayout = true, isSupplier = false }) {
   // isLayout detect rather navbar's style should be for home page or all other pages
   const screenAboveMD = useMediaQuery("(min-width: 900px)");
 
-  const { changeChatStatus, isSeen, changeIsSeenStatus,chatStatus } = useChatStore();
+  const { changeChatStatus, isSeen, changeIsSeenStatus, chatStatus } =
+    useChatStore();
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
   const { currentUser, isLoading, logout } = useUserStore();
-  const { clearRelevantSupplier, relevantSupplier,setRelevantSupplier} = useSupplierData();
-
- 
-
+  const { clearRelevantSupplier, relevantSupplier, setRelevantSupplier } =
+    useSupplierData();
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -46,6 +45,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
     supplierData,
     setSupplierData,
     setOfferedPackage,
+    setEditCoupleComeFrom,
   } = useContext(AppContext);
 
   const connectedCouplePages = [
@@ -79,6 +79,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
   const supplierPages = [
     { route: "/", text: "דף הבית" },
     { route: "/package", text: "חבילה" },
+    { route: "/planner", text: "Planner" },
   ];
 
   const coupleSettings = [
@@ -99,7 +100,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
   ];
 
   const connectedCoupleSettings = [
-    { route: "/edit-details", text: "עדכן פרטים" },
+    { route: "/edit-couple-details", text: "עדכן פרטים" },
     { route: "/", text: "התנתק" },
   ];
 
@@ -116,6 +117,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+    setEditCoupleComeFrom("navbar");
   };
 
   function handleCoupleLogout(linkText) {
@@ -155,10 +157,9 @@ function Navbar({ isLayout = true, isSupplier = false }) {
     handleCloseUserMenu();
   };
 
-
   useEffect(() => {
     let unSubChat = null;
-  
+
     // Set up the listener for changes to the current chat
     if (currentUser?.id) {
       unSubChat = onSnapshot(doc(db, "userChats", currentUser.id), (res) => {
@@ -171,7 +172,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
         }
       });
     }
-  
+
     // Cleanup function to unsubscribe from the chat listener
     return () => {
       if (unSubChat) {
@@ -179,7 +180,6 @@ function Navbar({ isLayout = true, isSupplier = false }) {
       }
     };
   }, [currentUser?.id, changeIsSeenStatus]);
-
 
   // isActive = boolean property which destructured form the NavLink component.
   function navLinkLayoutStyles({ isActive }) {
@@ -228,7 +228,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
       );
     }
   }
-  
+
   return (
     <AppBar sx={isLayout ? appBarForLayoutSX : appBarForHomeSX}>
       <Container maxWidth="xxl" sx={{ p: 0 }}>
@@ -339,7 +339,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                             ))
                         }
                         {
-                          // when current user is a supplier and he is logged in show this menu
+                          // when current user is a supplier and he has logged in show this menu
                           isSupplier &&
                             supplierData &&
                             connectedSupplierSettings.map((setting) => (

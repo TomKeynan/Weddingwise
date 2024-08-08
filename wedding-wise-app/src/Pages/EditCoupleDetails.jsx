@@ -6,7 +6,7 @@ import EditCouple from "../components/EditCouple";
 import AppContextProvider from "../store/AppContext";
 import QuestionsContextProvider from "../store/QuestionsContext";
 import { customTheme } from "../store/Theme";
-import EditCoupleForm from "./EditCoupleForm";
+import EditCoupleForm from "../components/EditCoupleForm";
 
 function EditCoupleDetails() {
   return (

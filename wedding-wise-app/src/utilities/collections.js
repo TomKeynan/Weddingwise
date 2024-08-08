@@ -108,8 +108,8 @@ export const signupSupplierValidations = Object.freeze({
     // valid: "ציינו סכום מקסימלי (לפחות 100,000)",
   },
   venueAddress: {
-    // regex: /^.{5,30}$/,   Hey Omri I changed it. Thanks.
-    regex: /^[א-ת\s0-9,"׳]{5,}$/,
+    regex: /[0-9,\p{Hebrew}\p{Pd}\s]/,
+    // regex: /^[א-ת\s0-9,"׳]{5,}$/,
     error: "שם העסק חייב להכיל לפחות 5 תווים",
   },
   capacity: {
@@ -144,8 +144,7 @@ export const editSupplierValidations = Object.freeze({
     // valid: "ציינו סכום מקסימלי (לפחות 100,000)",
   },
   venueAddress: {
-    // regex: /^.{5,30}$/,   Hey Omri I changed it. Thanks.
-    regex: /^[א-ת\s0-9,"׳]{5,}$/,
+    regex: /[0-9,\p{Hebrew}\p{Pd}\s]/, 
     error: "שם העסק חייב להכיל לפחות 5 תווים",
   },
   capacity: {
@@ -216,7 +215,7 @@ export const loginResponse = Object.freeze({
   200: "הצלחה",
   400: "אופס! משהו השתבש , נסה שנית.",
   401: "משתמש זה אינו פעיל",
-  404: "סיסמא או אימייל אינם נכונים.",
+  404: "סיסמא או אימייל אינם נכונים",
   500: "אופס! משהו השתבש , נסה שנית.",
 });
 
@@ -224,7 +223,7 @@ export const signupResponse = Object.freeze({
   200: "הצלחה",
   400: "אופס! משהו השתבש , נסה שנית.",
   401: "משתמש זה אינו פעיל",
-  404: "סיסמא או אימייל אינם נכונים.",
+  404: "סיסמא או אימייל אינם נכונים",
   409: "כתובת המייל שהזנת כבר רשומה במערכת. אנא הזן כתובת חדשה",
   500: "אופס! משהו השתבש , נסה שנית.",
 });

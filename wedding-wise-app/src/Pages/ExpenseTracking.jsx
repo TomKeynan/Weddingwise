@@ -1,5 +1,5 @@
 import React from "react";
-import { Stack, Typography } from "@mui/material";
+import { Stack, Typography, useMediaQuery } from "@mui/material";
 import { customTheme } from "../store/Theme";
 import ExpensesTable from "../components/Planner/ExpenseTracking/ExpensesTable";
 import ExpensesPeiChart from "../components/ExpensesPeiChart";
@@ -40,6 +40,7 @@ const tempArr = budgetData.map((item, index) => {
 });
 
 function ExpenseTracking() {
+  const screenUnderMD = useMediaQuery("(max-width: 900px)");
   return (
     <Stack sx={loginStackSX}>
       <Typography sx={titleSX}>מעקב אחר הוצאות</Typography>
@@ -56,11 +57,24 @@ function ExpenseTracking() {
         בצורה יעילה ולהבטיח שהכל מתנהל בהתאם לתכנון הכספי שלכם.
       </Typography>
 
-      <Stack>
-        <ExpensesTable />
-      </Stack>
-      <Stack>
-        <ExpensesPeiChart data={tempArr} />
+      <Stack direction={screenUnderMD ? "column" : "row"} alignItems="center">
+        <Stack sx={{ width: { xs: "90%", md: "55%", lg: "70%" }, pb: 5 }}>
+          <ExpensesTable />
+        </Stack>
+        <Stack sx={{ position: "relative" }}>
+          <Typography
+            sx={{
+              position: "absolute",
+              top: 50,
+              right: 100,
+              fontSize: { xs: 16, sm: 20 },
+              fontFamily: customTheme.font.main,
+            }}
+          >
+            חלוקת סה"כ העלות
+          </Typography>
+          <ExpensesPeiChart data={tempArr} />
+        </Stack>
       </Stack>
     </Stack>
   );

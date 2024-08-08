@@ -3,14 +3,13 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import { customTheme } from "../store/Theme";
-import { stickers, suppliersImage } from "../utilities/collections";
-import { addCommasToNumber, getRandomSupplierImage } from "../utilities/functions";
+import { stickers } from "../utilities/collections";
+import { addCommasToNumber } from "../utilities/functions";
 import CheckIcon from "@mui/icons-material/Check";
 import { useNavigate } from "react-router-dom";
-import Loading from './Loading';
+import Loading from "./Loading";
 import { db } from "../fireBase/firebase";
 import { getDocs, query, where, collection } from "firebase/firestore";
-import { AppContext } from "../store/AppContext";
 import { useSupplierData } from "../fireBase/supplierData";
 
 function SupplierCard({
@@ -23,20 +22,21 @@ function SupplierCard({
   isAlternative,
   isPackage,
 }) {
-  const { businessName, phoneNumber, supplierEmail, price, supplierType } = props;
+  const { businessName, phoneNumber, supplierEmail, price, supplierType } =
+    props;
   const navigate = useNavigate();
   const [sticker, setSticker] = useState({});
   const [avatar, setAvatar] = useState(null);
-  // const { setSupplierData } = useContext(AppContext);
   const [loadingData, setLoadingData] = useState(false);
-  const { setRelevantSupplier } = useSupplierData(); 
- 
+  const { setRelevantSupplier } = useSupplierData();
+
   useEffect(() => {
     const fetchSupplierDataAsync = async () => {
-
       if (avatar) {
-        const cardSticker = stickers.find((sticker) =>
-          sticker.stickerSrc.includes(supplierType) || sticker.stickerSrc.includes("makeup")
+        const cardSticker = stickers.find(
+          (sticker) =>
+            sticker.stickerSrc.includes(supplierType) ||
+            sticker.stickerSrc.includes("makeup")
         );
         setSticker(cardSticker || {});
       }
@@ -54,8 +54,7 @@ function SupplierCard({
         setAvatar(supplier.avatar);
       } catch (error) {
         console.error("Error fetching supplier data: ", error);
-      }
-      finally {
+      } finally {
         setLoadingData(false);
       }
     };
@@ -63,14 +62,12 @@ function SupplierCard({
     fetchSupplierDataAsync();
   }, [supplierEmail, supplierType, avatar, props]);
 
-
   const handleMoreInformation = () => {
     setRelevantSupplier(props);
-    navigate('/supplier-public-profile');
+    navigate("/supplier-public-profile");
   };
 
-
-  if (!avatar  ){
+  if (!avatar) {
     return <Loading />;
   }
 
@@ -83,20 +80,23 @@ function SupplierCard({
         bgcolor: cardBg,
         boxShadow: customTheme.shadow.main,
         borderRadius: 4,
+        margin: "0 auto",
+        width: { xs: 200, sm: 250 },
       }}
     >
-      <Box
-        sx={{
-          minWidth: "100%",
-          height: "250px",
-          margin: "0 auto",
-        }}
-      >
-        <img
+      <Box sx={{ width: "100%" }}>
+        <Box
+          component="img"
           src={avatar}
           alt={businessName}
-          className={isPackage ? "supplier-card-image-package" : "supplier-card-image"}
-        />
+          sx={{
+            width: "100%",
+            borderRadius: "16px",
+            boxShadow: customTheme.shadow.main,
+            aspectRatio: "1/1",
+            objectFit: "cover",
+          }}
+        ></Box>
       </Box>
 
       <Stack
@@ -143,7 +143,7 @@ function SupplierCard({
         >
           <Typography
             variant="body2"
-            sx={{ textAlign: "left", wordBreak: "break-all", width: "185px" }}
+            sx={{ textAlign: "left", wordBreak: "break-all" }}
           >
             {supplierEmail}
           </Typography>
@@ -187,7 +187,11 @@ function SupplierCard({
               </Button>
             ))}
           {showMoreInfoBtn && (
-            <Button onClick={handleMoreInformation} variant="contained" sx={actionBtnSX}>
+            <Button
+              onClick={handleMoreInformation}
+              variant="contained"
+              sx={actionBtnSX}
+            >
               מידע נוסף
             </Button>
           )}
@@ -197,9 +201,26 @@ function SupplierCard({
   );
 }
 
-
 export default SupplierCard;
 
 const actionBtnSX = {
   p: 1,
 };
+
+{
+  /* <Box
+        sx={{
+          maxWidth: "100%",
+          height: "250px",
+          margin: "0 auto",
+        }}
+      >
+        <img
+          src={avatar}
+          alt={businessName}
+          className={
+            isPackage ? "supplier-card-image-package" : "supplier-card-image"
+          }
+        />
+      </Box> */
+}

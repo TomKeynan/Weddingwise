@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Paper, Stack, Typography } from "@mui/material";
+import { Box, Paper, Stack, Typography } from "@mui/material";
 import { customTheme } from "../../store/Theme";
 import Slider from "react-slick";
 import SupplierCard from "../SupplierCard";
@@ -24,24 +24,25 @@ function SuppliersCarousel() {
   }, [resData]);
 
   var settings = {
-    dots: true,
+    dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 3,
-    slidesToScroll: 3,
+    slidesToScroll: 1,
     initialSlide: 0,
+    // rtl: true,
     responsive: [
       {
-        breakpoint: 1200,
+        breakpoint: 1400,
         settings: {
           slidesToShow: 2,
-          slidesToScroll: 2,
+          slidesToScroll: 1,
           infinite: true,
-          // dots: true,
+          dots: true,
         },
       },
       {
-        breakpoint: 800,
+        breakpoint: 860,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
@@ -106,12 +107,16 @@ function SuppliersCarousel() {
           <Paper variant="elevation" elevation={6} sx={paperSX}>
             <Slider {...settings}>
               {suppliersList.map((supplier) => (
-                <div
+                <Box
                   key={supplier.supplierEmail}
-                  style={{ overflow: "hidden" }}
+                  sx={{
+                    overflow: "hidden",
+                    margin: "0 auto",
+                    py: 5,
+                  }}
                 >
                   <SupplierCard showMoreInfoBtn={true} props={supplier} />
-                </div>
+                </Box>
               ))}
             </Slider>
           </Paper>
@@ -124,7 +129,10 @@ function SuppliersCarousel() {
 export default SuppliersCarousel;
 
 const paperSX = {
-  width: "80%",
+  width: {
+    xs: "90%",
+    lg: "80%",
+  },
   px: { xs: 2, sm: 4, md: 5 },
   py: 5,
   // p: 10,

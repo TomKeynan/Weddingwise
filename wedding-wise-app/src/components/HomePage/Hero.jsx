@@ -35,7 +35,7 @@ function Hero() {
                 mb: 5,
               }}
             >
-              <Button variant="contained" sx={heroActionBtn}>
+              <Button variant="contained" sx={heroActionBtn} onClick={() => navigate("/package")}>
                 מידע נוסף
                 <ArrowForwardIosIcon />
               </Button>

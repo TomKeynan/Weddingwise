@@ -2,19 +2,21 @@ import React, { useState, createContext, useEffect } from "react";
 
 export const AppContext = createContext({
   coupleData: {},
-  supplierData: {},
-  editSupplier: {},
-  offeredPackage: {},
   setCoupleData: () => {},
-  setSupplierData: () => {},
-  setOfferedPackage: () => {},
   updateCoupleData: () => {},
-  updateOfferedPackage: () => {},
+  supplierData: {},
+  setSupplierData: () => {},
+  editSupplier: {},
   setEditSupplier: () => {},
+  offeredPackage: {},
+  setOfferedPackage: () => {},
+  updateOfferedPackage: () => {},
   invitees: [],
   setInvitees: () => {},
   addInvitee: () => {},
   removeInvitee: () => {},
+  editCoupleComeFrom: [],
+  setEditCoupleComeFrom: () => {},
 });
 
 const initialStateCoupleData = JSON.parse(
@@ -32,7 +34,14 @@ export default function AppContextProvider({ children }) {
   const [editSupplier, setEditSupplier] = useState(initialStateSupplierData);
 
   const [offeredPackage, setOfferedPackage] = useState(null);
+
   const [invitees, setInvitees] = useState([]);
+  
+  // this state responsible tell to EditCoupleForm which page the couple should be
+  // send to after updating their details-
+  // if they came from the navbar item they will redirect to their own profile
+  // if they came from the UserWithoutPackage they will redirect to questionnaire page.
+  const [editCoupleComeFrom, setEditCoupleComeFrom] = useState("navbar");
 
   useEffect(() => {
     // setCoupleData(JSON.parse(sessionStorage.getItem("currentCouple")));
@@ -41,6 +50,7 @@ export default function AppContextProvider({ children }) {
 
   useEffect(() => {
     sessionStorage.setItem("currentSupplier", JSON.stringify(supplierData));
+    setEditSupplier(supplierData);
   }, [supplierData]);
 
   function updateCoupleData(data) {
@@ -79,19 +89,21 @@ export default function AppContextProvider({ children }) {
 
   const appContext = {
     coupleData,
+    setCoupleData,
+    updateCoupleData,
     supplierData,
-    offeredPackage,
+    setSupplierData,
     editSupplier,
     setEditSupplier,
-    updateCoupleData,
-    setSupplierData,
+    offeredPackage,
     updateOfferedPackage,
-    setCoupleData,
     setOfferedPackage,
     invitees,
     setInvitees,
     addInvitee,
     removeInvitee,
+    editCoupleComeFrom,
+    setEditCoupleComeFrom
   };
 
   return (

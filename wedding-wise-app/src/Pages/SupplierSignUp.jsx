@@ -12,19 +12,16 @@ import {
   Stack,
   TextField,
   Typography,
-  useControlled,
 } from "@mui/material";
-import RegisterContextProvider from "../store/RegisterContext";
-import { customTheme } from "../store/Theme";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
-  editSupplierValidations,
   regions,
   signupSupplierErrors,
   signupSupplierValidations,
   supplierTypes,
-  VALIDATIONS,
 } from "../utilities/collections";
+import RegisterContextProvider from "../store/RegisterContext";
+import { customTheme } from "../store/Theme";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import InputFileUpload from "../components/InputFileUpload";
 import SupplierOutlineBtn from "../components/buttons/SupplierOutlineBtn";
 import useFetch from "../utilities/useFetch";
@@ -33,7 +30,6 @@ import Loading from "../components/Loading";
 import { translateSupplierTypeToEnglish } from "../utilities/functions";
 import MessageDialog from "../components/Dialogs/MessageDialog";
 import ReadOnlyPopup from "../components/Dialogs/ReadOnlyPopup";
-import { toast } from "react-toastify";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../fireBase/firebase";
 import { doc, setDoc } from "firebase/firestore";
@@ -43,7 +39,6 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import HomeIcon from "@mui/icons-material/Home";
 import { AppContext } from "../store/AppContext";
 import { geocodeAddress } from "../utilities/functions";
-import { useSupplierData } from "../fireBase/supplierData";
 
 const SupplierSignUp = () => {
   const navigate = useNavigate();
@@ -51,6 +46,7 @@ const SupplierSignUp = () => {
   const { setSupplierData } = useContext(AppContext);
   const [showPassword, setShowPassword] = useState(false);
   const [isVenue, setIsVenue] = useState(false);
+  const [openAddressError, setOpenAddressError] = useState(false);
   const [avatar, setAvatar] = useState({
     file: null,
     url: "",
@@ -81,7 +77,10 @@ const SupplierSignUp = () => {
           // Mark as authenticated
           setIsAuthenticated(true);
         } catch (err) {
-          console.error("Registration, login, or fetching user info failed:", err);
+          console.error(
+            "Registration, login, or fetching user info failed:",
+            err
+          );
         } finally {
           setIsLoading(false);
         }
@@ -118,7 +117,6 @@ const SupplierSignUp = () => {
     }
   };
 
-
   const registerFireBase = async () => {
     const username = currentSupplierData.businessName;
     const email = currentSupplierData.supplierEmail;
@@ -153,10 +151,8 @@ const SupplierSignUp = () => {
       await setDoc(doc(db, "userChats", res.user.uid), {
         chats: [],
       });
-
     } catch (err) {
       console.log(err);
-
     }
   };
 
@@ -185,14 +181,13 @@ const SupplierSignUp = () => {
     if (data.venueAddress) {
       const { latitude, longitude } = await geocodeAddress(data.venueAddress);
       if (latitude == null || longitude == null) {
-        console.log("הכתובת שהנכנסתם לא טובה")
-      }
-      else {
+        setOpenAddressError(true);
+        return;
+      } else {
         data.latitude = latitude;
         data.longitude = longitude;
       }
     }
-
     // Validate fields
     const newErrors = {};
     for (let field in data) {
@@ -203,7 +198,6 @@ const SupplierSignUp = () => {
         newErrors[field] = signupSupplierValidations[field].error;
       } else {
         if (data[field] === "") {
-          console.log(field);
           newErrors[field] = "שדה זה נדרש להיות מלא";
         }
       }
@@ -218,8 +212,29 @@ const SupplierSignUp = () => {
       sendData("/Suppliers/registerSupplier", "POST", data);
     }
   }
+
+  // ================  handling incorrect venue address ================
+
+  function showAddressErrorMessage() {
+    return (
+      <MessageDialog
+        title="שגיאה!"
+        btnValue="אוקיי!"
+        open={openAddressError}
+        onClose={handleCloseMessage}
+        xBtn={handleCloseMessage}
+        mode="error"
+      >
+        <Typography variant="h6" sx={{ textAlign: "center" }}>
+          הכתובת שהזנת לא נמצאה. אנא כתבו כתובת אחרת או נסו שנית
+        </Typography>
+      </MessageDialog>
+    );
+  }
+
   // ================ error handling ================
   function handleCloseMessage() {
+    setOpenAddressError(false);
     setOpen(false);
     setError(undefined);
   }
@@ -266,6 +281,7 @@ const SupplierSignUp = () => {
     <RegisterContextProvider>
       {error && showErrorMessage(error)}
       {resData && showSuccessMessage()}
+      {openAddressError && showAddressErrorMessage()}
       <Stack
         spacing={2}
         textAlign="center"
