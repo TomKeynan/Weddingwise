@@ -33,7 +33,6 @@ import Loading from "../components/Loading";
 import { translateSupplierTypeToEnglish } from "../utilities/functions";
 import MessageDialog from "../components/Dialogs/MessageDialog";
 import ReadOnlyPopup from "../components/Dialogs/ReadOnlyPopup";
-import { toast } from "react-toastify";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../fireBase/firebase";
 import { doc, setDoc } from "firebase/firestore";
@@ -43,7 +42,6 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import HomeIcon from "@mui/icons-material/Home";
 import { AppContext } from "../store/AppContext";
 import { geocodeAddress } from "../utilities/functions";
-import { useSupplierData } from "../fireBase/supplierData";
 
 const SupplierSignUp = () => {
   const navigate = useNavigate();

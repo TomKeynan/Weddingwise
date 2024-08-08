@@ -86,7 +86,7 @@ function SupplierPublicProfile() {
     }
   }, [relevantSupplier]);
 
-  console.log(supplierFirebase);
+  // console.log(supplierFirebase);
 
   if (loading || loadingData) {
     return <Loading />;

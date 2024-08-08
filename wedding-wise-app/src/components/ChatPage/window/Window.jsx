@@ -177,14 +177,15 @@ function Window() {
           <img src={user?.avatar || 'assets/chat_pics/avatar.png'} alt='' />
           <div className='texts'>
             <span>{user?.username}</span>
-            <p>מלך הדוקים</p>
-          </div>
+            {/* {תיאור} */}
+            <p>{user?.description}</p> 
+            </div>
         </div>
-        <div className='icons'>
+        {/* <div className='icons'>
           <img src='assets/chat_pics/phone.png' alt='' />
           <img src='assets/chat_pics/video.png' alt='' />
           <img src='assets/chat_pics/info.png' alt='' />
-        </div>
+        </div> */}
       </div>
 
       {/* Chat messages */}
@@ -220,8 +221,8 @@ function Window() {
             style={{ display: "none" }}
             onChange={handleImg}
           />
-          <img src='assets/chat_pics/camera.png' alt='' />
-          <img src='assets/chat_pics/mic.png' alt='' />
+          {/* <img src='assets/chat_pics/camera.png' alt='' />
+          <img src='assets/chat_pics/mic.png' alt='' /> */}
         </div>
         <input
           type='text'

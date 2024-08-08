@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useContext } from 'react';
 import Detail from './detail/Detail';
 import Window from './window/Window';
 import { useUserStore } from '../../fireBase/userStore';
@@ -11,6 +11,7 @@ import './chat.css';
 import Loading from '../Loading';
 import { getAuth } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { AppContext } from '../../store/AppContext';
 
 function Chat() {
   const { currentUser, isLoading, fetchUserInfo } = useUserStore();
@@ -18,26 +19,15 @@ function Chat() {
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
 
-  const chatRef = useRef(null);
+  const {
+    coupleData,
+    supplierData,
+  } = useContext(AppContext);
 
-
-
-  const [isCoupleConnected, setIsCoupleConnected] = useState(false);
 
   const [hasChats, setHasChats] = useState(false);
 
-
   useEffect(() => {
-
-
-    const currentCouple = JSON.parse(sessionStorage.getItem('supplier'));
-    if (currentCouple) {
-      console.log(currentCouple);
-      setIsCoupleConnected(true);
-    } else {
-      setIsCoupleConnected(false);
-    }
-
 
     // Set up a Firestore onSnapshot listener for user chats
     const unsub = onSnapshot(
@@ -51,60 +41,59 @@ function Chat() {
           setHasChats(false);
         }
       });
-    // Clean up the onSnapshot listener on component unmount
     return () => {
       unsub();
     };
   }, [currentUser]);
 
 
-  if (!user)
+  if (!user) {
     return (<Loading />)
+  }
 
-  // Main return statement of the component
   return (
     isLoading ? (
       <Loading />
     ) : (
-      <div className="chat" ref={chatRef}>
+      <div className="chat" >
         <button onClick={() => changeChatStatus()} className="exit-button">
           &#10005;
         </button>
-        {currentUser ? (
-          <>
-
-            {hasChats ? (
-              <>
-                <ChatList />
-                {chatId && <Window />}
-                {chatId && <Detail />}
-              </>
-            ) : (
-              isCoupleConnected ? (
-                <div>
-                  <p className="paragraph">
-                    על מנת להשתמש בצ'אט, אתם צריכים קודם להשיג את נבחרת הספקים המושלמת עבורכם!
-                  </p>
-                  <Link
-                    to={'/package'}
-                    className="button-link"
-                    onClick={() => { changeChatStatus(); }}
-                  >
-                    השיגו חבילה כעת!
-                  </Link>
-                </div>
+        {coupleData || supplierData
+          ? (
+            <>
+              {hasChats ? (
+                <>
+                  <ChatList />
+                  {chatId && <Window />}
+                  {chatId && <Detail />}
+                </>
               ) : (
-                <div>
-                  <p className="paragraph">
-                    על מנת להשתמש בצ'אט, על זוג ליצור אתכם קשר!
-                  </p>
-                </div>
-              )
-            )}
-          </>
-        ) : (
-          <p>Please log in to access this section.</p>
-        )}
+                coupleData ? (
+                  <div>
+                    <p className="paragraph">
+                      על מנת להשתמש בצ'אט, אתם צריכים קודם להשיג את נבחרת הספקים המושלמת עבורכם!
+                    </p>
+                    <Link
+                      to={'/package'}
+                      className="button-link"
+                      onClick={() => { changeChatStatus(); }}
+                    >
+                      השיגו חבילה כעת!
+                    </Link>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="paragraph">
+                      על מנת להשתמש בצ'אט, על זוג ליצור אתכם קשר!
+                    </p>
+                  </div>
+                )
+              )}
+            </>
+          ) : (
+            <p>Please log in to access this section.</p>
+          )}
       </div>)
   );
 

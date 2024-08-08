@@ -17,17 +17,15 @@ import ProfileKpis from "../components/ProfilePage/ProfileKpis";
 function Profile() {
 
   const { coupleData } = useContext(AppContext);
-  const auth = getAuth();
-  const [user, loading] = useAuthState(auth);
+  
 
-  if (loading  ) {
-    return <Loading />;
-  }
-
-  if (!user || !coupleData ) {
+  
+  if ( !coupleData ) {
     return <Navigate to="/" />;
   }
 
+
+  
   return (
     <Stack alignItems="center" sx={loginStackSX}>
       <ProfileBanner props={coupleData} />

@@ -88,11 +88,11 @@ function ChatList() {
                     <img className="img-avatar" src={currentUser.avatar || 'assets/chat_pics/avatar.png'} alt='' />
                     <h2>{currentUser.username}</h2>
                 </div>
-                <div className="icons">
+                {/* <div className="icons">
                     <img className="img-icons" src='assets/chat_pics/more.png' alt='' />
                     <img className="img-icons" src='assets/chat_pics/video.png' alt='' />
                     <img className="img-icons" src='assets/chat_pics/edit.png' alt='' />
-                </div>
+                </div> */}
             </div>
 
             <div className="chat-list">
