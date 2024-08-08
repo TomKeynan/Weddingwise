@@ -17,7 +17,7 @@ function Detail() {
   } = useChatStore();
 
   const { currentUser } = useUserStore();
-  
+
 
   const handleBlock = async () => {
     if (!user) return;
@@ -42,15 +42,13 @@ function Detail() {
       <div className="user">
         <img src={user?.avatar || 'assets/chat_pics/avatar.png'} alt='' />
         <h2>{user?.username} </h2>
-        <p>מטריד ילדים משנת 1978</p>
-        {/* {p needed?} */}
+        {/* {תיאור} */}
+        <p>{user?.description}</p>
       </div>
-
-
       {/* {all down needed? needed?} */}
       <div className="info">
-       
-        <div className="option">
+
+        {/* <div className="option">
           <div className="title">
             <span>הגדרות</span>
             <img src='assets/chat_pics/arrowUp.png' alt='' />
@@ -67,7 +65,7 @@ function Detail() {
             <span>אלכוהול, סמים, נשקים</span>
             <img src='assets/chat_pics/arrowUp.png' alt='' />
           </div>
-        </div>
+        </div> */}
 
         <button onClick={handleBlock}>
           {isCurrentUserBlocked

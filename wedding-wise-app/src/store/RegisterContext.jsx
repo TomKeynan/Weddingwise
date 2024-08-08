@@ -16,7 +16,8 @@ import {
   where,
 } from "firebase/firestore";
 import upload from "../fireBase/upload";
-
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useUserStore } from "../fireBase/userStore";
 export const RegisterContext = createContext({
   userDetails: {},
   editValue: {},
@@ -24,14 +25,14 @@ export const RegisterContext = createContext({
   error: null,
   loading: false,
   avatar: null,
-  updateUserDetails: () => {},
-  updateEditValue: () => {},
-  saveDateValue: () => {},
-  isFormCompleted: () => {},
-  isFormValid: () => {},
-  isEditFormValid: () => {},
-  handleSubmit: () => {},
-  handleAvatar: () => {},
+  updateUserDetails: () => { },
+  updateEditValue: () => { },
+  saveDateValue: () => { },
+  isFormCompleted: () => { },
+  isFormValid: () => { },
+  isEditFormValid: () => { },
+  handleSubmit: () => { },
+  handleAvatar: () => { },
 });
 export default function RegisterContextProvider({ children }) {
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ export default function RegisterContextProvider({ children }) {
   );
   const todayDate = new Date().toLocaleDateString();
   const [dateValue, setDateValue] = useState(todayDate);
+  const { fetchUserInfo, setLoading } = useUserStore(); // Firebase's
 
   const [userDetails, setUserDetails] = useState({
     email: "",
@@ -66,27 +68,48 @@ export default function RegisterContextProvider({ children }) {
 
   useEffect(() => {
     const registerAndNavigate = async () => {
+     
       if (resData) {
         updateCoupleData(resData);
-        await registerFireBase();
-        navigate("/profile");
+        try {
+
+          await registerFireBase();
+          await loginFireBase();
+
+          if (auth.currentUser?.uid) {
+            await fetchUserInfo(auth.currentUser.uid);
+          }
+        }
+        catch (err) {
+          console.log(err);
+        }
+        finally {
+          setLoading(false);
+          navigate("/profile");
+        }
       }
     };
     registerAndNavigate();
   }, [resData, error]);
 
+
+  const loginFireBase = async () => {
+
+
+    await signInWithEmailAndPassword(
+      auth,
+      userDetails.email,
+      userDetails.password
+    );
+
+  };
+
+
+
   const registerFireBase = async () => {
     const username = userDetails.partner1Name + " ו" + userDetails.partner2Name; // Need to fix?
     const email = userDetails.email;
     const password = userDetails.password;
-
-    // Validate unique username
-    const usersRef = collection(db, "users");
-    const q = query(usersRef, where("email", "==", email));
-    const querySnapshot = await getDocs(q);
-    if (!querySnapshot.empty) {
-      return toast.warn("Select another username");
-    }
 
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
@@ -108,11 +131,8 @@ export default function RegisterContextProvider({ children }) {
         chats: [],
       });
 
-      toast.success("Account created! You can login now!");
     } catch (err) {
       console.log(err);
-      toast.error(err.message);
-    } finally {
     }
   };
 
@@ -198,8 +218,12 @@ export default function RegisterContextProvider({ children }) {
   }
 
   function handleSubmit() {
+    
     delete userDetails.Relationship;
+    setLoading(true);
     sendData("/Couples/registerCouple", "POST", userDetails);
+
+
   }
 
   const registerCtx = {

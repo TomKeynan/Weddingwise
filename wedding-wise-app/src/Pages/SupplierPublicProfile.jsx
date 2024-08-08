@@ -128,6 +128,8 @@ function SupplierPublicProfile() {
     }
   }, [relevantSupplier]);
 
+  // console.log(supplierFirebase);
+
   if (loading || loadingData) {
     return <Loading />;
   }

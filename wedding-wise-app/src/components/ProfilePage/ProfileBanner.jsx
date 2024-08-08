@@ -13,13 +13,12 @@ function ProfileBanner({ props }) {
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
   const { currentUser, loadingUserFirebase } = useUserStore();
-  if (loading || loadingUserFirebase) {
-    return <Loading />;
-  }
 
-  if (!user) {
-    return <Navigate to="/" />;
-  }
+  // if (loading || loadingUserFirebase) {
+  //   return <Loading />;
+  // }
+
+  
 
   const { partner1Name, partner2Name, desiredDate } = props;
 

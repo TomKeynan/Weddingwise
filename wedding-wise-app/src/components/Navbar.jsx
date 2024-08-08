@@ -33,9 +33,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
   const { currentUser, isLoading, logout } = useUserStore();
-  const { clearRelevantSupplier, relevantSupplier, setRelevantSupplier } = useSupplierData();
-
-
+  const { clearRelevantSupplier, setRelevantSupplier } = useSupplierData();
 
 
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -265,7 +263,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                     <IconButton onClick={handleOpenUserMenu} disableRipple>
                       {/* Icon */}
                       {/* {Adam's} */}
-                      {!isSeen && user && !isLoading ? (
+                      {!isSeen && user && !isLoading && (supplierData || coupleData) ? (
                         <img
                           style={{
                             height: "35px",
@@ -415,7 +413,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                         }
 
                         {/* {Adam's}  */}
-                        {!isLoading && currentUser && (
+                        {!isLoading && currentUser &&  (supplierData || coupleData) && (
                           <MenuItem onClick={handleChat} sx={menuItemSX}>
                             <Link
                               onClick={(e) => e.preventDefault()}
@@ -824,7 +822,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                     ))
                   }
                   {/* {Adam's}  */}
-                  {!isLoading && currentUser && (
+                  {!isLoading && currentUser && (supplierData || coupleData) && (
                     <MenuItem onClick={handleChat} sx={menuItemSX}>
                       <Link
                         onClick={(e) => e.preventDefault()}
