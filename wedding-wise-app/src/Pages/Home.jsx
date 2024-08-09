@@ -8,9 +8,19 @@ import MapSection from "../components/HomePage/MapSection";
 import Description from "../components/HomePage/Description";
 import Footer from "../components/Footer";
 import { ScrollRestoration } from "react-router-dom";
-
+import { useGlobalStore } from "../fireBase/globalLoading";
+import Loading from "../components/Loading";
 function Home() {
 
+
+
+  const { globalLoading } = useGlobalStore();
+
+  if (globalLoading) {
+    return <Loading />
+  }
+
+  
   return (
     <>
       <Stack justifyContent="center" sx={homeContainer}>

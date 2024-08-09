@@ -39,6 +39,8 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import HomeIcon from "@mui/icons-material/Home";
 import { AppContext } from "../store/AppContext";
 import { geocodeAddress } from "../utilities/functions";
+import { useUserStore } from "../fireBase/userStore";
+import { useGlobalStore } from "../fireBase/globalLoading";
 
 const SupplierSignUp = () => {
   const navigate = useNavigate();
@@ -55,46 +57,47 @@ const SupplierSignUp = () => {
   const [errors, setErrors] = useState({});
   const [open, setOpen] = useState(false);
   const [currentSupplierData, setCurrentSupplierData] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
   const [socialLinks, setSocialLinks] = useState({
     Instagram: "",
     Facebook: "",
     YouTube: "",
     LinkedIn: "",
   });
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { setGlobalLoading,globalLoading } = useGlobalStore();
+  const { fetchUserInfo } = useUserStore();
 
+  
   useEffect(() => {
     const registerAndNavigate = async () => {
       if (resData) {
         try {
+    
           setSupplierData(resData);
-          setIsLoading(true);
-
           await registerFireBase();
           await loginFireBase();
 
-          // Mark as authenticated
-          setIsAuthenticated(true);
+          if (auth.currentUser?.uid) {
+          
+            await fetchUserInfo(auth.currentUser.uid);
+            navigate("/supplier-private-Profile");
+           
+          } else {
+            console.error("User is not authenticated.");
+          }
         } catch (err) {
-          console.error(
-            "Registration, login, or fetching user info failed:",
-            err
-          );
+          console.error("Registration, login, or fetching user info failed:", err);
         } finally {
-          setIsLoading(false);
+          setGlobalLoading(false);  
         }
       }
+      else  {
+        setGlobalLoading(false);
+      }
     };
-
+  
     registerAndNavigate();
   }, [resData]);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/supplier-private-Profile");
-    }
-  }, [isAuthenticated, navigate]);
+  
 
   const loginFireBase = async () => {
     try {
@@ -104,39 +107,32 @@ const SupplierSignUp = () => {
         currentSupplierData.password
       );
     } catch (err) {
-      console.log(err);
+      console.error("Firebase login failed:", err);
+      setGlobalLoading(false);  
     }
   };
-
-  const handleAvatar = (e) => {
-    if (e.target.files[0]) {
-      setAvatar({
-        file: e.target.files[0],
-        url: URL.createObjectURL(e.target.files[0]),
-      });
-    }
-  };
-
+  
+ 
   const registerFireBase = async () => {
     const username = currentSupplierData.businessName;
     const email = currentSupplierData.supplierEmail;
     const password = currentSupplierData.password;
-
+  
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
-
+  
       let imgUrl = null;
       if (avatar.file) {
         imgUrl = await upload(avatar.file);
       }
-
+  
       const socialLinksWithDefaults = {
         Instagram: socialLinks.Instagram || "",
         Facebook: socialLinks.Facebook || "",
         YouTube: socialLinks.YouTube || "",
         LinkedIn: socialLinks.LinkedIn || "",
       };
-
+  
       await setDoc(doc(db, "users", res.user.uid), {
         username,
         email,
@@ -147,37 +143,38 @@ const SupplierSignUp = () => {
         comments: [],
         socialLinks: socialLinksWithDefaults,
       });
-
+  
       await setDoc(doc(db, "userChats", res.user.uid), {
         chats: [],
       });
     } catch (err) {
-      console.log(err);
+      console.error("Firebase registration failed:", err);
+      setGlobalLoading(false);  // Stop global loading if registration fails
     }
   };
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-
+  
+  // Function to handle form submission
   async function handleFormSubmit(e) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
+  
     setSupplierDescription(data.description);
     data.supplierType = translateSupplierTypeToEnglish(data.supplierType);
     delete data.userImage;
-
+  
     setSocialLinks({
       Instagram: data.Instagram || "",
       Facebook: data.Facebook || "",
       YouTube: data.YouTube || "",
       LinkedIn: data.LinkedIn || "",
     });
-
+  
     delete data.Instagram;
     delete data.Facebook;
     delete data.YouTube;
     delete data.LinkedIn;
-
+  
     if (data.venueAddress) {
       const { latitude, longitude } = await geocodeAddress(data.venueAddress);
       if (latitude == null || longitude == null) {
@@ -188,6 +185,7 @@ const SupplierSignUp = () => {
         data.longitude = longitude;
       }
     }
+  
     // Validate fields
     const newErrors = {};
     for (let field in data) {
@@ -202,6 +200,7 @@ const SupplierSignUp = () => {
         }
       }
     }
+  
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -209,10 +208,25 @@ const SupplierSignUp = () => {
       setCurrentSupplierData(data);
       setOpen(true);
       setErrors({});
+      setGlobalLoading(true);  // Start global loading before sending data
       sendData("/Suppliers/registerSupplier", "POST", data);
     }
   }
+  
 
+  const handleAvatar = (e) => {
+    if (e.target.files[0]) {
+      setAvatar({
+        file: e.target.files[0],
+        url: URL.createObjectURL(e.target.files[0]),
+      });
+    }
+  };
+
+ 
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  
   // ================  handling incorrect venue address ================
 
   function showAddressErrorMessage() {
@@ -273,13 +287,11 @@ const SupplierSignUp = () => {
     );
   }
 
-  if (loading || isLoading) {
-    return <Loading />;
-  }
 
-  return (
+  return ( 
     <RegisterContextProvider>
-      {error && showErrorMessage(error)}
+      {loading &&  <Loading/>}
+      {error  && showErrorMessage(error)}
       {resData && showSuccessMessage()}
       {openAddressError && showAddressErrorMessage()}
       <Stack

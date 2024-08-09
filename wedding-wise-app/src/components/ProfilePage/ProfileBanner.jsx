@@ -10,15 +10,10 @@ import { useUserStore } from "../../fireBase/userStore";
 
 function ProfileBanner({ props }) {
   const screenAboveSM = useMediaQuery("(min-width: 900px)");
-  const auth = getAuth();
-  const [user, loading] = useAuthState(auth);
-  const { currentUser, loadingUserFirebase } = useUserStore();
+  // const auth = getAuth();
+  // const [user, loading] = useAuthState(auth);
+  const { currentUser } = useUserStore();
 
-  // if (loading || loadingUserFirebase) {
-  //   return <Loading />;
-  // }
-
-  
 
   const { partner1Name, partner2Name, desiredDate } = props;
 

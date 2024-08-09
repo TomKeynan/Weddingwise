@@ -3,21 +3,13 @@ import { editCoupleValidations, VALIDATIONS } from "../utilities/collections";
 import { useNavigate } from "react-router-dom";
 import useFetch from "../utilities/useFetch";
 import { AppContext } from "./AppContext";
-// import useFetch from "../utilities/useFetch";
-import { toast } from "react-toastify";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../fireBase/firebase";
-import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  where,
-} from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import upload from "../fireBase/upload";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useUserStore } from "../fireBase/userStore";
+import { useGlobalStore } from "../fireBase/globalLoading";
 export const RegisterContext = createContext({
   userDetails: {},
   editValue: {},
@@ -36,18 +28,13 @@ export const RegisterContext = createContext({
 });
 export default function RegisterContextProvider({ children }) {
   const navigate = useNavigate();
-
-  const { sendData, resData, error, setError, loading } = useFetch();
-
   const { updateCoupleData } = useContext(AppContext);
-
   const [editValue, setEditValue] = useState(
     JSON.parse(sessionStorage.getItem("currentCouple"))
   );
   const todayDate = new Date().toLocaleDateString();
   const [dateValue, setDateValue] = useState(todayDate);
-  const { fetchUserInfo, setLoading } = useUserStore(); // Firebase's
-
+  const { fetchUserInfo } = useUserStore();
   const [userDetails, setUserDetails] = useState({
     email: "",
     password: "",
@@ -60,65 +47,65 @@ export default function RegisterContextProvider({ children }) {
     numberOfInvitees: "",
     relationship: "",
   });
-
   const [avatar, setAvatar] = useState({
     file: null,
     url: "",
   });
-
+  const { sendData, resData, error, setError, loading } = useFetch();
+  const { setGlobalLoading } = useGlobalStore();
   useEffect(() => {
     const registerAndNavigate = async () => {
-     
       if (resData) {
         updateCoupleData(resData);
         try {
-
           await registerFireBase();
           await loginFireBase();
-
           if (auth.currentUser?.uid) {
             await fetchUserInfo(auth.currentUser.uid);
+
+            navigate("/profile");
           }
-        }
-        catch (err) {
+        } catch (err) {
           console.log(err);
+          setGlobalLoading(false);
         }
-        finally {
-          setLoading(false);
-          navigate("/profile");
+        finally{
+          setGlobalLoading(false);
         }
+      } else if (error) {
+        setGlobalLoading(false);
       }
     };
+
     registerAndNavigate();
   }, [resData, error]);
 
 
+  
   const loginFireBase = async () => {
-
-
-    await signInWithEmailAndPassword(
-      auth,
-      userDetails.email,
-      userDetails.password
-    );
-
+    try {
+      await signInWithEmailAndPassword(
+        auth,
+        userDetails.email,
+        userDetails.password
+      );
+    } catch (err) {
+      console.log(err);
+      setGlobalLoading(false);
+    }
   };
 
 
-
   const registerFireBase = async () => {
-    const username = userDetails.partner1Name + " ו" + userDetails.partner2Name; // Need to fix?
+    const username = `${userDetails.partner1Name} ו${userDetails.partner2Name}`;
     const email = userDetails.email;
     const password = userDetails.password;
-
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
-
       let imgUrl = null;
       if (avatar.file) {
         imgUrl = await upload(avatar.file);
       }
-
       await setDoc(doc(db, "users", res.user.uid), {
         username,
         email,
@@ -126,13 +113,12 @@ export default function RegisterContextProvider({ children }) {
         id: res.user.uid,
         blocked: [],
       });
-
       await setDoc(doc(db, "userChats", res.user.uid), {
         chats: [],
       });
-
     } catch (err) {
       console.log(err);
+      setGlobalLoading(false);
     }
   };
 
@@ -217,13 +203,11 @@ export default function RegisterContextProvider({ children }) {
     setDateValue(dateInput);
   }
 
+
   function handleSubmit() {
-    
     delete userDetails.Relationship;
-    setLoading(true);
+    setGlobalLoading(true);
     sendData("/Couples/registerCouple", "POST", userDetails);
-
-
   }
 
   const registerCtx = {

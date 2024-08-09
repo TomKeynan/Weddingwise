@@ -30,7 +30,7 @@ import PlannerLP from "./Pages/PlannerLP";
 import ExpenseTracking from "./Pages/ExpenseTracking";
 import EditCoupleDetails from "./Pages/EditCoupleDetails";
 import EditDetailsOnReplace from "./Pages/EditDetailsOnReplace";
-import EditCoupleDetails from "./components/EditCoupleDetails";
+import { useGlobalStore } from "./fireBase/globalLoading";
 const googleMapsApiKey = "AIzaSyC3QkzXx3mLsG_-IzI67-WVFBAoAZTYWxk";
 const libraries = ["places"];
 const router = createHashRouter([
@@ -71,7 +71,8 @@ const router = createHashRouter([
 ]);
 
 function App() {
-  const { fetchUserInfo, setLoading,  loadingUserFirebase } = useUserStore();
+  const { fetchUserInfo, setLoading, loadingUserFirebase } = useUserStore();
+
 
   useEffect(() => {
     const handleAuthStateChanged = async (user) => {
@@ -86,12 +87,13 @@ function App() {
     return () => {
       if (unSubAuth) {
         unSubAuth();
-       
+
       }
     };
   }, [fetchUserInfo]);
 
- 
+  // console.log("App");
+
   return (
     <LoadScript
       googleMapsApiKey={googleMapsApiKey}
