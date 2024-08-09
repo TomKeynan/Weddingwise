@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\tomk1\\Desktop\\Weddingwise\\Server\\",
+  "WorkspaceRootPath": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\",
   "Documents": [
     {
       "AbsoluteMoniker": "D:0:0:{FD5498F5-E1EA-4115-B4E8-BF5660490F0C}|Server\\Server.csproj|c:\\users\\adam\\desktop\\react\\weddingwise\\server\\server\\dal\\dbservicessupplier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -45,8 +45,7 @@
               "RelativeToolTip": "Server\\Controllers\\PackagesController.cs",
               "ViewState": "AQIAAGMAAAAAAAAAAAAYwHgAAAAQAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-09T16:47:57.647Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-08-09T16:47:57.647Z"
             },
             {
               "$type": "Document",
@@ -66,7 +65,7 @@
               "RelativeDocumentMoniker": "Server\\DAL\\DBServicesSupplier.cs",
               "ToolTip": "C:\\Users\\Adam\\Desktop\\React\\WeddingWIse\\Server\\Server\\DAL\\DBServicesSupplier.cs",
               "RelativeToolTip": "Server\\DAL\\DBServicesSupplier.cs",
-              "ViewState": "AQIAAMEBAAAAAAAAAAAUwM8BAAAoAAAA",
+              "ViewState": "AQIAAMEBAAAAAAAAAAAUwNABAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-07-25T13:29:40.817Z",
               "EditorCaption": ""
@@ -81,8 +80,7 @@
               "RelativeToolTip": "Server\\Controllers\\SuppliersController.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAEAAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-20T07:58:24.546Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-07-20T07:58:24.546Z"
             },
             {
               "$type": "Document",

@@ -113,13 +113,13 @@ function Login() {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  if (globalLoading) {
-    return <Loading />
-  }
+  // if (globalLoading) {
+  //   return <Loading />
+  // }
 
   return (
     <Container sx={containerSX} maxWidth="xxl">
-      {/* {loading && <Loading />} */}
+      {globalLoading && <Loading />}
       <Stack direction="row" height="100%">
         <Stack sx={loginStackSX}>
           <Paper variant="elevation" elevation={6} sx={paperSX}>
