@@ -1,17 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { GoogleMap, MarkerF, InfoWindow, Mar } from "@react-google-maps/api";
-import useFetch from "../../utilities/useFetch";
-
-const mapContainerStyle = {
-  width: "100%",
-  height: "80vh",
-};
-
-const center = {
-  lat: 31.6,
-  lng: 34.61,
-};
-// const libraries = ["places"];
+import { GoogleMap, MarkerF, InfoWindowF } from "@react-google-maps/api";
 
 function Gmap() {
   const [venues, setVenues] = useState([]);
@@ -22,50 +10,62 @@ function Gmap() {
   }, []);
 
   const fetchVenues = () => {
-    fetch(
-      "https://proj.ruppin.ac.il/cgroup70/test2/tar1/api/Suppliers/getTopVenues"
-    )
+    fetch("https://proj.ruppin.ac.il/cgroup70/test2/tar1/api/Suppliers/getTopVenues")
       .then((response) => response.json())
-      .then((data) => setVenues(data))
-      .catch((error) =>
-        console.error("There was an error fetching the venues!", error)
-      );
+      .then((data) => {
+        console.log("Fetched venues:", data);
+        setVenues(data);
+      })
+      .catch((error) => console.error("There was an error fetching the venues!", error));
+  };
+
+  const handleMarkerClick = (venue) => {
+    setSelectedVenue(venue);
+  };
+
+  const handleInfoWindowClose = () => {
+    setSelectedVenue(null);
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        width: "90%",
-        border: "1px solid black",
-      }}
-    >
-      <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={8}>
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      width: "90%",
+      border: "1px solid black",
+    }}>
+      <p>Number of venues: {venues.length}</p>
+      <GoogleMap
+        mapContainerStyle={{
+          width: "100%",
+          height: "80vh",
+        }}
+        center={{ lat: 31.6, lng: 34.61 }}
+        zoom={8}
+      >
         {venues.map((venue) => (
           <MarkerF
             key={venue.supplierEmail}
             position={{ lat: venue.latitude, lng: venue.longitude }}
-            onClick={() => setSelectedVenue(venue)}
+            onClick={() => handleMarkerClick(venue)}
           />
         ))}
 
         {selectedVenue && (
-          <InfoWindow
+          <InfoWindowF
             position={{
               lat: selectedVenue.latitude,
               lng: selectedVenue.longitude,
             }}
-            onCloseClick={() => setSelectedVenue(null)}
+            onCloseClick={handleInfoWindowClose}
           >
-            <div>
+            <div style={{ minWidth: '200px', padding: '10px' }}>
               <h2>{selectedVenue.businessName}</h2>
               <p>דירוג: {selectedVenue.rating.toFixed(2)}</p>
               <p>מתאים ל: {selectedVenue.capacity}</p>
               <p>מס' טלפון: {selectedVenue.phoneNumber}</p>
             </div>
-          </InfoWindow>
+          </InfoWindowF>
         )}
       </GoogleMap>
     </div>
