@@ -24,7 +24,12 @@ function KpiPaper({ title, data, icon }) {
           >
             {data}
           </Typography>
-          <Box sx={{ color: customTheme.supplier.colors.primary.dark }}>
+          <Box
+            sx={{
+              color: customTheme.supplier.colors.primary.dark,
+              fontSize: 22,
+            }}
+          >
             {icon}
           </Box>
         </Stack>

@@ -47,10 +47,14 @@ function EditCouple() {
 
   const { coupleData, updateCoupleData } = useContext(AppContext);
 
-  const { handleCreateNewPackage, isLoading } = useContext(QuestionsContext);
+  const {
+    handleCreateNewPackage,
+    isLoading,
+    error: newPackageError,
+    setError: setNewPackageError,
+  } = useContext(QuestionsContext);
 
-  const { resData, loading, error, sendData, setResData, setError } =
-    useFetch();
+  const { resData, error, sendData, setResData, setError } = useFetch();
 
   const [isUpdateDetailsValid, setIsUpdateDetailsValid] = useState(false);
 
@@ -61,7 +65,6 @@ function EditCouple() {
   const [openSuccessMessage, setOpenSuccessMessage] = useState(false);
 
   const [openErrorMessage, setOpenErrorMessage] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const [avatar, setAvatar] = useState({
     file: null,
     url: "",
@@ -88,14 +91,14 @@ function EditCouple() {
     }
   }, [editValue, openSuccessMessage]);
 
-  useEffect(() => {
-    if (resData) {
-      setOpenSuccessMessage(true);
-      updateCoupleData(editValue);
-    } else if (error) {
-      setOpenErrorMessage(true);
-    }
-  }, [resData, error]);
+  // useEffect(() => {
+  //   if (resData) {
+  //     setOpenSuccessMessage(true);
+  //     updateCoupleData(editValue);
+  //   } else if (error) {
+  //     setOpenErrorMessage(true);
+  //   }
+  // }, [resData, error]);
 
   useEffect(() => {
     const updateUser = async () => {
@@ -108,7 +111,6 @@ function EditCouple() {
           await fetchUserInfo(currentUser.id);
         } catch (error) {
           setOpenErrorMessage(true);
-          console.error("Error updating user:", error);
         } finally {
           setLoading(false);
         }
@@ -117,6 +119,12 @@ function EditCouple() {
 
     updateUser();
   }, [resData, error]);
+
+  useEffect(() => {
+    if (newPackageError) {
+      setOpenErrorMessage(true);
+    }
+  }, [newPackageError]);
 
   const updateUserFirebase = async () => {
     const username = editValue.partner1Name + " ו" + editValue.partner2Name; // Need to fix?
@@ -144,8 +152,6 @@ function EditCouple() {
       console.log(err);
     }
   };
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   function handleWeddingDateChange(dateInput) {
     let weddingDateObject = getFullDate(dateInput);
@@ -176,9 +182,9 @@ function EditCouple() {
 
   function handleUpdateApproval() {
     sendData("/Couples/updateCouple", "PUT", editValue);
-    console.log(editValue);
     setResData(undefined);
     setOpenUpdateConfirm(false);
+    setNewPackageError(undefined)
   }
 
   function showUpdateConfirmDialog() {
@@ -208,6 +214,8 @@ function EditCouple() {
   function handleQuestionsCancel() {
     handleCreateNewPackage();
     setOpenQuestionsConfirm(false);
+
+    // setError(undefined);
   }
 
   function showQuestionsConfirm() {
@@ -307,6 +315,7 @@ function EditCouple() {
         {openUpdateConfirm && showUpdateConfirmDialog()}
         {isLoading && <Loading />}
         {error && showErrorMessage(error)}
+        {newPackageError && showErrorMessage(newPackageError)}
         {openSuccessMessage && showSuccessMessage(resData)}
         {openQuestionsConfirm && showQuestionsConfirm()}
         {/* <Grid item xs={12} md={6}>

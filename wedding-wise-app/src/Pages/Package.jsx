@@ -10,14 +10,23 @@ function Package() {
 
   return (
     <Box sx={{ minHeight: "inherit" }}>
-      {coupleData === null ? (
+      {!coupleData  ? (
         <RandomPackage />
-      ) : offeredPackage === null ? (
+      ) : !offeredPackage  ? (
         <UserWithoutPackage />
       ) : (
         <UserPackage />
       )}
     </Box>
+    // <Box sx={{ minHeight: "inherit" }}>
+    //   {!coupleData  ? (
+    //     <RandomPackage />
+    //   ) : !offeredPackage  && !coupleData.package ? (
+    //     <UserWithoutPackage />
+    //   ) : (
+    //     <UserPackage />
+    //   )}
+    // </Box>
   );
 }
 

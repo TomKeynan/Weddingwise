@@ -129,8 +129,8 @@ const mapPaperSX = {
 };
 
 const paperSX = {
-  width: "80%",
-  px: { xs: 1, sm: 2, md: 4 },
+  width: "90%",
+  px: { xs: 1, sm: 2 },
   py: 4,
   backgroundColor: { xs: "transparent", md: "rgba(255,255,255, 0.6)" },
   position: "relative",
@@ -145,7 +145,7 @@ const StickersContainer = {
 };
 
 const stickerGridItemSX = {
-  px: 2,
+  px: 0.5,
   mb: 2,
 };
 

@@ -14,6 +14,7 @@ import ConfirmDialog from "../Dialogs/ConfirmDialog";
 import EditCouple from "../EditCouple";
 import RegisterContextProvider from "../../store/RegisterContext";
 import { useNavigate } from "react-router-dom";
+import DoneIcon from "@mui/icons-material/Done";
 
 import {
   arrayUnion,
@@ -32,6 +33,7 @@ import {
 import { db } from "../../fireBase/firebase";
 import { useUserStore } from "../../fireBase/userStore";
 import { useChatStore } from "../../fireBase/chatStore";
+import KpiPaper from "../KpiPaper";
 
 function UserPackage() {
   const navigate = useNavigate();
@@ -51,11 +53,11 @@ function UserPackage() {
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  const [openUpdateDetails, setOpenUpdateDetails] = useState(false);
+  // const [openUpdateDetails, setOpenUpdateDetails] = useState(false);
 
   const [openUpdateConfirm, setOpenUpdateConfirm] = useState(false);
 
-  const [isUpdateDetailsValid, setIsUpdateDetailsValid] = useState(false);
+  // const [isUpdateDetailsValid, setIsUpdateDetailsValid] = useState(false);
 
   const [currentType, setCurrentType] = useState("");
 
@@ -63,7 +65,7 @@ function UserPackage() {
 
   const [altSupplierEmail, setAltSupplierEmail] = useState("");
 
-  const formRef = useRef(null);
+  // const formRef = useRef(null);
 
   const { currentUser, isLoading } = useUserStore();
 
@@ -80,9 +82,12 @@ function UserPackage() {
 
   useEffect(() => {
     sessionStorage.setItem("currentCouple", JSON.stringify(coupleData));
+    if (coupleData.package)
+      setOriginalSelectedSuppliers(coupleData.package.selectedSuppliers);
   }, [coupleData]);
 
   useEffect(() => {
+    // console.log(resData)
     const updateCoupleData = async () => {
       if (resData) {
         const { typeWeights, ...rest } = offeredPackage;
@@ -97,7 +102,6 @@ function UserPackage() {
     };
 
     updateCoupleData();
-   
   }, [resData]);
 
   const addSuppliersChats = async (suppliers) => {
@@ -213,57 +217,54 @@ function UserPackage() {
 
   // =============== UPDATE DETAILS =====================
 
-  function startUpdateCoupleDetails() {
-    setOpenUpdateConfirm(true);
-    formRef.current.click();
-  }
+  // function startUpdateCoupleDetails() {
+  //   setOpenUpdateConfirm(true);
+  //   formRef.current.click();
+  // }
 
-  function handleCancelUpdateDetails() {
-    setOpenUpdateDetails(false);
-  }
+  // function handleCancelUpdateDetails() {
+  //   setOpenUpdateDetails(false);
+  // }
 
-  function changeIsUpdateDetailValid(flag) {
-    setIsUpdateDetailsValid(flag);
-  }
+  // function changeIsUpdateDetailValid(flag) {
+  //   setIsUpdateDetailsValid(flag);
+  // }
 
-  function showUpdateDetailsDialog() {
-    return (
-      <MessageDialog
-        title="עדכון פרטים"
-        text="אנא שנו אחד או יותר מהפרטים הקיימים. יש לוודא שבחירת הפרטים החדשים הגיונית! "
-        open={openUpdateDetails}
-        btnValue="עדכן פרטים"
-        onClose={startUpdateCoupleDetails}
-        xBtn={handleCancelUpdateDetails}
-        mode="info"
-        disabledBtn={!isUpdateDetailsValid}
-      >
-        {
-          <Stack
-            direction="row"
-            justifyContent="center"
-            alignContent="space-around"
-            flexWrap="wrap"
-            rowGap={3}
-            columnGap={2}
-          >
-            <RegisterContextProvider>
-              <EditCouple
-                formRef={formRef}
-                isValidAndComplete={changeIsUpdateDetailValid}
-              />
-            </RegisterContextProvider>
-          </Stack>
-        }
-      </MessageDialog>
-    );
-  }
+  // function showUpdateDetailsDialog() {
+  //   return (
+  //     <MessageDialog
+  //       title="עדכון פרטים"
+  //       text="אנא שנו אחד או יותר מהפרטים הקיימים. יש לוודא שבחירת הפרטים החדשים הגיונית! "
+  //       open={openUpdateDetails}
+  //       btnValue="עדכן פרטים"
+  //       onClose={startUpdateCoupleDetails}
+  //       xBtn={handleCancelUpdateDetails}
+  //       mode="info"
+  //       disabledBtn={!isUpdateDetailsValid}
+  //     >
+  //       {
+  //         <Stack
+  //           direction="row"
+  //           justifyContent="center"
+  //           alignContent="space-around"
+  //           flexWrap="wrap"
+  //           rowGap={3}
+  //           columnGap={2}
+  //         >
+  //           <RegisterContextProvider>
+  //             <EditCouple
+  //               formRef={formRef}
+  //               isValidAndComplete={changeIsUpdateDetailValid}
+  //             />
+  //           </RegisterContextProvider>
+  //         </Stack>
+  //       }
+  //     </MessageDialog>
+  //   );
+  // }
 
   // =============== CONFIRM UPDATE =====================
 
-  function handleOpenUpdateConfirm() {
-    setOpenUpdateConfirm(true);
-  }
 
   function handleCancelUpdateConfirm() {
     setOpenUpdateConfirm(false);
@@ -289,7 +290,6 @@ function UserPackage() {
 
   function handlePackageApproval() {
     let typeReplacements = [];
-
     originalSelectedSuppliers.forEach((supplier, index) => {
       if (
         supplier.supplierEmail !==
@@ -474,6 +474,7 @@ function UserPackage() {
   function handleCloseMessage() {
     setOpenMessage(false);
     setError(undefined);
+    setResData(undefined);
   }
 
   function showErrorMessage(status) {
@@ -578,8 +579,6 @@ function UserPackage() {
     }
   }
 
-
-
   return (
     <Stack
       justifyContent="space-around"
@@ -594,11 +593,11 @@ function UserPackage() {
       }}
     >
       {(isLoading || loading) && <Loading />}
-      { error && showErrorMessage(error)}
-      { resData && showSuccessMessage(resData)}
+      {error && showErrorMessage(error)}
+      {resData && showSuccessMessage(resData)}
       {openAltSuppliers && showAltSuppliersDialog()}
       {openConfirm && showConfirmDialog()}
-      {openUpdateDetails && showUpdateDetailsDialog()}
+      {/* {openUpdateDetails && showUpdateDetailsDialog()} */}
       {openUpdateConfirm && showUpdateConfirmDialog()}
       <Stack
         spacing={5}
@@ -626,7 +625,7 @@ function UserPackage() {
       </Stack>
       <Stack
         spacing={3}
-        sx={{ width: "100%" }}
+        sx={{ width: "90%" }}
         justifyContent="space-around"
         alignItems="center"
       >
@@ -634,26 +633,12 @@ function UserPackage() {
           variant="h4"
           sx={{
             fontWeight: "bold",
-            width: "90%",
+            // width: "90%",
             px: { xs: 1, sm: 5 },
           }}
         >
           חבילת נותני השירות המתאימים במיוחד אליכם
         </Typography>
-        {/* <Grid container rowGap={3}  sx={{width: "90%"}}>
-          {offeredPackage["selectedSuppliers"].map((supplier, index) => (
-            <Grid item xs={12} sm={6} md={4}>
-              <SupplierCard
-                key={index}
-                props={supplier}
-                showMoreInfoBtn={true}
-                showReplaceSupplierBtn={true}
-                onReplacement={handleOpenAltSuppliers}
-                isPackage={true}
-              />
-            </Grid>
-          ))}
-        </Grid> */}
         <Stack
           direction="row"
           justifyContent="center"
@@ -676,40 +661,44 @@ function UserPackage() {
         </Stack>
         <Stack
           direction="row"
-          spacing={3}
-          sx={{ width: { xs: "60%", sm: "50%" } }}
+          flexWrap="wrap"
+          sx={{
+            justifyContent: { xs: "center", md: "space-between" },
+            width: { xs: "80%", sm: "70%", lg: "60%" },
+            pt: 3,
+            rowGap: 5,
+            columnGap: 5,
+          }}
         >
-          <Typography sx={{ typography: { xs: "body1", sm: "h5", md: "h4" } }}>
-            ציון התאמה עבורכם : {offeredPackage.totalScore.toFixed(2)} מתוך 100
-          </Typography>
-          <Typography sx={{ typography: { xs: "body1", sm: "h5", md: "h4" } }}>
-            חיסכון מהתקציב : {coupleData.budget - offeredPackage.totalCost} ש"ח
-          </Typography>
+          <KpiPaper
+            title="אחוזי התאמה "
+            data={offeredPackage.totalScore.toFixed(2)}
+            icon="%"
+            // icon={<DoneIcon />}
+          />
+          <KpiPaper
+            title="חיסכון "
+            data={coupleData.budget - offeredPackage.totalCost}
+            icon="₪"
+          />
         </Stack>
+        <Button
+          variant="contained"
+          sx={heroActionBtn}
+          onClick={handlePackageApproval}
+        >
+          אשר חבילה
+        </Button>
       </Stack>
-      <Button
-        variant="contained"
-        sx={heroActionBtn}
-        onClick={handlePackageApproval}
-      >
-        אשר חבילה
-      </Button>
       <Stack
-        spacing={5}
         alignItems="center"
         sx={{ width: "90%", px: { xs: 1, sm: 5 } }}
       >
-        {/* <Typography sx={{ typography: { xs: "body1", sm: "h5", md: "h4" } }}>
-          לא התחברתם לחבילה המומלצת? לא לדאוג... עדכנו את פרטי החתונה ונמליץ לכם
-          על נבחרת ספקים חדשה .
+        <Typography sx={{ typography: { xs: "body1", sm: "h5", md: "h4" }, mb:2 }}>
+          לא התחברתם לחבילה המומלצת? מעדיפים תאריך אחר ליום שלכם?
         </Typography>
-        <OutlinedButton
-          btnValue="עדכון פרטים"
-          handleClick={handleOpenUpdateDetails}
-        /> */}
-        <Typography sx={{ typography: { xs: "body1", sm: "h5", md: "h4" } }}>
-          לא התחברתם לחבילה המומלצת? מעדיפים תאריך אחר ליום שלכם? לא לדאוג...
-          ניתן לקבל חבילה חדשה לגמרי.
+        <Typography sx={{ typography: { xs: "body1", sm: "h5", md: "h4" }, mb:2 }}>
+          לא לדאוג... ניתן לקבל חבילה חדשה לגמרי.{" "}
         </Typography>
         <OutlinedButton
           btnValue="החלף חבילה"
@@ -722,6 +711,15 @@ function UserPackage() {
 
 export default UserPackage;
 
+{
+  /* <Typography sx={{ typography: { xs: "body1", sm: "h5", md: "h4" } }}>
+  ציון התאמה עבורכם : {offeredPackage.totalScore.toFixed(2)} מתוך 100
+</Typography>
+<Typography sx={{ typography: { xs: "body1", sm: "h5", md: "h4" } }}>
+  חיסכון מהתקציב : {coupleData.budget - offeredPackage.totalCost} ש"ח
+</Typography> */
+}
+
 const cardsContainer = {
   gridTemplateRows: "repeat( auto-fill, minmax(200px, 1fr) );",
   // gridTemplateRows: 'repeat(3, 1fr)',
@@ -732,7 +730,9 @@ const cardsContainer = {
 };
 
 const heroActionBtn = {
-  width: { xs: "70%", sm: "50%" },
+  width: { xs: "80%", sm: "70%", lg: "60%" },
+  // width: { xs: "70%", sm: "50%" },
+  // width: "100%",
   border: 2,
   py: 1,
   px: { xs: 1, sm: 3 },

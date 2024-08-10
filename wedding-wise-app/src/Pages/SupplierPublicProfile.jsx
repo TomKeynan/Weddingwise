@@ -55,6 +55,7 @@ function SupplierPublicProfile() {
   const [loadingData, setLoadingData] = useState(false);
   const [showLinks, setShowLinks] = useState(false);
   const { relevantSupplier, setRelevantSupplier } = useSupplierData();
+  // console.log(supplierFirebase);
   const { supplierData, coupleData } = useContext(AppContext);
 
   useEffect(() => {
@@ -460,7 +461,7 @@ function SupplierPublicProfile() {
       )}
       {/* comment form */}
       {coupleData && (
-        <Stack sx={{ maxWidth: 700, }}>
+        <Stack sx={{ maxWidth: 700 }}>
           <Typography sx={{ ...titleSX, mb: 5, px: 2 }}>
             השאירו תגובה מהחוויה שלכם עם {relevantSupplier.businessName}
           </Typography>
@@ -472,10 +473,6 @@ function SupplierPublicProfile() {
 }
 
 export default SupplierPublicProfile;
-
-// const sxPaper = {
-//   width: showDescription ? "100%" : "50%",
-// };
 
 const stackWrapperSX = {
   minHeight: "inherit",
@@ -503,7 +500,6 @@ const titleSX = {
   fontWeight: "bold",
   color: customTheme.palette.primary.main,
   WebkitTextStrokeWidth: { xs: 1.5, sm: 0.7 },
-  // WebkitTextStrokeColor: "black",
 };
 
 const alertSX = {
@@ -532,92 +528,3 @@ const supplierTypeSX = {
   letterSpacing: { xs: 6, sm: 12 },
   textShadow: "#DF8200 0px 1px 5px",
 };
-
-{
-  /* <Stack
-          direction="column"
-          // direction={screenUnderMD ? "column" : "row"}
-          alignItems="center"
-          justifyContent="space-between"
-          sx={{ width: "80%", margin: "0 auto", pt: 10, pb: { xs: 3, sm: 6 } }}
-        >
-          <Stack>
-            <Typography
-              sx={{
-                // width: 220,
-                textAlign: "center",
-                fontSize: { xs: 16, sm: 20, md: 24 },
-                fontFamily: customTheme.font.main,
-                fontWeight: "bold",
-              }}
-            >
-              כאן תוכלו למצוא את {relevantSupplier.businessName}{" "}
-            </Typography>
-          </Stack>
-          <Stack
-            direction="row"
-            alignContent="center"
-            justifyContent="center"
-            spacing={5}
-            sx={{
-              flexGrow: { xs: 0, sm: 1 },
-              width: "100%",
-              mt: { xs: 0, sm: 3 },
-            }}
-          >
-            {supplierFirebase?.socialLinks?.YouTube && (
-              <Link
-                component="button"
-                variant="body1"
-                onClick={() => {
-                  window.open(supplierFirebase?.socialLinks?.YouTube, "_blank");
-                }}
-              >
-                <YouTubeIcon sx={socialIconsSX} />
-              </Link>
-            )}
-            {supplierFirebase?.socialLinks?.Instagram && (
-              <Link
-                component="button"
-                variant="body1"
-                onClick={() => {
-                  window.open(
-                    supplierFirebase?.socialLinks?.Instagram,
-                    "_blank"
-                  );
-                }}
-              >
-                <InstagramIcon sx={socialIconsSX} />
-              </Link>
-            )}
-            {supplierFirebase?.socialLinks?.LinkedIn && (
-              <Link
-                component="button"
-                variant="body1"
-                onClick={() => {
-                  window.open(
-                    supplierFirebase?.socialLinks?.LinkedIn,
-                    "_blank"
-                  );
-                }}
-              >
-                <LinkedInIcon sx={socialIconsSX} />
-              </Link>
-            )}
-            {supplierFirebase?.socialLinks?.Facebook && (
-              <Link
-                component="button"
-                variant="body1"
-                onClick={() => {
-                  window.open(
-                    supplierFirebase?.socialLinks?.Facebook,
-                    "_blank"
-                  );
-                }}
-              >
-                <FacebookIcon sx={socialIconsSX} />
-              </Link>
-            )}
-          </Stack>
-        </Stack> */
-}

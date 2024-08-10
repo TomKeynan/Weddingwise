@@ -11,28 +11,18 @@ import { Navigate } from "react-router-dom";
 import Loading from "../components/Loading";
 import { useGlobalStore } from "../fireBase/globalLoading";
 import ProfileKpis from "../components/ProfilePage/ProfileKpis";
-import ExpancesKpis from "../components/Planner/ExpenseTracking/ExpancesKpis";
+import ExpansesKpis from "../components/Planner/ExpenseTracking/ExpansesKpis";
+import { getAuth } from "firebase/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 function Profile() {
-  const { coupleData } = useContext(AppContext);
+  const { coupleData, setOfferedPackage } = useContext(AppContext);
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
 
   if (loading) {
     return <Loading />;
   }
-
-  // if (!user || !coupleData ) {
-  //   return <Navigate to="/" />;
-  // }
-
-  // const { globalLoading } = useGlobalStore();
-
-  // if (globalLoading) {
-  //   return <Loading />
-  // }
-
-  // console.log("Profile");
 
   if (!coupleData) {
     return <Navigate to="/" />;
@@ -68,7 +58,10 @@ function Profile() {
             <Box sx={{ textAlign: "center" }}>
               <Box>
                 עדיין לא המלצנו לכם על חבילה??{" "}
-                <Link to="/package" style={{ color: "#FF9500" }}>
+                <Link
+                  to="/package"
+                  style={{ color: "#FF9500" }}
+                >
                   לחצו כאן
                 </Link>{" "}
                 למעבר לשאלון
@@ -77,7 +70,7 @@ function Profile() {
           )}
         </AccordionLayout>
         <AccordionLayout title="מעקב אחר הוצאות" btnValue="/expense-tracking">
-          <ExpancesKpis />
+          <ExpansesKpis />
         </AccordionLayout>
         <AccordionLayout title="ניהול מוזמנים" btnValue="/invitees">
           <InviteesKpis />

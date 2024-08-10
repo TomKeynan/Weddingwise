@@ -48,8 +48,8 @@ const router = createHashRouter([
       { path: "expense-tracking", element: <ExpenseTracking /> },
       { path: "invitees", element: <Invitees /> },
       { path: "edit-replace", element: <EditDetailsOnReplace /> },
-      { path: "planner", element: <PlannerLP /> },
       { path: "edit-couple-details", element: <EditCoupleDetails /> },
+      { path: "planner", element: <PlannerLP /> },
     ],
   },
   {
@@ -93,31 +93,6 @@ function App() {
     };
   }, [fetchUserInfo]);
 
- // useEffect for handling logout on window close
- useEffect(() => {
-  let timeout;
-
-  const handleVisibilityChange = async () => {
-    if (document.visibilityState === 'hidden') {
-      timeout = setTimeout(async () => {
-        await signOut(auth);
-      }, 5000); // Adjust the timeout as needed
-    } else if (document.visibilityState === 'visible') {
-      clearTimeout(timeout);
-    }
-  };
-
-  document.addEventListener("visibilitychange", handleVisibilityChange);
-
-  return () => {
-    document.removeEventListener("visibilitychange", handleVisibilityChange);
-    clearTimeout(timeout);
-  };
-}, []);
-
-  
-// console.log(currentUser)
-  // console.log("App");
 
   return (
     <LoadScript

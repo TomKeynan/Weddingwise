@@ -42,18 +42,26 @@ const steps = [
 ];
 
 export default function Registration() {
-  const {
-    userDetails,
-    error,
-    loading,
-    isFormCompleted,
-    isFormValid,
-    handleSubmit,
-  } = useContext(RegisterContext);
+  const { userDetails, error, setError, isFormCompleted, isFormValid, handleSubmit } =
+    useContext(RegisterContext);
+  // console.log(error);
 
   const [activeStep, setActiveStep] = useState(0);
 
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (error) {
+      setOpen(true)
+    }
+  }, [error]);
+  
+  useEffect(() => {
+    if (!open) {
+      setError(undefined)
+    }
+  }, [open]);
+
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -68,12 +76,13 @@ export default function Registration() {
   };
 
   const handleClickOpen = () => {
-    if (error) setOpen(true);
+    if (error) {
+      setOpen(true);
+    }
   };
 
   const { globalLoading } = useGlobalStore();
 
-  
   return (
     <Box sx={{ width: "100%" }}>
       {globalLoading && <Loading />}
@@ -144,7 +153,7 @@ export default function Registration() {
             <Button
               variant="outlined"
               onClick={() => {
-                handleClickOpen();
+                // handleClickOpen();
                 handleSubmit();
               }}
               sx={submitBtnSX}

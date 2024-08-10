@@ -16,20 +16,23 @@ import { AppContext } from "../store/AppContext";
 import MessageDialog from "./Dialogs/MessageDialog";
 import { rateSupplierResponse } from "../utilities/collections";
 import { useUserStore } from "../fireBase/userStore";
-import { arrayUnion, doc, updateDoc, getDocs, where, query, collection } from "firebase/firestore";
+import {
+  arrayUnion,
+  doc,
+  updateDoc,
+  getDocs,
+  where,
+  query,
+  collection,
+} from "firebase/firestore";
 import { db } from "../fireBase/firebase";
 import Loading from "./Loading";
 import { useSupplierData } from "../fireBase/supplierData";
 
-const testObject = {
-  supplierEmail: "test14@gmail.com",
-  coupleEmail: "tom1@gmail.com",
-  rating: 3,
-};
-export default function CommentForm({supplierFirebase}) {
+export default function CommentForm({ supplierFirebase }) {
   const { sendData, resData, setResData, loading, error, setError } =
     useFetch();
-  const { coupleData,supplierData } = useContext(AppContext);
+  const { coupleData, supplierData } = useContext(AppContext);
   const [rate, setRate] = useState(0);
   const [comment, setComment] = useState("");
   const [openUpdateSuccess, setOpenUpdateSuccess] = useState(false);
@@ -37,12 +40,13 @@ export default function CommentForm({supplierFirebase}) {
   const [isRated, setIsRated] = useState(false);
   const { currentUser } = useUserStore();
   const [loadingData, setLoadingData] = useState(false);
-  const { relevantSupplier,setRelevantSupplier } = useSupplierData();
+  const { relevantSupplier, setRelevantSupplier } = useSupplierData();
 
-
-// console.log("CommentForm")
+  // console.log("CommentForm")
 
   useEffect(() => {
+    console.log(error);
+    console.log(resData);
     const updateFirebaseAndSetState = async () => {
       if (resData) {
         try {
@@ -50,45 +54,36 @@ export default function CommentForm({supplierFirebase}) {
           setOpenUpdateSuccess(true);
         } catch (err) {
           console.log(err);
-          setOpen(true); 
+          setOpen(true);
         }
       }
       if (error) {
         setOpen(true);
       }
-      return () => {
-        setResData(undefined);
-      };
     };
 
     updateFirebaseAndSetState();
   }, [resData, error]);
 
-
-
   const handleSendToFirebase = async () => {
-    setLoadingData(true); 
-  
+    setLoadingData(true);
+
     try {
-  
       await updateDoc(doc(db, "users", supplierFirebase.id), {
         comments: arrayUnion({
           commentTime: new Date(),
           giverAvatar: currentUser.avatar,
-          giverName:currentUser.username,
+          giverName: currentUser.username,
           rating: rate,
           text: comment,
-        })
+        }),
       });
-  
     } catch (err) {
-      console.error( err);
-
+      console.error(err);
     } finally {
-      setLoadingData(false); 
+      setLoadingData(false);
     }
   };
-
 
   function handleChange(e) {
     setComment(e.target.value);
@@ -117,6 +112,11 @@ export default function CommentForm({supplierFirebase}) {
 
   // ================  Updated success handling ================
 
+  function handleCloseSuccessMessage() {
+    setOpenUpdateSuccess(false);
+    setResData(undefined);
+  }
+
   function showSuccessMessage() {
     return (
       <MessageDialog
@@ -124,8 +124,8 @@ export default function CommentForm({supplierFirebase}) {
         text="תודה רבה ששיתפתם!"
         btnValue="אוקיי!"
         open={openUpdateSuccess}
-        onClose={() => setOpenUpdateSuccess(false)}
-        xBtn={() => setOpenUpdateSuccess(false)}
+        onClose={handleCloseSuccessMessage}
+        xBtn={handleCloseSuccessMessage}
         mode="success"
       ></MessageDialog>
     );
@@ -161,7 +161,6 @@ export default function CommentForm({supplierFirebase}) {
 
   return (
     <>
-     
       {error && showErrorMessage(error)}
       {openUpdateSuccess && showSuccessMessage()}
       <Stack sx={commentWrapperSX}>
@@ -198,7 +197,7 @@ export default function CommentForm({supplierFirebase}) {
                   fontSize: { xs: 16, sm: 18, md: 20 },
                   fontFamily: customTheme.font.main,
                 }}
-              // {comment.names}
+                // {comment.names}
               >
                 {currentUser?.username}
               </Typography>

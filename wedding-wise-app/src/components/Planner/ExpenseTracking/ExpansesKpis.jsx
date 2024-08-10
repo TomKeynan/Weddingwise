@@ -4,7 +4,7 @@ import { Grid, Stack, Paper, Typography } from "@mui/material";
 import useFetch from "../../../utilities/useFetch";
 import { addCommasToNumber } from "../../../utilities/functions";
 
-function ExpancesKpis() {
+function ExpansesKpis() {
   const { getData, resData, setResData, error, setError, loading } = useFetch();
   const { coupleData } = useContext(AppContext);
   const [expensesList, setExpensesList] = useState([]);
@@ -83,7 +83,7 @@ function ExpancesKpis() {
   );
 }
 
-export default ExpancesKpis;
+export default ExpansesKpis;
 
 const kpiContainer = { px: 1, width: "95%", margin: "auto" };
 const kpiWrapper = {};
