@@ -28,7 +28,7 @@ import { auth } from "../fireBase/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { AppContext } from "../store/AppContext";
 import { useUserStore } from "../fireBase/userStore";
-import { useSupplierData } from "../fireBase/supplierData";
+import { useGlobalStore } from "../fireBase/globalLoading";
 
 function SupplierLogin() {
   const { sendData, resData, error, loading } = useFetch();
@@ -36,31 +36,31 @@ function SupplierLogin() {
   const [password, setPassword] = useState("");
   const [firebaseError, setFirebaseError] = useState(false);
   const { setSupplierData, setEditSupplier } = useContext(AppContext);
-  const { isLoading, fetchUserInfo } = useUserStore(); // Firebase's
+  const {  fetchUserInfo } = useUserStore(); 
   const navigate = useNavigate();
-  // const { setSupplier } = useSupplierData();
+
+  const { setGlobalLoading,globalLoading } = useGlobalStore(); 
 
   useEffect(() => {
     const loginAndNavigate = async () => {
       if (resData) {
         try {
-          // Await loginFireBase to ensure login is complete
+      
           await loginFireBase();
 
-          // Fetch user info
           if (auth.currentUser?.uid) {
             await fetchUserInfo(auth.currentUser.uid);
           }
-
-          // Optionally, handle additional operations like saving data
           sessionStorage.setItem("currentSupplier", JSON.stringify(resData));
           setSupplierData(resData);
           setEditSupplier(resData);
-
-          // Navigate after all asynchronous operations are complete
           navigate("/supplier-private-Profile");
+          
         } catch (err) {
+          setGlobalLoading(false);
           console.error("Login or navigation failed:", err);
+        } finally {
+          setGlobalLoading(false);
         }
       }
     };
@@ -70,14 +70,12 @@ function SupplierLogin() {
 
   const loginFireBase = async () => {
     try {
-      // Sign in user with email and password
       await signInWithEmailAndPassword(auth, email, password);
     } catch (err) {
       setFirebaseError(true);
       throw new Error("Login failed. Please check your credentials.");
     }
   };
-
   // useMediaQuery return a boolean that indicates rather the screen size
   // matches the breakpoint/string media query , or not
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
@@ -88,6 +86,7 @@ function SupplierLogin() {
     const data = Object.fromEntries(formData.entries());
     setEmail(data.Email);
     setPassword(data.Password);
+    setGlobalLoading(true);
     sendData("/Suppliers/getSupplier", "POST", data);
     setFirebaseError(false);
   }
@@ -98,7 +97,7 @@ function SupplierLogin() {
 
   return (
     <Container sx={containerSX} maxWidth="xxl">
-      {(loading || isLoading) && <Loading />}
+      {globalLoading && <Loading />}
       <Stack direction="row" height="100%">
         {screenAboveSM && <Box sx={imageBoxSX}></Box>}
         <Stack sx={loginStackSX}>

@@ -7,27 +7,36 @@ import SupplierCard from "../components/SupplierCard";
 import ProfileBanner from "../components/ProfilePage/ProfileBanner";
 import { AppContext } from "../store/AppContext";
 import InviteesKpis from "../components/Planner/InviteeList/InviteesKpis";
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { getAuth } from 'firebase/auth';
 import { Navigate } from "react-router-dom";
 import Loading from "../components/Loading";
-
+import { useGlobalStore } from "../fireBase/globalLoading";
 import ProfileKpis from "../components/ProfilePage/ProfileKpis";
 import ExpancesKpis from "../components/Planner/ExpenseTracking/ExpancesKpis";
 
 function Profile() {
-
   const { coupleData } = useContext(AppContext);
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
 
-  if (loading  ) {
+  if (loading) {
     return <Loading />;
   }
 
   // if (!user || !coupleData ) {
   //   return <Navigate to="/" />;
   // }
+
+  // const { globalLoading } = useGlobalStore();
+
+  // if (globalLoading) {
+  //   return <Loading />
+  // }
+
+  // console.log("Profile");
+
+  if (!coupleData) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <Stack alignItems="center" sx={loginStackSX}>

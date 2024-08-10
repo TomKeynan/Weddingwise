@@ -25,10 +25,10 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Loading from "../components/Loading";
-import { debugErrorMap } from "firebase/auth";
-import { toast } from "react-toastify";
 import { auth } from "../fireBase/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { useUserStore } from "../fireBase/userStore";
+import { useGlobalStore } from "../fireBase/globalLoading";
 
 function Login() {
   const { sendData, resData, error, loading } = useFetch();
@@ -36,6 +36,8 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { setGlobalLoading,globalLoading } = useGlobalStore();
+  const { fetchUserInfo } = useUserStore();
 
   useEffect(() => {
     const loginAndNavigate = async () => {
@@ -43,25 +45,38 @@ function Login() {
         try {
       
           updateCoupleData(resData);
-
           await loginFireBase();
 
-          navigate("/profile");
+          if (auth.currentUser?.uid) {
+            await fetchUserInfo(auth.currentUser.uid);
+  
+            navigate("/profile");
+          } else {
+            console.error("User is not authenticated.");
+          }
         } catch (err) {
-          console.error("Login or fetching user info failed:", err);
+          console.error("Login or navigation failed:", err);
+        } finally {
+          setGlobalLoading(false); 
         }
       }
+      else if (error) {
+        setGlobalLoading(false);
+      }
     };
-
+  
     loginAndNavigate();
   }, [resData, navigate]);
+  
+  
 
- 
+  // loginFireBase function to log in the user to Firebase
   const loginFireBase = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (err) {
-      console.log(err);
+      console.error("Firebase login failed:", err);
+      setGlobalLoading(false); 
     }
   };
 
@@ -77,12 +92,20 @@ function Login() {
     navigate("/sign-up");
   }
 
+  // handleSubmit function to handle form submission
   function handleSubmit(e) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
+  
+    // Set email and password state from form data
     setEmail(data.Email);
     setPassword(data.Password);
+  
+    // Start global loading before sending data
+    setGlobalLoading(true);
+  
+    // Send data to the server
     sendData("/Couples/getCouple", "POST", data);
   }
 
@@ -90,9 +113,13 @@ function Login() {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
+  // if (globalLoading) {
+  //   return <Loading />
+  // }
+
   return (
     <Container sx={containerSX} maxWidth="xxl">
-      {loading && <Loading />}
+      {globalLoading && <Loading />}
       <Stack direction="row" height="100%">
         <Stack sx={loginStackSX}>
           <Paper variant="elevation" elevation={6} sx={paperSX}>

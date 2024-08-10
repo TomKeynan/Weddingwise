@@ -97,9 +97,7 @@ function UserPackage() {
     };
 
     updateCoupleData();
-    return () => {
-      setResData(undefined);
-    };
+   
   }, [resData]);
 
   const addSuppliersChats = async (suppliers) => {
@@ -580,6 +578,8 @@ function UserPackage() {
     }
   }
 
+
+
   return (
     <Stack
       justifyContent="space-around"
@@ -594,8 +594,8 @@ function UserPackage() {
       }}
     >
       {(isLoading || loading) && <Loading />}
-      {!isLoading && !loading && error && showErrorMessage(error)}
-      {!isLoading && !loading && resData && showSuccessMessage(resData)}
+      { error && showErrorMessage(error)}
+      { resData && showSuccessMessage(resData)}
       {openAltSuppliers && showAltSuppliersDialog()}
       {openConfirm && showConfirmDialog()}
       {openUpdateDetails && showUpdateDetailsDialog()}

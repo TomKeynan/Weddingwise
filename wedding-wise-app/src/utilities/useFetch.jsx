@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { useGlobalStore } from "../fireBase/globalLoading";
 var baseUrl = "";
 if (
   window.location.hostname === "localhost" ||
@@ -12,6 +12,7 @@ function useFetch() {
   const [resData, setResData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(undefined);
+  const { setGlobalLoading } = useGlobalStore(); //Adam's
 
   async function getData(endpoint) {
     try {
@@ -19,13 +20,16 @@ function useFetch() {
       const response = await fetch(`${baseUrl}${endpoint}`);
       if (!response.ok) {
         setError(true);
+        setGlobalLoading(false); //Adam's
         return;
       }
       const responseData = await response.json();
       setResData(responseData);
     } catch (error) {
       console.log(error);
+      setGlobalLoading(false); //Adam's
       setError(true);
+
     } finally {
       setLoading(false);
     }
@@ -43,6 +47,7 @@ function useFetch() {
         body: JSON.stringify(bodyData),
       });
       if (!response.ok) {
+        setGlobalLoading(false); // Adam's
         return setError(response.status);
       }
       // possible responses form server:
@@ -61,6 +66,7 @@ function useFetch() {
         setResData(responseData);
       }
     } catch (error) {
+      setGlobalLoading(false); //Adam's
       if (!error?.response) setError(500);
       else setError(responseData);
     } finally {

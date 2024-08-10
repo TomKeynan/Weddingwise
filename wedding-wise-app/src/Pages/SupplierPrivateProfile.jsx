@@ -31,7 +31,7 @@ function SupplierPrivateProfile() {
   
   useEffect(() => {
     if (!user?.uid) return;
-
+    setLoadingData(true);
     // Create a reference to the user document
     const userDocRef = doc(db, "users", user?.uid);
 
@@ -67,14 +67,13 @@ function SupplierPrivateProfile() {
     };
   }, [user?.uid,supplierData,supplierData?.supplierEmail, supplierData?.latitude, supplierData?.longitude]);
 
-  if (loading || loadingData) {
+  if (loadingData) {
     return <Loading />;
   }
 
-  if (!user) {
+  if (!supplierData) {
     return <Navigate to="/" />;
   }
-
 
   return (
 

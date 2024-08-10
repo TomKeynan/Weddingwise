@@ -21,6 +21,7 @@ import Loading from "../Loading";
 import { signupResponse } from "../../utilities/collections";
 import MessageDialog from "../Dialogs/MessageDialog";
 import useFetch from "../../utilities/useFetch";
+import { useGlobalStore } from "../../fireBase/globalLoading";
 
 const steps = [
   {
@@ -70,9 +71,12 @@ export default function Registration() {
     if (error) setOpen(true);
   };
 
+  const { globalLoading } = useGlobalStore();
+
+  
   return (
     <Box sx={{ width: "100%" }}>
-      {loading && <Loading />}
+      {globalLoading && <Loading />}
       {error && (
         <MessageDialog
           title="שגיאה!"

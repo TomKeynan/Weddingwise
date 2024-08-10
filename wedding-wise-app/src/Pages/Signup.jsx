@@ -3,7 +3,9 @@ import { Container, Stack, Typography } from "@mui/material";
 import Registration from "../components/SignupPage/Registration";
 import RegisterContextProvider from "../store/RegisterContext";
 
+
 const Signup = () => {
+
   return (
     <RegisterContextProvider>
       <Stack
@@ -11,7 +13,7 @@ const Signup = () => {
         textAlign="center"
         justifyContent="flex-start"
         sx={{
-          width: { xs: "90%", sm: "70%", md: "60%"},
+          width: { xs: "90%", sm: "70%", md: "60%" },
           margin: "auto",
           minHeight: "inherit",
         }}
