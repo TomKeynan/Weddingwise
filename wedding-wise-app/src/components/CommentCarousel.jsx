@@ -4,40 +4,38 @@ import CommentCard from "./CommentCard";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { customTheme } from "../store/Theme";
+import { Box } from "@mui/material";
 
 function CommentCarousel({ supplierComments }) {
   const [sortedComments, setSortedComments] = useState([]);
 
-  // console.log("CommentCarousel")
-
-
   useEffect(() => {
     if (supplierComments && supplierComments?.length) {
-      const sorted = [...supplierComments].sort((a, b) => a.commentTime - b.commentTime);
+      const sorted = [...supplierComments].sort(
+        (a, b) => a.commentTime - b.commentTime
+      );
       setSortedComments(sorted);
     }
   }, [supplierComments]);
- 
 
-  
-  const settings = {
-    dots: true,
+  var settings = {
+    dots: false,
     infinite: false,
     speed: 500,
     slidesToShow: 3,
-    slidesToScroll: 3,
+    slidesToScroll: 1,
     initialSlide: 0,
     responsive: [
       {
-        breakpoint: 1200,
+        breakpoint: 1400,
         settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-          infinite: true,
+          slidesToShow: 3,
+          slidesToScroll: 1,
+          dots: true,
         },
       },
       {
-        breakpoint: 800,
+        breakpoint: 860,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
@@ -52,6 +50,7 @@ function CommentCarousel({ supplierComments }) {
         },
       },
     ],
+
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
   };
@@ -92,8 +91,15 @@ function CommentCarousel({ supplierComments }) {
 
   return (
     <Slider {...settings}>
-      {sortedComments?.map((comment, index) => (
-        <div style={{ overflow: "hidden" }} key={index}>
+      {sortedComments.map((comment, index) => (
+        <Box
+          key={index}
+          sx={{
+            overflow: "hidden",
+            margin: "0 auto",
+            py: 5,
+          }}
+        >
           <CommentCard
             giverAvatar={comment.giverAvatar}
             giverName={comment.giverName}
@@ -101,7 +107,9 @@ function CommentCarousel({ supplierComments }) {
             commentDate={comment.commentDate}
             rating={comment.rating}
           />
-        </div>
+        </Box>
+        // <div style={{ overflow: "hidden" }} key={index}>
+        // </div>
       ))}
     </Slider>
   );

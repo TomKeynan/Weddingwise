@@ -8,11 +8,14 @@ import MapSection from "../components/HomePage/MapSection";
 import Description from "../components/HomePage/Description";
 import Footer from "../components/Footer";
 import { ScrollRestoration } from "react-router-dom";
+import { useChatStore } from "../fireBase/chatStore";
+import Chat from "../components/ChatPage/Chat"
 
 function Home() {
-
+  const { chatStatus } = useChatStore();
   return (
     <>
+      {chatStatus && <Chat />} 
       <Stack justifyContent="center" sx={homeContainer}>
         <Hero />
         <Stack sx={homeContentWrapper}>

@@ -13,19 +13,22 @@ import { Navigate } from "react-router-dom";
 import Loading from "../components/Loading";
 
 import ProfileKpis from "../components/ProfilePage/ProfileKpis";
+import ExpancesKpis from "../components/Planner/ExpenseTracking/ExpancesKpis";
 
 function Profile() {
 
   const { coupleData } = useContext(AppContext);
-  
+  const auth = getAuth();
+  const [user, loading] = useAuthState(auth);
 
-  
-  if ( !coupleData ) {
-    return <Navigate to="/" />;
+  if (loading  ) {
+    return <Loading />;
   }
 
+  // if (!user || !coupleData ) {
+  //   return <Navigate to="/" />;
+  // }
 
-  
   return (
     <Stack alignItems="center" sx={loginStackSX}>
       <ProfileBanner props={coupleData} />
@@ -64,8 +67,8 @@ function Profile() {
             </Box>
           )}
         </AccordionLayout>
-        <AccordionLayout title="מעקב אחר הוצאות" btnValue="/package">
-          {/* <CostsChart /> */}
+        <AccordionLayout title="מעקב אחר הוצאות" btnValue="/expense-tracking">
+          <ExpancesKpis />
         </AccordionLayout>
         <AccordionLayout title="ניהול מוזמנים" btnValue="/invitees">
           <InviteesKpis />

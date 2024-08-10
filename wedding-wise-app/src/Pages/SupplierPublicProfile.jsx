@@ -130,6 +130,149 @@ function SupplierPublicProfile() {
 
   // console.log(supplierFirebase);
 
+  function renderDescriptionSection() {
+    if (supplierFirebase?.description) {
+      return (
+        <Stack
+          direction={screenUnderMD ? "column-reverse" : "row"}
+          justifyContent={screenUnderMD ? "center" : "space-between"}
+          // alignItems={screenUnderMD ? "center" : "flex-start"}
+          sx={{}}
+        >
+          <Paper
+            variant="elevation"
+            elevation={6}
+            sx={{
+              ...paperSX,
+              mr: { xs: 0, md: 5 },
+              width: { xs: "inherent", md: "30%" },
+            }}
+          >
+            <Grid container sx={{ rowGap: 2 }}>
+              <Grid item xs={12}>
+                <Stack
+                  direction="row"
+                  justifyContent={screenUnderMD ? "center" : "flex-start"}
+                >
+                  <MapOutlinedIcon />
+                  <Typography>
+                    איזור פעילות: {relevantSupplier.availableRegion}
+                  </Typography>
+                </Stack>
+              </Grid>
+              <Grid item xs={12}>
+                <Stack
+                  direction="row"
+                  justifyContent={screenUnderMD ? "center" : "flex-start"}
+                >
+                  <PhoneEnabledOutlinedIcon />
+                  <Typography>
+                    מס' טלפון: {relevantSupplier.phoneNumber}
+                  </Typography>
+                </Stack>
+              </Grid>
+              <Grid item xs={12}>
+                <Stack
+                  direction="row"
+                  justifyContent={screenUnderMD ? "center" : "flex-start"}
+                >
+                  <EmailOutlinedIcon />
+                  <Typography>
+                    אימייל: {relevantSupplier.supplierEmail}
+                  </Typography>
+                </Stack>
+              </Grid>
+              <Grid item xs={12}>
+                <Stack
+                  direction="row"
+                  justifyContent={screenUnderMD ? "center" : "flex-start"}
+                >
+                  <LocalOfferOutlinedIcon />
+                  <Typography>
+                    מחיר ממוצע: {addCommasToNumber(relevantSupplier.price)} ₪
+                  </Typography>
+                </Stack>
+              </Grid>
+            </Grid>
+          </Paper>
+          <Paper
+            variant="elevation"
+            elevation={6}
+            sx={{ ...paperSX, flexGrow: 1 }}
+          >
+            <Typography sx={{ textAlign: "center" }}>
+              {supplierFirebase?.description}
+            </Typography>
+          </Paper>
+        </Stack>
+      );
+    } else {
+      return (
+        <Stack justifyContent="center" alignItems="center">
+          <Paper
+            variant="elevation"
+            elevation={6}
+            sx={{
+              ...paperSX,
+              width: "90%",
+            }}
+          >
+            <Grid container sx={{ rowGap: 2, width: "fit-content" }}>
+              <Grid item xs={12} sm={6}>
+                <Stack
+                  direction="row"
+                  justifyContent="center"
+
+                  // justifyContent={screenUnderMD ? "center" : "flex-start"}
+                >
+                  <MapOutlinedIcon />
+                  <Typography>
+                    איזור פעילות: {relevantSupplier.availableRegion}
+                  </Typography>
+                </Stack>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Stack
+                  direction="row"
+                  justifyContent="center"
+                  // justifyContent={screenUnderMD ? "center" : "flex-start"}
+                >
+                  <PhoneEnabledOutlinedIcon />
+                  <Typography>
+                    מס' טלפון: {relevantSupplier.phoneNumber}
+                  </Typography>
+                </Stack>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Stack
+                  direction="row"
+                  justifyContent="center"
+                  // justifyContent={screenUnderMD ? "center" : "flex-start"}
+                >
+                  <EmailOutlinedIcon />
+                  <Typography>
+                    אימייל: {relevantSupplier.supplierEmail}
+                  </Typography>
+                </Stack>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Stack
+                  direction="row"
+                  justifyContent="center"
+                  // justifyContent={screenUnderMD ? "center" : "flex-start"}
+                >
+                  <LocalOfferOutlinedIcon />
+                  <Typography>
+                    מחיר ממוצע: {addCommasToNumber(relevantSupplier.price)} ₪
+                  </Typography>
+                </Stack>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Stack>
+      );
+    }
+  }
   if (loading || loadingData) {
     return <Loading />;
   }
@@ -154,27 +297,27 @@ function SupplierPublicProfile() {
         </Typography>
       </Stack>
       {/* social media links */}
-      <Stack
-        direction="column"
-        // direction={screenUnderMD ? "column" : "row"}
-        alignItems="center"
-        justifyContent="space-between"
-        sx={{ width: "80%", margin: "0 auto", pt: 10, pb: { xs: 3, sm: 6 } }}
-      >
-        <Stack>
-          <Typography
-            sx={{
-              // width: 220,
-              textAlign: "center",
-              fontSize: { xs: 16, sm: 20, md: 24 },
-              fontFamily: customTheme.font.main,
-              fontWeight: "bold",
-            }}
-          >
-            כאן תוכלו למצוא את {relevantSupplier.businessName}{" "}
-          </Typography>
-        </Stack>
-        {showLinks && (
+      {showLinks && (
+        <Stack
+          direction="column"
+          // direction={screenUnderMD ? "column" : "row"}
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ width: "80%", margin: "0 auto", pt: 10, pb: { xs: 3, sm: 6 } }}
+        >
+          <Stack>
+            <Typography
+              sx={{
+                // width: 220,
+                textAlign: "center",
+                fontSize: { xs: 16, sm: 20, md: 24 },
+                fontFamily: customTheme.font.main,
+                fontWeight: "bold",
+              }}
+            >
+              כאן תוכלו למצוא את {relevantSupplier.businessName}{" "}
+            </Typography>
+          </Stack>
           <Stack
             direction="row"
             alignContent="center"
@@ -253,10 +396,145 @@ function SupplierPublicProfile() {
               </Link>
             )}
           </Stack>
-        )}
-      </Stack>
+        </Stack>
+      )}
+
       {/* rating and number of raters */}
-      {/* <Stack
+      <Stack
+        direction={screenAboveSM ? "row" : "column"}
+        justifyContent="center"
+        alignItems="center"
+        spacing={3}
+        sx={{ mb: 15, mt: 10 }}
+      >
+        <KpiPaper
+          title="מספר המדרגים:"
+          data={relevantSupplier.ratedCount}
+          icon={<PeopleOutlineIcon />}
+        />
+        <KpiPaper
+          title="דירוג:"
+          data={relevantSupplier.rating}
+          icon={<StarOutlineIcon />}
+        />
+      </Stack>
+      {/* supplier description */}
+      <Stack sx={{ width: "70%" }}>
+        <Typography sx={{ ...titleSX, mb: 2 }}>
+          אודות {relevantSupplier?.businessName}{" "}
+        </Typography>
+        {renderDescriptionSection()}
+      </Stack>
+
+      {/* carousel */}
+      {supplierFirebase && supplierFirebase["comments"]?.length > 0 ? (
+        <Stack
+          justifyContent="center"
+          // direction="row"
+          sx={{
+            display: "block",
+            minHeigh: 300,
+            width: { xs: "70%", sm: "80%" },
+            my: 15,
+          }}
+        >
+          <Typography sx={{ ...titleSX, mb: 3 }}>
+            הזוגות של <span style={{ color: "#eb77e2" }}>W</span>edding
+            <span style={{ color: "#eb77e2" }}>W</span>ise משתפים
+          </Typography>
+          <CommentCarousel supplierComments={supplierFirebase?.comments} />
+        </Stack>
+      ) : (
+        <Stack sx={{ width: { xs: "90%", sm: "70%" }, my: 10 }}>
+          <Typography sx={{ ...titleSX, mb: 5 }}>
+            הזוגות של <span style={{ color: "#eb77e2" }}>W</span>edding
+            <span style={{ color: "#eb77e2" }}>W</span>ise משתפים
+          </Typography>
+          <Paper variant="elevation" elevation={6} sx={paperSX}>
+            <Alert severity="warning" sx={alertSX}>
+              תהיו הראשנים לשתף את דעתכם על השירות שקיבלתם מ"
+              {relevantSupplier?.businessName}"
+            </Alert>
+          </Paper>
+        </Stack>
+      )}
+      {/* comment form */}
+      {coupleData && (
+        <Stack sx={{ maxWidth: 700, }}>
+          <Typography sx={{ ...titleSX, mb: 5, px: 2 }}>
+            השאירו תגובה מהחוויה שלכם עם {relevantSupplier.businessName}
+          </Typography>
+          <CommentForm supplierFirebase={supplierFirebase} />
+        </Stack>
+      )}
+    </Stack>
+  );
+}
+
+export default SupplierPublicProfile;
+
+// const sxPaper = {
+//   width: showDescription ? "100%" : "50%",
+// };
+
+const stackWrapperSX = {
+  minHeight: "inherit",
+  backgroundImage: "url(assets/bg-stars.png)",
+  pb: 10,
+};
+
+const socialIconsSX = {
+  fontSize: 60,
+  color: "primary.main",
+  cursor: "pointer",
+};
+
+const paperSX = {
+  mt: 2,
+  py: 3,
+  px: { xs: 1, sm: 3 },
+  backgroundColor: "rgba(255,255,255,1)",
+};
+
+const titleSX = {
+  textAlign: "center",
+  fontSize: { xs: 26, sm: 30, md: 36 },
+  fontFamily: customTheme.font.main,
+  fontWeight: "bold",
+  color: customTheme.palette.primary.main,
+  WebkitTextStrokeWidth: { xs: 1.5, sm: 0.7 },
+  // WebkitTextStrokeColor: "black",
+};
+
+const alertSX = {
+  fontSize: 14,
+  px: 1,
+  justifyContent: "center",
+  "& .MuiAlert-icon": {
+    mr: "3px",
+  },
+  textAlign: "center",
+};
+
+const namesSX = {
+  fontFamily: customTheme.font.main,
+  fontSize: { xs: 32, sm: 45, md: 55 },
+  color: customTheme.palette.primary.main,
+  textAlign: "center",
+  WebkitTextStrokeWidth: { xs: 2, sm: 5 },
+};
+
+const supplierTypeSX = {
+  fontFamily: customTheme.font.main,
+  fontSize: { xs: 26, sm: 35, md: 45 },
+  color: customTheme.palette.primary.main,
+  textAlign: "center",
+  letterSpacing: { xs: 6, sm: 12 },
+  textShadow: "#DF8200 0px 1px 5px",
+};
+
+{
+  /* <Stack
           direction="column"
           // direction={screenUnderMD ? "column" : "row"}
           alignItems="center"
@@ -341,182 +619,5 @@ function SupplierPublicProfile() {
               </Link>
             )}
           </Stack>
-        </Stack> */}
-
-      {/* rating and number of raters */}
-      <Stack
-        direction={screenAboveSM ? "row" : "column"}
-        justifyContent="center"
-        alignItems="center"
-        spacing={3}
-        sx={{ mb: 15, mt: 10 }}
-      >
-        <KpiPaper
-          title="מספר המדרגים:"
-          data={relevantSupplier.ratedCount}
-          icon={<PeopleOutlineIcon />}
-        />
-        <KpiPaper
-          title="דירוג:"
-          data={relevantSupplier.rating}
-          icon={<StarOutlineIcon />}
-        />
-      </Stack>
-      {/* supplier description */}
-      <Stack sx={{ width: "70%" }}>
-        <Typography sx={{ ...titleSX, mb: 2 }}>
-          אודות {relevantSupplier?.businessName}{" "}
-        </Typography>
-        <Stack
-          direction={screenUnderMD ? "column-reverse" : "row"}
-          justifyContent={screenUnderMD ? "center" : "space-between"}
-        >
-          <Paper
-            variant="elevation"
-            elevation={6}
-            sx={{
-              ...paperSX,
-              width: { xs: "inherent", md: 220 },
-              mr: { xs: 0, md: 5 },
-            }}
-          >
-            <Grid container maxWidth="xxl" sx={{ rowGap: 2 }}>
-              <Grid item xs={12}>
-                <Stack direction="row" justifyContent="center">
-                  <MapOutlinedIcon />
-                  <Typography>
-                    איזור פעילות: {relevantSupplier.availableRegion}
-                  </Typography>
-                </Stack>
-              </Grid>
-              <Grid item xs={12}>
-                <Stack direction="row" justifyContent="center">
-                  <PhoneEnabledOutlinedIcon />
-                  <Typography>
-                    מס' טלפון: {relevantSupplier.phoneNumber}
-                  </Typography>
-                </Stack>
-              </Grid>
-              <Grid item xs={12}>
-                <Stack direction="row" justifyContent="center">
-                  <EmailOutlinedIcon />
-                  <Typography>
-                    אימייל: {relevantSupplier.supplierEmail}
-                  </Typography>
-                </Stack>
-              </Grid>
-              <Grid item xs={12}>
-                <Stack direction="row" justifyContent="center">
-                  <LocalOfferOutlinedIcon />
-                  <Typography>
-                    מחיר ממוצע: {addCommasToNumber(relevantSupplier.price)} ₪
-                  </Typography>
-                </Stack>
-              </Grid>
-            </Grid>
-          </Paper>
-          <Paper
-            variant="elevation"
-            elevation={6}
-            sx={{ ...paperSX, flexGrow: 1 }}
-          >
-            <Typography sx={{ textAlign: "center" }}>
-              {supplierFirebase?.description}
-            </Typography>
-          </Paper>
-        </Stack>
-      </Stack>
-
-      {/* carousel */}
-      {supplierFirebase && supplierFirebase["comments"]?.length > 0 ? (
-        <Stack sx={{ minHeigh: 300, width: { xs: "70%", sm: "80%" }, my: 15 }}>
-          <Typography sx={{ ...titleSX, mb: 3 }}>
-            הזוגות של <span style={{ color: "#eb77e2" }}>W</span>edding
-            <span>W</span>ise משתפים
-          </Typography>
-          <CommentCarousel supplierComments={supplierFirebase?.comments} />
-        </Stack>
-      ) : (
-        <Stack sx={{ width: { xs: "90%", sm: "70%" }, my: 10 }}>
-          <Typography sx={{ ...titleSX, mb: 5 }}>
-            הזוגות של <span style={{ color: "#eb77e2" }}>W</span>edding
-            <span style={{ color: "#eb77e2" }}>W</span>ise משתפים
-          </Typography>
-          <Paper variant="elevation" elevation={6} sx={paperSX}>
-            <Alert severity="warning" sx={alertSX}>
-              תהיו הראשנים לשתף את דעתכם על השירות שקיבלתם מ"
-              {relevantSupplier?.businessName}"
-            </Alert>
-          </Paper>
-        </Stack>
-      )}
-      {/* comment form */}
-      {coupleData && (
-        <Stack sx={{ maxWidth: 700, width: { xs: "90%", sm: "60%" } }}>
-          <Typography sx={{ ...titleSX, mb: 5, px: 2 }}>
-            השאירו תגובה מהחוויה שלכם עם {relevantSupplier.businessName}
-          </Typography>
-          <CommentForm supplierFirebase={supplierFirebase} />
-        </Stack>
-      )}
-    </Stack>
-  );
+        </Stack> */
 }
-
-export default SupplierPublicProfile;
-
-const stackWrapperSX = {
-  minHeight: "inherit",
-  backgroundImage: "url(assets/bg-stars.png)",
-  pb: 10,
-};
-
-const socialIconsSX = {
-  fontSize: 60,
-  color: "primary.main",
-  cursor: "pointer",
-};
-
-const paperSX = {
-  mt: 2,
-  py: 3,
-  px: { xs: 1, sm: 3 },
-  backgroundColor: "rgba(255,255,255,1)",
-};
-
-const titleSX = {
-  textAlign: "center",
-  fontSize: { xs: 26, sm: 30, md: 36 },
-  fontFamily: customTheme.font.main,
-  fontWeight: "bold",
-  color: customTheme.palette.primary.main,
-  WebkitTextStrokeWidth: { xs: 1.5, sm: 0.7 },
-  // WebkitTextStrokeColor: "black",
-};
-
-const alertSX = {
-  fontSize: 14,
-  px: 1,
-  justifyContent: "center",
-  "& .MuiAlert-icon": {
-    mr: "3px",
-  },
-  textAlign: "center",
-};
-
-const namesSX = {
-  fontFamily: customTheme.font.main,
-  fontSize: { xs: 32, sm: 45, md: 55 },
-  color: customTheme.palette.primary.main,
-  textAlign: "center",
-  WebkitTextStrokeWidth: { xs: 2, sm: 5 },
-};
-
-const supplierTypeSX = {
-  fontFamily: customTheme.font.main,
-  fontSize: { xs: 26, sm: 35, md: 45 },
-  color: customTheme.palette.primary.main,
-  textAlign: "center",
-  letterSpacing: { xs: 6, sm: 12 },
-  textShadow: "#DF8200 0px 1px 5px",
-};
