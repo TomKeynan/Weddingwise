@@ -48,8 +48,8 @@ const router = createHashRouter([
       { path: "expense-tracking", element: <ExpenseTracking /> },
       { path: "invitees", element: <Invitees /> },
       { path: "edit-replace", element: <EditDetailsOnReplace /> },
-      { path: "planner", element: <PlannerLP /> },
       { path: "edit-couple-details", element: <EditCoupleDetails /> },
+      { path: "planner", element: <PlannerLP /> },
     ],
   },
   {
@@ -93,7 +93,6 @@ function App() {
     };
   }, [fetchUserInfo]);
 
-  // console.log("App");
 
   return (
     <LoadScript

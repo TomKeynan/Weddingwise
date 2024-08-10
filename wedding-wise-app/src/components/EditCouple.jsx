@@ -43,10 +43,14 @@ function EditCouple() {
 
   const { coupleData, updateCoupleData } = useContext(AppContext);
 
-  const { handleCreateNewPackage, isLoading } = useContext(QuestionsContext);
+  const {
+    handleCreateNewPackage,
+    isLoading,
+    error: newPackageError,
+    setError: setNewPackageError,
+  } = useContext(QuestionsContext);
 
-  const { resData, loading, error, sendData, setResData, setError } =
-    useFetch();
+  const { resData, error, sendData, setResData, setError } = useFetch();
 
   const [isUpdateDetailsValid, setIsUpdateDetailsValid] = useState(false);
 
@@ -87,15 +91,7 @@ function EditCouple() {
     }
   }, [resData, error]);
 
-  useEffect(() => {
-    if (resData) {
-      setOpenSuccessMessage(true);
-      updateCoupleData(editValue);
-    }
-
-  }, [resData, error]);
-
-
+ 
   function handleWeddingDateChange(dateInput) {
     let weddingDateObject = getFullDate(dateInput);
     updateEditValue({
@@ -119,6 +115,7 @@ function EditCouple() {
     sendData("/Couples/updateCouple", "PUT", editValue);
     setResData(undefined);
     setOpenUpdateConfirm(false);
+    setNewPackageError(undefined)
   }
 
   function showUpdateConfirmDialog() {
@@ -148,6 +145,8 @@ function EditCouple() {
   function handleQuestionsCancel() {
     handleCreateNewPackage();
     setOpenQuestionsConfirm(false);
+
+    // setError(undefined);
   }
 
   function showQuestionsConfirm() {
@@ -252,6 +251,7 @@ function EditCouple() {
         {(loading || isLoading) && <Loading />}
         {openUpdateConfirm && showUpdateConfirmDialog()}
         {error && showErrorMessage(error)}
+        {newPackageError && showErrorMessage(newPackageError)}
         {openSuccessMessage && showSuccessMessage(resData)}
         {openQuestionsConfirm && showQuestionsConfirm()}
         {/* <Grid item xs={12} md={6}>

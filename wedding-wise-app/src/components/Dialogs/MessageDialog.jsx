@@ -103,12 +103,12 @@ const infoWrapperSX = {
 };
 
 const infoTitleSX = {
-  my: 2,
+  my: 1,
   textAlign: "center",
   color: customTheme.palette.primary.dark,
   fontFamily: customTheme.font.main,
   fontSize: { xs: 18, sm: 30 },
-  pt: 10,
+  // pt: 10,
 };
 
 const infoBtnSX = { mt: 1, mb: 2, width: "80%" };

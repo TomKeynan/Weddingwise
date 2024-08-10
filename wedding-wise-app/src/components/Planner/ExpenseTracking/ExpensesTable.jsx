@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Alert,
   Button,
@@ -21,6 +21,8 @@ import SwapVertIcon from "@mui/icons-material/SwapVert";
 import { addCommasToNumber } from "../../../utilities/functions";
 import { customTheme } from "../../../store/Theme";
 import { expensesValidations } from "../../../utilities/collections";
+import useFetch from "../../../utilities/useFetch";
+import { AppContext } from "../../../store/AppContext";
 
 // const headers = [
 //   { id: "serviceName", title: "שם השירות" },
@@ -62,8 +64,11 @@ const budgetData = [
   },
 ];
 
-export default function ExpensesTable() {
-  const [data, setData] = useState(budgetData);
+export default function ExpensesTable({ expensesList, onExpensesChanged }) {
+  const { sendData, getData, resData, setResData, error, setError } =
+    useFetch();
+  const { coupleData } = useContext(AppContext);
+  const [data, setData] = useState(expensesList);
   const [order, setOrder] = useState("ASC");
   const [showInputs, setShowInputs] = useState(false);
   const [errors, setErrors] = useState({});
@@ -74,6 +79,19 @@ export default function ExpensesTable() {
     totalCost: "",
     downPayment: "",
   });
+
+  useEffect(() => {
+    setData(expensesList);
+  }, [expensesList]);
+
+  useEffect(() => {
+    if (resData) {
+      onExpensesChanged();
+    }
+    return () => {
+      setResData(undefined);
+    };
+  }, [resData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -100,7 +118,6 @@ export default function ExpensesTable() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
-
     // validation check
     const newErrors = {};
     for (let field in data) {
@@ -117,8 +134,22 @@ export default function ExpensesTable() {
       return;
     } else {
       setErrors({});
-      // handleAddRow();
+      handleAddRow();
     }
+  }
+
+  function handleAddRow() {
+    const { totalCost, downPayment, ...rest } = newRow;
+    sendData("/Expenses/addExpense", "POST", {
+      ...rest,
+      totalCost: Number(totalCost),
+      downPayment: Number(downPayment),
+      coupleEmail: coupleData.email,
+    });
+  }
+
+  function handleDeleteRow(expenseID) {
+    sendData(`/Expenses/deleteExpense/${expenseID}`, "DELETE", {});
   }
 
   function sorting(col) {
@@ -156,11 +187,8 @@ export default function ExpensesTable() {
   }
 
   return (
-    <Stack alignItems="center" spacing={2} sx={{ mt: 3 }}>
-      <Stack
-        alignItems="center"
-        sx={{ width: "100%", alignSelf: "flex-start" }}
-      >
+    <Stack alignItems="center" sx={{ flexGrow: 1, mt: 3, }}>
+      <Stack alignItems="center" sx={{ alignSelf: "flex-start" }}>
         <Button
           variant="contained"
           onClick={() => setShowInputs((prevShow) => !prevShow)}
@@ -272,11 +300,13 @@ export default function ExpensesTable() {
           mt: 3,
           p: 2,
           width: "100%",
+          maxHeight: 400,
           textAlign: "center",
+           overflowY: "scroll"
         }}
       >
         <TableContainer component="div">
-          <Table>
+          <Table sx={{  }}>
             <TableHead>
               <TableRow>
                 <TableCell
@@ -324,7 +354,7 @@ export default function ExpensesTable() {
               {data.length > 0 ? (
                 data.map((item) => (
                   <TableRow
-                    key={item.id}
+                    key={item.expenseID}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell align="center"> {item.serviceName}</TableCell>
@@ -339,7 +369,9 @@ export default function ExpensesTable() {
                       {addCommasToNumber(item.totalCost - item.downPayment)}
                     </TableCell>
                     <TableCell align="center">
-                      <IconButton>
+                      <IconButton
+                        onClick={() => handleDeleteRow(item.expenseID)}
+                      >
                         <DeleteIcon color="error" />
                       </IconButton>
                     </TableCell>
@@ -347,8 +379,10 @@ export default function ExpensesTable() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} align="center">
-                    אין מוזמנים כרגע
+                  <TableCell colSpan={6} align="center" sx={{}}>
+                    <Alert severity="warning" sx={errorAlertSX}>
+                      לא נרשמו הוצאות לחתונה עד כה
+                    </Alert>
                   </TableCell>
                 </TableRow>
               )}
@@ -357,8 +391,7 @@ export default function ExpensesTable() {
                   סיכום
                 </TableCell>
                 <TableCell align="center" sx={sumRowSX}>
-                  {" "}
-                  -{" "}
+                  -
                 </TableCell>
                 <TableCell align="center" sx={sumRowSX}>
                   {" "}
@@ -387,7 +420,7 @@ export default function ExpensesTable() {
 
 const tableHeadersSX = { fontSize: 16, color: "primary.main" };
 
-const sumRowSX = { py: 3, fontSize: 20, fontWeight: "bold" };
+const sumRowSX = { py: 3, fontSize: 16, fontWeight: "bold", px: 0 };
 
 const textFieldSX = {
   width: "100%",

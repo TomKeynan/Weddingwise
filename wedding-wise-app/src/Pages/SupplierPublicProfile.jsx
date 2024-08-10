@@ -55,6 +55,7 @@ function SupplierPublicProfile() {
   const [loadingData, setLoadingData] = useState(false);
   const [showLinks, setShowLinks] = useState(false);
   const { relevantSupplier, setRelevantSupplier } = useSupplierData();
+  // console.log(supplierFirebase);
   const { supplierData, coupleData } = useContext(AppContext);
 
   useEffect(() => {
@@ -123,6 +124,149 @@ function SupplierPublicProfile() {
 
   // console.log(supplierFirebase);
 
+  function renderDescriptionSection() {
+    if (supplierFirebase?.description) {
+      return (
+        <Stack
+          direction={screenUnderMD ? "column-reverse" : "row"}
+          justifyContent={screenUnderMD ? "center" : "space-between"}
+          // alignItems={screenUnderMD ? "center" : "flex-start"}
+          sx={{}}
+        >
+          <Paper
+            variant="elevation"
+            elevation={6}
+            sx={{
+              ...paperSX,
+              mr: { xs: 0, md: 5 },
+              width: { xs: "inherent", md: "30%" },
+            }}
+          >
+            <Grid container sx={{ rowGap: 2 }}>
+              <Grid item xs={12}>
+                <Stack
+                  direction="row"
+                  justifyContent={screenUnderMD ? "center" : "flex-start"}
+                >
+                  <MapOutlinedIcon />
+                  <Typography>
+                    איזור פעילות: {relevantSupplier.availableRegion}
+                  </Typography>
+                </Stack>
+              </Grid>
+              <Grid item xs={12}>
+                <Stack
+                  direction="row"
+                  justifyContent={screenUnderMD ? "center" : "flex-start"}
+                >
+                  <PhoneEnabledOutlinedIcon />
+                  <Typography>
+                    מס' טלפון: {relevantSupplier.phoneNumber}
+                  </Typography>
+                </Stack>
+              </Grid>
+              <Grid item xs={12}>
+                <Stack
+                  direction="row"
+                  justifyContent={screenUnderMD ? "center" : "flex-start"}
+                >
+                  <EmailOutlinedIcon />
+                  <Typography>
+                    אימייל: {relevantSupplier.supplierEmail}
+                  </Typography>
+                </Stack>
+              </Grid>
+              <Grid item xs={12}>
+                <Stack
+                  direction="row"
+                  justifyContent={screenUnderMD ? "center" : "flex-start"}
+                >
+                  <LocalOfferOutlinedIcon />
+                  <Typography>
+                    מחיר ממוצע: {addCommasToNumber(relevantSupplier.price)} ₪
+                  </Typography>
+                </Stack>
+              </Grid>
+            </Grid>
+          </Paper>
+          <Paper
+            variant="elevation"
+            elevation={6}
+            sx={{ ...paperSX, flexGrow: 1 }}
+          >
+            <Typography sx={{ textAlign: "center" }}>
+              {supplierFirebase?.description}
+            </Typography>
+          </Paper>
+        </Stack>
+      );
+    } else {
+      return (
+        <Stack justifyContent="center" alignItems="center">
+          <Paper
+            variant="elevation"
+            elevation={6}
+            sx={{
+              ...paperSX,
+              width: "90%",
+            }}
+          >
+            <Grid container sx={{ rowGap: 2, width: "fit-content" }}>
+              <Grid item xs={12} sm={6}>
+                <Stack
+                  direction="row"
+                  justifyContent="center"
+
+                  // justifyContent={screenUnderMD ? "center" : "flex-start"}
+                >
+                  <MapOutlinedIcon />
+                  <Typography>
+                    איזור פעילות: {relevantSupplier.availableRegion}
+                  </Typography>
+                </Stack>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Stack
+                  direction="row"
+                  justifyContent="center"
+                  // justifyContent={screenUnderMD ? "center" : "flex-start"}
+                >
+                  <PhoneEnabledOutlinedIcon />
+                  <Typography>
+                    מס' טלפון: {relevantSupplier.phoneNumber}
+                  </Typography>
+                </Stack>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Stack
+                  direction="row"
+                  justifyContent="center"
+                  // justifyContent={screenUnderMD ? "center" : "flex-start"}
+                >
+                  <EmailOutlinedIcon />
+                  <Typography>
+                    אימייל: {relevantSupplier.supplierEmail}
+                  </Typography>
+                </Stack>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Stack
+                  direction="row"
+                  justifyContent="center"
+                  // justifyContent={screenUnderMD ? "center" : "flex-start"}
+                >
+                  <LocalOfferOutlinedIcon />
+                  <Typography>
+                    מחיר ממוצע: {addCommasToNumber(relevantSupplier.price)} ₪
+                  </Typography>
+                </Stack>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Stack>
+      );
+    }
+  }
   if (loading || loadingData) {
     return <Loading />;
   }
@@ -147,27 +291,27 @@ function SupplierPublicProfile() {
         </Typography>
       </Stack>
       {/* social media links */}
-      <Stack
-        direction="column"
-        // direction={screenUnderMD ? "column" : "row"}
-        alignItems="center"
-        justifyContent="space-between"
-        sx={{ width: "80%", margin: "0 auto", pt: 10, pb: { xs: 3, sm: 6 } }}
-      >
-        <Stack>
-          <Typography
-            sx={{
-              // width: 220,
-              textAlign: "center",
-              fontSize: { xs: 16, sm: 20, md: 24 },
-              fontFamily: customTheme.font.main,
-              fontWeight: "bold",
-            }}
-          >
-            כאן תוכלו למצוא את {relevantSupplier.businessName}{" "}
-          </Typography>
-        </Stack>
-        {showLinks && (
+      {showLinks && (
+        <Stack
+          direction="column"
+          // direction={screenUnderMD ? "column" : "row"}
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ width: "80%", margin: "0 auto", pt: 10, pb: { xs: 3, sm: 6 } }}
+        >
+          <Stack>
+            <Typography
+              sx={{
+                // width: 220,
+                textAlign: "center",
+                fontSize: { xs: 16, sm: 20, md: 24 },
+                fontFamily: customTheme.font.main,
+                fontWeight: "bold",
+              }}
+            >
+              כאן תוכלו למצוא את {relevantSupplier.businessName}{" "}
+            </Typography>
+          </Stack>
           <Stack
             direction="row"
             alignContent="center"
@@ -246,95 +390,8 @@ function SupplierPublicProfile() {
               </Link>
             )}
           </Stack>
-        )}
-      </Stack>
-      {/* rating and number of raters */}
-      {/* <Stack
-          direction="column"
-          // direction={screenUnderMD ? "column" : "row"}
-          alignItems="center"
-          justifyContent="space-between"
-          sx={{ width: "80%", margin: "0 auto", pt: 10, pb: { xs: 3, sm: 6 } }}
-        >
-          <Stack>
-            <Typography
-              sx={{
-                // width: 220,
-                textAlign: "center",
-                fontSize: { xs: 16, sm: 20, md: 24 },
-                fontFamily: customTheme.font.main,
-                fontWeight: "bold",
-              }}
-            >
-              כאן תוכלו למצוא את {relevantSupplier.businessName}{" "}
-            </Typography>
-          </Stack>
-          <Stack
-            direction="row"
-            alignContent="center"
-            justifyContent="center"
-            spacing={5}
-            sx={{
-              flexGrow: { xs: 0, sm: 1 },
-              width: "100%",
-              mt: { xs: 0, sm: 3 },
-            }}
-          >
-            {supplierFirebase?.socialLinks?.YouTube && (
-              <Link
-                component="button"
-                variant="body1"
-                onClick={() => {
-                  window.open(supplierFirebase?.socialLinks?.YouTube, "_blank");
-                }}
-              >
-                <YouTubeIcon sx={socialIconsSX} />
-              </Link>
-            )}
-            {supplierFirebase?.socialLinks?.Instagram && (
-              <Link
-                component="button"
-                variant="body1"
-                onClick={() => {
-                  window.open(
-                    supplierFirebase?.socialLinks?.Instagram,
-                    "_blank"
-                  );
-                }}
-              >
-                <InstagramIcon sx={socialIconsSX} />
-              </Link>
-            )}
-            {supplierFirebase?.socialLinks?.LinkedIn && (
-              <Link
-                component="button"
-                variant="body1"
-                onClick={() => {
-                  window.open(
-                    supplierFirebase?.socialLinks?.LinkedIn,
-                    "_blank"
-                  );
-                }}
-              >
-                <LinkedInIcon sx={socialIconsSX} />
-              </Link>
-            )}
-            {supplierFirebase?.socialLinks?.Facebook && (
-              <Link
-                component="button"
-                variant="body1"
-                onClick={() => {
-                  window.open(
-                    supplierFirebase?.socialLinks?.Facebook,
-                    "_blank"
-                  );
-                }}
-              >
-                <FacebookIcon sx={socialIconsSX} />
-              </Link>
-            )}
-          </Stack>
-        </Stack> */}
+        </Stack>
+      )}
 
       {/* rating and number of raters */}
       <Stack
@@ -360,72 +417,24 @@ function SupplierPublicProfile() {
         <Typography sx={{ ...titleSX, mb: 2 }}>
           אודות {relevantSupplier?.businessName}{" "}
         </Typography>
-        <Stack
-          direction={screenUnderMD ? "column-reverse" : "row"}
-          justifyContent={screenUnderMD ? "center" : "space-between"}
-        >
-          <Paper
-            variant="elevation"
-            elevation={6}
-            sx={{
-              ...paperSX,
-              width: { xs: "inherent", md: 220 },
-              mr: { xs: 0, md: 5 },
-            }}
-          >
-            <Grid container maxWidth="xxl" sx={{ rowGap: 2 }}>
-              <Grid item xs={12}>
-                <Stack direction="row" justifyContent="center">
-                  <MapOutlinedIcon />
-                  <Typography>
-                    איזור פעילות: {relevantSupplier.availableRegion}
-                  </Typography>
-                </Stack>
-              </Grid>
-              <Grid item xs={12}>
-                <Stack direction="row" justifyContent="center">
-                  <PhoneEnabledOutlinedIcon />
-                  <Typography>
-                    מס' טלפון: {relevantSupplier.phoneNumber}
-                  </Typography>
-                </Stack>
-              </Grid>
-              <Grid item xs={12}>
-                <Stack direction="row" justifyContent="center">
-                  <EmailOutlinedIcon />
-                  <Typography>
-                    אימייל: {relevantSupplier.supplierEmail}
-                  </Typography>
-                </Stack>
-              </Grid>
-              <Grid item xs={12}>
-                <Stack direction="row" justifyContent="center">
-                  <LocalOfferOutlinedIcon />
-                  <Typography>
-                    מחיר ממוצע: {addCommasToNumber(relevantSupplier.price)} ₪
-                  </Typography>
-                </Stack>
-              </Grid>
-            </Grid>
-          </Paper>
-          <Paper
-            variant="elevation"
-            elevation={6}
-            sx={{ ...paperSX, flexGrow: 1 }}
-          >
-            <Typography sx={{ textAlign: "center" }}>
-              {supplierFirebase?.description}
-            </Typography>
-          </Paper>
-        </Stack>
+        {renderDescriptionSection()}
       </Stack>
 
       {/* carousel */}
       {supplierFirebase && supplierFirebase["comments"]?.length > 0 ? (
-        <Stack sx={{ minHeigh: 300, width: { xs: "70%", sm: "80%" }, my: 15 }}>
+        <Stack
+          justifyContent="center"
+          // direction="row"
+          sx={{
+            display: "block",
+            minHeigh: 300,
+            width: { xs: "70%", sm: "80%" },
+            my: 15,
+          }}
+        >
           <Typography sx={{ ...titleSX, mb: 3 }}>
             הזוגות של <span style={{ color: "#eb77e2" }}>W</span>edding
-            <span>W</span>ise משתפים
+            <span style={{ color: "#eb77e2" }}>W</span>ise משתפים
           </Typography>
           <CommentCarousel supplierComments={supplierFirebase?.comments} />
         </Stack>
@@ -484,7 +493,6 @@ const titleSX = {
   fontWeight: "bold",
   color: customTheme.palette.primary.main,
   WebkitTextStrokeWidth: { xs: 1.5, sm: 0.7 },
-  // WebkitTextStrokeColor: "black",
 };
 
 const alertSX = {

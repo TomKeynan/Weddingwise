@@ -7,21 +7,22 @@ import { useNavigate } from "react-router-dom";
 export const QuestionsContext = createContext({
   isLoading: false,
   coupleAnswers: [],
+  error: null,
+  setError: () => {},
   onSelectOption: () => {},
   handleCreateNewPackage: () => {},
 });
 
-const initialArray = Array.from({ length: 15 }, () => 4);
+const initialArray = Array.from({ length: 15 }, () => 3);
 
 export default function QuestionsContextProvider({ children }) {
-  const { resData, loading, sendData  } = useFetch();
+  const { resData, loading, sendData, error, setError } = useFetch();
   const { coupleData, updateOfferedPackage } = useContext(AppContext);
   const [coupleAnswers, setCoupleAnswers] = useState(initialArray);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (resData) {
-      // console.log(resData)
       updateOfferedPackage(resData);
       navigate("/package");
     }
@@ -41,10 +42,11 @@ export default function QuestionsContextProvider({ children }) {
     });
   }
 
-
   const questionsCtx = {
     isLoading: loading,
     coupleAnswers,
+    error,
+    setError,
     onSelectOption,
     handleCreateNewPackage,
   };

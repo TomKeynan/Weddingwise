@@ -176,7 +176,7 @@ export function translateSupplierTypeToHebrew(type) {
       translatedType = "אולם שמחות";
       break;
     case "dj":
-      translatedType = "דיי ג'יי";
+      translatedType = "תקליטן";
       break;
     case "photographer":
       translatedType = "צילום אירועים";

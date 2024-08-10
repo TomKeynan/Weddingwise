@@ -71,11 +71,11 @@ const wrapperSX = {
 
 const titleSX = {
   p: 0,
-  py:2,
+  pt:2,
   textAlign: "center",
   color: customTheme.palette.primary.dark,
   fontFamily: customTheme.font.main,
-  fontSize: { xs: 18, sm: 30 },
+  fontSize: { xs: 22, sm: 30 },
 };
 
 const cancelBtnSX = {

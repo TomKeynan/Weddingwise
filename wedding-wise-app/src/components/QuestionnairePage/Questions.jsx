@@ -13,13 +13,32 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import useFetch from "../../utilities/useFetch";
 import Loading from "../Loading";
+import MessageDialog from "../Dialogs/MessageDialog";
+import ConfirmDialog from "../Dialogs/ConfirmDialog";
+import { useNavigate } from "react-router-dom";
 
 export default function Questions() {
-  const { isLoading, coupleAnswers, handleCreateNewPackage } =
+  const { isLoading, coupleAnswers, handleCreateNewPackage, error, setError } =
     useContext(QuestionsContext);
 
+  const navigate = useNavigate();
   const screenAboveSM = useMediaQuery("(min-width: 500px)");
+
   const [page, setPage] = useState(1);
+
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (error) {
+      setOpen(true);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (!open) {
+      setError(undefined);
+    }
+  }, [open]);
 
   const handleChange = (event, value) => {
     setPage(value);
@@ -33,11 +52,30 @@ export default function Questions() {
     setPage((prev) => prev - 1);
   }
 
+  function handleApprovalUpdateDetails() {
+    setOpen(false);
+    navigate("/edit-replace");
+  }
 
   return (
     <Stack spacing={4} justifyContent="center" alignItems="center" px={4}>
       {isLoading && <Loading />}
-      {/* <Typography>Page: {page}</Typography> */}
+      {error && (
+        <ConfirmDialog
+          title="אופס..."
+          open={open}
+          approvalBtn="עדכון פרטים"
+          onCancel={() => setOpen(false)}
+          onApproval={handleApprovalUpdateDetails}
+        >
+          <Typography  sx={{ textAlign: "center", fontSize: {xs: 18, sm: 20} }}>
+            נראה שהפרטים שמסרתם לא הניבו חבילת נותני שירות מתאימה.{" "}
+          </Typography>
+          <Typography  sx={{ textAlign: "center", fontSize: {xs: 18, sm: 20} }}>
+            כדי שנוכל לסייע לכם בצורה הטובה ביותר, יש לנסות לעדכן את הפרטים שלכם
+          </Typography>
+        </ConfirmDialog>
+      )}
       {screenAboveSM && (
         <Pagination
           shape="rounded"

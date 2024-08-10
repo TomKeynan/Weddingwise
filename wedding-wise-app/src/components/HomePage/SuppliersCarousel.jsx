@@ -23,14 +23,49 @@ function SuppliersCarousel() {
     }
   }, [resData]);
 
+  // const settings = {
+  //   dots: true,
+  //   infinite: false,
+  //   speed: 500,
+  //   slidesToShow: 3,
+  //   slidesToScroll: 3,
+  //   initialSlide: 0,
+  //   responsive: [
+  //     {
+  //       breakpoint: 1200,
+  //       settings: {
+  //         slidesToShow: 2,
+  //         slidesToScroll: 2,
+  //         infinite: true,
+  //       },
+  //     },
+  //     {
+  //       breakpoint: 800,
+  //       settings: {
+  //         slidesToShow: 1,
+  //         slidesToScroll: 1,
+  //         initialSlide: 1,
+  //       },
+  //     },
+  //     {
+  //       breakpoint: 480,
+  //       settings: {
+  //         slidesToShow: 1,
+  //         slidesToScroll: 1,
+  //       },
+  //     },
+  //   ],
+  //   nextArrow: <SampleNextArrow />,
+  //   prevArrow: <SamplePrevArrow />,
+  // };
+
   var settings = {
     dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 3,
-    slidesToScroll: 1,
+    slidesToScroll: 3,
     initialSlide: 0,
-    // rtl: true,
     responsive: [
       {
         breakpoint: 1400,
@@ -57,6 +92,7 @@ function SuppliersCarousel() {
         },
       },
     ],
+
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
   };

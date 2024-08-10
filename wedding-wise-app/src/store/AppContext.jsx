@@ -36,9 +36,9 @@ export default function AppContextProvider({ children }) {
   const [offeredPackage, setOfferedPackage] = useState(null);
 
   const [invitees, setInvitees] = useState([]);
-  
-  // this state responsible tell to EditCoupleForm which page the couple should be
-  // send to after updating their details-
+
+  // this state responsible to tell EditCoupleForm which page the couple should be
+  // sent to after updating their details-
   // if they came from the navbar item they will redirect to their own profile
   // if they came from the UserWithoutPackage they will redirect to questionnaire page.
   const [editCoupleComeFrom, setEditCoupleComeFrom] = useState("navbar");
@@ -103,7 +103,7 @@ export default function AppContextProvider({ children }) {
     addInvitee,
     removeInvitee,
     editCoupleComeFrom,
-    setEditCoupleComeFrom
+    setEditCoupleComeFrom,
   };
 
   return (

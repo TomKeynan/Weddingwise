@@ -15,7 +15,7 @@ function UserWithoutPackage() {
 
   function handleUpdateDetails() {
     setEditCoupleComeFrom('questionnaire')
-    navigate("/edit-couple-details")
+    navigate("/edit-replace")
   }
 
   return (
