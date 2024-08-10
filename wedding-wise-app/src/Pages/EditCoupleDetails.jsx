@@ -8,6 +8,7 @@ import QuestionsContextProvider from "../store/QuestionsContext";
 import { customTheme } from "../store/Theme";
 import EditCoupleForm from "../components/EditCoupleForm";
 
+
 function EditCoupleDetails() {
   return (
     <RegisterContextProvider>

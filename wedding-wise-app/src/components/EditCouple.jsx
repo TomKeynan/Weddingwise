@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { RegisterContext } from "../store/RegisterContext";
 import {
   Autocomplete,
@@ -28,11 +28,7 @@ import { useNavigate } from "react-router-dom";
 import { QuestionsContext } from "../store/QuestionsContext";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import InputFileUpload from "./InputFileUpload";
-import { useUserStore } from "../fireBase/userStore";
-import { auth, db } from "../fireBase/firebase";
-import { doc, updateDoc } from "firebase/firestore";
-import upload from "../fireBase/upload";
-import { updatePassword } from "firebase/auth";
+import { Navigate } from "react-router-dom";
 
 function EditCouple() {
   const navigate = useNavigate();
@@ -61,14 +57,8 @@ function EditCouple() {
   const [openSuccessMessage, setOpenSuccessMessage] = useState(false);
 
   const [openErrorMessage, setOpenErrorMessage] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [avatar, setAvatar] = useState({
-    file: null,
-    url: "",
-  });
+  
 
-  const { currentUser, loadingUserFirebase, setLoading, fetchUserInfo } =
-    useUserStore();
 
   useEffect(() => {
     let counter = 0;
@@ -98,54 +88,13 @@ function EditCouple() {
   }, [resData, error]);
 
   useEffect(() => {
-    const updateUser = async () => {
-      if (resData) {
-        setOpenSuccessMessage(true);
-        updateCoupleData(editValue);
-        try {
-          setLoading(true);
-          await updateUserFirebase();
-          await fetchUserInfo(currentUser.id);
-        } catch (error) {
-          setOpenErrorMessage(true);
-          console.error("Error updating user:", error);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
+    if (resData) {
+      setOpenSuccessMessage(true);
+      updateCoupleData(editValue);
+    }
 
-    updateUser();
   }, [resData, error]);
 
-  const updateUserFirebase = async () => {
-    const username = editValue.partner1Name + " ו" + editValue.partner2Name; // Need to fix?
-    const password = editValue.password;
-
-    // Missing the names of the couple.
-    try {
-      const user = auth.currentUser;
-      if (password) {
-        await updatePassword(user, password);
-      }
-
-      let imgUrl = null;
-      if (avatar && avatar.file) {
-        imgUrl = await upload(avatar.file);
-      }
-
-      // Update user details in Firestore
-      const userRef = doc(db, "users", currentUser.id);
-      await updateDoc(userRef, {
-        username: username || currentUser.username,
-        avatar: imgUrl || currentUser.avatar,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   function handleWeddingDateChange(dateInput) {
     let weddingDateObject = getFullDate(dateInput);
@@ -155,14 +104,6 @@ function EditCouple() {
     saveDateValue(dateInput);
   }
 
-  const handleAvatar = (e) => {
-    if (e.target.files[0]) {
-      setAvatar({
-        file: e.target.files[0],
-        url: URL.createObjectURL(e.target.files[0]),
-      });
-    }
-  };
 
   // ======================= CONFIRM UPDATE =======================
 
@@ -176,7 +117,6 @@ function EditCouple() {
 
   function handleUpdateApproval() {
     sendData("/Couples/updateCouple", "PUT", editValue);
-    console.log(editValue);
     setResData(undefined);
     setOpenUpdateConfirm(false);
   }
@@ -188,7 +128,7 @@ function EditCouple() {
         open={openUpdateConfirm}
         onCancel={handleCancelUpdateConfirm}
         onApproval={handleUpdateApproval}
-        // disabledBtn={isUpdateDetailsValid}
+      // disabledBtn={isUpdateDetailsValid}
       >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
           לחיצה על אישור תוביל לשינוי פרטי החתונה הקיימים באלו שעכשיו בחרתם.
@@ -297,6 +237,11 @@ function EditCouple() {
     );
   }
 
+
+  if (!coupleData) {
+    return <Navigate to="/" />;
+  }
+
   return (
     <Paper variant="elevation" elevation={6} sx={paperSX}>
       <Grid
@@ -304,8 +249,8 @@ function EditCouple() {
         // sx={{ maxWidth: { xs: "80%", sm: "60%" }, margin: "0 auto" }}
         spacing={2}
       >
+        {(loading || isLoading) && <Loading />}
         {openUpdateConfirm && showUpdateConfirmDialog()}
-        {isLoading && <Loading />}
         {error && showErrorMessage(error)}
         {openSuccessMessage && showSuccessMessage(resData)}
         {openQuestionsConfirm && showQuestionsConfirm()}

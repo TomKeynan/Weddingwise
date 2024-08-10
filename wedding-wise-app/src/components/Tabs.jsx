@@ -9,12 +9,8 @@ import CommentCard from "./CommentCard";
 import { Alert, Paper, Stack, Typography } from "@mui/material";
 import EditSupplier from "./EditSupplier";
 import EditAvailableDates from "./EditAvailableDates";
-import { AppContext } from "../store/AppContext";
 import useFetch from "../utilities/useFetch";
 import { customTheme } from "../store/Theme";
-import { useUserStore } from "../fireBase/userStore";
-import { db } from "../fireBase/firebase";
-import { doc, onSnapshot } from "firebase/firestore";
 import { reverseGeocoding } from "../utilities/functions";
 
 function CustomTabPanel(props) {
@@ -53,8 +49,14 @@ export default function BasicTabs({ supplierFirebase }) {
 
 
   useEffect(() => {
+    getData(`/Suppliers/getSupplierEvents/email/${supplierFirebase?.email}`);
+  }, []);
+
+
+  useEffect(() => {
     const handlePackages = async () => {
       if (resData) {
+
         const packages = resData?.map((item, index) => {
           item.id = index;
           return item;
@@ -65,6 +67,7 @@ export default function BasicTabs({ supplierFirebase }) {
     };
     handlePackages();
   }, [resData]);
+
 
 
   const addAddresses = async (data) => {
@@ -78,13 +81,15 @@ export default function BasicTabs({ supplierFirebase }) {
         };
       })
     );
-    // Set the suppliersEvents state with the updated data
+
     return updatedData;
   };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  console.log(supplierFirebase?.comments);
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -128,7 +133,7 @@ export default function BasicTabs({ supplierFirebase }) {
         )}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        {supplierFirebase?.comments && supplierFirebase.comments.length > 0 ? (
+        {supplierFirebase?.comments && supplierFirebase?.comments?.length > 0 ? (
           <Stack
             sx={{
               maxHeight: 500,

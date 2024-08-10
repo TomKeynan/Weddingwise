@@ -68,19 +68,12 @@ function SupplierPublicProfile() {
     }
   }, [supplierFirebase]);
 
-  // Ensure relevantSupplier is set from supplierData if it exists
-  // useEffect(() => {
-  //   if (supplierData) {
-  //     setRelevantSupplier(supplierData);
-  //   }
-  // }, [supplierData, setRelevantSupplier]);
-
   useEffect(() => {
     const fetchAndSetData = async () => {
       try {
         setLoadingData(true);
 
-        // Fetch supplier ID based on email
+        
         const userRef = collection(db, "users");
         const q = query(
           userRef,
@@ -97,7 +90,7 @@ function SupplierPublicProfile() {
         const supplierId = querySnapshot.docs[0].id;
         const userDocRef = doc(db, "users", supplierId);
 
-        // Set up a Firestore onSnapshot listener for the user document
+    
         const unsubscribe = onSnapshot(userDocRef, async (docSnapshot) => {
           if (docSnapshot.exists()) {
             try {
@@ -356,9 +349,9 @@ function SupplierPublicProfile() {
           data={relevantSupplier.ratedCount}
           icon={<PeopleOutlineIcon />}
         />
-        <KpiPaper
+         <KpiPaper
           title="דירוג:"
-          data={relevantSupplier.rating}
+          data= {relevantSupplier?.rating === 0 ? "–" : relevantSupplier?.rating}
           icon={<StarOutlineIcon />}
         />
       </Stack>
@@ -451,7 +444,7 @@ function SupplierPublicProfile() {
         </Stack>
       )}
       {/* comment form */}
-      {coupleData && (
+      {supplierData?.supplierEmail !== relevantSupplier?.supplierEmail && (
         <Stack sx={{ maxWidth: 700, width: { xs: "90%", sm: "60%" } }}>
           <Typography sx={{ ...titleSX, mb: 5, px: 2 }}>
             השאירו תגובה מהחוויה שלכם עם {relevantSupplier.businessName}

@@ -13,7 +13,7 @@ function Gmap() {
     fetch("https://proj.ruppin.ac.il/cgroup70/test2/tar1/api/Suppliers/getTopVenues")
       .then((response) => response.json())
       .then((data) => {
-        console.log("Fetched venues:", data);
+        // console.log("Fetched venues:", data);
         setVenues(data);
       })
       .catch((error) => console.error("There was an error fetching the venues!", error));

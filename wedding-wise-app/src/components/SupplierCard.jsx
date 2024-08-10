@@ -35,14 +35,14 @@ function SupplierCard({
 
   useEffect(() => {
     const fetchSupplierDataAsync = async () => {
-      if (avatar) {
+     
         const cardSticker = stickers.find(
           (sticker) =>
             sticker.stickerSrc.includes(supplierType) ||
             sticker.stickerSrc.includes("makeup")
         );
         setSticker(cardSticker || {});
-      }
+    
 
       try {
         setLoadingData(true);
@@ -63,145 +63,150 @@ function SupplierCard({
     };
 
     fetchSupplierDataAsync();
-  }, [supplierEmail, supplierType, props]);
+  }, [supplierEmail, supplierType]);
 
   const handleMoreInformation = () => {
     setRelevantSupplier(props);
     navigate("/supplier-public-profile");
   };
 
-  if (!avatar) {
-    return <Loading />;
-  }
+
+
+
+
 
   return (
-    <Stack
-      direction="column"
-      justifyContent="center"
-      alignItems="center"
-      sx={{
-        bgcolor: cardBg,
-        boxShadow: customTheme.shadow.main,
-        borderRadius: 4,
-        margin: "0 auto",
-        width: { xs: 200, sm: 250 },
-      }}
-    >
-      <Box sx={{ width: "100%" }}>
-        <Box
-          component="img"
-          src={avatar}
-          alt={businessName}
-          sx={{
-            width: "100%",
-            borderRadius: "16px",
-            boxShadow: customTheme.shadow.main,
-            aspectRatio: "1/1",
-            objectFit: "cover",
-          }}
-        ></Box>
-      </Box>
 
+
+    <>
+      {!avatar && <Loading />}
       <Stack
-        spacing={1}
+        direction="column"
+        justifyContent="center"
+        alignItems="center"
         sx={{
-          width: "100%",
-          textAlign: "center",
-          py: 2,
+          bgcolor: cardBg,
+          boxShadow: customTheme.shadow.main,
+          borderRadius: 4,
+          margin: "0 auto",
+          width: { xs: 200, sm: 250 },
         }}
       >
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          sx={{ px: 1 }}
-        >
-          <Typography variant="body1" sx={{ textAlign: "center" }}>
-            {businessName}
-          </Typography>
-          {sticker.stickerSrc && (
-            <img
-              src={sticker.stickerSrc}
-              alt={sticker.stickerAlt}
-              className="supplier-card-sticker"
-            />
-          )}
-        </Stack>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          sx={{ px: 1 }}
-        >
-          <Typography variant="body1" sx={{ textAlign: "center" }}>
-            {phoneNumber}
-          </Typography>
-          <PhoneIcon sx={{ fontSize: 20 }} />
-        </Stack>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          sx={{ px: 1 }}
-        >
-          <Typography
-            variant="body2"
-            sx={{ textAlign: "left", wordBreak: "break-all" }}
-          >
-            {supplierEmail}
-          </Typography>
-          <AlternateEmailIcon sx={{ fontSize: 20 }} />
-        </Stack>
-        <Stack direction="row" alignItems="center" justifyContent="center">
-          <Typography
+        <Box sx={{ width: "100%" }}>
+          <Box
+            component="img"
+            src={avatar}
+            alt={businessName}
             sx={{
-              textAlign: "center",
-              my: 1,
-              fontSize: 22,
-              color: customTheme.palette.primary.dark,
+              width: "100%",
+              borderRadius: "16px",
+              boxShadow: customTheme.shadow.main,
+              aspectRatio: "1/1",
+              objectFit: "cover",
             }}
-            variant="body1"
-          >
-            ₪מחיר: {addCommasToNumber(price)}
-          </Typography>
-        </Stack>
+          ></Box>
+        </Box>
+
         <Stack
-          direction="row"
-          justifyContent="space-around"
-          sx={{ height: "100%" }}
+          spacing={1}
+          sx={{
+            width: "100%",
+            textAlign: "center",
+            py: 2,
+          }}
         >
-          {showReplaceSupplierBtn &&
-            (isAlternative ? (
-              <Button
-                variant="outlined"
-                sx={actionBtnSX}
-                onClick={() => onCheckBtnClick(supplierEmail)}
-              >
-                <CheckIcon />
-              </Button>
-            ) : (
-              <Button
-                variant="outlined"
-                disableRipple
-                sx={actionBtnSX}
-                onClick={() => onReplacement(supplierType, supplierEmail)}
-              >
-                החלף ספק
-              </Button>
-            ))}
-          {showMoreInfoBtn && (
-            <Button
-              onClick={handleMoreInformation}
-              variant="contained"
-              sx={actionBtnSX}
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            sx={{ px: 1 }}
+          >
+            <Typography variant="body1" sx={{ textAlign: "center" }}>
+              {businessName}
+            </Typography>
+            {sticker.stickerSrc && (
+              <img
+                src={sticker.stickerSrc}
+                alt={sticker.stickerAlt}
+                className="supplier-card-sticker"
+              />
+            )}
+          </Stack>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            sx={{ px: 1 }}
+          >
+            <Typography variant="body1" sx={{ textAlign: "center" }}>
+              {phoneNumber}
+            </Typography>
+            <PhoneIcon sx={{ fontSize: 20 }} />
+          </Stack>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            sx={{ px: 1 }}
+          >
+            <Typography
+              variant="body2"
+              sx={{ textAlign: "left", wordBreak: "break-all" }}
             >
-              מידע נוסף
-            </Button>
-          )}
+              {supplierEmail}
+            </Typography>
+            <AlternateEmailIcon sx={{ fontSize: 20 }} />
+          </Stack>
+          <Stack direction="row" alignItems="center" justifyContent="center">
+            <Typography
+              sx={{
+                textAlign: "center",
+                my: 1,
+                fontSize: 22,
+                color: customTheme.palette.primary.dark,
+              }}
+              variant="body1"
+            >
+              ₪מחיר: {addCommasToNumber(price)}
+            </Typography>
+          </Stack>
+          <Stack
+            direction="row"
+            justifyContent="space-around"
+            sx={{ height: "100%" }}
+          >
+            {showReplaceSupplierBtn &&
+              (isAlternative ? (
+                <Button
+                  variant="outlined"
+                  sx={actionBtnSX}
+                  onClick={() => onCheckBtnClick(supplierEmail)}
+                >
+                  <CheckIcon />
+                </Button>
+              ) : (
+                <Button
+                  variant="outlined"
+                  disableRipple
+                  sx={actionBtnSX}
+                  onClick={() => onReplacement(supplierType, supplierEmail)}
+                >
+                  החלף ספק
+                </Button>
+              ))}
+            {showMoreInfoBtn && (
+              <Button
+                onClick={handleMoreInformation}
+                variant="contained"
+                sx={actionBtnSX}
+              >
+                מידע נוסף
+              </Button>
+            )}
+          </Stack>
         </Stack>
       </Stack>
-    </Stack>
-  );
+    </>);
 }
 
 export default SupplierCard;

@@ -2,19 +2,11 @@ import { Box, Stack, Typography, useMediaQuery } from "@mui/material";
 import React from "react";
 import { customTheme } from "../../store/Theme";
 import { convertDateToClientFormat } from "../../utilities/functions";
-import Loading from "../Loading";
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { getAuth } from 'firebase/auth';
-import { Navigate } from "react-router-dom";
 import { useUserStore } from "../../fireBase/userStore";
 
 function ProfileBanner({ props }) {
   const screenAboveSM = useMediaQuery("(min-width: 900px)");
-  // const auth = getAuth();
-  // const [user, loading] = useAuthState(auth);
   const { currentUser } = useUserStore();
-
-
   const { partner1Name, partner2Name, desiredDate } = props;
 
   return (

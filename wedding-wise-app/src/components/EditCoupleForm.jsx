@@ -65,6 +65,8 @@ function EditCoupleForm() {
     url: "",
   });
 
+  const [password, setPassword] = useState("");
+
   const { currentUser, loadingUserFirebase, setLoading, fetchUserInfo } =
     useUserStore();
 
@@ -108,9 +110,8 @@ function EditCoupleForm() {
 
   const updateUserFirebase = async () => {
     const username = editValue.partner1Name + " ו" + editValue.partner2Name; // Need to fix?
-    const password = editValue.password;
 
-    // Missing the names of the couple.
+
     try {
       const user = auth.currentUser;
       if (password) {
@@ -122,7 +123,6 @@ function EditCoupleForm() {
         imgUrl = await upload(avatar.file);
       }
 
-      // Update user details in Firestore
       const userRef = doc(db, "users", currentUser.id);
       await updateDoc(userRef, {
         username: username || currentUser.username,
@@ -163,6 +163,7 @@ function EditCoupleForm() {
   }
 
   function handleUpdateApproval() {
+    setPassword(editValue.password);
     sendData("/Couples/updateCouple", "PUT", editValue);
     setResData(undefined);
     setOpenUpdateConfirm(false);
@@ -175,7 +176,7 @@ function EditCoupleForm() {
         open={openUpdateConfirm}
         onCancel={handleCancelUpdateConfirm}
         onApproval={handleUpdateApproval}
-        // disabledBtn={isUpdateDetailsValid}
+      // disabledBtn={isUpdateDetailsValid}
       >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
           לחיצה על אישור תוביל לשינוי פרטי החתונה הקיימים באלו שעכשיו בחרתם.
@@ -231,7 +232,7 @@ function EditCoupleForm() {
     if (editCoupleComeFrom === "navbar") navigate("/profile");
     else {
       navigate("/questionnaire");
-      
+
     }
   }
 

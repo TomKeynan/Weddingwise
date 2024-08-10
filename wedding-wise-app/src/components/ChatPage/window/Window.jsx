@@ -1,40 +1,39 @@
-import './window.css'; // Importing CSS for the component
-import EmojiPicker from 'emoji-picker-react'; // Importing EmojiPicker component
-import { arrayUnion, doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore'; // Firebase Firestore functions
-import { useState, useEffect, useRef } from 'react'; // React hooks
-import { db } from '../../../fireBase/firebase'; // Firebase database configuration
+import './window.css'; 
+import EmojiPicker from 'emoji-picker-react'; 
+import { arrayUnion, doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore'; 
+import { useState, useEffect, useRef } from 'react'; 
+import { db } from '../../../fireBase/firebase'; 
 import { useChatStore } from '../../../fireBase/chatStore';
 import { useUserStore } from '../../../fireBase/userStore';
-import upload from '../../../fireBase/upload'; // Custom upload function
-import * as timeago from 'timeago.js'; // Timeago library for formatting timestamps
-import he from 'timeago.js/lib/lang/he'; // Hebrew language support for timeago
+import upload from '../../../fireBase/upload'; 
+import TimeAgo from 'react-timeago';
+import heStrings from 'react-timeago/lib/language-strings/he';
+import buildFormatter from 'react-timeago/lib/formatters/buildFormatter';
 
-// Register Hebrew locale for timeago
-timeago.register('he', he);
+const formatter = buildFormatter(heStrings);
 
 function Window() {
-  // Local state variables
+
   const [chat, setChat] = useState();
-  const [open, setOpen] = useState(false); // Emoji picker state
-  const [text, setText] = useState(""); // Message text state
+  const [open, setOpen] = useState(false); 
+  const [text, setText] = useState(""); 
   const [img, setImg] = useState({
     file: null,
     url: "",
   });
 
-  // Getting current user and chat information from custom hooks
   const { currentUser } = useUserStore();
   const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } = useChatStore();
 
   // Reference to the end of the chat messages for scrolling
   const endRef = useRef(null);
 
-  // Scroll to the end of chat messages on component mount
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
+  }, [chat?.messages]);
 
-  console.log("Window");
+
+  // console.log("Window");
 
 
   // Listen for changes to the current chat and update the local state
@@ -178,8 +177,8 @@ function Window() {
           <div className='texts'>
             <span>{user?.username}</span>
             {/* {תיאור} */}
-            <p>{user?.description}</p> 
-            </div>
+            <p>{user?.description}</p>
+          </div>
         </div>
         {/* <div className='icons'>
           <img src='assets/chat_pics/phone.png' alt='' />
@@ -202,7 +201,9 @@ function Window() {
               ) : (
                 <p>{message.text}</p>
               )}
-              <span>{timeago.format(message.createdAt.toDate(), 'he')}</span>
+              <span>
+                <TimeAgo date={message.createdAt.toDate()} formatter={formatter} />
+              </span>
             </div>
           </div>
         ))}

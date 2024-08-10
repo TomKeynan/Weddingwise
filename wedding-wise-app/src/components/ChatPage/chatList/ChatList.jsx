@@ -1,25 +1,24 @@
-import React, { useEffect, useState } from 'react'; // Import React and necessary hooks
-import './chatList.css'; // Import CSS for styling
-import { useUserStore } from '../../../fireBase/userStore'; // Import user store hook
-import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore"; // Import Firestore methods
-import { db } from '../../../fireBase/firebase'; // Import Firestore database instance
-import { useChatStore } from '../../../fireBase/chatStore'; // Import chat store hook
+import React, { useEffect, useState } from 'react'; 
+import './chatList.css'; 
+import { useUserStore } from '../../../fireBase/userStore'; 
+import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore"; 
+import { db } from '../../../fireBase/firebase'; 
+import { useChatStore } from '../../../fireBase/chatStore'; 
 
 function ChatList() {
-    // State variables for storing chats, add mode status, and input value
     const [chats, setChats] = useState([]);
     const [addMode, setAddMode] = useState(false);
     const [input, setInput] = useState("");
 
-    const { currentUser } = useUserStore(); // Get the current user from the user store
-    const { changeChat } = useChatStore(); // Get the changeChat function from the chat store
+    const { currentUser } = useUserStore(); 
+    const { changeChat } = useChatStore(); 
 
     useEffect(() => {
-        // Set up a Firestore onSnapshot listener for user chats
+        
         const unsub = onSnapshot(
             doc(db, "userChats", currentUser.id),
             async (res) => {
-                const chatList = res.data().chats; // Retrieve the list of chats
+                const chatList = res.data().chats; 
 
                 // Retrieve user data for each chat asynchronously
                 const promises = chatList?.map(async (chat) => {

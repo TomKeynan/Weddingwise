@@ -46,24 +46,26 @@ export default function CommentForm({supplierFirebase}) {
     const updateFirebaseAndSetState = async () => {
       if (resData) {
         try {
+          if(comment)
+          {
           await handleSendToFirebase();
+          }
           setOpenUpdateSuccess(true);
-        } catch (err) {
+        } 
+         catch (err) {
           console.log(err);
           setOpen(true); 
         }
-      }
-      if (error) {
-        setOpen(true);
-      }
-      return () => {
-        setResData(undefined);
-      };
-    };
+      }}
 
     updateFirebaseAndSetState();
-  }, [resData, error]);
+  }, [resData]);
 
+  useEffect(() => {
+    if (error) {
+      setOpen(true);
+    }
+  }, [error]);
 
 
   const handleSendToFirebase = async () => {

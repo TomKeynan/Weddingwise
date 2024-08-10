@@ -29,7 +29,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
   // isLayout detect rather navbar's style should be for home page or all other pages
   const screenAboveMD = useMediaQuery("(min-width: 900px)");
 
-  const { changeChatStatus, isSeen, changeIsSeenStatus, chatStatus } = useChatStore();
+  const { changeChatStatus, isSeen, changeIsSeenStatus, resetChat } = useChatStore();
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
   const { currentUser, isLoading, logout } = useUserStore();
@@ -141,6 +141,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
   async function handleLogout() {
     try {
       clearRelevantSupplier();
+      resetChat();
       const auth = getAuth();
       await signOut(auth);
       logout();
@@ -156,13 +157,10 @@ function Navbar({ isLayout = true, isSupplier = false }) {
     handleCloseUserMenu();
   };
 
-
   const handleSupplierNavigate = () => {
     handleCloseNavMenu();
     setRelevantSupplier(supplierData);
   }
-
-
 
   useEffect(() => {
     let unSubChat = null;

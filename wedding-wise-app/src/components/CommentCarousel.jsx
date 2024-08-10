@@ -11,6 +11,7 @@ function CommentCarousel({ supplierComments }) {
   // console.log("CommentCarousel")
 
 
+  // Arrange comments by the time of giving the rating.
   useEffect(() => {
     if (supplierComments && supplierComments?.length) {
       const sorted = [...supplierComments].sort((a, b) => a.commentTime - b.commentTime);

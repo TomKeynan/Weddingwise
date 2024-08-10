@@ -1,4 +1,3 @@
-// supplierStore.js
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -20,7 +19,7 @@ export const useSupplierData = create(
     }),
     {
       name: 'relevant-supplier-storage', // Name of the item in session storage
-      getStorage: () => sessionStorage,  // Use sessionStorage instead of localStorage
+      storage: sessionStorage,  // Use sessionStorage instead of localStorage
     }
   )
 );

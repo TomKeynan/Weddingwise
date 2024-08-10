@@ -47,10 +47,12 @@ export const useChatStore = create((set) => ({
       user: null,
       isCurrentUserBlocked: false,
       isReceiverBlocked: false,
+      chatStatus: false
     });
   },
   changeChatStatus: () => {
     set((state) => ({ ...state, chatStatus: !state.chatStatus }));
+    set({ chatId: null }) // Thats new
   },
   changeIsSeenStatus: (status) => {
     set({ isSeen: status });

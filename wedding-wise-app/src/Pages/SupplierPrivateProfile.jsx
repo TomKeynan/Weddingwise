@@ -32,13 +32,12 @@ function SupplierPrivateProfile() {
   useEffect(() => {
     if (!user?.uid) return;
     setLoadingData(true);
-    // Create a reference to the user document
+
     const userDocRef = doc(db, "users", user?.uid);
 
-    // Set up a Firestore onSnapshot listener
     const unsub = onSnapshot(userDocRef, (docSnapshot) => {
       if (docSnapshot.exists()) {
-        // Define an asynchronous function to fetch data and reverse geocode
+
         const fetchDataAndReverseGeocode = async () => {
           try {
             const data = await fetchSupplierData(supplierData.supplierEmail);
@@ -56,12 +55,10 @@ function SupplierPrivateProfile() {
           }
         };
 
-        // Call the async function
         fetchDataAndReverseGeocode();
       }
     });
 
-    // Clean up the listener on component unmount
     return () => {
       unsub();
     };
@@ -112,7 +109,7 @@ function SupplierPrivateProfile() {
           />
           <KpiPaper
             title="דירוג:"
-            data={supplierData.rating}
+            data= {supplierData?.rating === 0 ? "–" : supplierData?.rating}
             icon={<StarOutlineIcon />}
           />
         </Stack>

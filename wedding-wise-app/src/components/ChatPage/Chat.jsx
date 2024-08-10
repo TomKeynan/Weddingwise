@@ -12,7 +12,7 @@ import Loading from '../Loading';
 import { getAuth } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { AppContext } from '../../store/AppContext';
-
+import { Navigate } from 'react-router-dom';
 function Chat() {
   const { currentUser, isLoading, fetchUserInfo } = useUserStore();
   const { chatId, changeChatStatus, chatStatus } = useChatStore();
@@ -28,31 +28,31 @@ function Chat() {
   const [hasChats, setHasChats] = useState(false);
 
   useEffect(() => {
+    if (currentUser?.id) {
+      // Set up a Firestore onSnapshot listener for user chats
+      const unsub = onSnapshot(
+        doc(db, "userChats", currentUser.id),
+        async (docSnapshot) => {
+          const chatData = docSnapshot?.data();
+          if (chatData && chatData?.chats && chatData?.chats?.length > 0) {
+            setHasChats(true);
+          } else {
+            setHasChats(false);
+          }
+        });
+      return () => {
+        unsub();
+      };
+    }
+  }, [currentUser?.id]);
 
-    // Set up a Firestore onSnapshot listener for user chats
-    const unsub = onSnapshot(
-      doc(db, "userChats", currentUser?.id),
-      async (docSnapshot) => {
-        const chatData = docSnapshot.data();
-        console.log("hey");
-        if (chatData && chatData.chats && chatData.chats.length > 0) {
-          setHasChats(true);
-        } else {
-          setHasChats(false);
-        }
-      });
-    return () => {
-      unsub();
-    };
-  }, [currentUser]);
-
-
-  if (!user) {
-    return (<Loading />)
+ 
+  if (!currentUser) {
+    return <Navigate to="/" />;
   }
 
   return (
-    isLoading ? (
+    !currentUser ? (
       <Loading />
     ) : (
       <div className="chat" >
@@ -105,20 +105,3 @@ function Chat() {
 export default Chat;
 
 
-// Whats better?
-// useEffect(() => {
-//   const handleClickOutside = (event) => {
-//     if (chatRef.current && !chatRef.current.contains(event.target)) {
-//       changeChatStatus();
-//       resetChat();
-//     }
-//   };
-
-//   // Add event listener
-//   document.addEventListener('mousedown', handleClickOutside);
-
-//   // Cleanup function to remove event listener
-//   return () => {
-//     document.removeEventListener('mousedown', handleClickOutside);
-//   };
-// }, [chatRef]);

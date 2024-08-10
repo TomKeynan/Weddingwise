@@ -31,7 +31,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../fireBase/firebase";
 import { useUserStore } from "../../fireBase/userStore";
-import { useChatStore } from "../../fireBase/chatStore";
+import { useGlobalStore } from "../../fireBase/globalLoading";
 
 function UserPackage() {
   const navigate = useNavigate();
@@ -67,6 +67,8 @@ function UserPackage() {
 
   const { currentUser, isLoading } = useUserStore();
 
+  const { setGlobalLoading, globalLoading } = useGlobalStore();
+
   useEffect(() => {
     // check if couple ever approve a package
     if (coupleData.package)
@@ -85,19 +87,29 @@ function UserPackage() {
   useEffect(() => {
     const updateCoupleData = async () => {
       if (resData) {
-        const { typeWeights, ...rest } = offeredPackage;
-        await addSuppliersChats(rest.selectedSuppliers);
-        setCoupleData((prevData) => {
-          return {
-            ...prevData,
-            package: { ...rest },
-          };
-        });
+        try {
+          const { typeWeights, ...rest } = offeredPackage;
+          await addSuppliersChats(rest.selectedSuppliers);
+          setCoupleData((prevData) => {
+            return {
+              ...prevData,
+              package: { ...rest },
+            };
+          });
+        }
+
+        catch (err) {
+          setGlobalLoading(false);
+          console.log(err);
+        }
+        finally {
+          setGlobalLoading(false);
+        
+        }
       }
     };
-
     updateCoupleData();
-   
+
   }, [resData]);
 
   const addSuppliersChats = async (suppliers) => {
@@ -275,7 +287,7 @@ function UserPackage() {
         title="שימו לב..."
         open={openUpdateConfirm}
         onCancel={handleCancelUpdateConfirm}
-        // disabledBtn={isUpdateDetailsValid}
+      // disabledBtn={isUpdateDetailsValid}
       >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
           לחיצה על אישור תוביל להמלצה על חבילה חדשה לגמרי.
@@ -289,7 +301,8 @@ function UserPackage() {
 
   function handlePackageApproval() {
     let typeReplacements = [];
-
+    setGlobalLoading(true);
+    setResData(null);
     originalSelectedSuppliers.forEach((supplier, index) => {
       if (
         supplier.supplierEmail !==
@@ -306,8 +319,8 @@ function UserPackage() {
       package: rest,
       typeWeights,
     };
-
     if (coupleData.package) {
+
       sendData("/Packages/updatePackage", "PUT", {
         couple: coupleWithPackage,
         typeReplacements,
@@ -579,7 +592,6 @@ function UserPackage() {
   }
 
 
-
   return (
     <Stack
       justifyContent="space-around"
@@ -593,9 +605,10 @@ function UserPackage() {
         margin: "0 auto",
       }}
     >
-      {(isLoading || loading) && <Loading />}
-      { error && showErrorMessage(error)}
-      { resData && showSuccessMessage(resData)}
+      {/* {(isLoading || loading) && <Loading />} */}
+      {globalLoading && <Loading />}
+      {error && !globalLoading && showErrorMessage(error)}
+      {resData && !globalLoading && showSuccessMessage(resData)}
       {openAltSuppliers && showAltSuppliersDialog()}
       {openConfirm && showConfirmDialog()}
       {openUpdateDetails && showUpdateDetailsDialog()}
