@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { RegisterContext } from "../store/RegisterContext";
+import React, { useContext, useEffect, useState } from "react";
+import { RegisterContext } from "../../store/RegisterContext";
 import {
   Autocomplete,
   Button,
@@ -12,29 +12,28 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import TextInput from "./TextInput";
-import { customTheme } from "../store/Theme";
-import { regions, updateCoupleDetailsResponse } from "../utilities/collections";
+import TextInput from "../TextInput";
+import { customTheme } from "../../store/Theme";
+import {
+  regions,
+  updateCoupleDetailsResponse,
+} from "../../utilities/collections";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { getFullDate } from "../utilities/functions";
-import { AppContext } from "../store/AppContext";
-import ConfirmDialog from "./Dialogs/ConfirmDialog";
-import useFetch from "../utilities/useFetch";
-import Loading from "./Loading";
-import MessageDialog from "./Dialogs/MessageDialog";
+import { getFullDate } from "../../utilities/functions";
+import { AppContext } from "../../store/AppContext";
+import ConfirmDialog from "../Dialogs/ConfirmDialog";
+import useFetch from "../../utilities/useFetch";
+import Loading from "../Loading";
+import MessageDialog from "../Dialogs/MessageDialog";
 import { useNavigate } from "react-router-dom";
-import { QuestionsContext } from "../store/QuestionsContext";
+import { QuestionsContext } from "../../store/QuestionsContext";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import InputFileUpload from "./InputFileUpload";
-import { useUserStore } from "../fireBase/userStore";
-import { auth, db } from "../fireBase/firebase";
-import { doc, updateDoc } from "firebase/firestore";
-import upload from "../fireBase/upload";
-import { updatePassword } from "firebase/auth";
+import InputFileUpload from "../InputFileUpload";
+import { Navigate } from "react-router-dom";
 
-function EditCoupleForm() {
+function EditCouple() {
   const navigate = useNavigate();
 
   const {
@@ -45,10 +44,16 @@ function EditCoupleForm() {
     isEditFormValid,
   } = useContext(RegisterContext);
 
-  const { coupleData, updateCoupleData, editCoupleComeFrom } = useContext(AppContext);
+  const { coupleData, updateCoupleData } = useContext(AppContext);
 
-  const { resData, loading, error, sendData, setResData, setError } =
-    useFetch();
+  const {
+    handleCreateNewPackage,
+    isLoading,
+    error: newPackageError,
+    setError: setNewPackageError,
+  } = useContext(QuestionsContext);
+
+  const { resData, error, sendData, setResData, setError } = useFetch();
 
   const [isUpdateDetailsValid, setIsUpdateDetailsValid] = useState(false);
 
@@ -59,19 +64,19 @@ function EditCoupleForm() {
   const [openSuccessMessage, setOpenSuccessMessage] = useState(false);
 
   const [openErrorMessage, setOpenErrorMessage] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [avatar, setAvatar] = useState({
-    file: null,
-    url: "",
-  });
-
-  const [password, setPassword] = useState("");
-
-  const { currentUser, loadingUserFirebase, setLoading, fetchUserInfo } =
-    useUserStore();
 
   useEffect(() => {
-    if (isFormCompleted(editValue, true) && isEditFormValid(editValue)) {
+    let counter = 0;
+    const { typeWeights, package: couplePackage, ...rest } = coupleData;
+    for (const key in rest) {
+      if (rest[key] != editValue[key]) counter++;
+    }
+    // console.log(editValue)
+    if (
+      isFormCompleted(editValue, true) &&
+      isEditFormValid(editValue) &&
+      counter > 0
+    ) {
       setIsUpdateDetailsValid(true);
     } else {
       setIsUpdateDetailsValid(false);
@@ -87,54 +92,6 @@ function EditCoupleForm() {
     }
   }, [resData, error]);
 
-  useEffect(() => {
-    const updateUser = async () => {
-      if (resData) {
-        setOpenSuccessMessage(true);
-        updateCoupleData(editValue);
-        try {
-          setLoading(true);
-          await updateUserFirebase();
-          await fetchUserInfo(currentUser.id);
-        } catch (error) {
-          setOpenErrorMessage(true);
-          console.error("Error updating user:", error);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
-    updateUser();
-  }, [resData, error]);
-
-  const updateUserFirebase = async () => {
-    const username = editValue.partner1Name + " ו" + editValue.partner2Name; // Need to fix?
-
-
-    try {
-      const user = auth.currentUser;
-      if (password) {
-        await updatePassword(user, password);
-      }
-
-      let imgUrl = null;
-      if (avatar && avatar.file) {
-        imgUrl = await upload(avatar.file);
-      }
-
-      const userRef = doc(db, "users", currentUser.id);
-      await updateDoc(userRef, {
-        username: username || currentUser.username,
-        avatar: imgUrl || currentUser.avatar,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-
   function handleWeddingDateChange(dateInput) {
     let weddingDateObject = getFullDate(dateInput);
     updateEditValue({
@@ -142,15 +99,6 @@ function EditCoupleForm() {
     });
     saveDateValue(dateInput);
   }
-
-  const handleAvatar = (e) => {
-    if (e.target.files[0]) {
-      setAvatar({
-        file: e.target.files[0],
-        url: URL.createObjectURL(e.target.files[0]),
-      });
-    }
-  };
 
   // ======================= CONFIRM UPDATE =======================
 
@@ -163,10 +111,10 @@ function EditCoupleForm() {
   }
 
   function handleUpdateApproval() {
-    setPassword(editValue.password);
     sendData("/Couples/updateCouple", "PUT", editValue);
     setResData(undefined);
     setOpenUpdateConfirm(false);
+    setNewPackageError(undefined);
   }
 
   function showUpdateConfirmDialog() {
@@ -176,7 +124,7 @@ function EditCoupleForm() {
         open={openUpdateConfirm}
         onCancel={handleCancelUpdateConfirm}
         onApproval={handleUpdateApproval}
-      // disabledBtn={isUpdateDetailsValid}
+        // disabledBtn={isUpdateDetailsValid}
       >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
           לחיצה על אישור תוביל לשינוי פרטי החתונה הקיימים באלו שעכשיו בחרתם.
@@ -188,11 +136,52 @@ function EditCoupleForm() {
     );
   }
 
+  function handleQuestionsApproval() {
+    navigate("/questionnaire");
+    setOpenQuestionsConfirm(false);
+  }
+
+  function handleQuestionsCancel() {
+    handleCreateNewPackage();
+    setOpenQuestionsConfirm(false);
+
+    // setError(undefined);
+  }
+
+  function showQuestionsConfirm() {
+    return (
+      <ConfirmDialog
+        title="שימו לב..."
+        open={openQuestionsConfirm}
+        onCancel={handleQuestionsCancel}
+        onApproval={handleQuestionsApproval}
+        approvalBtn="נמלא שאלון"
+        cancelBtn="נבחרת חדשה"
+      >
+        <Typography variant="h5" sx={{ textAlign: "center", mb: 1 }}>
+          שנייה לפני שנמליץ לכם על נבחרת ספקים חדשה , באפשרותכם למלא את השאלון
+          מחדש
+        </Typography>
+        <Typography variant="h5" sx={{ textAlign: "center", mb: 1 }}>
+          ------
+        </Typography>
+        <Typography variant="h6" sx={{ textAlign: "center" }}>
+          לתשובות שלכם יש משקל חשוב בהרכבת החבילה המתאימה ביותר עבורכם
+        </Typography>
+      </ConfirmDialog>
+    );
+  }
+
   // ======================= Message Dialog =======================
 
   function handleCloseMessage() {
     setOpenErrorMessage(false);
     setError(undefined);
+  }
+
+  function handleCloseSuccessMsg() {
+    setOpenSuccessMessage(false);
+    setOpenQuestionsConfirm(true);
   }
 
   function showErrorMessage(status) {
@@ -226,16 +215,6 @@ function EditCoupleForm() {
     );
   }
 
-  function handleCloseSuccessMsg() {
-    setOpenSuccessMessage(false);
-    setOpenQuestionsConfirm(true);
-    if (editCoupleComeFrom === "navbar") navigate("/profile");
-    else {
-      navigate("/questionnaire");
-
-    }
-  }
-
   function showSuccessMessage(resData) {
     return (
       <MessageDialog
@@ -256,6 +235,10 @@ function EditCoupleForm() {
     );
   }
 
+  if (!coupleData) {
+    return <Navigate to="/" />;
+  }
+
   return (
     <Paper variant="elevation" elevation={6} sx={paperSX}>
       <Grid
@@ -263,12 +246,13 @@ function EditCoupleForm() {
         // sx={{ maxWidth: { xs: "80%", sm: "60%" }, margin: "0 auto" }}
         spacing={2}
       >
+        {isLoading && <Loading />}
         {openUpdateConfirm && showUpdateConfirmDialog()}
-        {loading && <Loading />}
         {error && showErrorMessage(error)}
+        {newPackageError && showErrorMessage(newPackageError)}
         {openSuccessMessage && showSuccessMessage(resData)}
-        {/* {openQuestionsConfirm && showQuestionsConfirm()} */}
-        <Grid item xs={12} md={6}>
+        {openQuestionsConfirm && showQuestionsConfirm()}
+        {/* <Grid item xs={12} md={6}>
           <TextInput
             variant="standard"
             type="text"
@@ -289,7 +273,7 @@ function EditCoupleForm() {
             textFieldSX={textFieldSX}
             editMode={true}
           />
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} md={6}>
           <TextInput
             variant="standard"
@@ -357,7 +341,7 @@ function EditCoupleForm() {
             />
           </LocalizationProvider>
         </Grid>
-        <Grid item xs={12} md={6}>
+        {/* <Grid item xs={12} md={6}>
           <FormControl color="primary" sx={textFieldSX}>
             <TextInput
               variant="standard"
@@ -394,7 +378,7 @@ function EditCoupleForm() {
           >
             <InputFileUpload isUpload={avatar.file} />
           </FormControl>
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} sx={{ margin: "0 auto" }}>
           <Button
             variant="outlined"
@@ -412,7 +396,7 @@ function EditCoupleForm() {
   );
 }
 
-export default EditCoupleForm;
+export default EditCouple;
 
 // ============================== styles ==============================
 
@@ -448,10 +432,7 @@ const submitBtnSX = {
 };
 
 const paperSX = {
-  width: { xs: "90%", sm: "60%" },
   p: 5,
   mt: 2,
-  // py: 3,
-  // px: { xs: 1, sm: 3 },
   backgroundColor: "rgba(255,255,255,0.8)",
 };

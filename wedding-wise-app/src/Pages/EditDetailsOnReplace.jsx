@@ -1,9 +1,9 @@
 import React from "react";
 import { Stack, Typography } from "@mui/material";
 import RegisterContextProvider from "../store/RegisterContext";
-import EditCouple from "../components/EditCouple";
 import QuestionsContextProvider from "../store/QuestionsContext";
 import { customTheme } from "../store/Theme";
+import EditCouple from "../components/EditUser/EditCouple";
 
 function EditDetailsOnReplace() {
   return (

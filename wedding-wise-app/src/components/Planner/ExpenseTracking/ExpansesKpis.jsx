@@ -92,7 +92,7 @@ const kpiPaperSX = {
   py: 2,
   px: 3,
   borderRadius: 3,
-  backgroundColor: "rgba(243,255,244,0.8)",
+  bgcolor: "secondary.light",
   minHeight: { lg: 50 },
 };
 

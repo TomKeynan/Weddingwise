@@ -10,15 +10,14 @@ import {
   useMediaQuery,
   Alert,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 import { AppContext } from "../store/AppContext";
-import useFetch from "../utilities/useFetch";
 import Loading from "../components/Loading";
 import MessageDialog from "../components/Dialogs/MessageDialog";
-import TaskItem from "../components/TaskItem";
 import OutlinedButton from "../components/buttons/OutlinedButton";
 import { customTheme } from "../store/Theme";
 import ConfirmDialog from "../components/Dialogs/ConfirmDialog";
+import TaskItem from "../components/Planner/TasksPage/TaskItem";
+import useFetch from "../utilities/useFetch";
 
 function Tasks() {
   const screenUnderSM = useMediaQuery("(max-width: 600px)");
@@ -35,8 +34,6 @@ function Tasks() {
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [getTasksList, setGetTasksList] = useState(false);
   const [openUpdateConfirm, setOpenUpdateConfirm] = useState(false);
-
-  // console.log("Tasks");
 
   useEffect(() => {
     sendData(`/Tasks/getTasks?coupleEmail=${coupleData.email}`, "GET");

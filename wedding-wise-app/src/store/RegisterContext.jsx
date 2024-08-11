@@ -17,15 +17,15 @@ export const RegisterContext = createContext({
   error: null,
   loading: false,
   avatar: null,
-  updateUserDetails: () => { },
-  setError: () => { },
-  updateEditValue: () => { },
-  saveDateValue: () => { },
-  isFormCompleted: () => { },
-  isFormValid: () => { },
-  isEditFormValid: () => { },
-  handleSubmit: () => { },
-  handleAvatar: () => { },
+  updateUserDetails: () => {},
+  setError: () => {},
+  updateEditValue: () => {},
+  saveDateValue: () => {},
+  isFormCompleted: () => {},
+  isFormValid: () => {},
+  isEditFormValid: () => {},
+  handleSubmit: () => {},
+  handleAvatar: () => {},
 });
 export default function RegisterContextProvider({ children }) {
   const navigate = useNavigate();
@@ -69,8 +69,7 @@ export default function RegisterContextProvider({ children }) {
         } catch (err) {
           console.log(err);
           setGlobalLoading(false);
-        }
-        finally{
+        } finally {
           setGlobalLoading(false);
         }
       } else if (error) {
@@ -81,8 +80,6 @@ export default function RegisterContextProvider({ children }) {
     registerAndNavigate();
   }, [resData, error]);
 
-
-  
   const loginFireBase = async () => {
     try {
       await signInWithEmailAndPassword(
@@ -95,7 +92,6 @@ export default function RegisterContextProvider({ children }) {
       setGlobalLoading(false);
     }
   };
-
 
   const registerFireBase = async () => {
     const username = `${userDetails.partner1Name} ו${userDetails.partner2Name}`;
@@ -134,7 +130,6 @@ export default function RegisterContextProvider({ children }) {
 
   function updateUserDetails(currentInput) {
     setUserDetails((prevData) => {
-      // currentInput.hasownproprety('password')
       return { ...prevData, ...currentInput };
     });
   }
@@ -197,13 +192,11 @@ export default function RegisterContextProvider({ children }) {
       else return acc;
     }, 0);
     return result === filteredKeys.length;
-
   }
 
   function saveDateValue(dateInput) {
     setDateValue(dateInput);
   }
-
 
   function handleSubmit() {
     delete userDetails.Relationship;

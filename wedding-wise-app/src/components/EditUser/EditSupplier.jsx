@@ -11,37 +11,28 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import RegisterContextProvider from "../store/RegisterContext";
-import { customTheme } from "../store/Theme";
+import RegisterContextProvider from "../../store/RegisterContext";
+import { customTheme } from "../../store/Theme";
 import { Visibility, VisibilityOff, YouTube } from "@mui/icons-material";
 import {
   editSupplierValidations,
   regions,
   signupSupplierErrors,
-  supplierTypes,
-  VALIDATIONS,
-} from "../utilities/collections";
-import InputFileUpload from "./InputFileUpload";
-import SupplierOutlineBtn from "../components/buttons/SupplierOutlineBtn";
-import useFetch from "../utilities/useFetch";
-import { useNavigate } from "react-router-dom";
-import Loading from "../components/Loading";
-import {
-  getFullDate,
-  translateSupplierTypeToEnglish,
-  translateSupplierTypeToHebrew,
-} from "../utilities/functions";
-import MessageDialog from "../components/Dialogs/MessageDialog";
-import ReadOnlyPopup from "../components/Dialogs/ReadOnlyPopup";
-import { auth, db } from "../fireBase/firebase";
+} from "../../utilities/collections";
+import InputFileUpload from "../InputFileUpload";
+import SupplierOutlineBtn from "../buttons/SupplierOutlineBtn";
+import useFetch from "../../utilities/useFetch";
+import Loading from "../Loading";
+import MessageDialog from "../Dialogs/MessageDialog";
+import { auth, db } from "../../fireBase/firebase";
 import { doc } from "firebase/firestore";
-import upload from "../fireBase/upload";
-import { AppContext } from "../store/AppContext";
-import ConfirmDialog from "./Dialogs/ConfirmDialog";
-import { useUserStore } from "../fireBase/userStore";
+import upload from "../../fireBase/upload";
+import { AppContext } from "../../store/AppContext";
+import ConfirmDialog from "../Dialogs/ConfirmDialog";
+import { useUserStore } from "../../fireBase/userStore";
 import { updatePassword } from "firebase/auth";
 import { updateDoc } from "firebase/firestore";
-import { geocodeAddress } from "../utilities/functions";
+import { geocodeAddress } from "../../utilities/functions";
 
 const EditSupplier = ({ supplierFirebase }) => {
   const { editSupplier, setEditSupplier, setSupplierData } =

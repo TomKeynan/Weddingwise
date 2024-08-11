@@ -11,10 +11,7 @@ import MessageDialog from "../Dialogs/MessageDialog";
 import { AppContext } from "../../store/AppContext";
 import Loading from "../Loading";
 import ConfirmDialog from "../Dialogs/ConfirmDialog";
-import EditCouple from "../EditCouple";
-import RegisterContextProvider from "../../store/RegisterContext";
 import { useNavigate } from "react-router-dom";
-import DoneIcon from "@mui/icons-material/Done";
 
 import {
   arrayUnion,

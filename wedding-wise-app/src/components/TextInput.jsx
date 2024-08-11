@@ -40,9 +40,7 @@ const TextInput = ({
   function handleChange(e) {
     let value = e.target.value;
     validationCheck(name, value);
-    if (name == "budget" || name == "numberOfInvitees") {
-      value = Number(value);
-    }
+
     if (editMode) updateEditValue({ [name]: value });
     else updateUserDetails({ [name]: value });
   }

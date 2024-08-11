@@ -2,15 +2,18 @@ import React, { useContext, useState, useEffect } from "react";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "dayjs/locale/he";
-import { AppContext } from "../store/AppContext";
-import { convertDateToClientFormat, getFullDate } from "../utilities/functions";
-import MessageDialog from "./Dialogs/MessageDialog";
+import { AppContext } from "../../store/AppContext";
+import {
+  convertDateToClientFormat,
+  getFullDate,
+} from "../../utilities/functions";
+import MessageDialog from "../Dialogs/MessageDialog";
 import { Alert, Grid, Paper, Stack, Typography } from "@mui/material";
-import { customTheme } from "../store/Theme";
+import { customTheme } from "../../store/Theme";
 import dayjs from "dayjs";
-import AvailableDatesTable from "./AvailableDatesTable";
-import useFetch from "../utilities/useFetch";
-import ConfirmDialog from "./Dialogs/ConfirmDialog";
+import AvailableDatesTable from "../AvailableDatesTable";
+import useFetch from "../../utilities/useFetch";
+import ConfirmDialog from "../Dialogs/ConfirmDialog";
 
 const fakeDate = [
   "2024-07-28T00:00:00",
