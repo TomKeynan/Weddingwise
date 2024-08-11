@@ -89,8 +89,6 @@ export default function BasicTabs({ supplierFirebase }) {
     setValue(newValue);
   };
 
-  console.log(supplierFirebase?.comments);
-
   return (
     <Box sx={{ width: "100%" }}>
       <Box

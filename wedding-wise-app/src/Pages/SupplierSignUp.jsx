@@ -176,16 +176,23 @@ const SupplierSignUp = () => {
     delete data.LinkedIn;
   
     if (data.venueAddress) {
-      const { latitude, longitude } = await geocodeAddress(data.venueAddress);
-      if (latitude == null || longitude == null) {
-        setOpenAddressError(true);
-        return;
-      } else {
-        data.latitude = latitude;
-        data.longitude = longitude;
+      try {
+        const { latitude, longitude } = await geocodeAddress(data.venueAddress);
+        if (latitude == null || longitude == null) {
+          setOpenAddressError(true);
+          setGlobalLoading(false);
+          return;
+        }
+        else {
+          data.latitude = latitude;
+          data.longitude = longitude;
+        }
+      }
+      catch (err) {
+        console.log(err);
+        setGlobalLoading(false);
       }
     }
-  
     // Validate fields
     const newErrors = {};
     for (let field in data) {

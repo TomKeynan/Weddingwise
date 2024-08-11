@@ -229,11 +229,18 @@ namespace Server.BL
         }
 
         // UpdateCouple: Method to update couple data in the database
-        public int UpdateCouple()
+        public int UpdateSupplier()
         {
             DBServicesSupplier dBServicesSupplier = new DBServicesSupplier();
-            return dBServicesSupplier.UpdateSupplier(this);
+            return dBServicesSupplier.UpdateSupplierDetails(this);
         }
+
+        public int UpdateSupplierDates()
+        {
+            DBServicesSupplier dBServicesSupplier = new DBServicesSupplier();
+            return dBServicesSupplier.UpdateSupplierDates(this);
+        }
+
 
         public static List<SupplierEvent> GetSupplierEvents(string supplierEmail)
         {

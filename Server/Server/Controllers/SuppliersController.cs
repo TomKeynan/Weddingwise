@@ -153,7 +153,7 @@ namespace Server.Controllers
                 }
 
                 // Attempt to update the supplier in the database
-                if (supplier.UpdateCouple() == 1)
+                if (supplier.UpdateSupplier() == 1)
                 {
                     return NoContent(); // Return 204 NoContent for successful update
                 }
@@ -171,6 +171,43 @@ namespace Server.Controllers
             catch (Exception e)
             {
                 // Return a BadRequest response with the error message
+                return BadRequest($"Error: {e.Message}");
+            }
+        }
+
+
+        [HttpPut("updateSupplierDates")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult PutSupplierDates([FromBody] Supplier supplier)
+        {
+            try
+            {
+
+                if (supplier == null)
+                {
+                    throw new ArgumentNullException(nameof(supplier), "The supplier's object is null");
+                }
+
+
+                if (supplier.UpdateSupplierDates() == 1)
+                {
+                    return NoContent();
+                }
+
+                else
+                {
+
+                    throw new Exception("The update wasn't successful");
+                }
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception e)
+            {
+
                 return BadRequest($"Error: {e.Message}");
             }
         }
