@@ -461,7 +461,7 @@ const EditSupplier = ({ supplierFirebase }) => {
                 )}
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              {/* <Grid item xs={12} md={6}>
                 <FormControl
                   color="primary"
                   variant="outlined"
@@ -497,7 +497,7 @@ const EditSupplier = ({ supplierFirebase }) => {
                     {errors.password}
                   </Alert>
                 )}
-              </Grid>
+              </Grid> */}
               <Grid item xs={12} md={6}>
                 <FormControl
                   name="userImage"

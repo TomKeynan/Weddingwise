@@ -1,4 +1,4 @@
-.window {
+/* .window {
     flex: 2;
     border-left: 1px solid #dddddd35;
     border-right: 1px solid #dddddd35;
@@ -56,41 +56,43 @@
   .window .top .icons img {
     width: 20px;
     height: 20px;
-  }
+  } */
   
-  .window .center {
+  /* .window .center {
     padding: 20px;
     flex: 1;
-    overflow-y: scroll; /* Allow vertical scrolling only */
-    overflow-x: hidden; /* Hide horizontal scrollbar */
-    scrollbar-width: thin; /* For Firefox */
-    scrollbar-color: rgba(17, 25, 40, 0.8) rgba(17, 25, 40, 0.5); /* For Firefox */
+    overflow-y: scroll; 
+    overflow-x: hidden; 
+    scrollbar-width: thin; a(1
+    scrollbar-color: rgba(17, 25, 40, 0.8) rgb7, 25, 40, 0.5); 
     display: flex;
     flex-direction: column;
     gap: 20px;
     direction: ltr;
-}
+} */
 
-/* Hide default scrollbar for WebKit browsers (Chrome, Safari) */
+/* Hide default scrollbar for WebKit browsers (Chrome, Safari)
 .window .center::-webkit-scrollbar {
-    width: 8px; /* Width of the scrollbar */
+    width: 8px; 
 }
-
+/*
 .window .center::-webkit-scrollbar-track {
-    background: rgba(17, 25, 40, 0.5); /* Color of the track (background) */
-}
-
+    background: rgba(17, 25, 40, 0.5); /* Color of the track (background) 
+  }
+    */
+/*
 .window .center::-webkit-scrollbar-thumb {
-    background: rgba(17, 25, 40, 0.8); /* Color of the draggable part of the scrollbar */
-    border-radius: 10px; /* Optional: Rounded corners for the thumb */
-}
+    background: rgba(17, 25, 40, 0.8); /* Color of the draggable part of the scrollbar 
+    border-radius: 10px; /* Optional: Rounded corners for the thumb 
+  }
+  */
 
-.window .center::-webkit-scrollbar-thumb:hover {
-    background: rgba(17, 25, 40, 1); /* Darker color on hover */
-}
+/* .window .center::-webkit-scrollbar-thumb:hover {
+    background: rgba(17, 25, 40, 1); /* Darker color on hover 
+} */
   
 
-  .window .center .message {
+  /* .window .center .message {
     max-width: 70%;
     display: flex;
     gap: 20px;
@@ -194,4 +196,4 @@
     background-color: #5182feb4;
     cursor: not-allowed;
   }
-  
+   */

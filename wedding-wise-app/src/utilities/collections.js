@@ -43,7 +43,8 @@ export const signupCoupleValidations = Object.freeze({
     valid: "",
   },
   numberOfInvitees: {
-    regex: /^(8[0-9]|[1-7][0-9]{2}|800)$/,
+    regex: /^(8[0-9]|[1-7][0-9]{2}|800)?$/,
+    // regex: /^(8[0-9]|[1-7][0-9]{2}|800)$/,
     error: "ניתן להכניס כמות בין 80 ל-800",
     valid: "כמות המוזמנים נעה בין 80 ל-800",
   },

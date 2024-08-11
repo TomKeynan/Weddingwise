@@ -164,7 +164,7 @@ function EditCoupleForm() {
   function handleCancelUpdateConfirm() {
     setOpenUpdateConfirm(false);
   }
-console.log(editValue)
+
   function handleUpdateApproval() {
     setPassword(editValue.password);
     sendData("/Couples/updateCouple", "PUT", editValue);
@@ -310,7 +310,6 @@ console.log(editValue)
             editMode={true}
           />
         </Grid>
-
         <Grid item xs={12} md={6}>
           <Autocomplete
             options={regions}
@@ -331,7 +330,6 @@ console.log(editValue)
             )}
           />
         </Grid>
-
         <Grid item xs={12} md={6}>
           <LocalizationProvider
             dateAdapter={AdapterDayjs}
@@ -355,35 +353,7 @@ console.log(editValue)
             />
           </LocalizationProvider>
         </Grid>
-        <Grid item xs={12} md={6}>
-          <FormControl color="primary" sx={textFieldSX}>
-            <TextInput
-              variant="standard"
-              name="password"
-              label="סיסמא"
-              type={showPassword ? "text" : "password"}
-              editMode={true}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                      sx={{
-                        "& .MuiSvgIcon-root": {
-                          fill: customTheme.palette.primary.main,
-                        },
-                      }}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </FormControl>
-        </Grid>
+
         <Grid item xs={12} md={6}>
           <FormControl
             name="userImage"
