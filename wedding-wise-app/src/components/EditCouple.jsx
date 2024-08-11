@@ -248,7 +248,7 @@ function EditCouple() {
         // sx={{ maxWidth: { xs: "80%", sm: "60%" }, margin: "0 auto" }}
         spacing={2}
       >
-        {(loading || isLoading) && <Loading />}
+        {isLoading && <Loading />}
         {openUpdateConfirm && showUpdateConfirmDialog()}
         {error && showErrorMessage(error)}
         {newPackageError && showErrorMessage(newPackageError)}
