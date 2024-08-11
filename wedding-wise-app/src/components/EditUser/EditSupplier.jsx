@@ -33,6 +33,7 @@ import { useUserStore } from "../../fireBase/userStore";
 import { updatePassword } from "firebase/auth";
 import { updateDoc } from "firebase/firestore";
 import { geocodeAddress } from "../../utilities/functions";
+import { useGlobalStore } from "../../fireBase/globalLoading";
 
 const EditSupplier = ({ supplierFirebase }) => {
   const { editSupplier, setEditSupplier, setSupplierData } =
@@ -50,7 +51,7 @@ const EditSupplier = ({ supplierFirebase }) => {
     file: null,
     url: "",
   });
-  const { loadingUserFirebase, setLoading } = useUserStore();
+  const { globalLoading, setGlobalLoading } = useGlobalStore();
   const [currentDescription, setCurrentDescription] = useState("");
   const [currentAddress, setCurrentAddress] = useState("");
   const [InstagramLink, setInstagramLink] = useState("");
@@ -72,26 +73,24 @@ const EditSupplier = ({ supplierFirebase }) => {
       if (resData) {
         const { Password, ...rest } = currentSupplierData;
         try {
+          setSupplierData(rest);
           await updateUserFirebase();
           window.scrollTo({ top: 0, behavior: "smooth" });
           setOpenUpdateSuccess(true);
         } catch (error) {
+          setGlobalLoading(false);
           console.error("Error updating user:", error);
         } finally {
-          setLoading(false);
-          setSupplierData(rest);
+          setGlobalLoading(false);
+          setResData(undefined);
         }
       }
-      return () => {
-        setResData(undefined);
-      };
     };
 
     updateUser();
-    return () => {
-      setResData(undefined);
-    };
+   
   }, [resData, currentSupplierData]);
+
 
   useEffect(() => {
     setCurrentDescription(supplierFirebase?.description);
@@ -100,7 +99,7 @@ const EditSupplier = ({ supplierFirebase }) => {
 
   const updateUserFirebase = async () => {
     const username = currentSupplierData.businessName;
-    const password = currentSupplierData.Password;
+    const password = currentSupplierData.password;
     const description = currentDescription;
 
     const socialLinksWithDefaults = {
@@ -109,8 +108,6 @@ const EditSupplier = ({ supplierFirebase }) => {
       YouTube: YouTubeLink || "",
       LinkedIn: LinkedInLink || "",
     };
-
-    setLoading(true);
 
     try {
       await Promise.race([
@@ -136,6 +133,7 @@ const EditSupplier = ({ supplierFirebase }) => {
       ]);
     } catch (err) {
       console.log(err);
+      setGlobalLoading(false);
     }
   };
 
@@ -151,6 +149,7 @@ const EditSupplier = ({ supplierFirebase }) => {
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   async function handleFormSubmit(e) {
+
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
@@ -161,22 +160,23 @@ const EditSupplier = ({ supplierFirebase }) => {
     delete data.YouTube;
     delete data.LinkedIn;
 
-    // if (data.venueAddress) {
-    //   const { latitude, longitude } = await geocodeAddress(data.venueAddress);
-    //   data.latitude = latitude;
-    //   data.longitude = longitude;
-    // }
     if (data.venueAddress) {
-      const { latitude, longitude } = await geocodeAddress(data.venueAddress);
-      if (latitude == null || longitude == null) {
-        setOpenAddressError(true);
-        return;
-      } else {
-        data.latitude = latitude;
-        data.longitude = longitude;
+      try {
+        const { latitude, longitude } = await geocodeAddress(data.venueAddress);
+        if (latitude == null || longitude == null) {
+          setOpenAddressError(true);
+          return;
+        }
+        else {
+          data.latitude = latitude;
+          data.longitude = longitude;
+        }
+      }
+      catch (err) {
+        console.log(err);
       }
     }
-    // data validation
+
     const newErrors = {};
     for (let field in data) {
       if (
@@ -192,6 +192,7 @@ const EditSupplier = ({ supplierFirebase }) => {
     }
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+     
       return;
     } else {
       setCurrentSupplierData({ ...editSupplier, ...data });
@@ -257,15 +258,7 @@ const EditSupplier = ({ supplierFirebase }) => {
   }
 
   function handleApprovalUpdateConfirm() {
-    // const timer = setTimeout(() => {
-    //   setLoading(false);
-    // }, 3000);
-
-    // sendData("/Suppliers/updateSupplier", "PUT", currentSupplierData).finally(
-    //   () => {
-    //     clearTimeout(timer);
-    //   }
-    // );
+    setGlobalLoading(true);
     sendData("/Suppliers/updateSupplier", "PUT", currentSupplierData);
     setOpenUpdateConfirm(false);
   }
@@ -304,12 +297,11 @@ const EditSupplier = ({ supplierFirebase }) => {
     );
   }
 
-  if (loadingUserFirebase) {
-    return <Loading />;
-  }
+ 
 
   return (
     <RegisterContextProvider>
+      {globalLoading && <Loading/>}
       {error && showErrorMessage(error)}
       {openUpdateConfirm && showUpdateConfirmDialog()}
       {openUpdateSuccess && showSuccessMessage()}

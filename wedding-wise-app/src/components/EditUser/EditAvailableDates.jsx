@@ -74,7 +74,7 @@ export default function EditAvailableDates() {
         (date) => date !== deletedDate
       );
       const { availableDates, ...rest } = supplierData;
-      sendData("/Suppliers/updateSupplier", "PUT", {
+      sendData("/Suppliers/updateSupplierDates", "PUT", {
         ...rest,
         availableDates: [...filteredAvailableDates],
       });
@@ -85,7 +85,7 @@ export default function EditAvailableDates() {
       setIsDeletingDate(false);
       setOpen(true);
     } else {
-      sendData("/Suppliers/updateSupplier", "PUT", currentSupplierData);
+      sendData("/Suppliers/updateSupplierDates", "PUT", currentSupplierData);
       setOpenUpdateConfirm(false);
       setOpen(true);
     }

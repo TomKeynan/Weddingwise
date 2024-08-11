@@ -163,7 +163,7 @@ namespace Server.DAL
         //-------------------------------------------------------
         // This method updates the supplier details
         //-------------------------------------------------------
-        public int UpdateSupplier(Supplier supplier)
+        public int UpdateSupplierDetails(Supplier supplier)
         {
             int successIndicator = 0;
 
@@ -195,17 +195,8 @@ namespace Server.DAL
                         successIndicator = cmd.ExecuteNonQuery();
                     }
 
-                    // If no available dates, return the result of updating supplier details
-                    if (supplier.AvailableDates.Count == 0)
-                    {
-                        return successIndicator;
-                    }
 
-                    // Step 2: Update the supplier's available dates
-                    successIndicator += UpdateSupplierDates(con, supplier);
-
-                    // If both updating the details and updating the dates were successful, return success
-                    return successIndicator > 1 ? 1 : 0;
+                    return successIndicator;
                 }
             }
             catch (Exception ex)
@@ -217,33 +208,37 @@ namespace Server.DAL
         //-------------------------------------------------------
         // This method updates the dates of a supplier
         //-------------------------------------------------------
-        private int UpdateSupplierDates(SqlConnection con, Supplier supplier)
+        public int UpdateSupplierDates(Supplier supplier)
         {
             int successIndicator = 0;
 
             try
             {
-                // Delete existing dates for the supplier
-                using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPDeleteDatesForSupplier", new Dictionary<string, object>
+                using (SqlConnection con = DBServiceHelper.Connect())
+                {
+
+                    // Delete existing dates for the supplier
+                    using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPDeleteDatesForSupplier", new Dictionary<string, object>
         {
             { "@supplier_email", supplier.SupplierEmail }
         }))
-                {
-                    successIndicator += cmd.ExecuteNonQuery();
-                }
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
 
-                // Insert new available dates for the supplier
-                foreach (var date in supplier.AvailableDates)
-                {
-                    var dateParameters = new Dictionary<string, object>
+                    // Insert new available dates for the supplier
+                    foreach (var date in supplier.AvailableDates)
+                    {
+                        var dateParameters = new Dictionary<string, object>
             {
                 { "@supplier_email", supplier.SupplierEmail },
                 { "@available_date", date }
             };
 
-                    using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPInsertSupplierDates", dateParameters))
-                    {
-                        successIndicator += cmd.ExecuteNonQuery();
+                        using (SqlCommand cmd = DBServiceHelper.CreateSqlCommand(con, "SPInsertSupplierDates", dateParameters))
+                        {
+                            successIndicator += cmd.ExecuteNonQuery();
+                        }
                     }
                 }
             }
@@ -252,7 +247,7 @@ namespace Server.DAL
                 throw new Exception("An error occurred while updating the supplier dates: " + ex.Message);
             }
 
-            return successIndicator;
+            return successIndicator == supplier.AvailableDates.Count() ? 1 : 0;
         }
 
 

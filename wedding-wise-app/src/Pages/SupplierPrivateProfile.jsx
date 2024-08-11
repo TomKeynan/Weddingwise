@@ -28,7 +28,7 @@ function SupplierPrivateProfile() {
   const [loadingData, setLoadingData] = useState(false);
   const { currentUser } = useUserStore();
 
-  
+
   useEffect(() => {
     if (!user?.uid) return;
     setLoadingData(true);
@@ -42,7 +42,7 @@ function SupplierPrivateProfile() {
           try {
             const data = await fetchSupplierData(supplierData.supplierEmail);
             if (supplierData.latitude && supplierData.longitude) {
-              const address = await reverseGeocoding(supplierData.latitude, supplierData.longitude); 
+              const address = await reverseGeocoding(supplierData.latitude, supplierData.longitude);
               data.address = address;
             }
             setSupplierFirebase(data);
@@ -62,7 +62,8 @@ function SupplierPrivateProfile() {
     return () => {
       unsub();
     };
-  }, [user?.uid,supplierData,supplierData?.supplierEmail, supplierData?.latitude, supplierData?.longitude]);
+  }, [user?.uid]);
+
 
   if (loadingData) {
     return <Loading />;
@@ -109,7 +110,7 @@ function SupplierPrivateProfile() {
           />
           <KpiPaper
             title="דירוג:"
-            data= {supplierData?.rating === 0 ? "–" : supplierData?.rating}
+            data={supplierData?.rating === 0 ? "–" : supplierData?.rating}
             icon={<StarOutlineIcon />}
           />
         </Stack>
