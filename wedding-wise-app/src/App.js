@@ -69,7 +69,7 @@ const router = createHashRouter([
 ]);
 
 function App() {
-  const { fetchUserInfo, setLoading, loadingUserFirebase } = useUserStore();
+  const { fetchUserInfo } = useUserStore();
 
 
   useEffect(() => {
@@ -77,7 +77,7 @@ function App() {
       if (user?.uid) {
         await fetchUserInfo(user.uid);
       } else {
-        setLoading(false);
+
       }
     };
     const unSubAuth = onAuthStateChanged(auth, handleAuthStateChanged);

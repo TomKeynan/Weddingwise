@@ -16,7 +16,6 @@ function Chat() {
   const screenUnderMD = useMediaQuery("(max-width: 900px)");
   const { currentUser} = useUserStore();
   const { chatId, changeChatStatus, isScrollableY } = useChatStore();
-  const auth = getAuth();
   
   const { coupleData, supplierData } = useContext(AppContext);
 
