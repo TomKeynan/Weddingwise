@@ -1,7 +1,6 @@
 import { Box, Stack } from "@mui/material";
 import { React } from "react";
 import { customTheme } from "../store/Theme";
-import Loading from "./Loading";
 
 function SupplierBanner({ supplierFirebase }) {
 

@@ -104,7 +104,6 @@ function SupplierPublicProfile() {
           setLoadingData(false);
         });
 
-        // Clean up the listener on component unmount
         return () => {
           unsubscribe();
         };
@@ -119,7 +118,7 @@ function SupplierPublicProfile() {
     }
   }, [relevantSupplier]);
 
-  // console.log(supplierFirebase);
+console.log(relevantSupplier);
 
   function renderDescriptionSection() {
     if (supplierFirebase?.description) {
@@ -169,7 +168,7 @@ function SupplierPublicProfile() {
                 >
                   <EmailOutlinedIcon />
                   <Typography>
-                    אימייל: {relevantSupplier.supplierEmail}
+                    אימייל: {relevantSupplier?.supplierEmail}
                   </Typography>
                 </Stack>
               </Grid>
@@ -180,7 +179,7 @@ function SupplierPublicProfile() {
                 >
                   <LocalOfferOutlinedIcon />
                   <Typography>
-                    מחיר ממוצע: {addCommasToNumber(relevantSupplier.price)} ₪
+                    מחיר ממוצע: {addCommasToNumber(relevantSupplier?.price)} ₪
                   </Typography>
                 </Stack>
               </Grid>
@@ -254,7 +253,7 @@ function SupplierPublicProfile() {
                 >
                   <LocalOfferOutlinedIcon />
                   <Typography>
-                    מחיר ממוצע: {addCommasToNumber(relevantSupplier.price)} ₪
+                    מחיר ממוצע: {addCommasToNumber(relevantSupplier?.price)} ₪
                   </Typography>
                 </Stack>
               </Grid>

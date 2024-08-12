@@ -14,20 +14,17 @@ import { getAuth } from 'firebase/auth';
 import Loading from "../components/Loading";
 import { fetchSupplierData } from "../fireBase/fetchSupplier";
 import { reverseGeocoding } from "../utilities/functions";
-import { useUserStore } from "../fireBase/userStore";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../fireBase/firebase";
 
 function SupplierPrivateProfile() {
 
   const auth = getAuth();
-  const [user, loading] = useAuthState(auth);
+  const [user] = useAuthState(auth);
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
   const { supplierData } = useContext(AppContext);
   const [supplierFirebase, setSupplierFirebase] = useState(null);
   const [loadingData, setLoadingData] = useState(false);
-  const { currentUser } = useUserStore();
-
 
   useEffect(() => {
     if (!user?.uid) return;

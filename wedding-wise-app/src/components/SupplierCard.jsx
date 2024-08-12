@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState} from "react";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
@@ -11,7 +11,6 @@ import Loading from "./Loading";
 import { db } from "../fireBase/firebase";
 import { getDocs, query, where, collection } from "firebase/firestore";
 import { useSupplierData } from "../fireBase/supplierData";
-import { useGlobalStore } from "../fireBase/globalLoading";
 
 function SupplierCard({
   props,

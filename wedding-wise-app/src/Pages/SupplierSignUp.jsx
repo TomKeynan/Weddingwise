@@ -137,7 +137,7 @@ const SupplierSignUp = () => {
         username,
         email,
         description: supplierDescription || "",
-        avatar: imgUrl || "assets/chat_pics/avatar.png",
+        avatar: imgUrl || defaultAvatar,
         id: res.user.uid,
         blocked: [],
         comments: [],
@@ -628,6 +628,8 @@ const SupplierSignUp = () => {
 
 export default SupplierSignUp;
 
+
+
 const paperSX = {
   minHeight: "600px",
   p: 5,
@@ -668,3 +670,6 @@ const errorAlertSX = {
     mr: "3px",
   },
 };
+
+
+const defaultAvatar = 'https://firebasestorage.googleapis.com/v0/b/weddingwisetest-ecd19.appspot.com/o/images%2Fdefault_avatar.jpg?alt=media&token=8b3eb721-4495-4b32-a970-39564fd97797'

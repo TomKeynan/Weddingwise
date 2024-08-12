@@ -24,13 +24,11 @@ import SupplierOutlineBtn from "../buttons/SupplierOutlineBtn";
 import useFetch from "../../utilities/useFetch";
 import Loading from "../Loading";
 import MessageDialog from "../Dialogs/MessageDialog";
-import { auth, db } from "../../fireBase/firebase";
+import {  db } from "../../fireBase/firebase";
 import { doc } from "firebase/firestore";
 import upload from "../../fireBase/upload";
 import { AppContext } from "../../store/AppContext";
 import ConfirmDialog from "../Dialogs/ConfirmDialog";
-import { useUserStore } from "../../fireBase/userStore";
-import { updatePassword } from "firebase/auth";
 import { updateDoc } from "firebase/firestore";
 import { geocodeAddress } from "../../utilities/functions";
 import { useGlobalStore } from "../../fireBase/globalLoading";
@@ -99,38 +97,29 @@ const EditSupplier = ({ supplierFirebase }) => {
 
   const updateUserFirebase = async () => {
     const username = currentSupplierData.businessName;
-    const password = currentSupplierData.password;
     const description = currentDescription;
-
+  
     const socialLinksWithDefaults = {
       Instagram: InstagramLink || "",
       Facebook: FacebookLink || "",
       YouTube: YouTubeLink || "",
       LinkedIn: LinkedInLink || "",
     };
-
+  
     try {
-      await Promise.race([
-        (async () => {
-          const user = auth.currentUser;
-          if (password) {
-            await updatePassword(user, password);
-          }
-
-          let imgUrl = null;
-          if (avatar && avatar.file) {
-            imgUrl = await upload(avatar.file);
-          }
-
-          const userRef = doc(db, "users", supplierFirebase.id);
-          await updateDoc(userRef, {
-            username: username || supplierFirebase.username,
-            description: description || supplierFirebase?.description,
-            avatar: imgUrl || supplierFirebase.avatar,
-            socialLinks: socialLinksWithDefaults,
-          });
-        })(),
-      ]);
+      let imgUrl = null;
+  
+      if (avatar && avatar.file) {
+        imgUrl = await upload(avatar.file);
+      }
+  
+      const userRef = doc(db, "users", supplierFirebase.id);
+      await updateDoc(userRef, {
+        username: username || supplierFirebase.username,
+        description: description || supplierFirebase?.description,
+        avatar: imgUrl || supplierFirebase.avatar,
+        socialLinks: socialLinksWithDefaults,
+      });
     } catch (err) {
       console.log(err);
       setGlobalLoading(false);

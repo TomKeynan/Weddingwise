@@ -35,7 +35,6 @@ import { useUserStore } from "../../fireBase/userStore";
 import { auth, db } from "../../fireBase/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import upload from "../../fireBase/upload";
-import { updatePassword } from "firebase/auth";
 
 function EditCoupleForm() {
   const navigate = useNavigate();
@@ -69,9 +68,8 @@ function EditCoupleForm() {
     url: "",
   });
 
-  const [password, setPassword] = useState("");
 
-  const { currentUser, loadingUserFirebase, setLoading, fetchUserInfo } =
+  const { currentUser,  setLoading, fetchUserInfo } =
     useUserStore();
 
   useEffect(() => {
@@ -113,14 +111,10 @@ function EditCoupleForm() {
   }, [resData, error]);
 
   const updateUserFirebase = async () => {
-    const username = editValue.partner1Name + " ו" + editValue.partner2Name; // Need to fix?
+    const username = editValue.partner1Name + " ו" + editValue.partner2Name; 
 
     try {
-      const user = auth.currentUser;
-      if (password) {
-        await updatePassword(user, password);
-      }
-
+    
       let imgUrl = null;
       if (avatar && avatar.file) {
         imgUrl = await upload(avatar.file);
@@ -166,7 +160,6 @@ function EditCoupleForm() {
   }
 
   function handleUpdateApproval() {
-    setPassword(editValue.password);
     sendData("/Couples/updateCouple", "PUT", editValue);
     setResData(undefined);
     setOpenUpdateConfirm(false);

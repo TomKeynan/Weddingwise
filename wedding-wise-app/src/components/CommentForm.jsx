@@ -12,67 +12,58 @@ import { customTheme } from "../store/Theme";
 import { getTodayDate } from "../utilities/functions";
 import SupplierContainBtn from "./buttons/SupplierContainBtn";
 import useFetch from "../utilities/useFetch";
-import { AppContext } from "../store/AppContext";
 import MessageDialog from "./Dialogs/MessageDialog";
 import { rateSupplierResponse } from "../utilities/collections";
 import { useUserStore } from "../fireBase/userStore";
-import {
-  arrayUnion,
-  doc,
-  updateDoc,
-  getDocs,
-  where,
-  query,
-  collection,
-} from "firebase/firestore";
+import { arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { db } from "../fireBase/firebase";
-import Loading from "./Loading";
 import { useSupplierData } from "../fireBase/supplierData";
+import Loading from "./Loading";
+import { useGlobalStore } from "../fireBase/globalLoading";
 
 export default function CommentForm({ supplierFirebase }) {
   const { sendData, resData, setResData, loading, error, setError } =
     useFetch();
-  const { coupleData, supplierData } = useContext(AppContext);
   const [rate, setRate] = useState(0);
   const [comment, setComment] = useState("");
   const [openUpdateSuccess, setOpenUpdateSuccess] = useState(false);
   const [open, setOpen] = useState(false);
   const [isRated, setIsRated] = useState(false);
   const { currentUser } = useUserStore();
-  const [loadingData, setLoadingData] = useState(false);
-  const { relevantSupplier, setRelevantSupplier } = useSupplierData();
-  // console.log(relevantSupplier)
-
-  // console.log("CommentForm")
+  const { relevantSupplier} = useSupplierData();
+  const { setGlobalLoading, globalLoading } = useGlobalStore();
 
   useEffect(() => {
     const updateFirebaseAndSetState = async () => {
       if (resData) {
         try {
-          if(comment)
-          {
-          await handleSendToFirebase();
+          if (comment) {
+            await handleSendToFirebase();
           }
           setOpenUpdateSuccess(true);
-        } 
-         catch (err) {
+        }
+        catch (err) {
           console.log(err);
           setOpen(true);
         }
-      }}
+        finally {
+          setGlobalLoading(false);
+        }
+      }
+    }
 
     updateFirebaseAndSetState();
   }, [resData]);
 
   useEffect(() => {
     if (error) {
+      setGlobalLoading(false);
       setOpen(true);
     }
   }, [error]);
 
 
   const handleSendToFirebase = async () => {
-    setLoadingData(true);
 
     try {
       await updateDoc(doc(db, "users", supplierFirebase.id), {
@@ -86,8 +77,7 @@ export default function CommentForm({ supplierFirebase }) {
       });
     } catch (err) {
       console.error(err);
-    } finally {
-      setLoadingData(false);
+      setGlobalLoading(false);
     }
   };
 
@@ -100,6 +90,7 @@ export default function CommentForm({ supplierFirebase }) {
       setIsRated(true);
     } else {
       setIsRated(false);
+      setGlobalLoading(true);
       sendData("/Suppliers/rateSupplier", "POST", {
         supplierEmail: relevantSupplier.supplierEmail,
         coupleEmail: currentUser.email,
@@ -161,9 +152,9 @@ export default function CommentForm({ supplierFirebase }) {
     );
   }
 
-  // if ( loadingData  || loading ) {
-  //   return <Loading />;
-  // }
+  if (globalLoading) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -203,7 +194,7 @@ export default function CommentForm({ supplierFirebase }) {
                   fontSize: { xs: 16, sm: 18, md: 20 },
                   fontFamily: customTheme.font.main,
                 }}
-                // {comment.names}
+              // {comment.names}
               >
                 {currentUser?.username}
               </Typography>
