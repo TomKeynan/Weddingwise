@@ -54,9 +54,8 @@ function SupplierPublicProfile() {
   const [supplierFirebase, setSupplierFirebase] = useState(null);
   const [loadingData, setLoadingData] = useState(false);
   const [showLinks, setShowLinks] = useState(false);
-  const { relevantSupplier, setRelevantSupplier } = useSupplierData();
-  // console.log(supplierFirebase);
-  const { supplierData, coupleData } = useContext(AppContext);
+  const { relevantSupplier } = useSupplierData();
+  const { supplierData } = useContext(AppContext);
 
   useEffect(() => {
     if (supplierFirebase) {

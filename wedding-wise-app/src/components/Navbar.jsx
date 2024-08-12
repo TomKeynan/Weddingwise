@@ -23,6 +23,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../fireBase/firebase";
 import { useSupplierData } from "../fireBase/supplierData";
+import { Visibility } from "@mui/icons-material";
 
 function Navbar({ isLayout = true, isSupplier = false }) {
   const navigate = useNavigate();
@@ -895,10 +896,12 @@ const settingMenuSX = {
   },
   "& .MuiMenu-paper": {
     py: 2,
+    visibility: "unset"
   },
 };
 
 const menuItemSX = {
+  visibility: "unset",
   ":hover": {
     bgcolor: customTheme.palette.primary.light,
   },

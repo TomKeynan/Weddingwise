@@ -145,7 +145,7 @@ export const editSupplierValidations = Object.freeze({
     // valid: "ציינו סכום מקסימלי (לפחות 100,000)",
   },
   venueAddress: {
-    regex: /[0-9,\p{Hebrew}\p{Pd}\s]/, 
+    regex: /[0-9,\p{Hebrew}\p{Pd}\s]/,
     error: "שם העסק חייב להכיל לפחות 5 תווים",
   },
   capacity: {
@@ -604,5 +604,3 @@ export const budgetData = [
 // })
 
 // console.log(tempArr)
-
-

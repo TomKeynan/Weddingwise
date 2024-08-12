@@ -41,12 +41,11 @@ export default function CommentForm({ supplierFirebase }) {
   const { currentUser } = useUserStore();
   const [loadingData, setLoadingData] = useState(false);
   const { relevantSupplier, setRelevantSupplier } = useSupplierData();
+  // console.log(relevantSupplier)
 
   // console.log("CommentForm")
 
   useEffect(() => {
-    console.log(error);
-    console.log(resData);
     const updateFirebaseAndSetState = async () => {
       if (resData) {
         try {

@@ -87,10 +87,10 @@ function EditCouple() {
     if (resData) {
       setOpenSuccessMessage(true);
       updateCoupleData(editValue);
-    } else if (error) {
+    } else if (error || newPackageError) {
       setOpenErrorMessage(true);
     }
-  }, [resData, error]);
+  }, [resData, error, newPackageError]);
 
   function handleWeddingDateChange(dateInput) {
     let weddingDateObject = getFullDate(dateInput);
@@ -114,7 +114,6 @@ function EditCouple() {
     sendData("/Couples/updateCouple", "PUT", editValue);
     setResData(undefined);
     setOpenUpdateConfirm(false);
-    setNewPackageError(undefined);
   }
 
   function showUpdateConfirmDialog() {
@@ -144,7 +143,7 @@ function EditCouple() {
   function handleQuestionsCancel() {
     handleCreateNewPackage();
     setOpenQuestionsConfirm(false);
-
+    setOpenSuccessMessage(false);
     // setError(undefined);
   }
 
@@ -177,11 +176,13 @@ function EditCouple() {
   function handleCloseMessage() {
     setOpenErrorMessage(false);
     setError(undefined);
+    setNewPackageError(undefined);
   }
 
   function handleCloseSuccessMsg() {
     setOpenSuccessMessage(false);
     setOpenQuestionsConfirm(true);
+    setResData(undefined);
   }
 
   function showErrorMessage(status) {
@@ -222,7 +223,7 @@ function EditCouple() {
         open={openSuccessMessage}
         btnValue="הבנתי!"
         onClose={handleCloseSuccessMsg}
-        xBtn={handleCloseMessage}
+        xBtn={handleCloseSuccessMsg}
         mode="success"
       >
         <Typography
@@ -250,7 +251,7 @@ function EditCouple() {
         {openUpdateConfirm && showUpdateConfirmDialog()}
         {error && showErrorMessage(error)}
         {newPackageError && showErrorMessage(newPackageError)}
-        {openSuccessMessage && showSuccessMessage(resData)}
+        {resData && showSuccessMessage(resData)}
         {openQuestionsConfirm && showQuestionsConfirm()}
         {/* <Grid item xs={12} md={6}>
           <TextInput

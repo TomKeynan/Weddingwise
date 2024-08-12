@@ -35,7 +35,13 @@ export default function QuestionsContextProvider({ children }) {
   }
 
   function handleCreateNewPackage() {
-    let newUserData = capitalizeKeys(coupleData);
+    console.log(coupleData);
+    const coupleDataCopy = JSON.parse(JSON.stringify(coupleData));
+    coupleDataCopy.numberOfInvitees = parseInt(coupleDataCopy.numberOfInvitees);
+    coupleDataCopy.budget = parseInt(coupleDataCopy.budget);
+    console.log(coupleDataCopy);
+
+    let newUserData = capitalizeKeys(coupleDataCopy);
     sendData("/Packages/getPackage", "POST", {
       couple: newUserData,
       questionnaireAnswers: coupleAnswers,

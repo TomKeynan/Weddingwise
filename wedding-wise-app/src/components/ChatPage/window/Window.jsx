@@ -48,8 +48,6 @@ function Window() {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat?.messages]);
 
-  // console.log("Window");
-
   // Listen for changes to the current chat and update the local state
   useEffect(() => {
     const unSub = onSnapshot(doc(db, "chats", chatId), (res) => {
@@ -196,6 +194,79 @@ function Window() {
     }
   };
 
+  function renderMessageByCurrentUser(message) {
+    let messageBgColor = {};
+    let alignment = "";
+    if (message.senderId === currentUser?.id) {
+      messageBgColor = {
+        bgcolor: "info.light",
+        // bgcolor: "#5183fe",
+      };
+      alignment = "flex-end";
+    } else {
+      messageBgColor = {
+        bgcolor: "info.dark",
+        // bgcolor: "rgba(17, 25, 40, 1)",
+      };
+      alignment = "flex-start";
+    }
+    return (
+      <Stack
+        alignItems={alignment}
+        // className={
+        //   message.senderId === currentUser?.id ? "message own" : "message"
+        // }
+        key={message?.createdAt}
+      >
+        <Stack
+          // className="texts"
+          alignItems={alignment}
+          sx={{ textAlign: "left" }}
+        >
+          {message.img ? (
+            <Box
+              sx={{
+                border: "1px solid black",
+                width: 250,
+                height: 250,
+                // borderRadius: "50%",
+              }}
+            >
+              <Box
+                component="img"
+                src={message.img}
+                alt=""
+                sx={{
+                  width: 250,
+                  height: 250,
+                  // borderRadius: "50%",
+                  objectFit: "cover",
+                }}
+              />
+            </Box>
+          ) : (
+            <Typography
+              sx={{
+                color: "white",
+                p: 2.5,
+                borderRadius: 2,
+                textAlign: "left",
+                maxWidth: "fit-content",
+                ...messageBgColor,
+              }}
+            >
+              {message.text}
+            </Typography>
+          )}
+          <Typography
+            sx={{ color: "white", py: 0.7, textAlign: "left", px: 2.5 }}
+          >
+            <TimeAgo date={message.createdAt.toDate()} formatter={formatter} />
+          </Typography>
+        </Stack>
+      </Stack>
+    );
+  }
   return (
     <Stack
       // className="window"
@@ -215,10 +286,14 @@ function Window() {
           columnGap: { xs: 1, sm: 2 },
           borderBottom: "1px solid #dddddd35",
           p: { xs: 1, sm: 3 },
-          mt:3
+          mt: 3,
         }}
       >
-        <Stack direction="row" alignItems="center" sx={{ columnGap: {xs:1 , sm: 2} }}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          sx={{ columnGap: { xs: 1, sm: 2 } }}
+        >
           <Box
             sx={{
               border: "1px solid black",
@@ -241,12 +316,20 @@ function Window() {
           </Box>
           <Stack>
             <Typography
-              sx={{ color: "white", typography: { xs: "body1", sm: "h4" } , textAlign: "left"}}
+              sx={{
+                color: "white",
+                typography: { xs: "body1", sm: "h4" },
+                textAlign: "left",
+              }}
             >
               {user?.username}
             </Typography>
             <Typography
-              sx={{ color: "white", typography: { xs: "body2", sm: "h6" } , textAlign: "left"}}
+              sx={{
+                color: "white",
+                typography: { xs: "body2", sm: "h6" },
+                textAlign: "left",
+              }}
             >
               {user?.description}
             </Typography>
@@ -258,13 +341,12 @@ function Window() {
             sx={{
               bgcolor: "error.main",
               // p:0,
-              px:{xs: 0 , sm: 1},
+              px: { xs: 0, sm: 1 },
               py: { xs: 0, sm: 2 },
-              fontSize: {xs: 12, sm: 14},
+              fontSize: { xs: 12, sm: 14 },
               "&:hover": {
                 bgcolor: "error.dark",
               },
-              
             }}
             onClick={handleBlock}
           >
@@ -278,31 +360,9 @@ function Window() {
       </Stack>
 
       {/* Chat messages */}
-      <Stack
-        sx={{
-          p: 2,
-          rowGap: 2,
-          borderBottom: "1px solid #dddddd35",
-          height: "50vh",
-          overflowY: "scroll",
-          overflowX: "hidden",
-          "&::-webkit-scrollbar": {
-            width: "8px",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "rgba(17, 25, 40, 0.8)", // Thumb color
-            borderRadius: "10px",
-          },
-          "&::-webkit-scrollbar-thumb:hover": {
-            backgroundColor: "rgba(17, 25, 40, 1)", // Thumb hover color
-          },
-          "&::-webkit-scrollbar-track": {
-            backgroundColor: "#dddddd35", // Track color
-          },
-          direction: "rtl",
-        }}
-      >
-        {chat?.messages?.map((message) => (
+      <Stack sx={messagesWindowSX}>
+        {chat?.messages?.map((message) => renderMessageByCurrentUser(message))}
+        {/* {chat?.messages?.map((message) => (
           <Stack
             alignItems={
               message.senderId === currentUser?.id ? "flex-end" : "flex-start"
@@ -362,7 +422,7 @@ function Window() {
               </Typography>
             </Stack>
           </Stack>
-        ))}
+        ))} */}
         <div ref={endRef}></div> {/* endRef is attached to this div */}
       </Stack>
 
@@ -505,6 +565,29 @@ function Window() {
 }
 
 export default Window;
+
+const messagesWindowSX = {
+  p: 2,
+  rowGap: 2,
+  borderBottom: "1px solid #dddddd35",
+  height: "45vh",
+  overflowY: "scroll",
+  overflowX: "hidden",
+  "&::-webkit-scrollbar": {
+    width: "8px",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    backgroundColor: "rgba(17, 25, 40, 0.8)", // Thumb color
+    borderRadius: "10px",
+  },
+  "&::-webkit-scrollbar-thumb:hover": {
+    backgroundColor: "rgba(17, 25, 40, 1)", // Thumb hover color
+  },
+  "&::-webkit-scrollbar-track": {
+    backgroundColor: "#dddddd35", // Track color
+  },
+  direction: "rtl",
+};
 
 const ChatControllersSX = {
   display: "flex",
