@@ -80,7 +80,6 @@ function InviteesTable() {
       // Check if all fields are filled
       if (
         updatedRow.name &&
-        updatedRow.email &&
         updatedRow.numberOfInvitees &&
         updatedRow.rsvp !== null &&
         updatedRow.side
@@ -209,7 +208,7 @@ function InviteesTable() {
                 <Grid item xs={12} md={4} lg={3}>
                   <FormControl sx={textFieldSX}>
                     <TextField
-                      label="אימייל"
+                      label="טלפון"
                       name="email"
                       value={newRow.email}
                       onChange={handleInputChange}
@@ -308,7 +307,7 @@ function InviteesTable() {
             <TableHead>
               <TableRow>
                 <TableCell align="left">שם</TableCell>
-                <TableCell align="center">אימייל</TableCell>
+                <TableCell align="center">טלפון</TableCell>
                 <TableCell align="center">מס מוזמנים</TableCell>
                 <TableCell align="center">אישרו הגעה</TableCell>
                 <TableCell align="center">צד מזמין</TableCell>

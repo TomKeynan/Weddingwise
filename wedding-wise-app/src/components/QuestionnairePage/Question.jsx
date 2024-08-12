@@ -21,7 +21,6 @@ const Question = ({ activePage, onUserSelection }) => {
   function handleChange(e) {
     setSelectedOption(e.target.value);
     onSelectOption(activePage, e.target.value);
-    // onUserSelection(e.target.value)
   }
 
   const currentQ = questionsArray[activePage];
@@ -31,7 +30,6 @@ const Question = ({ activePage, onUserSelection }) => {
         justifyContent="space-around"
         alignItems="center"
         spacing={2}
-        // mt={1}
         px={2}
       >
         <Typography
@@ -57,7 +55,6 @@ const Question = ({ activePage, onUserSelection }) => {
         )}
         <Stack>
           <FormControl>
-            {/* <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel> */}
             <RadioGroup
               name="radio-buttons-group"
               value={selectedOption}

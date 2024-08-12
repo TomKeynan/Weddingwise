@@ -40,7 +40,7 @@ const homeContainer = {
 };
 
 const homeContentWrapper = {
-  width: { xs: "90%", sm: "70%" },
+  width: { xs: "90%", sm: "80%" },
   margin: "0 auto",
   pb: 6,
 };

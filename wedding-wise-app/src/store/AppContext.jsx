@@ -44,7 +44,6 @@ export default function AppContextProvider({ children }) {
   const [editCoupleComeFrom, setEditCoupleComeFrom] = useState("navbar");
 
   useEffect(() => {
-    // setCoupleData(JSON.parse(sessionStorage.getItem("currentCouple")));
     setOfferedPackage(JSON.parse(sessionStorage.getItem("offeredPackage")));
   }, []);
 

@@ -25,7 +25,6 @@ import {
 } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { arrayRemove } from "firebase/firestore";
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 const formatter = buildFormatter(heStrings);
 
@@ -40,8 +39,14 @@ function Window() {
   });
 
   const { currentUser } = useUserStore();
-  const { chatId, user, isCurrentUserBlocked, isReceiverBlocked, changeBlock, goBack } =
-    useChatStore();
+  const {
+    chatId,
+    user,
+    isCurrentUserBlocked,
+    isReceiverBlocked,
+    changeBlock,
+    goBack,
+  } = useChatStore();
 
   // Reference to the end of the chat messages for scrolling
   const endRef = useRef(null);
@@ -474,9 +479,6 @@ function Window() {
     }
   }
   return (
-
-
-
     <Stack
       sx={{
         height: "100%",
@@ -502,7 +504,7 @@ function Window() {
           columnGap: 1,
           px: { xs: 1, sm: 3 },
           pt: { xs: 1, sm: 3 },
-          pb:0,
+          pb: 0,
           width: "100%",
           justifyContent: "center",
         }}
@@ -510,11 +512,8 @@ function Window() {
         {/* picture input */}
 
         <Grid item xs={1} sm={0.5} lg={1} sx={ChatControllersSX}>
-          <Box
-          // className="icons"
-          >
-            <label htmlFor="file"
-            >
+          <Box>
+            <label htmlFor="file">
               <Box
                 sx={{
                   width: 20,
@@ -531,7 +530,10 @@ function Window() {
                     height: 20,
                     // borderRadius: "50%",
                     objectFit: "cover",
-                    cursor: isCurrentUserBlocked || isReceiverBlocked ? "not-allowed" : "pointer",
+                    cursor:
+                      isCurrentUserBlocked || isReceiverBlocked
+                        ? "not-allowed"
+                        : "pointer",
                   }}
                 />
               </Box>
@@ -539,7 +541,6 @@ function Window() {
             <input
               type="file"
               id="file"
-
               disabled={isCurrentUserBlocked || isReceiverBlocked}
               style={{ display: "none" }}
               onChange={handleImg}
@@ -584,12 +585,19 @@ function Window() {
                 component="img"
                 src="assets/chat_pics/emoji.png"
                 alt=""
-                onClick={() => !isCurrentUserBlocked && !isReceiverBlocked && setOpen((prev) => !prev)}
+                onClick={() =>
+                  !isCurrentUserBlocked &&
+                  !isReceiverBlocked &&
+                  setOpen((prev) => !prev)
+                }
                 sx={{
                   width: 20,
                   height: 20,
                   objectFit: "cover",
-                  cursor: isCurrentUserBlocked || isReceiverBlocked ? "not-allowed" : "pointer",
+                  cursor:
+                    isCurrentUserBlocked || isReceiverBlocked
+                      ? "not-allowed"
+                      : "pointer",
                 }}
               />
             </Box>
@@ -851,8 +859,6 @@ const ChatControllersSX = {
 //         </div> */}
 //       </div>
 
-
-
 //       {/* Chat messages */}
 //       <div className="center">
 //         {chat?.messages?.map((message) => (
@@ -875,8 +881,6 @@ const ChatControllersSX = {
 //         ))}
 //         <div ref={endRef}></div> {/* endRef is attached to this div */}
 //       </div>
-
-
 
 //       {/* Chat input and controls */}
 //       <div className="bottom">

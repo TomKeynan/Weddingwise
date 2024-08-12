@@ -8,27 +8,16 @@ import { AppContext } from "../store/AppContext";
 function Package() {
   const { coupleData, offeredPackage } = useContext(AppContext);
 
-
-  
   return (
     <Box sx={{ minHeight: "inherit" }}>
-      {!coupleData  ? (
+      {!coupleData ? (
         <RandomPackage />
-      ) : !offeredPackage  ? (
+      ) : !offeredPackage ? (
         <UserWithoutPackage />
       ) : (
         <UserPackage />
       )}
     </Box>
-    // <Box sx={{ minHeight: "inherit" }}>
-    //   {!coupleData  ? (
-    //     <RandomPackage />
-    //   ) : !offeredPackage  && !coupleData.package ? (
-    //     <UserWithoutPackage />
-    //   ) : (
-    //     <UserPackage />
-    //   )}
-    // </Box>
   );
 }
 

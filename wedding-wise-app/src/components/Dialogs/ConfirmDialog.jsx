@@ -64,7 +64,6 @@ export default ConfirmDialog;
 const wrapperSX = {
   "& .MuiPaper-root": {
     width: { xs: "70%", sm: "60%", lg: "30%" },
-    // width: "70%",
     maxWidth: "900px",
   },
 };

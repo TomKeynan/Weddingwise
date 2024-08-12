@@ -33,7 +33,6 @@ function ProfileBanner({ props }) {
             border: "1px solid black",
             width: { xs: 250, sm: 300, lg: 400 },
             height: { xs: 250, sm: 300, lg: 400 },
-            // aspectRatio: "1/1",
             borderRadius: "20%",
             position: { xs: "absolute", md: "relative" },
             bottom: { xs: "-40%", sm: "-30%", md: "0%" },
@@ -45,7 +44,6 @@ function ProfileBanner({ props }) {
             src={currentUser?.avatar}
             sx={{
               width: { xs: 250, sm: 300, lg: 400 },
-              // height: { xs: 250, sm: 400 , md: 350, lg: 400},
               aspectRatio: "1/1",
               borderRadius: "20%",
               objectFit: "cover",
@@ -86,7 +84,6 @@ const namesSX = {
   WebkitTextStrokeWidth: { xs: 2, sm: 5 },
   color: { sm: "secondary.main" },
   WebkitTextStrokeWidth: { xs: 2, sm: 0.7 },
-  // WebkitTextStrokeColor: "black",
   fontWeight: "bold",
 };
 
@@ -97,7 +94,5 @@ const weddingDateSX = {
   color: { sm: "secondary.main" },
   fontFamily: customTheme.font.main,
   WebkitTextStrokeWidth: { xs: 2, sm: 0.5 },
-  // WebkitTextStrokeColor: "black",
   fontWeight: "bold",
-  // fontFamily: "system-ui",
 };

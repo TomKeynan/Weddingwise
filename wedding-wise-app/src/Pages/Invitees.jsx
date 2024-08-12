@@ -40,7 +40,7 @@ function Invitees() {
         ברורה של כמות המוזמנים בכל רגע נתון, כך שתמיד תהיו מעודכנים.
       </Typography>
       <Stack sx={{ width: "80%", pb: 5 }}>
-        {inviteesData !== null && <InviteesKpis />}
+        {inviteesData !== null && <InviteesKpis bgColor="white"/>}
       </Stack>
       <Stack sx={{ width: "80%" }}>
         <InviteesTable />
@@ -52,7 +52,6 @@ function Invitees() {
 export default Invitees;
 
 const loginStackSX = {
-  // minHeight: "inherit",
   pb: 10,
   width: { xs: "95%", sm: "85%" },
   margin: "0 auto",
@@ -65,7 +64,4 @@ const titleSX = {
   fontWeight: "bold",
   color: customTheme.palette.primary.main,
   WebkitTextStrokeWidth: { xs: 1.5, sm: 0.7 },
-
-  // textDecoration: "underline",
-  // WebkitTextStrokeColor: "black",
 };

@@ -24,7 +24,5 @@ export default TypeWeightCard;
 const cardContainerSX = {
   px: { xs: 2, sm: 0 },
   mb: 2,
-  // bgcolor: customTheme.palette.primary.light,
-  // py: 2,
-  // border: 1,
+
 };

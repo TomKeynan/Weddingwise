@@ -20,7 +20,6 @@ function SupplierCard({
   onReplacement,
   onCheckBtnClick,
   isAlternative,
-  isPackage,
 }) {
   const { businessName, phoneNumber, supplierEmail, price, supplierType } =
     props;
@@ -81,7 +80,7 @@ function SupplierCard({
           boxShadow: customTheme.shadow.main,
           borderRadius: 4,
           margin: "0 auto",
-          width: { xs: 200, sm: 250 },
+          width: { xs: 200, sm: 270 },
           direction: "ltr"
         }}
       >
@@ -160,7 +159,7 @@ function SupplierCard({
               }}
               variant="body1"
             >
-              ₪מחיר: {addCommasToNumber(price)}
+              מחיר: {addCommasToNumber(price)} ₪
             </Typography>
           </Stack>
           <Stack

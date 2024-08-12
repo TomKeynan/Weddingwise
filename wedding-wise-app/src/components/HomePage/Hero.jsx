@@ -57,7 +57,6 @@ function Hero() {
           {!screenAboveSM && (
             <Stack
               direction="row"
-              // justifyContent="space-around"
               sx={{
                 width: "90%",
                 justifyContent: { xs: "center", md: "start" },

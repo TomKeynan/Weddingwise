@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Window from "./window/Window";
 import { useUserStore } from "../../fireBase/userStore";
 import { useChatStore } from "../../fireBase/chatStore";
@@ -11,7 +11,7 @@ import Loading from "../Loading";
 import { getAuth } from "firebase/auth";
 import { AppContext } from "../../store/AppContext";
 import { Navigate } from "react-router-dom";
-import { Box, Button, Stack, useMediaQuery } from "@mui/material";
+import { Box, Stack, useMediaQuery } from "@mui/material";
 function Chat() {
   const screenUnderMD = useMediaQuery("(max-width: 900px)");
   const { currentUser} = useUserStore();
@@ -90,7 +90,6 @@ function Chat() {
             <>
               {!chatId && <ChatList />}
               {chatId && <Window />}
-              {/* {chatId && <Detail />} */}
             </>
           ) : coupleData ? (
             <div>
@@ -125,103 +124,3 @@ function Chat() {
 
 export default Chat;
 
-// import React, { useEffect, useRef, useState, useContext } from 'react';
-// import Detail from './detail/Detail';
-// import Window from './window/Window';
-// import { useUserStore } from '../../fireBase/userStore';
-// import { useChatStore } from '../../fireBase/chatStore';
-// import ChatList from './chatList/ChatList';
-// import { Link } from 'react-router-dom';
-// import { doc, onSnapshot } from 'firebase/firestore';
-// import { db } from '../../fireBase/firebase';
-// import './chat.css';
-// import Loading from '../Loading';
-// import { getAuth } from "firebase/auth";
-// import { useAuthState } from "react-firebase-hooks/auth";
-// import { AppContext } from '../../store/AppContext';
-// import { Navigate } from 'react-router-dom';
-// function Chat() {
-//   const { currentUser, isLoading, fetchUserInfo } = useUserStore();
-//   const { chatId, changeChatStatus, chatStatus } = useChatStore();
-//   const auth = getAuth();
-//   const [user, loading] = useAuthState(auth);
-
-//   const {
-//     coupleData,
-//     supplierData,
-//   } = useContext(AppContext);
-
-//   const [hasChats, setHasChats] = useState(false);
-
-//   useEffect(() => {
-//     if (currentUser?.id) {
-//       // Set up a Firestore onSnapshot listener for user chats
-//       const unsub = onSnapshot(
-//         doc(db, "userChats", currentUser.id),
-//         async (docSnapshot) => {
-//           const chatData = docSnapshot?.data();
-//           if (chatData && chatData?.chats && chatData?.chats?.length > 0) {
-//             setHasChats(true);
-//           } else {
-//             setHasChats(false);
-//           }
-//         });
-//       return () => {
-//         unsub();
-//       };
-//     }
-//   }, [currentUser?.id]);
-
-//   if (!currentUser) {
-//     return <Navigate to="/" />;
-//   }
-
-//   return (
-//     !currentUser ? (
-//       <Loading />
-//     ) : (
-//       <div className="chat" >
-//         <button onClick={() => changeChatStatus()} className="exit-button">
-//           &#10005;
-//         </button>
-//         {coupleData || supplierData
-//           ? (
-//             <>
-//               {hasChats ? (
-//                 <>
-//                   <ChatList />
-//                   {chatId && <Window />}
-//                   {chatId && <Detail />}
-//                 </>
-//               ) : (
-//                 coupleData ? (
-//                   <div>
-//                     <p className="paragraph">
-//                       על מנת להשתמש בצ'אט, אתם צריכים קודם להשיג את נבחרת הספקים המושלמת עבורכם!
-//                     </p>
-//                     <Link
-//                       to={'/package'}
-//                       className="button-link"
-//                       onClick={() => { changeChatStatus(); }}
-//                     >
-//                       השיגו חבילה כעת!
-//                     </Link>
-//                   </div>
-//                 ) : (
-//                   <div>
-//                     <p className="paragraph">
-//                       על מנת להשתמש בצ'אט, על זוג ליצור אתכם קשר!
-//                     </p>
-//                   </div>
-//                 )
-//               )}
-//             </>
-//           ) : (
-//             <p>Please log in to access this section.</p>
-//           )}
-//       </div>)
-//   );
-
-// };
-
-// export default Chat;

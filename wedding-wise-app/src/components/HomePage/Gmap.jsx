@@ -16,7 +16,6 @@ function Gmap() {
     )
       .then((response) => response.json())
       .then((data) => {
-        // console.log("Fetched venues:", data);
         setVenues(data);
       })
       .catch((error) =>

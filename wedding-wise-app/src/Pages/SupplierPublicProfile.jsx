@@ -211,7 +211,6 @@ function SupplierPublicProfile() {
                   direction="row"
                   justifyContent="center"
 
-                  // justifyContent={screenUnderMD ? "center" : "flex-start"}
                 >
                   <MapOutlinedIcon />
                   <Typography>
@@ -223,7 +222,6 @@ function SupplierPublicProfile() {
                 <Stack
                   direction="row"
                   justifyContent="center"
-                  // justifyContent={screenUnderMD ? "center" : "flex-start"}
                 >
                   <PhoneEnabledOutlinedIcon />
                   <Typography>
@@ -235,7 +233,6 @@ function SupplierPublicProfile() {
                 <Stack
                   direction="row"
                   justifyContent="center"
-                  // justifyContent={screenUnderMD ? "center" : "flex-start"}
                 >
                   <EmailOutlinedIcon />
                   <Typography>
@@ -247,7 +244,6 @@ function SupplierPublicProfile() {
                 <Stack
                   direction="row"
                   justifyContent="center"
-                  // justifyContent={screenUnderMD ? "center" : "flex-start"}
                 >
                   <LocalOfferOutlinedIcon />
                   <Typography>
@@ -288,7 +284,6 @@ function SupplierPublicProfile() {
       {showLinks && (
         <Stack
           direction="column"
-          // direction={screenUnderMD ? "column" : "row"}
           alignItems="center"
           justifyContent="space-between"
           sx={{ width: "80%", margin: "0 auto", pt: 10, pb: { xs: 3, sm: 6 } }}
@@ -296,7 +291,6 @@ function SupplierPublicProfile() {
           <Stack>
             <Typography
               sx={{
-                // width: 220,
                 textAlign: "center",
                 fontSize: { xs: 16, sm: 20, md: 24 },
                 fontFamily: customTheme.font.main,
@@ -418,7 +412,6 @@ function SupplierPublicProfile() {
       {supplierFirebase && supplierFirebase["comments"]?.length > 0 ? (
         <Stack
           justifyContent="center"
-          // direction="row"
           sx={{
             display: "block",
             minHeigh: 300,

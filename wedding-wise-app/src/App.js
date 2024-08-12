@@ -11,8 +11,6 @@ import CustomThemeProvider from "./store/Theme";
 import RtlProvider from "./store/RtlProvider";
 import Questionnaire from "./Pages/Questionnaire";
 import Package from "./Pages/Package";
-import Finance from "./Pages/ExpenseTracking";
-import EditDetails from "./Pages/EditDetailsOnReplace";
 import { LoadScript } from "@react-google-maps/api";
 import Invitees from "./Pages/Invitees";
 import SupplierLogin from "./Pages/SupplierLogin";
@@ -30,7 +28,6 @@ import PlannerLP from "./Pages/PlannerLP";
 import ExpenseTracking from "./Pages/ExpenseTracking";
 import EditCoupleDetails from "./Pages/EditCoupleDetails";
 import EditDetailsOnReplace from "./Pages/EditDetailsOnReplace";
-// const googleMapsApiKey = "AIzaSyC3QkzXx3mLsG_-IzI67-WVFBAoAZTYWxk";
 const googleMapsApiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 const libraries = ["places"];

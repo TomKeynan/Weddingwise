@@ -1,7 +1,8 @@
 import React from "react";
-import { Container, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import Registration from "../components/SignupPage/Registration";
 import RegisterContextProvider from "../store/RegisterContext";
+import { customTheme } from "../store/Theme";
 
 
 const Signup = () => {
@@ -13,12 +14,12 @@ const Signup = () => {
         textAlign="center"
         justifyContent="flex-start"
         sx={{
-          width: { xs: "90%", sm: "70%", md: "60%" },
+          width: { xs: "90%", sm: "70%" },
           margin: "auto",
           minHeight: "inherit",
         }}
       >
-        <Typography sx={{ fontSize: { xs: 30, sm: 36, md: 40 } }}>
+        <Typography sx={titleSX}>
           שמחים שבחרתם להצטרף למהפכת החיפוש שלנו!
         </Typography>
         <Typography
@@ -34,3 +35,13 @@ const Signup = () => {
 };
 
 export default Signup;
+
+const titleSX = {
+  textAlign: "center",
+  fontSize: { xs: 26, sm: 30, md: 36 },
+  fontFamily: customTheme.font.main,
+  fontWeight: "bold",
+  color: customTheme.palette.primary.main,
+  WebkitTextStrokeWidth: { xs: 1.5, sm: 1 },
+  textShadow: " 1px 2px 3px #282828",
+};

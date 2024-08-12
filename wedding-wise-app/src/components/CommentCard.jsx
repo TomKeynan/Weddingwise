@@ -9,8 +9,7 @@ export default function CommentCard({
   commentDate,
   rating,
 }) {
-
-console.log(giverAvatar);
+  console.log(giverAvatar);
   return (
     <Stack sx={commentWrapperSX}>
       {/* card-header */}
@@ -58,12 +57,7 @@ console.log(giverAvatar);
             </Typography>
           </Stack>
         </Stack>
-        <Rating
-          name="read-only"
-          value={rating} // {comment.rating}
-          readOnly
-          size="small"
-        />{" "}
+        <Rating name="read-only" value={rating} readOnly size="small" />{" "}
       </Stack>
 
       <Typography
@@ -71,7 +65,7 @@ console.log(giverAvatar);
           textAlign: { xs: "center", sm: "left" },
           fontSize: { xs: 14, sm: 16 },
           px: 1,
-          py:2,
+          py: 2,
         }}
       >
         {text}
@@ -83,7 +77,6 @@ console.log(giverAvatar);
 const commentWrapperSX = {
   direction: "ltr",
   bgcolor: "white",
-  // bgcolor: customTheme.supplier.colors.primary.light,
   p: { xs: 1, sm: 3 },
   boxShadow: customTheme.shadow.main,
   borderRadius: 3,

@@ -1,13 +1,11 @@
 import {
   Box,
   Container,
-  Fade,
   Stack,
   Typography,
   useMediaQuery,
 } from "@mui/material";
 import React from "react";
-import SupplierOutlineBtn from "../components/buttons/SupplierOutlineBtn";
 import SupplierContainBtn from "../components/buttons/SupplierContainBtn";
 import { customTheme } from "../store/Theme";
 import FadeIn from "../components/FadeIn";
@@ -104,21 +102,6 @@ function PlannerLP() {
 
 export default PlannerLP;
 
-const heroWrapperSX = {
-  minHeight: { xs: "50vh", sm: "55vh", md: "70vh" },
-  backgroundImage: "url(assets/supplier_LP/LP-hero-supplier.png)",
-  backgroundRepeat: "no-repeat",
-  backgroundSize: "cover",
-  backgroundPosition: "center bottom",
-  position: "relative",
-  textAlign: "center",
-};
-
-const heroContentSX = {
-  p: { xs: 2, sm: 4 },
-  width: { xs: "90%", sm: "70%", md: "60%" },
-  margin: "auto",
-};
 
 const heroText = {
   textAlign: "center",
@@ -127,11 +110,6 @@ const heroText = {
   fontWeight: "bold",
   color: customTheme.palette.primary.main,
   WebkitTextStrokeWidth: { xs: 1.5, sm: 0.7 },
-  // WebkitTextStrokeColor: "black",
-};
-
-const heroBtnStackSX = {
-  minWidth: "60%",
 };
 
 const bodyStackSX = {

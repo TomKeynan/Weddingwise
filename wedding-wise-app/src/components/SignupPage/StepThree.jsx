@@ -8,29 +8,14 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { customTheme } from "../../store/Theme";
 import TextInput from "../TextInput";
-import { VALIDATIONS } from "../../utilities/collections";
 import InputFileUpload from "../InputFileUpload";
 
 const StepThree = () => {
-  const { userDetails, handleAvatar, avatar,updateUserDetails } = useContext(RegisterContext);
-
-  const [check, setCheck] = useState({ isValid: true });
+  const { userDetails, handleAvatar, avatar } = useContext(RegisterContext);
 
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-
-
-  // const handleChange = (event) => {
-  //   const key = event.target.name;
-  //   const value = event.target.value;
-  //   if (VALIDATIONS[key].regex.test(value))
-  //     setCheck({ isValid: true, validMsg: VALIDATIONS[key].valid });
-  //   else setCheck({ isValid: false, errorMsg: VALIDATIONS[key].error });
-
-  //   updateUserDetails({ [event.target.name]: event.target.value });
-  // };
 
   return (
     <Grid

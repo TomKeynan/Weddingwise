@@ -9,8 +9,8 @@ import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import { AppContext } from "../store/AppContext";
 import { Navigate } from "react-router-dom";
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { getAuth } from 'firebase/auth';
+import { useAuthState } from "react-firebase-hooks/auth";
+import { getAuth } from "firebase/auth";
 import Loading from "../components/Loading";
 import { fetchSupplierData } from "../fireBase/fetchSupplier";
 import { reverseGeocoding } from "../utilities/functions";
@@ -18,7 +18,6 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../fireBase/firebase";
 
 function SupplierPrivateProfile() {
-
   const auth = getAuth();
   const [user] = useAuthState(auth);
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
@@ -34,20 +33,23 @@ function SupplierPrivateProfile() {
 
     const unsub = onSnapshot(userDocRef, (docSnapshot) => {
       if (docSnapshot.exists()) {
-
         const fetchDataAndReverseGeocode = async () => {
           try {
             const data = await fetchSupplierData(supplierData.supplierEmail);
             if (supplierData.latitude && supplierData.longitude) {
-              const address = await reverseGeocoding(supplierData.latitude, supplierData.longitude);
+              const address = await reverseGeocoding(
+                supplierData.latitude,
+                supplierData.longitude
+              );
               data.address = address;
             }
             setSupplierFirebase(data);
-
           } catch (error) {
-            console.error("Error fetching supplier data or reverse geocoding:", error);
-          }
-          finally {
+            console.error(
+              "Error fetching supplier data or reverse geocoding:",
+              error
+            );
+          } finally {
             setLoadingData(false);
           }
         };
@@ -61,7 +63,6 @@ function SupplierPrivateProfile() {
     };
   }, [user?.uid]);
 
-
   if (loadingData) {
     return <Loading />;
   }
@@ -71,7 +72,6 @@ function SupplierPrivateProfile() {
   }
 
   return (
-
     <Stack spacing={3} sx={stackWrapperSX}>
       <SupplierBanner supplierFirebase={supplierFirebase} />
       <Stack
@@ -89,8 +89,9 @@ function SupplierPrivateProfile() {
           sx={{ mt: { xs: 0, sm: 3 } }}
         >
           <Typography sx={namesSX}>
-            {`${translateSupplierTypeToHebrew(supplierData?.supplierType)} - ${supplierData?.businessName
-              }`}
+            {`${translateSupplierTypeToHebrew(supplierData?.supplierType)} - ${
+              supplierData?.businessName
+            }`}
           </Typography>
         </Stack>
         <Stack
@@ -104,11 +105,13 @@ function SupplierPrivateProfile() {
             title="מספר המדרגים:"
             data={supplierData?.ratedCount}
             icon={<PeopleOutlineIcon />}
+            extraSX={{ minWidth: 180 }}
           />
           <KpiPaper
             title="דירוג:"
             data={supplierData?.rating === 0 ? "–" : supplierData?.rating}
             icon={<StarOutlineIcon />}
+            extraSX={{ minWidth: 180 }}
           />
         </Stack>
         <Tabs supplierFirebase={supplierFirebase} />
@@ -131,13 +134,4 @@ const namesSX = {
   color: customTheme.palette.primary.main,
   textAlign: "center",
   WebkitTextStrokeWidth: { xs: 2, sm: 5 },
-};
-
-const descriptionSX = {
-  // fontFamily: customTheme.font.main,
-  fontSize: { xs: 30, sm: 40, md: 50 },
-  //   mr: { xs: 3, sm: 3, md: 8 },
-  // pr: { xs: 3, sm: 5, md: 8 },
-  //   WebkitTextStrokeWidth: { xs: 2, sm: 5 },
-  //   color: customTheme.supplier.colors.primary.main
 };

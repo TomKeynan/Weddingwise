@@ -108,8 +108,6 @@ function CommentCarousel({ supplierComments }) {
             rating={comment.rating}
           />
         </Box>
-        // <div style={{ overflow: "hidden" }} key={index}>
-        // </div>
       ))}
     </Slider>
   );

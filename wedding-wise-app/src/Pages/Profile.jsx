@@ -8,21 +8,12 @@ import ProfileBanner from "../components/ProfilePage/ProfileBanner";
 import { AppContext } from "../store/AppContext";
 import InviteesKpis from "../components/Planner/InviteeList/InviteesKpis";
 import { Navigate } from "react-router-dom";
-import Loading from "../components/Loading";
 import ProfileKpis from "../components/ProfilePage/ProfileKpis";
 import ExpansesKpis from "../components/Planner/ExpenseTracking/ExpansesKpis";
-import { getAuth } from "firebase/auth";
-import { useAuthState } from "react-firebase-hooks/auth";
 import TasksKpis from "../components/Planner/TasksPage/TasksKpis";
 
 function Profile() {
-  const { coupleData, setOfferedPackage } = useContext(AppContext);
-  // const auth = getAuth();
-  // const [user, loading] = useAuthState(auth);
-
-  // if (!user) {
-  //   return <Loading />;
-  // }
+  const { coupleData } = useContext(AppContext);
 
   if (!coupleData) {
     return <Navigate to="/" />;
@@ -70,7 +61,7 @@ function Profile() {
           <ExpansesKpis />
         </AccordionLayout>
         <AccordionLayout title="ניהול מוזמנים" btnValue="/invitees">
-          <InviteesKpis />
+          <InviteesKpis bgColor="secondary.light" />
         </AccordionLayout>
         <AccordionLayout title="רשימת מטלות" btnValue="/tasks">
           <TasksKpis />
@@ -84,9 +75,4 @@ export default Profile;
 
 const loginStackSX = {
   minHeight: "inherit",
-};
-
-const cardsContainer = {
-  maxWidth: "100%",
-  p: 1,
 };

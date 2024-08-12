@@ -113,9 +113,6 @@ function Login() {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  // if (globalLoading) {
-  //   return <Loading />
-  // }
 
   return (
     <Container sx={containerSX} maxWidth="xxl">

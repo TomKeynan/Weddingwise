@@ -1,6 +1,6 @@
 import React from "react";
 import { stickers } from "../../utilities/collections";
-import { Box, Grid, Paper, Stack, Typography } from "@mui/material";
+import {  Grid, Paper, Stack, Typography } from "@mui/material";
 import { customTheme } from "../../store/Theme";
 import { useMediaQuery } from "@mui/material";
 import Gmap from "./Gmap";
