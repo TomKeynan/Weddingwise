@@ -25,6 +25,7 @@ import {
 } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { arrayRemove } from "firebase/firestore";
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 const formatter = buildFormatter(heStrings);
 
@@ -39,14 +40,8 @@ function Window() {
   });
 
   const { currentUser } = useUserStore();
-  const {
-    chatId,
-    user,
-    isCurrentUserBlocked,
-    isReceiverBlocked,
-    changeBlock,
-    goBack,
-  } = useChatStore();
+  const { chatId, user, isCurrentUserBlocked, isReceiverBlocked, changeBlock, goBack } =
+    useChatStore();
 
   // Reference to the end of the chat messages for scrolling
   const endRef = useRef(null);
@@ -479,6 +474,9 @@ function Window() {
     }
   }
   return (
+
+
+
     <Stack
       sx={{
         height: "100%",
@@ -515,7 +513,8 @@ function Window() {
           <Box
           // className="icons"
           >
-            <label htmlFor="file">
+            <label htmlFor="file"
+            >
               <Box
                 sx={{
                   width: 20,
@@ -532,6 +531,7 @@ function Window() {
                     height: 20,
                     // borderRadius: "50%",
                     objectFit: "cover",
+                    cursor: isCurrentUserBlocked || isReceiverBlocked ? "not-allowed" : "pointer",
                   }}
                 />
               </Box>
@@ -539,6 +539,8 @@ function Window() {
             <input
               type="file"
               id="file"
+
+              disabled={isCurrentUserBlocked || isReceiverBlocked}
               style={{ display: "none" }}
               onChange={handleImg}
             />
@@ -550,8 +552,8 @@ function Window() {
             type="text"
             placeholder={
               isCurrentUserBlocked || isReceiverBlocked
-                ? "You cannot send a message"
-                : "Type a message..."
+                ? "אינך יכול לשלוח הודעה"
+                : "כתוב כאן..."
             }
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -571,32 +573,27 @@ function Window() {
         </Grid>
         {/* emoji */}
         <Grid item xs={1} sm={0.5} lg={1} sx={ChatControllersSX}>
-          <Box
-            // className="emoji"
-            sx={{ position: "relative" }}
-          >
+          <Box sx={{ position: "relative" }}>
             <Box
               sx={{
                 width: 20,
                 height: 20,
-                // borderRadius: "50%",
               }}
             >
               <Box
                 component="img"
                 src="assets/chat_pics/emoji.png"
                 alt=""
-                onClick={() => setOpen((prev) => !prev)}
+                onClick={() => !isCurrentUserBlocked && !isReceiverBlocked && setOpen((prev) => !prev)}
                 sx={{
                   width: 20,
                   height: 20,
                   objectFit: "cover",
-                  // borderRadius: "50%",
+                  cursor: isCurrentUserBlocked || isReceiverBlocked ? "not-allowed" : "pointer",
                 }}
               />
             </Box>
             <Box
-              // className="picker"
               sx={{
                 position: "absolute",
                 bottom: 50,
@@ -854,6 +851,8 @@ const ChatControllersSX = {
 //         </div> */}
 //       </div>
 
+
+
 //       {/* Chat messages */}
 //       <div className="center">
 //         {chat?.messages?.map((message) => (
@@ -876,6 +875,8 @@ const ChatControllersSX = {
 //         ))}
 //         <div ref={endRef}></div> {/* endRef is attached to this div */}
 //       </div>
+
+
 
 //       {/* Chat input and controls */}
 //       <div className="bottom">

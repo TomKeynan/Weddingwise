@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
-import Detail from "./detail/Detail";
 import Window from "./window/Window";
 import { useUserStore } from "../../fireBase/userStore";
 import { useChatStore } from "../../fireBase/chatStore";
@@ -10,17 +9,15 @@ import { db } from "../../fireBase/firebase";
 import "./chat.css";
 import Loading from "../Loading";
 import { getAuth } from "firebase/auth";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { AppContext } from "../../store/AppContext";
 import { Navigate } from "react-router-dom";
 import { Box, Button, Stack, useMediaQuery } from "@mui/material";
 function Chat() {
   const screenUnderMD = useMediaQuery("(max-width: 900px)");
-  const { currentUser, isLoading, fetchUserInfo } = useUserStore();
-  const { chatId, changeChatStatus, chatStatus } = useChatStore();
+  const { currentUser} = useUserStore();
+  const { chatId, changeChatStatus, isScrollableY } = useChatStore();
   const auth = getAuth();
-  const [user, loading] = useAuthState(auth);
-
+  
   const { coupleData, supplierData } = useContext(AppContext);
 
   const [hasChats, setHasChats] = useState(false);
@@ -68,7 +65,7 @@ function Chat() {
         fontFamily:
           "'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', Geneva, Verdana, sans-serif",
         textAlign: "right",
-        overflowY: "scroll",
+        overflowY: isScrollableY ? "scroll" : "hidden",  
         "&::-webkit-scrollbar": {
           width: "8px",
         },
