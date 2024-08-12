@@ -30,7 +30,6 @@ import PlannerLP from "./Pages/PlannerLP";
 import ExpenseTracking from "./Pages/ExpenseTracking";
 import EditCoupleDetails from "./Pages/EditCoupleDetails";
 import EditDetailsOnReplace from "./Pages/EditDetailsOnReplace";
-// const googleMapsApiKey = "AIzaSyC3QkzXx3mLsG_-IzI67-WVFBAoAZTYWxk";
 const googleMapsApiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 const libraries = ["places"];
