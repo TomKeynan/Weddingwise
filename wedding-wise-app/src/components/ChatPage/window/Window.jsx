@@ -23,6 +23,7 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { arrayRemove } from "firebase/firestore";
 
 const formatter = buildFormatter(heStrings);
@@ -38,8 +39,14 @@ function Window() {
   });
 
   const { currentUser } = useUserStore();
-  const { chatId, user, isCurrentUserBlocked, isReceiverBlocked, changeBlock } =
-    useChatStore();
+  const {
+    chatId,
+    user,
+    isCurrentUserBlocked,
+    isReceiverBlocked,
+    changeBlock,
+    goBack,
+  } = useChatStore();
 
   // Reference to the end of the chat messages for scrolling
   const endRef = useRef(null);
@@ -200,36 +207,23 @@ function Window() {
     if (message.senderId === currentUser?.id) {
       messageBgColor = {
         bgcolor: "info.light",
-        // bgcolor: "#5183fe",
       };
       alignment = "flex-end";
     } else {
       messageBgColor = {
         bgcolor: "info.dark",
-        // bgcolor: "rgba(17, 25, 40, 1)",
       };
       alignment = "flex-start";
     }
     return (
-      <Stack
-        alignItems={alignment}
-        // className={
-        //   message.senderId === currentUser?.id ? "message own" : "message"
-        // }
-        key={message?.createdAt}
-      >
-        <Stack
-          // className="texts"
-          alignItems={alignment}
-          sx={{ textAlign: "left" }}
-        >
+      <Stack alignItems={alignment} key={message?.createdAt}>
+        <Stack alignItems={alignment} sx={{ textAlign: "left" }}>
           {message.img ? (
             <Box
               sx={{
                 border: "1px solid black",
                 width: 250,
                 height: 250,
-                // borderRadius: "50%",
               }}
             >
               <Box
@@ -239,7 +233,6 @@ function Window() {
                 sx={{
                   width: 250,
                   height: 250,
-                  // borderRadius: "50%",
                   objectFit: "cover",
                 }}
               />
@@ -247,19 +240,27 @@ function Window() {
           ) : (
             <Typography
               sx={{
+                ...messageBgColor,
                 color: "white",
-                p: 2.5,
                 borderRadius: 2,
                 textAlign: "left",
                 maxWidth: "fit-content",
-                ...messageBgColor,
+                p: { xs: 1, sm: 2 },
+                fontSize: { xs: 13, sm: 16 },
               }}
             >
               {message.text}
             </Typography>
           )}
           <Typography
-            sx={{ color: "white", py: 0.7, textAlign: "left", px: 2.5 }}
+            sx={{
+              color: "white",
+              py: 0.7,
+              textAlign: "left",
+              // px: 2.5,
+              px: { xs: 1, sm: 2 },
+              fontSize: { xs: 13, sm: 16 },
+            }}
           >
             <TimeAgo date={message.createdAt.toDate()} formatter={formatter} />
           </Typography>
@@ -267,9 +268,218 @@ function Window() {
       </Stack>
     );
   }
+
+  function rearrangeHeaderWindowElements() {
+    if (!screenUnderSM) {
+      return (
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{
+            columnGap: 2,
+            borderBottom: "1px solid #dddddd35",
+            p: 3,
+            mt: 3,
+          }}
+        >
+          {/* go back to menu btn */}
+          <Stack>
+            <Button
+              variant="contained"
+              color="info"
+              startIcon={<ArrowForwardIcon />}
+              onClick={goBack}
+              sx={{
+                p: 1,
+
+                fontSize: 14,
+                "& .MuiSvgIcon-root": {
+                  fontSize: 14,
+                },
+                "&:hover": {
+                  bgcolor: "info.dark",
+                },
+              }}
+            >
+              חזור
+            </Button>
+          </Stack>
+          {/* avatar & name & description */}
+          <Stack direction="row" alignItems="center" sx={{ columnGap: 2 }}>
+            <Box
+              sx={{
+                border: "1px solid black",
+                width: 60,
+                height: 60,
+                borderRadius: "50%",
+              }}
+            >
+              <Box
+                component="img"
+                src={user?.avatar || "assets/chat_pics/avatar.png"}
+                alt=""
+                sx={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
+              />
+            </Box>
+            <Stack>
+              <Typography
+                sx={{
+                  color: "white",
+                  typography: "h5",
+                  textAlign: "left",
+                }}
+              >
+                {user?.username}
+              </Typography>
+              <Typography
+                sx={{
+                  color: "white",
+                  typography: "h6",
+                  textAlign: "left",
+                }}
+              >
+                {user?.description}
+              </Typography>
+            </Stack>
+          </Stack>
+          {/* block user btn */}
+          <Stack>
+            <Button
+              variant="contained"
+              sx={{
+                bgcolor: "error.main",
+                p: 1,
+                fontSize: 14,
+                "&:hover": {
+                  bgcolor: "error.dark",
+                },
+              }}
+              onClick={handleBlock}
+            >
+              {isCurrentUserBlocked
+                ? "נחסמת"
+                : isReceiverBlocked
+                ? "משתמש חסום"
+                : "חסום משתמש"}
+            </Button>
+          </Stack>
+        </Stack>
+      );
+    } else {
+      return (
+        <Stack
+          direction="column"
+          justifyContent="space-between"
+          sx={{
+            rowGap: 2,
+            borderBottom: "1px solid #dddddd35",
+            p: 2,
+          }}
+        >
+          {/* avatar & name & description */}
+          <Stack direction="row" alignItems="center" sx={{ columnGap: 1 }}>
+            <Box
+              sx={{
+                border: "1px solid black",
+                width: 45,
+                height: 45,
+                borderRadius: "50%",
+              }}
+            >
+              <Box
+                component="img"
+                src={user?.avatar || "assets/chat_pics/avatar.png"}
+                alt=""
+                sx={{
+                  width: 45,
+                  height: 45,
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
+              />
+            </Box>
+            <Stack>
+              <Typography
+                sx={{
+                  color: "white",
+                  typography: "body1",
+                  textAlign: "left",
+                }}
+              >
+                {user?.username}
+              </Typography>
+              <Typography
+                sx={{
+                  color: "white",
+                  typography: "body2",
+                  textAlign: "left",
+                }}
+              >
+                {user?.description}
+              </Typography>
+            </Stack>
+          </Stack>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            {/* go back to menu btn */}
+            <Stack>
+              <Button
+                variant="contained"
+                color="info"
+                startIcon={<ArrowForwardIcon />}
+                onClick={goBack}
+                sx={{
+                  p: 0.5,
+                  fontSize: 12,
+                  "& .MuiSvgIcon-root": {
+                    fontSize: 12,
+                  },
+                  "&:hover": {
+                    bgcolor: "info.dark",
+                  },
+                }}
+              >
+                חזור
+              </Button>
+            </Stack>
+
+            {/* block user btn */}
+            <Stack>
+              <Button
+                variant="contained"
+                sx={{
+                  bgcolor: "error.main",
+                  p: 0.5,
+                  fontSize: 12,
+                  "&:hover": {
+                    bgcolor: "error.dark",
+                  },
+                }}
+                onClick={handleBlock}
+              >
+                {isCurrentUserBlocked
+                  ? "נחסמת"
+                  : isReceiverBlocked
+                  ? "משתמש חסום"
+                  : "חסום משתמש"}
+              </Button>
+            </Stack>
+          </Stack>
+        </Stack>
+      );
+    }
+  }
   return (
     <Stack
-      // className="window"
       sx={{
         height: "100%",
         borderLeft: "1px solid #dddddd35",
@@ -278,151 +488,11 @@ function Window() {
       }}
     >
       {/* Chat header with user info and action icons */}
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        sx={{
-          columnGap: { xs: 1, sm: 2 },
-          borderBottom: "1px solid #dddddd35",
-          p: { xs: 1, sm: 3 },
-          mt: 3,
-        }}
-      >
-        <Stack
-          direction="row"
-          alignItems="center"
-          sx={{ columnGap: { xs: 1, sm: 2 } }}
-        >
-          <Box
-            sx={{
-              border: "1px solid black",
-              width: 60,
-              height: 60,
-              borderRadius: "50%",
-            }}
-          >
-            <Box
-              component="img"
-              src={user?.avatar || "assets/chat_pics/avatar.png"}
-              alt=""
-              sx={{
-                width: 60,
-                height: 60,
-                borderRadius: "50%",
-                objectFit: "cover",
-              }}
-            />
-          </Box>
-          <Stack>
-            <Typography
-              sx={{
-                color: "white",
-                typography: { xs: "body1", sm: "h4" },
-                textAlign: "left",
-              }}
-            >
-              {user?.username}
-            </Typography>
-            <Typography
-              sx={{
-                color: "white",
-                typography: { xs: "body2", sm: "h6" },
-                textAlign: "left",
-              }}
-            >
-              {user?.description}
-            </Typography>
-          </Stack>
-        </Stack>
-        <Stack>
-          <Button
-            variant="contained"
-            sx={{
-              bgcolor: "error.main",
-              // p:0,
-              px: { xs: 0, sm: 1 },
-              py: { xs: 0, sm: 2 },
-              fontSize: { xs: 12, sm: 14 },
-              "&:hover": {
-                bgcolor: "error.dark",
-              },
-            }}
-            onClick={handleBlock}
-          >
-            {isCurrentUserBlocked
-              ? "נחסמת"
-              : isReceiverBlocked
-              ? "משתמש חסום"
-              : "חסום משתמש"}
-          </Button>
-        </Stack>
-      </Stack>
+      {rearrangeHeaderWindowElements()}
 
       {/* Chat messages */}
       <Stack sx={messagesWindowSX}>
         {chat?.messages?.map((message) => renderMessageByCurrentUser(message))}
-        {/* {chat?.messages?.map((message) => (
-          <Stack
-            alignItems={
-              message.senderId === currentUser?.id ? "flex-end" : "flex-start"
-            }
-            // className={
-            //   message.senderId === currentUser?.id ? "message own" : "message"
-            // }
-            key={message?.createdAt}
-          >
-            <Stack
-              // className="texts"
-              alignItems="flex-end"
-              sx={{ textAlign: "left" }}
-            >
-              {message.img ? (
-                <Box
-                  sx={{
-                    border: "1px solid black",
-                    width: 250,
-                    height: 250,
-                    // borderRadius: "50%",
-                  }}
-                >
-                  <Box
-                    component="img"
-                    src={message.img}
-                    alt=""
-                    sx={{
-                      width: 250,
-                      height: 250,
-                      // borderRadius: "50%",
-                      objectFit: "cover",
-                    }}
-                  />
-                </Box>
-              ) : (
-                <Typography
-                  sx={{
-                    bgcolor: "#5183fe",
-                    color: "white",
-                    p: 2.5,
-                    borderRadius: 2,
-                    textAlign: "left",
-                    maxWidth: "fit-content",
-                  }}
-                >
-                  {message.text}
-                </Typography>
-              )}
-              <Typography
-                sx={{ color: "white", py: 0.7, textAlign: "left", px: 2.5 }}
-              >
-                <TimeAgo
-                  date={message.createdAt.toDate()}
-                  formatter={formatter}
-                />
-              </Typography>
-            </Stack>
-          </Stack>
-        ))} */}
         <div ref={endRef}></div> {/* endRef is attached to this div */}
       </Stack>
 
@@ -432,7 +502,9 @@ function Window() {
         sx={{
           rowGap: 2,
           columnGap: 1,
-          p: { xs: 1, sm: 3 },
+          px: { xs: 1, sm: 3 },
+          pt: { xs: 1, sm: 3 },
+          pb:0,
           width: "100%",
           justifyContent: "center",
         }}
