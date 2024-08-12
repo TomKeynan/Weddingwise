@@ -44,8 +44,8 @@ export default function RegisterContextProvider({ children }) {
     PhoneNumber: "000",
     desiredDate: "",
     desiredRegion: "",
-    budget: "",
-    numberOfInvitees: "",
+    budget: 0,
+    numberOfInvitees: 0,
     relationship: "",
   });
   const [avatar, setAvatar] = useState({

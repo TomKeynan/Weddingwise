@@ -75,6 +75,7 @@ function ChatList() {
 
   return (
     <Stack sx={{ width: "100%" }}>
+      {/* chat's header */}
       <Stack sx={{ p: { xs: 1, sm: 3 }, rowGap: 2 }}>
         {/* names and avatar */}
         <Stack
@@ -169,7 +170,7 @@ function ChatList() {
             sx={{
               textAlign: "left",
               p: 2,
-              my:1,
+              my: 1,
               columnGap: 2,
               color: "white",
               borderBottom: " 1px solid #dddddd35",
@@ -180,6 +181,7 @@ function ChatList() {
               backgroundColor: chat?.isSeen ? "transparent" : "#5183fe",
             }}
           >
+            {/* avatar image */}
             <Box
               sx={{
                 border: "1px solid black",
@@ -204,13 +206,16 @@ function ChatList() {
                 }}
               />
             </Box>
+            {/* supplier business name & last message */}
             <Box>
-              <Typography sx={{ mb: 1 }}>
+              <Typography sx={{ mb: 1, fontSize: { xs: 14, sm: 18 } }}>
                 {chat.user.blocked.includes(currentUser.id)
                   ? "User"
                   : chat.user.username}
               </Typography>
-              <Typography sx={{ mt: 1 }}>{chat.lastMessage}</Typography>
+              <Typography sx={{ mt: 1, fontSize: { xs: 12, sm: 16 } }}>
+                {chat.lastMessage}
+              </Typography>
             </Box>
           </Stack>
         ))}

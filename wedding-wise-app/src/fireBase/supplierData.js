@@ -10,7 +10,8 @@ export const useSupplierData = create(
       relevantSupplier: {},
 
       // Method to set the supplier data
-      setRelevantSupplier: (supplierData) => set({ relevantSupplier: supplierData }),
+      setRelevantSupplier: (supplierData) =>
+        set({ relevantSupplier: supplierData }),
 
       // Method to clear the supplier data
       clearRelevantSupplier: () => set({ relevantSupplier: {} }),

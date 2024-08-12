@@ -64,6 +64,7 @@ function SupplierCard({
   }, [supplierEmail, supplierType]);
 
   const handleMoreInformation = () => {
+    console.log({...props})
     setRelevantSupplier(props);
     navigate("/supplier-public-profile");
   };
@@ -81,6 +82,7 @@ function SupplierCard({
           borderRadius: 4,
           margin: "0 auto",
           width: { xs: 200, sm: 250 },
+          direction: "ltr"
         }}
       >
         <Box sx={{ width: "100%" }}>
