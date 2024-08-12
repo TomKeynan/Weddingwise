@@ -32,7 +32,7 @@ import { QuestionsContext } from "../../store/QuestionsContext";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import InputFileUpload from "../InputFileUpload";
 import { useUserStore } from "../../fireBase/userStore";
-import { auth, db } from "../../fireBase/firebase";
+import { db } from "../../fireBase/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import upload from "../../fireBase/upload";
 
