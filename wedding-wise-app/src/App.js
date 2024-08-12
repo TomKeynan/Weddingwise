@@ -26,13 +26,13 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
 import SupplierPrivateProfile from "./Pages/SupplierPrivateProfile";
 import SupplierPublicProfile from "./Pages/SupplierPublicProfile";
-import { useSupplierData } from "./fireBase/supplierData";
 import PlannerLP from "./Pages/PlannerLP";
 import ExpenseTracking from "./Pages/ExpenseTracking";
 import EditCoupleDetails from "./Pages/EditCoupleDetails";
 import EditDetailsOnReplace from "./Pages/EditDetailsOnReplace";
-import { useGlobalStore } from "./fireBase/globalLoading";
-const googleMapsApiKey = "AIzaSyC3QkzXx3mLsG_-IzI67-WVFBAoAZTYWxk";
+// const googleMapsApiKey = "AIzaSyC3QkzXx3mLsG_-IzI67-WVFBAoAZTYWxk";
+const googleMapsApiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+
 const libraries = ["places"];
 const router = createHashRouter([
   { path: "/", element: <Home /> },

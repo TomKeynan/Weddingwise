@@ -70,7 +70,6 @@ function EditCouple() {
     for (const key in rest) {
       if (rest[key] != editValue[key]) counter++;
     }
-    // console.log(editValue)
     if (
       isFormCompleted(editValue, true) &&
       isEditFormValid(editValue) &&

@@ -1,3 +1,4 @@
+// supplierStore.js
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -11,15 +12,12 @@ export const useSupplierData = create(
       // Method to set the supplier data
       setRelevantSupplier: (supplierData) => set({ relevantSupplier: supplierData }),
 
-      // Method to clear the supplier data and session storage
-      clearRelevantSupplier: () => {
-        set({ relevantSupplier: {} });
-        sessionStorage.removeItem('relevant-supplier-storage'); // Clear the session storage
-      },
+      // Method to clear the supplier data
+      clearRelevantSupplier: () => set({ relevantSupplier: {} }),
     }),
     {
       name: 'relevant-supplier-storage', // Name of the item in session storage
-      storage: sessionStorage,  // Use sessionStorage instead of localStorage
+      getStorage: () => sessionStorage,  // Use sessionStorage instead of localStorage
     }
   )
 );

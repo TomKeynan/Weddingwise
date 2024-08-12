@@ -1,6 +1,6 @@
 import { Box, Stack } from "@mui/material";
-import React, { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { React, useContext } from "react";
+import { Link } from "react-router-dom";
 import { customTheme } from "../store/Theme";
 import AccordionLayout from "../components/AccordionLayout";
 import SupplierCard from "../components/SupplierCard";
@@ -9,7 +9,6 @@ import { AppContext } from "../store/AppContext";
 import InviteesKpis from "../components/Planner/InviteeList/InviteesKpis";
 import { Navigate } from "react-router-dom";
 import Loading from "../components/Loading";
-import { useGlobalStore } from "../fireBase/globalLoading";
 import ProfileKpis from "../components/ProfilePage/ProfileKpis";
 import ExpansesKpis from "../components/Planner/ExpenseTracking/ExpansesKpis";
 import { getAuth } from "firebase/auth";
@@ -20,7 +19,7 @@ function Profile() {
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
 
-  if (loading) {
+  if (!user) {
     return <Loading />;
   }
 

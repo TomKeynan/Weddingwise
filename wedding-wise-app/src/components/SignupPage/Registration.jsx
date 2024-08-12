@@ -20,7 +20,6 @@ import StepTwo from "./StepTwo";
 import Loading from "../Loading";
 import { signupResponse } from "../../utilities/collections";
 import MessageDialog from "../Dialogs/MessageDialog";
-import useFetch from "../../utilities/useFetch";
 import { useGlobalStore } from "../../fireBase/globalLoading";
 
 const steps = [
@@ -44,7 +43,6 @@ const steps = [
 export default function Registration() {
   const { userDetails, error, setError, isFormCompleted, isFormValid, handleSubmit } =
     useContext(RegisterContext);
-  // console.log(error);
 
   const [activeStep, setActiveStep] = useState(0);
 

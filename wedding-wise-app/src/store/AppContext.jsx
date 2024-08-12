@@ -55,7 +55,7 @@ export default function AppContextProvider({ children }) {
 
   function updateCoupleData(data) {
     if (data.hasOwnProperty("password")) data.password = null;
-    // debugger;
+
     if (data.package === null) {
       sessionStorage.setItem("currentCouple", JSON.stringify(data));
       setCoupleData({ ...data });
@@ -67,7 +67,7 @@ export default function AppContextProvider({ children }) {
   }
 
   function updateOfferedPackage(data) {
-    // debugger;
+
     const packageAndTypeWeights = {
       ...data.package,
       typeWeights: data.typeWeights,

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { RegisterContext } from "../store/RegisterContext";
 import {
   Autocomplete,
@@ -25,14 +25,12 @@ import useFetch from "../utilities/useFetch";
 import Loading from "./Loading";
 import MessageDialog from "./Dialogs/MessageDialog";
 import { useNavigate } from "react-router-dom";
-import { QuestionsContext } from "../store/QuestionsContext";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import InputFileUpload from "./InputFileUpload";
 import { useUserStore } from "../fireBase/userStore";
-import { auth, db } from "../fireBase/firebase";
+import {  db } from "../fireBase/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import upload from "../fireBase/upload";
-import { updatePassword } from "firebase/auth";
 
 function EditCoupleForm() {
   const navigate = useNavigate();
@@ -65,9 +63,8 @@ function EditCoupleForm() {
     url: "",
   });
 
-  const [password, setPassword] = useState("");
 
-  const { currentUser, loadingUserFirebase, setLoading, fetchUserInfo } =
+  const { currentUser,  setLoading, fetchUserInfo } =
     useUserStore();
 
   useEffect(() => {
@@ -109,15 +106,11 @@ function EditCoupleForm() {
   }, [resData, error]);
 
   const updateUserFirebase = async () => {
-    const username = editValue.partner1Name + " ו" + editValue.partner2Name; // Need to fix?
+    const username = editValue.partner1Name + " ו" + editValue.partner2Name; 
 
 
     try {
-      const user = auth.currentUser;
-      if (password) {
-        await updatePassword(user, password);
-      }
-
+    
       let imgUrl = null;
       if (avatar && avatar.file) {
         imgUrl = await upload(avatar.file);
@@ -163,7 +156,6 @@ function EditCoupleForm() {
   }
 
   function handleUpdateApproval() {
-    setPassword(editValue.password);
     sendData("/Couples/updateCouple", "PUT", editValue);
     setResData(undefined);
     setOpenUpdateConfirm(false);

@@ -242,7 +242,6 @@ function CoupleTable({supplierPackages}) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      // console.log(rows);
       const newSelected = supplierPackages.map((n) => n.id);
       setSelected(newSelected);
       return;
