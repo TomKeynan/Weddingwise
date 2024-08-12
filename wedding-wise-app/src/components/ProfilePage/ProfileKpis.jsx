@@ -43,4 +43,4 @@ const kpiPaperSX = {
   borderRadius: 3,
 };
 
-const kpiText = { textAlign: "center", fontSize:{xs: 18, sm: 20} };
+const kpiText = { textAlign: "center", fontSize: { xs: 18, sm: 20 } };

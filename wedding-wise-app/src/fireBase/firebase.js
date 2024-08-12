@@ -3,9 +3,7 @@ import {getAuth} from "firebase/auth"
 import {getFirestore} from "firebase/firestore"
 import {getStorage} from "firebase/storage"
 
-
-//test with env
-
+// test
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: "weddingwisetest-ecd19.firebaseapp.com",

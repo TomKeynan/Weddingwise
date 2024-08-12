@@ -3,7 +3,7 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { taskSettings } from "../utilities/collections";
+import { taskSettings } from "../../../utilities/collections";
 import { Tooltip } from "@mui/material";
 
 export default function SettingsMenu({ onAddComment, onDeleteTask }) {

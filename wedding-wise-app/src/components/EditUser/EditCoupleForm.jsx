@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import { RegisterContext } from "../store/RegisterContext";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { RegisterContext } from "../../store/RegisterContext";
 import {
   Autocomplete,
   Button,
@@ -12,25 +12,29 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import TextInput from "./TextInput";
-import { customTheme } from "../store/Theme";
-import { regions, updateCoupleDetailsResponse } from "../utilities/collections";
+import TextInput from "../TextInput";
+import { customTheme } from "../../store/Theme";
+import {
+  regions,
+  updateCoupleDetailsResponse,
+} from "../../utilities/collections";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { getFullDate } from "../utilities/functions";
-import { AppContext } from "../store/AppContext";
-import ConfirmDialog from "./Dialogs/ConfirmDialog";
-import useFetch from "../utilities/useFetch";
-import Loading from "./Loading";
-import MessageDialog from "./Dialogs/MessageDialog";
+import { addCommasToNumber, getFullDate } from "../../utilities/functions";
+import { AppContext } from "../../store/AppContext";
+import ConfirmDialog from "../Dialogs/ConfirmDialog";
+import useFetch from "../../utilities/useFetch";
+import Loading from "../Loading";
+import MessageDialog from "../Dialogs/MessageDialog";
 import { useNavigate } from "react-router-dom";
+import { QuestionsContext } from "../../store/QuestionsContext";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import InputFileUpload from "./InputFileUpload";
-import { useUserStore } from "../fireBase/userStore";
-import {  db } from "../fireBase/firebase";
+import InputFileUpload from "../InputFileUpload";
+import { useUserStore } from "../../fireBase/userStore";
+import { auth, db } from "../../fireBase/firebase";
 import { doc, updateDoc } from "firebase/firestore";
-import upload from "../fireBase/upload";
+import upload from "../../fireBase/upload";
 
 function EditCoupleForm() {
   const navigate = useNavigate();
@@ -43,7 +47,8 @@ function EditCoupleForm() {
     isEditFormValid,
   } = useContext(RegisterContext);
 
-  const { coupleData, updateCoupleData, editCoupleComeFrom } = useContext(AppContext);
+  const { coupleData, updateCoupleData, editCoupleComeFrom } =
+    useContext(AppContext);
 
   const { resData, loading, error, sendData, setResData, setError } =
     useFetch();
@@ -108,7 +113,6 @@ function EditCoupleForm() {
   const updateUserFirebase = async () => {
     const username = editValue.partner1Name + " ו" + editValue.partner2Name; 
 
-
     try {
     
       let imgUrl = null;
@@ -168,7 +172,7 @@ function EditCoupleForm() {
         open={openUpdateConfirm}
         onCancel={handleCancelUpdateConfirm}
         onApproval={handleUpdateApproval}
-      // disabledBtn={isUpdateDetailsValid}
+        // disabledBtn={isUpdateDetailsValid}
       >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
           לחיצה על אישור תוביל לשינוי פרטי החתונה הקיימים באלו שעכשיו בחרתם.
@@ -224,7 +228,6 @@ function EditCoupleForm() {
     if (editCoupleComeFrom === "navbar") navigate("/profile");
     else {
       navigate("/questionnaire");
-
     }
   }
 
@@ -250,11 +253,7 @@ function EditCoupleForm() {
 
   return (
     <Paper variant="elevation" elevation={6} sx={paperSX}>
-      <Grid
-        container
-        // sx={{ maxWidth: { xs: "80%", sm: "60%" }, margin: "0 auto" }}
-        spacing={2}
-      >
+      <Grid container sx={{}} spacing={2}>
         {openUpdateConfirm && showUpdateConfirmDialog()}
         {loading && <Loading />}
         {error && showErrorMessage(error)}
@@ -297,14 +296,13 @@ function EditCoupleForm() {
           <TextInput
             variant="standard"
             type="text"
-            value={Number(editValue.budget)}
+            value={editValue.budget}
             name="budget"
             label="תקציב"
             textFieldSX={textFieldSX}
             editMode={true}
           />
         </Grid>
-
         <Grid item xs={12} md={6}>
           <Autocomplete
             options={regions}
@@ -325,7 +323,6 @@ function EditCoupleForm() {
             )}
           />
         </Grid>
-
         <Grid item xs={12} md={6}>
           <LocalizationProvider
             dateAdapter={AdapterDayjs}
@@ -349,35 +346,7 @@ function EditCoupleForm() {
             />
           </LocalizationProvider>
         </Grid>
-        <Grid item xs={12} md={6}>
-          <FormControl color="primary" sx={textFieldSX}>
-            <TextInput
-              variant="standard"
-              name="password"
-              label="סיסמא"
-              type={showPassword ? "text" : "password"}
-              editMode={true}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                      sx={{
-                        "& .MuiSvgIcon-root": {
-                          fill: customTheme.palette.primary.main,
-                        },
-                      }}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </FormControl>
-        </Grid>
+
         <Grid item xs={12} md={6}>
           <FormControl
             name="userImage"
@@ -440,8 +409,9 @@ const submitBtnSX = {
 };
 
 const paperSX = {
-  width: { xs: "90%", sm: "60%" },
-  p: 5,
+  width: { xs: "80%", sm: "60%" },
+  mx: "auto",
+  p: { xs: 2, sm: 5 },
   mt: 2,
   // py: 3,
   // px: { xs: 1, sm: 3 },

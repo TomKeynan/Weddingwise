@@ -7,11 +7,11 @@ import Box from "@mui/material/Box";
 import CoupleTable from "./CoupleTable";
 import CommentCard from "./CommentCard";
 import { Alert, Paper, Stack, Typography } from "@mui/material";
-import EditSupplier from "./EditSupplier";
-import EditAvailableDates from "./EditAvailableDates";
 import useFetch from "../utilities/useFetch";
 import { customTheme } from "../store/Theme";
 import { reverseGeocoding } from "../utilities/functions";
+import EditAvailableDates from "./EditUser/EditAvailableDates";
+import EditSupplier from "./EditUser/EditSupplier";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;

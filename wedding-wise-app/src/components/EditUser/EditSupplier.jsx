@@ -11,34 +11,27 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import RegisterContextProvider from "../store/RegisterContext";
-import { customTheme } from "../store/Theme";
+import RegisterContextProvider from "../../store/RegisterContext";
+import { customTheme } from "../../store/Theme";
 import { Visibility, VisibilityOff, YouTube } from "@mui/icons-material";
 import {
   editSupplierValidations,
   regions,
   signupSupplierErrors,
-  supplierTypes,
-  VALIDATIONS,
-} from "../utilities/collections";
-import InputFileUpload from "./InputFileUpload";
-import SupplierOutlineBtn from "../components/buttons/SupplierOutlineBtn";
-import useFetch from "../utilities/useFetch";
-import Loading from "../components/Loading";
-import {
-  getFullDate,
-  translateSupplierTypeToEnglish,
-  translateSupplierTypeToHebrew,
-} from "../utilities/functions";
-import MessageDialog from "../components/Dialogs/MessageDialog";
-import ReadOnlyPopup from "../components/Dialogs/ReadOnlyPopup";
-import { db, } from "../fireBase/firebase";
-import { doc,updateDoc } from "firebase/firestore";
-import upload from "../fireBase/upload";
-import { AppContext } from "../store/AppContext";
-import ConfirmDialog from "./Dialogs/ConfirmDialog";
-import { geocodeAddress } from "../utilities/functions";
-import { useGlobalStore } from "../fireBase/globalLoading";
+} from "../../utilities/collections";
+import InputFileUpload from "../InputFileUpload";
+import SupplierOutlineBtn from "../buttons/SupplierOutlineBtn";
+import useFetch from "../../utilities/useFetch";
+import Loading from "../Loading";
+import MessageDialog from "../Dialogs/MessageDialog";
+import {  db } from "../../fireBase/firebase";
+import { doc } from "firebase/firestore";
+import upload from "../../fireBase/upload";
+import { AppContext } from "../../store/AppContext";
+import ConfirmDialog from "../Dialogs/ConfirmDialog";
+import { updateDoc } from "firebase/firestore";
+import { geocodeAddress } from "../../utilities/functions";
+import { useGlobalStore } from "../../fireBase/globalLoading";
 
 const EditSupplier = ({ supplierFirebase }) => {
   const { editSupplier, setEditSupplier, setSupplierData } =
@@ -457,7 +450,7 @@ const EditSupplier = ({ supplierFirebase }) => {
                 )}
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              {/* <Grid item xs={12} md={6}>
                 <FormControl
                   color="primary"
                   variant="outlined"
@@ -493,7 +486,7 @@ const EditSupplier = ({ supplierFirebase }) => {
                     {errors.password}
                   </Alert>
                 )}
-              </Grid>
+              </Grid> */}
               <Grid item xs={12} md={6}>
                 <FormControl
                   name="userImage"

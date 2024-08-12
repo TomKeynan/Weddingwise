@@ -68,7 +68,6 @@ function SupplierCard({
     navigate("/supplier-public-profile");
   };
 
-
   return (
     <>
       {!avatar && <Loading />}
@@ -207,20 +206,3 @@ const actionBtnSX = {
   p: 1,
 };
 
-{
-  /* <Box
-        sx={{
-          maxWidth: "100%",
-          height: "250px",
-          margin: "0 auto",
-        }}
-      >
-        <img
-          src={avatar}
-          alt={businessName}
-          className={
-            isPackage ? "supplier-card-image-package" : "supplier-card-image"
-          }
-        />
-      </Box> */
-}

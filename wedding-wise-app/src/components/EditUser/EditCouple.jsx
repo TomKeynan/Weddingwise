@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { RegisterContext } from "../store/RegisterContext";
+import { RegisterContext } from "../../store/RegisterContext";
 import {
   Autocomplete,
   Button,
@@ -12,22 +12,25 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import TextInput from "./TextInput";
-import { customTheme } from "../store/Theme";
-import { regions, updateCoupleDetailsResponse } from "../utilities/collections";
+import TextInput from "../TextInput";
+import { customTheme } from "../../store/Theme";
+import {
+  regions,
+  updateCoupleDetailsResponse,
+} from "../../utilities/collections";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { getFullDate } from "../utilities/functions";
-import { AppContext } from "../store/AppContext";
-import ConfirmDialog from "./Dialogs/ConfirmDialog";
-import useFetch from "../utilities/useFetch";
-import Loading from "./Loading";
-import MessageDialog from "./Dialogs/MessageDialog";
+import { getFullDate } from "../../utilities/functions";
+import { AppContext } from "../../store/AppContext";
+import ConfirmDialog from "../Dialogs/ConfirmDialog";
+import useFetch from "../../utilities/useFetch";
+import Loading from "../Loading";
+import MessageDialog from "../Dialogs/MessageDialog";
 import { useNavigate } from "react-router-dom";
-import { QuestionsContext } from "../store/QuestionsContext";
+import { QuestionsContext } from "../../store/QuestionsContext";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import InputFileUpload from "./InputFileUpload";
+import InputFileUpload from "../InputFileUpload";
 import { Navigate } from "react-router-dom";
 
 function EditCouple() {
@@ -61,8 +64,6 @@ function EditCouple() {
   const [openSuccessMessage, setOpenSuccessMessage] = useState(false);
 
   const [openErrorMessage, setOpenErrorMessage] = useState(false);
-  
-
 
   useEffect(() => {
     let counter = 0;
@@ -90,7 +91,6 @@ function EditCouple() {
     }
   }, [resData, error]);
 
- 
   function handleWeddingDateChange(dateInput) {
     let weddingDateObject = getFullDate(dateInput);
     updateEditValue({
@@ -98,7 +98,6 @@ function EditCouple() {
     });
     saveDateValue(dateInput);
   }
-
 
   // ======================= CONFIRM UPDATE =======================
 
@@ -114,7 +113,7 @@ function EditCouple() {
     sendData("/Couples/updateCouple", "PUT", editValue);
     setResData(undefined);
     setOpenUpdateConfirm(false);
-    setNewPackageError(undefined)
+    setNewPackageError(undefined);
   }
 
   function showUpdateConfirmDialog() {
@@ -124,7 +123,7 @@ function EditCouple() {
         open={openUpdateConfirm}
         onCancel={handleCancelUpdateConfirm}
         onApproval={handleUpdateApproval}
-      // disabledBtn={isUpdateDetailsValid}
+        // disabledBtn={isUpdateDetailsValid}
       >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
           לחיצה על אישור תוביל לשינוי פרטי החתונה הקיימים באלו שעכשיו בחרתם.
@@ -234,7 +233,6 @@ function EditCouple() {
       </MessageDialog>
     );
   }
-
 
   if (!coupleData) {
     return <Navigate to="/" />;

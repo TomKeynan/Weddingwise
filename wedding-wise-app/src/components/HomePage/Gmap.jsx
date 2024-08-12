@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { GoogleMap, MarkerF, InfoWindowF } from "@react-google-maps/api";
+import { Typography } from "@mui/material";
 
 function Gmap() {
   const [venues, setVenues] = useState([]);
@@ -10,13 +11,17 @@ function Gmap() {
   }, []);
 
   const fetchVenues = () => {
-    fetch("https://proj.ruppin.ac.il/cgroup70/test2/tar1/api/Suppliers/getTopVenues")
+    fetch(
+      "https://proj.ruppin.ac.il/cgroup70/test2/tar1/api/Suppliers/getTopVenues"
+    )
       .then((response) => response.json())
       .then((data) => {
         // console.log("Fetched venues:", data);
         setVenues(data);
       })
-      .catch((error) => console.error("There was an error fetching the venues!", error));
+      .catch((error) =>
+        console.error("There was an error fetching the venues!", error)
+      );
   };
 
   const handleMarkerClick = (venue) => {
@@ -28,12 +33,14 @@ function Gmap() {
   };
 
   return (
-    <div style={{
-      display: "flex",
-      flexDirection: "column",
-      width: "90%",
-      border: "1px solid black",
-    }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        width: "90%",
+        border: "1px solid black",
+      }}
+    >
       <p>Number of venues: {venues.length}</p>
       <GoogleMap
         mapContainerStyle={{
@@ -59,8 +66,10 @@ function Gmap() {
             }}
             onCloseClick={handleInfoWindowClose}
           >
-            <div style={{ minWidth: '200px', padding: '10px' }}>
-              <h2>{selectedVenue.businessName}</h2>
+            <div style={{ minWidth: "200px", padding: "5px" }}>
+              <Typography sx={{ fontSize: 18, fontWeight: "bold" }}>
+                {selectedVenue.businessName}
+              </Typography>
               <p>דירוג: {selectedVenue.rating.toFixed(2)}</p>
               <p>מתאים ל: {selectedVenue.capacity}</p>
               <p>מס' טלפון: {selectedVenue.phoneNumber}</p>

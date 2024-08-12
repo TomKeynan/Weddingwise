@@ -15,11 +15,11 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import useFetch from "../utilities/useFetch";
 import AddIcon from "@mui/icons-material/Add";
 import SettingsMenu from "./SettingsMenu";
 import CloseIcon from "@mui/icons-material/Close";
-import MessageDialog from "./Dialogs/MessageDialog";
+import MessageDialog from "../../Dialogs/MessageDialog";
+import useFetch from "../../../utilities/useFetch";
 
 function TaskItem({ data, onCheck, onAddComment, onDeleteTask }) {
   //   const screenUnderSM = useMediaQuery("(max-width: 600px)");

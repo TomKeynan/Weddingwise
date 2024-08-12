@@ -1,13 +1,15 @@
 import React, { useContext } from "react";
 import { customTheme } from "../store/Theme";
 import { Button, Stack, Typography, useMediaQuery } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../store/AppContext";
 
 function Footer() {
   const { coupleData } = useContext(AppContext);
 
   const screenAboveSM = useMediaQuery("(min-width: 600px)");
+
+  const navigate = useNavigate();
 
   return (
     <Stack sx={footerWrapperSX}>
@@ -28,16 +30,21 @@ function Footer() {
             <Link to="/">דף הבית</Link>
             {coupleData && <Link to="/profile">פרופיל</Link>}
             <Link to="/package">חבילה</Link>
-            <li>טבלת מוזמנים</li>
-            <li>מעקב הוצאות</li>
-            <li>רשימת משימות</li>
+            {coupleData && <Link to="/tasks">רשימת משימות</Link>}
+            {coupleData && <Link to="/invitees">טבלת מוזמנים</Link>}
+            {coupleData && <Link to="/expense-tracking">מעקב הוצאות</Link>}
+            {!coupleData && <Link to="/planner">תכנון חתונה</Link>}
           </ul>
         </Stack>
         <Stack alignItems="center" sx={leftSideSX}>
           <Typography sx={{ fontSize: { xs: 24, sm: 30, md: 40 } }}>
             בעלי עסקים הצטרפו היום למערכת החיפוש המתקדמת שלנו
           </Typography>
-          <Button variant="contained" sx={signupBtn}>
+          <Button
+            variant="contained"
+            sx={signupBtn}
+            onClick={() => navigate("/supplier-signup")}
+          >
             אני רוצה להצטרף!
           </Button>
         </Stack>

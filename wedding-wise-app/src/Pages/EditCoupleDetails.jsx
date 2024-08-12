@@ -1,13 +1,9 @@
 import React from "react";
 import { Stack, Typography } from "@mui/material";
-
 import RegisterContextProvider from "../store/RegisterContext";
-import EditCouple from "../components/EditCouple";
-import AppContextProvider from "../store/AppContext";
 import QuestionsContextProvider from "../store/QuestionsContext";
 import { customTheme } from "../store/Theme";
-import EditCoupleForm from "../components/EditCoupleForm";
-
+import EditCoupleForm from "../components/EditUser/EditCoupleForm";
 
 function EditCoupleDetails() {
   return (
@@ -21,15 +17,16 @@ function EditCoupleDetails() {
           sx={{ margin: "auto 0", minHeight: "100vh" }}
         >
           <Stack
-            // spacing={2}
             justifyContent="center"
-            sx={{ textAlign: "center" }}
+            sx={{ textAlign: "center", width: "90%" }}
           >
             <Typography variant="h4" sx={titleSX}>
               עריכה ועדכון פרטים
             </Typography>
           </Stack>
-          <EditCoupleForm />
+          <Stack sx={{ width: "inherent" }}>
+            <EditCoupleForm />
+          </Stack>
         </Stack>
       </QuestionsContextProvider>
     </RegisterContextProvider>

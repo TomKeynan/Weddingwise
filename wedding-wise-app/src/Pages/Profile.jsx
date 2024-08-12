@@ -13,6 +13,7 @@ import ProfileKpis from "../components/ProfilePage/ProfileKpis";
 import ExpansesKpis from "../components/Planner/ExpenseTracking/ExpansesKpis";
 import { getAuth } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
+import TasksKpis from "../components/Planner/TasksPage/TasksKpis";
 
 function Profile() {
   const { coupleData, setOfferedPackage } = useContext(AppContext);
@@ -57,10 +58,7 @@ function Profile() {
             <Box sx={{ textAlign: "center" }}>
               <Box>
                 עדיין לא המלצנו לכם על חבילה??{" "}
-                <Link
-                  to="/package"
-                  style={{ color: "#FF9500" }}
-                >
+                <Link to="/package" style={{ color: "#FF9500" }}>
                   לחצו כאן
                 </Link>{" "}
                 למעבר לשאלון
@@ -74,10 +72,9 @@ function Profile() {
         <AccordionLayout title="ניהול מוזמנים" btnValue="/invitees">
           <InviteesKpis />
         </AccordionLayout>
-        <AccordionLayout
-          title="רשימת מטלות"
-          btnValue="/package"
-        ></AccordionLayout>
+        <AccordionLayout title="רשימת מטלות" btnValue="/tasks">
+          <TasksKpis />
+        </AccordionLayout>
       </Box>
     </Stack>
   );

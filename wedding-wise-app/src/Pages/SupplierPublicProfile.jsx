@@ -73,7 +73,6 @@ function SupplierPublicProfile() {
       try {
         setLoadingData(true);
 
-        
         const userRef = collection(db, "users");
         const q = query(
           userRef,
@@ -90,7 +89,6 @@ function SupplierPublicProfile() {
         const supplierId = querySnapshot.docs[0].id;
         const userDocRef = doc(db, "users", supplierId);
 
-    
         const unsubscribe = onSnapshot(userDocRef, async (docSnapshot) => {
           if (docSnapshot.exists()) {
             try {
@@ -404,9 +402,9 @@ console.log(relevantSupplier);
           data={relevantSupplier.ratedCount}
           icon={<PeopleOutlineIcon />}
         />
-         <KpiPaper
+        <KpiPaper
           title="דירוג:"
-          data= {relevantSupplier?.rating === 0 ? "–" : relevantSupplier?.rating}
+          data={relevantSupplier?.rating === 0 ? "–" : relevantSupplier?.rating}
           icon={<StarOutlineIcon />}
         />
       </Stack>
