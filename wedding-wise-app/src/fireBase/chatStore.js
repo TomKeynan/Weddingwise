@@ -8,8 +8,10 @@ export const useChatStore = create((set) => ({
   isReceiverBlocked: false,
   chatStatus: false, // To be seen or not to be seen!
   isSeen: true,
+  isScrollableY:true,
   changeChat: (chatId, user) => {
     const currentUser = useUserStore.getState().currentUser;
+    set({ isScrollableY: false });
     // CHECK IF CURRENT USER IS BLOCKED
     if (user.blocked.includes(currentUser.id)) {
       return set({
@@ -52,9 +54,13 @@ export const useChatStore = create((set) => ({
   },
   changeChatStatus: () => {
     set((state) => ({ ...state, chatStatus: !state.chatStatus }));
-    set({ chatId: null }) // Thats new
+    useChatStore.getState().goBack(); // Call goBack
   },
   changeIsSeenStatus: (status) => {
     set({ isSeen: status });
-  }
+  },
+  goBack: () => {
+    set({ chatId: null });
+    set({ isScrollableY: true }); // Thats new
+  },
 }));

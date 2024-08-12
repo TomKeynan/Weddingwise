@@ -24,6 +24,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { arrayRemove } from "firebase/firestore";
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 const formatter = buildFormatter(heStrings);
 
@@ -38,7 +39,7 @@ function Window() {
   });
 
   const { currentUser } = useUserStore();
-  const { chatId, user, isCurrentUserBlocked, isReceiverBlocked, changeBlock } =
+  const { chatId, user, isCurrentUserBlocked, isReceiverBlocked, changeBlock, goBack } =
     useChatStore();
 
   // Reference to the end of the chat messages for scrolling
@@ -197,7 +198,11 @@ function Window() {
   };
 
   return (
+
+
+
     <Stack
+
       // className="window"
       sx={{
         height: "100%",
@@ -215,10 +220,35 @@ function Window() {
           columnGap: { xs: 1, sm: 2 },
           borderBottom: "1px solid #dddddd35",
           p: { xs: 1, sm: 3 },
-          mt:3
+          mt: 3
         }}
       >
-        <Stack direction="row" alignItems="center" sx={{ columnGap: {xs:1 , sm: 2} }}>
+        <Stack direction="row" alignItems="center" sx={{ columnGap: { xs: 1, sm: 2 } }}>
+
+
+          {/* {/* THIS IS THE BUTTOM ******* /} */}
+          <Stack>
+            <Box>
+              <Button
+                variant="contained"
+                color="info"
+                onClick={goBack}
+                startIcon={<ArrowForwardIcon />}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 1,
+                  padding: '6px 12px',
+                  fontSize: '16px',
+                }}
+              >
+                חזור
+              </Button>
+            </Box></Stack>
+          {/* THIS IS THE BUTTOM *******/}
+
+
           <Box
             sx={{
               border: "1px solid black",
@@ -241,12 +271,12 @@ function Window() {
           </Box>
           <Stack>
             <Typography
-              sx={{ color: "white", typography: { xs: "body1", sm: "h4" } , textAlign: "left"}}
+              sx={{ color: "white", typography: { xs: "body1", sm: "h4" }, textAlign: "left" }}
             >
               {user?.username}
             </Typography>
             <Typography
-              sx={{ color: "white", typography: { xs: "body2", sm: "h6" } , textAlign: "left"}}
+              sx={{ color: "white", typography: { xs: "body2", sm: "h6" }, textAlign: "left" }}
             >
               {user?.description}
             </Typography>
@@ -258,21 +288,21 @@ function Window() {
             sx={{
               bgcolor: "error.main",
               // p:0,
-              px:{xs: 0 , sm: 1},
+              px: { xs: 0, sm: 1 },
               py: { xs: 0, sm: 2 },
-              fontSize: {xs: 12, sm: 14},
+              fontSize: { xs: 12, sm: 14 },
               "&:hover": {
                 bgcolor: "error.dark",
               },
-              
+
             }}
             onClick={handleBlock}
           >
             {isCurrentUserBlocked
               ? "נחסמת"
               : isReceiverBlocked
-              ? "משתמש חסום"
-              : "חסום משתמש"}
+                ? "משתמש חסום"
+                : "חסום משתמש"}
           </Button>
         </Stack>
       </Stack>
@@ -383,7 +413,8 @@ function Window() {
           <Box
           // className="icons"
           >
-            <label htmlFor="file">
+            <label htmlFor="file"
+            >
               <Box
                 sx={{
                   width: 20,
@@ -400,6 +431,7 @@ function Window() {
                     height: 20,
                     // borderRadius: "50%",
                     objectFit: "cover",
+                    cursor: isCurrentUserBlocked || isReceiverBlocked ? "not-allowed" : "pointer",
                   }}
                 />
               </Box>
@@ -407,6 +439,8 @@ function Window() {
             <input
               type="file"
               id="file"
+
+              disabled={isCurrentUserBlocked || isReceiverBlocked}
               style={{ display: "none" }}
               onChange={handleImg}
             />
@@ -418,8 +452,8 @@ function Window() {
             type="text"
             placeholder={
               isCurrentUserBlocked || isReceiverBlocked
-                ? "You cannot send a message"
-                : "Type a message..."
+                ? "אינך יכול לשלוח הודעה"
+                : "כתוב כאן..."
             }
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -439,32 +473,27 @@ function Window() {
         </Grid>
         {/* emoji */}
         <Grid item xs={1} sm={0.5} lg={1} sx={ChatControllersSX}>
-          <Box
-            // className="emoji"
-            sx={{ position: "relative" }}
-          >
+          <Box sx={{ position: "relative" }}>
             <Box
               sx={{
                 width: 20,
                 height: 20,
-                // borderRadius: "50%",
               }}
             >
               <Box
                 component="img"
                 src="assets/chat_pics/emoji.png"
                 alt=""
-                onClick={() => setOpen((prev) => !prev)}
+                onClick={() => !isCurrentUserBlocked && !isReceiverBlocked && setOpen((prev) => !prev)}
                 sx={{
                   width: 20,
                   height: 20,
                   objectFit: "cover",
-                  // borderRadius: "50%",
+                  cursor: isCurrentUserBlocked || isReceiverBlocked ? "not-allowed" : "pointer",
                 }}
               />
             </Box>
             <Box
-              // className="picker"
               sx={{
                 position: "absolute",
                 bottom: 50,
@@ -699,6 +728,8 @@ const ChatControllersSX = {
 //         </div> */}
 //       </div>
 
+
+
 //       {/* Chat messages */}
 //       <div className="center">
 //         {chat?.messages?.map((message) => (
@@ -721,6 +752,8 @@ const ChatControllersSX = {
 //         ))}
 //         <div ref={endRef}></div> {/* endRef is attached to this div */}
 //       </div>
+
+
 
 //       {/* Chat input and controls */}
 //       <div className="bottom">

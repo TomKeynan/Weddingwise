@@ -54,7 +54,7 @@ function SupplierPublicProfile() {
   const [supplierFirebase, setSupplierFirebase] = useState(null);
   const [loadingData, setLoadingData] = useState(false);
   const [showLinks, setShowLinks] = useState(false);
-  const { relevantSupplier, setRelevantSupplier } = useSupplierData();
+  const { relevantSupplier} = useSupplierData();
   const { supplierData, coupleData } = useContext(AppContext);
 
   useEffect(() => {
@@ -118,7 +118,6 @@ function SupplierPublicProfile() {
     }
   }, [relevantSupplier]);
 
-console.log(relevantSupplier);
 
   function renderDescriptionSection() {
     if (supplierFirebase?.description) {

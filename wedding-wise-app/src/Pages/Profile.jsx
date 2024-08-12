@@ -17,12 +17,12 @@ import TasksKpis from "../components/Planner/TasksPage/TasksKpis";
 
 function Profile() {
   const { coupleData, setOfferedPackage } = useContext(AppContext);
-  const auth = getAuth();
-  const [user, loading] = useAuthState(auth);
+  // const auth = getAuth();
+  // const [user, loading] = useAuthState(auth);
 
-  if (!user) {
-    return <Loading />;
-  }
+  // if (!user) {
+  //   return <Loading />;
+  // }
 
   if (!coupleData) {
     return <Navigate to="/" />;
