@@ -1,7 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
 using Server.BL;
-using Server.DAL;
 using System.Data.SqlClient;
 using System.Text.Json;
 
@@ -361,27 +360,6 @@ namespace Server.Controllers
                 // Handle internal server error and return 500 Internal Server Error status code
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
-        }
-
-
-
-
-        //--------------------------------------------------------------------
-        // Temporary 
-        //--------------------------------------------------------------------
-        [HttpGet("getNewSuppliers")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Supplier>))]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<List<Supplier>> GetNewSuppliers()
-        {
-            string excelFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Data", "SuppliersData.xlsx");
-
-            DBServicesSupplier dBServicesSupplier = new DBServicesSupplier();
-
-            List<Supplier> newSuppliers = dBServicesSupplier.UploadSuppliersToDatabase(excelFilePath);
-
-            return Ok(newSuppliers);
         }
 
 
