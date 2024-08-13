@@ -187,6 +187,7 @@ function SupplierCard({
                 </Button>
               ))}
             {showMoreInfoBtn && (
+              
               <Button
                 onClick={handleMoreInformation}
                 variant="contained"
