@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Paper, Stack, Typography } from "@mui/material";
+import { Box, Paper, Stack, Typography, useMediaQuery } from "@mui/material";
 import { customTheme } from "../../store/Theme";
 import Slider from "react-slick";
 import SupplierCard from "../SupplierCard";
@@ -8,7 +8,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 function SuppliersCarousel() {
-  // const screenUnderSM = useMediaQuery("(max-width: 600px)");
+  const screenUnderSM = useMediaQuery("(max-width: 600px)");
+
   const { getData, resData, loading, error } = useFetch();
 
   const [suppliersList, setSuppliersList] = useState([]);
@@ -22,6 +23,12 @@ function SuppliersCarousel() {
       setSuppliersList(resData);
     }
   }, [resData]);
+
+  function showArrow() {
+    let display = "block";
+    if (screenUnderSM) display = "none";
+    return display;
+  }
 
   var settings = {
     dots: false,
@@ -69,7 +76,7 @@ function SuppliersCarousel() {
         className={className}
         style={{
           ...style,
-          display: "block",
+          display: `${showArrow()}`,
           background: "grey",
           borderRadius: "50%",
           boxShadow: customTheme.shadow.strong,
@@ -86,7 +93,7 @@ function SuppliersCarousel() {
         className={className}
         style={{
           ...style,
-          display: "block",
+         display: `${showArrow()}`,
           background: "grey",
           borderRadius: "50%",
           boxShadow: customTheme.shadow.strong,
@@ -112,6 +119,7 @@ function SuppliersCarousel() {
                     overflow: "hidden",
                     margin: "0 auto",
                     py: 5,
+                    width: { xs: 250, sm: 270 },
                   }}
                 >
                   <SupplierCard showMoreInfoBtn={true} props={supplier} />
@@ -133,7 +141,7 @@ const paperSX = {
     lg: "80%",
   },
   px: { xs: 2, sm: 4, md: 5 },
-  py: 5,
+  py: { xs: 1, sm: 5 },
   backgroundColor: "rgba(255,255,255, 0.6)",
   borderTopLeftRadius: 50,
   borderBottomRightRadius: 50,

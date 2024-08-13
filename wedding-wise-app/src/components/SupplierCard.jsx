@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
@@ -11,6 +11,7 @@ import Loading from "./Loading";
 import { db } from "../fireBase/firebase";
 import { getDocs, query, where, collection } from "firebase/firestore";
 import { useSupplierData } from "../fireBase/supplierData";
+import { AppContext } from "../store/AppContext";
 
 function SupplierCard({
   props,
@@ -24,22 +25,20 @@ function SupplierCard({
   const { businessName, phoneNumber, supplierEmail, price, supplierType } =
     props;
   const navigate = useNavigate();
+  const { coupleData, supplierData} = useContext(AppContext);
   const [sticker, setSticker] = useState({});
   const [avatar, setAvatar] = useState(null);
   const [loadingData, setLoadingData] = useState(false);
   const { setRelevantSupplier } = useSupplierData();
 
-
   useEffect(() => {
     const fetchSupplierDataAsync = async () => {
-     
-        const cardSticker = stickers.find(
-          (sticker) =>
-            sticker.stickerSrc.includes(supplierType) ||
-            sticker.stickerSrc.includes("makeup")
-        );
-        setSticker(cardSticker || {});
-    
+      const cardSticker = stickers.find(
+        (sticker) =>
+          sticker.stickerSrc.includes(supplierType) ||
+          sticker.stickerSrc.includes("makeup")
+      );
+      setSticker(cardSticker || {});
 
       try {
         setLoadingData(true);
@@ -63,7 +62,11 @@ function SupplierCard({
   }, [supplierEmail, supplierType]);
 
   const handleMoreInformation = () => {
-    console.log({...props})
+    if (!coupleData && !supplierData) {
+      window.alert("רק משתמשים רשומים יכולים לצפות בפרופילים של נותני השירות");
+      return;
+    }
+
     setRelevantSupplier(props);
     navigate("/supplier-public-profile");
   };
@@ -80,8 +83,8 @@ function SupplierCard({
           boxShadow: customTheme.shadow.main,
           borderRadius: 4,
           margin: "0 auto",
-          width: { xs: 200, sm: 270 },
-          direction: "ltr"
+          width: { xs: 225, sm: 270 },
+          direction: "ltr",
         }}
       >
         <Box sx={{ width: "100%" }}>
@@ -187,7 +190,6 @@ function SupplierCard({
                 </Button>
               ))}
             {showMoreInfoBtn && (
-              
               <Button
                 onClick={handleMoreInformation}
                 variant="contained"
@@ -199,7 +201,8 @@ function SupplierCard({
           </Stack>
         </Stack>
       </Stack>
-    </>);
+    </>
+  );
 }
 
 export default SupplierCard;
@@ -207,4 +210,3 @@ export default SupplierCard;
 const actionBtnSX = {
   p: 1,
 };
-

@@ -10,7 +10,6 @@ function EditCoupleDetails() {
     <RegisterContextProvider>
       <QuestionsContextProvider>
         <Stack
-          maxWidth="xl"
           alignItems="center"
           spacing={3}
           sx={{ margin: "auto 0", minHeight: "100vh" }}

@@ -15,7 +15,7 @@ function ProfileKpis() {
         <Grid item xs={12} sm={6} sx={kpiWrapper}>
           <Paper elevation={4} sx={kpiPaperSX}>
             <Typography sx={kpiText}>
-              מספר המוזמנים: {coupleData.numberOfInvitees}
+              כמות מוזמנים: {coupleData.numberOfInvitees}
             </Typography>
           </Paper>
         </Grid>

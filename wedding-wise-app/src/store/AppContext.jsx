@@ -16,7 +16,10 @@ export const AppContext = createContext({
   addInvitee: () => {},
   removeInvitee: () => {},
   editCoupleComeFrom: [],
-  setEditCoupleComeFrom: () => {},
+  setEditCoupleComeFrom: () => { },
+  coupleAnswers: [],
+  setCoupleAnswers: () => {},
+  onSelectOption: () => {},
 });
 
 const initialStateCoupleData = JSON.parse(
@@ -25,6 +28,8 @@ const initialStateCoupleData = JSON.parse(
 const initialStateSupplierData = JSON.parse(
   sessionStorage.getItem("currentSupplier")
 );
+
+const initialArray = Array.from({ length: 15 }, () => 1);
 
 export default function AppContextProvider({ children }) {
   const [coupleData, setCoupleData] = useState(initialStateCoupleData);
@@ -36,7 +41,9 @@ export default function AppContextProvider({ children }) {
   const [offeredPackage, setOfferedPackage] = useState(null);
 
   const [invitees, setInvitees] = useState([]);
-
+  
+  const [coupleAnswers, setCoupleAnswers] = useState(initialArray);
+  
   // this state responsible to tell EditCoupleForm which page the couple should be
   // sent to after updating their details-
   // if they came from the navbar item they will redirect to their own profile
@@ -78,6 +85,12 @@ export default function AppContextProvider({ children }) {
     setOfferedPackage(packageAndTypeWeights);
   }
 
+  function onSelectOption(activePage, optionValue) {
+    const updatedArray = [...coupleAnswers];
+    updatedArray[activePage] = Number(optionValue);
+    setCoupleAnswers([...updatedArray]);
+  }
+
   function addInvitee(invitee) {
     setInvitees((prevInvitees) => [...prevInvitees, invitee]);
   }
@@ -103,6 +116,9 @@ export default function AppContextProvider({ children }) {
     removeInvitee,
     editCoupleComeFrom,
     setEditCoupleComeFrom,
+    coupleAnswers,
+    setCoupleAnswers,
+    onSelectOption
   };
 
   return (

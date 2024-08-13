@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { AppContext } from "../../../store/AppContext";
-import { Grid, Stack, Paper, Typography } from "@mui/material";
+import { Grid, Stack, Paper, Typography, Tooltip } from "@mui/material";
 import useFetch from "../../../utilities/useFetch";
 import { addCommasToNumber } from "../../../utilities/functions";
 
@@ -68,15 +68,17 @@ function ExpansesKpis() {
           </Paper>
         </Grid>
         <Grid item xs={12} sm={6} lg={3} sx={kpiWrapper}>
-          <Paper elevation={4} sx={kpiPaperSX}>
-            <Typography sx={kpiText}>
-              עלות פר אורח:{" "}
-              {addCommasToNumber(
-                sumTotalCost() / Number(coupleData.numberOfInvitees)
-              )}{" "}
-              ₪
-            </Typography>
-          </Paper>
+          <Tooltip title="סך כל המוזמנים לחלק בסך כל העלויות">
+            <Paper elevation={4} sx={kpiPaperSX}>
+              <Typography sx={kpiText}>
+                עלות פר אורח:{" "}
+                {addCommasToNumber(
+                  sumTotalCost() / Number(coupleData.numberOfInvitees)
+                )}{" "}
+                ₪
+              </Typography>
+            </Paper>
+          </Tooltip>
         </Grid>
       </Grid>
     </Stack>

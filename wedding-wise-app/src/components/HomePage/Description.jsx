@@ -26,7 +26,7 @@ function Description() {
           px: { xs: 1, sm: 4, md: 5 },
           py: 1,
         }}
-        direction= "column-reverse"
+        direction="column-reverse"
         columnGap={1}
       >
         {screenAboveMD && (
@@ -96,7 +96,7 @@ function Description() {
               </Box>
             </Typography>
             <Typography sx={StackTextSX}>
-              האתר שמתכנן עבורם את החתונה שלכם בלחיצת כפתור זה{" "}
+              האתר שמתכנן עבורכם את החתונה בלחיצת כפתור זה{" "}
               <Box component="span" sx={titleSX}>
                 WeddingWise
               </Box>

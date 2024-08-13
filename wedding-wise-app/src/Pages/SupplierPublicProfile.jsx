@@ -54,7 +54,7 @@ function SupplierPublicProfile() {
   const [supplierFirebase, setSupplierFirebase] = useState(null);
   const [loadingData, setLoadingData] = useState(false);
   const [showLinks, setShowLinks] = useState(false);
-  const { relevantSupplier} = useSupplierData();
+  const { relevantSupplier } = useSupplierData();
   const { supplierData, coupleData } = useContext(AppContext);
 
   useEffect(() => {
@@ -118,16 +118,12 @@ function SupplierPublicProfile() {
     }
   }, [relevantSupplier]);
 
-  console.log(supplierFirebase);
-
   function renderDescriptionSection() {
     if (supplierFirebase?.description) {
       return (
         <Stack
           direction={screenUnderMD ? "column-reverse" : "row"}
           justifyContent={screenUnderMD ? "center" : "space-between"}
-          // alignItems={screenUnderMD ? "center" : "flex-start"}
-          sx={{}}
         >
           <Paper
             variant="elevation"
@@ -188,11 +184,16 @@ function SupplierPublicProfile() {
           <Paper
             variant="elevation"
             elevation={6}
-            sx={{ ...paperSX, flexGrow: 1 }}
+            sx={{
+              ...paperSX,
+              flexGrow: 1,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+            }}
           >
-            <Typography sx={{ textAlign: "center" }}>
-              {supplierFirebase?.description}
-            </Typography>
+            <Typography>{supplierFirebase?.description}</Typography>
           </Paper>
         </Stack>
       );
@@ -204,16 +205,12 @@ function SupplierPublicProfile() {
             elevation={6}
             sx={{
               ...paperSX,
-              width: "90%",
+              width: "fit-content",
             }}
           >
-            <Grid container sx={{ rowGap: 2, width: "fit-content" }}>
+            <Grid container sx={{ rowGap: 2, width: "fit-content", m: "auto" }}>
               <Grid item xs={12} sm={6}>
-                <Stack
-                  direction="row"
-                  justifyContent="center"
-
-                >
+                <Stack direction="row" justifyContent="center">
                   <MapOutlinedIcon />
                   <Typography>
                     איזור פעילות: {relevantSupplier.availableRegion}
@@ -221,10 +218,7 @@ function SupplierPublicProfile() {
                 </Stack>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Stack
-                  direction="row"
-                  justifyContent="center"
-                >
+                <Stack direction="row" justifyContent="center">
                   <PhoneEnabledOutlinedIcon />
                   <Typography>
                     מס' טלפון: {relevantSupplier.phoneNumber}
@@ -232,10 +226,7 @@ function SupplierPublicProfile() {
                 </Stack>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Stack
-                  direction="row"
-                  justifyContent="center"
-                >
+                <Stack direction="row" justifyContent="center">
                   <EmailOutlinedIcon />
                   <Typography>
                     אימייל: {relevantSupplier.supplierEmail}
@@ -243,10 +234,7 @@ function SupplierPublicProfile() {
                 </Stack>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Stack
-                  direction="row"
-                  justifyContent="center"
-                >
+                <Stack direction="row" justifyContent="center">
                   <LocalOfferOutlinedIcon />
                   <Typography>
                     מחיר ממוצע: {addCommasToNumber(relevantSupplier?.price)} ₪
@@ -395,11 +383,13 @@ function SupplierPublicProfile() {
           title="מספר המדרגים:"
           data={relevantSupplier.ratedCount}
           icon={<PeopleOutlineIcon />}
+          extraSX={{ minWidth: 180 }}
         />
         <KpiPaper
           title="דירוג:"
           data={relevantSupplier?.rating === 0 ? "–" : relevantSupplier?.rating}
           icon={<StarOutlineIcon />}
+          extraSX={{ minWidth: 180 }}
         />
       </Stack>
       {/* supplier description */}

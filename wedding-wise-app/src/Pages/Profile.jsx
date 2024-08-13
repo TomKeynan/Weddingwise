@@ -1,4 +1,4 @@
-import { Box, Stack } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { React, useContext } from "react";
 import { Link } from "react-router-dom";
 import { customTheme } from "../store/Theme";
@@ -13,7 +13,7 @@ import ExpansesKpis from "../components/Planner/ExpenseTracking/ExpansesKpis";
 import TasksKpis from "../components/Planner/TasksPage/TasksKpis";
 
 function Profile() {
-  const { coupleData } = useContext(AppContext);
+  const { coupleData, offeredPackage } = useContext(AppContext);
 
   if (!coupleData) {
     return <Navigate to="/" />;
@@ -47,13 +47,25 @@ function Profile() {
             </Stack>
           ) : (
             <Box sx={{ textAlign: "center" }}>
-              <Box>
-                עדיין לא המלצנו לכם על חבילה??{" "}
-                <Link to="/package" style={{ color: "#FF9500" }}>
-                  לחצו כאן
-                </Link>{" "}
-                למעבר לשאלון
-              </Box>
+              {!offeredPackage ? (
+                <Box>
+                  עדיין לא המלצנו לכם על חבילה??{" "}
+                  <Link to="/package" style={{ color: "#FF9500" }}>
+                    לחצו כאן
+                  </Link>{" "}
+                  למעבר לשאלון
+                </Box>
+              ) : (
+                <Box>
+                  נראה שעדיין לא אישרתם את החבילה שהומלצה לכם. לאישור{" "}
+                  <Link
+                    to="/package#package-approval"
+                    style={{ color: "#FF9500" }}
+                  >
+                    לחצו כאן
+                  </Link>{" "}
+                </Box>
+              )}
             </Box>
           )}
         </AccordionLayout>

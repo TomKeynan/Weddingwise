@@ -3,7 +3,7 @@ import Window from "./window/Window";
 import { useUserStore } from "../../fireBase/userStore";
 import { useChatStore } from "../../fireBase/chatStore";
 import ChatList from "./chatList/ChatList";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../fireBase/firebase";
 import "./chat.css";
@@ -11,12 +11,13 @@ import Loading from "../Loading";
 import { getAuth } from "firebase/auth";
 import { AppContext } from "../../store/AppContext";
 import { Navigate } from "react-router-dom";
-import { Box, Stack, useMediaQuery } from "@mui/material";
+import { Box, Button, Stack, Typography, useMediaQuery } from "@mui/material";
 function Chat() {
   const screenUnderMD = useMediaQuery("(max-width: 900px)");
-  const { currentUser} = useUserStore();
+  const navigate = useNavigate();
+  const { currentUser } = useUserStore();
   const { chatId, changeChatStatus, isScrollableY } = useChatStore();
-  
+
   const { coupleData, supplierData } = useContext(AppContext);
 
   const [hasChats, setHasChats] = useState(false);
@@ -53,8 +54,8 @@ function Chat() {
       sx={{
         position: "fixed",
         width: "75%",
-        maxHeight: "77vh",
-        minHeight: "77vh",
+        maxHeight: "82vh",
+        minHeight: "82vh",
         bgcolor: "rgba(17, 25, 40, 0.9)",
         borderRadius: 3,
         top: "14%",
@@ -64,7 +65,7 @@ function Chat() {
         fontFamily:
           "'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', Geneva, Verdana, sans-serif",
         textAlign: "right",
-        overflowY: isScrollableY ? "scroll" : "hidden",  
+        overflowY: isScrollableY ? "scroll" : "hidden",
         "&::-webkit-scrollbar": {
           width: "8px",
         },
@@ -91,27 +92,56 @@ function Chat() {
               {chatId && <Window />}
             </>
           ) : coupleData ? (
-            <div>
-              <p className="paragraph">
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              sx={{ mt: { xs: 5, sm: 10 } }}
+            >
+              <Typography
+                sx={{
+                  fontSize: { xs: 18, sm: 20 },
+                  mb: 2,
+                  textAlign: "center",
+                  color: "white",
+                }}
+              >
                 על מנת להשתמש בצ'אט, אתם צריכים קודם להשיג את נבחרת הספקים
                 המושלמת עבורכם!
-              </p>
-              <Link
-                to={"/package"}
-                className="button-link"
+              </Typography>
+              <Button
+                variant="contained"
                 onClick={() => {
                   changeChatStatus();
+                  navigate("/package");
+                }}
+                sx={{
+                  bgcolor: "info.main",
+                  "&:hover": {
+                    bgcolor: "info.dark",
+                  },
                 }}
               >
                 השיגו חבילה כעת!
-              </Link>
-            </div>
+              </Button>
+            </Stack>
           ) : (
-            <div>
-              <p className="paragraph">
-                על מנת להשתמש בצ'אט, על זוג ליצור אתכם קשר!
-              </p>
-            </div>
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              sx={{ mt: { xs: 5, sm: 10 } }}
+            >
+              <Typography
+                sx={{
+                  fontSize: { xs: 18, sm: 20 },
+                  mb: 2,
+                  textAlign: "center",
+                  color: "white",
+                }}
+              >
+                על מנת להשתמש בצ'אט, אתם צריכים קודם להשיג את נבחרת הספקים
+                המושלמת עבורכם!
+              </Typography>
+            </Stack>
           )}
         </>
       ) : (
@@ -122,4 +152,3 @@ function Chat() {
 }
 
 export default Chat;
-

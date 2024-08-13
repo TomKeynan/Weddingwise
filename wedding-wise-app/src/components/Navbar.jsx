@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { NavLink, Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
-import { Box, Button, Stack, useMediaQuery } from "@mui/material/";
+import { Box, Stack, useMediaQuery } from "@mui/material/";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -14,7 +14,6 @@ import MenuItem from "@mui/material/MenuItem";
 import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
 import { customTheme } from "../store/Theme";
 import { AppContext } from "../store/AppContext";
-import { useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import { useChatStore } from "../fireBase/chatStore";
 import { useUserStore } from "../fireBase/userStore";
@@ -23,19 +22,17 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../fireBase/firebase";
 import { useSupplierData } from "../fireBase/supplierData";
-import { Visibility } from "@mui/icons-material";
 
 function Navbar({ isLayout = true, isSupplier = false }) {
-  const navigate = useNavigate();
   // isLayout detect rather navbar's style should be for home page or all other pages
   const screenAboveMD = useMediaQuery("(min-width: 900px)");
 
-  const { changeChatStatus, isSeen, changeIsSeenStatus, resetChat } = useChatStore();
+  const { changeChatStatus, isSeen, changeIsSeenStatus, resetChat } =
+    useChatStore();
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
   const { currentUser, isLoading, logout } = useUserStore();
   const { clearRelevantSupplier, setRelevantSupplier } = useSupplierData();
-
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -146,7 +143,6 @@ function Navbar({ isLayout = true, isSupplier = false }) {
       const auth = getAuth();
       await signOut(auth);
       logout();
-      console.log("Logged out successfully");
     } catch (error) {
       console.error("Error logging out:", error);
     }
@@ -161,7 +157,7 @@ function Navbar({ isLayout = true, isSupplier = false }) {
   const handleSupplierNavigate = () => {
     handleCloseNavMenu();
     setRelevantSupplier(supplierData);
-  }
+  };
 
   useEffect(() => {
     let unSubChat = null;
@@ -262,7 +258,10 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                     <IconButton onClick={handleOpenUserMenu} disableRipple>
                       {/* Icon */}
                       {/* {Adam's} */}
-                      {!isSeen && user && !isLoading && (supplierData || coupleData) ? (
+                      {!isSeen &&
+                      user &&
+                      !isLoading &&
+                      (supplierData || coupleData) ? (
                         <img
                           style={{
                             height: "35px",
@@ -329,107 +328,109 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                         {
                           // when current user is a supplier but he hasn't logged in yet show this menu
                           isSupplier &&
-                          !supplierData &&
-                          supplierSettings.map((setting) => (
-                            <MenuItem
-                              key={setting.text}
-                              onClick={handleCloseUserMenu}
-                              sx={menuItemSX}
-                            >
-                              <Link to={setting.route} style={menuLinkStyle}>
-                                <Typography sx={typographyLinkSX}>
-                                  {setting.text}
-                                </Typography>
-                              </Link>
-                            </MenuItem>
-                          ))
+                            !supplierData &&
+                            supplierSettings.map((setting) => (
+                              <MenuItem
+                                key={setting.text}
+                                onClick={handleCloseUserMenu}
+                                sx={menuItemSX}
+                              >
+                                <Link to={setting.route} style={menuLinkStyle}>
+                                  <Typography sx={typographyLinkSX}>
+                                    {setting.text}
+                                  </Typography>
+                                </Link>
+                              </MenuItem>
+                            ))
                         }
                         {
                           // when current user is a supplier and he has logged in show this menu
                           isSupplier &&
-                          supplierData &&
-                          connectedSupplierSettings.map((setting) => (
-                            <MenuItem
-                              key={setting.text}
-                              onClick={handleCloseUserMenu}
-                              sx={menuItemSX}
-                            >
-                              <Link
-                                to={setting.route}
-                                style={menuLinkStyle}
-                                onClick={() =>
-                                  handleSupplierLogout(setting.text)
-                                }
+                            supplierData &&
+                            connectedSupplierSettings.map((setting) => (
+                              <MenuItem
+                                key={setting.text}
+                                onClick={handleCloseUserMenu}
+                                sx={menuItemSX}
                               >
-                                <Typography sx={typographyLinkSX}>
-                                  {setting.text}
-                                </Typography>
-                              </Link>
-                            </MenuItem>
-                          ))
+                                <Link
+                                  to={setting.route}
+                                  style={menuLinkStyle}
+                                  onClick={() =>
+                                    handleSupplierLogout(setting.text)
+                                  }
+                                >
+                                  <Typography sx={typographyLinkSX}>
+                                    {setting.text}
+                                  </Typography>
+                                </Link>
+                              </MenuItem>
+                            ))
                         }
                         {
                           // when current user is a couple but he isn't logged in yet show this menu
                           !isSupplier &&
-                          !coupleData &&
-                          coupleSettings.map((setting) => (
-                            <MenuItem
-                              key={setting.text}
-                              onClick={handleCloseUserMenu}
-                              sx={menuItemSX}
-                            >
-                              <Link to={setting.route} style={menuLinkStyle}>
-                                <Typography sx={typographyLinkSX}>
-                                  {setting.text}
-                                </Typography>
-                              </Link>
-                            </MenuItem>
-                          ))
+                            !coupleData &&
+                            coupleSettings.map((setting) => (
+                              <MenuItem
+                                key={setting.text}
+                                onClick={handleCloseUserMenu}
+                                sx={menuItemSX}
+                              >
+                                <Link to={setting.route} style={menuLinkStyle}>
+                                  <Typography sx={typographyLinkSX}>
+                                    {setting.text}
+                                  </Typography>
+                                </Link>
+                              </MenuItem>
+                            ))
                         }
                         {
                           // when current user is a couple and he has logged in show this menu
                           !isSupplier &&
-                          coupleData &&
-                          connectedCoupleSettings.map((setting) => (
-                            <MenuItem
-                              key={setting.text}
-                              onClick={handleCloseUserMenu}
-                              sx={menuItemSX}
-                            >
-                              <Link
-                                to={setting.route}
-                                style={menuLinkStyle}
-                                onClick={() =>
-                                  handleCoupleLogout(setting.text)
-                                }
+                            coupleData &&
+                            connectedCoupleSettings.map((setting) => (
+                              <MenuItem
+                                key={setting.text}
+                                onClick={handleCloseUserMenu}
+                                sx={menuItemSX}
                               >
-                                <Typography sx={typographyLinkSX}>
-                                  {setting.text}
-                                </Typography>
-                              </Link>
-                            </MenuItem>
-                          ))
+                                <Link
+                                  to={setting.route}
+                                  style={menuLinkStyle}
+                                  onClick={() =>
+                                    handleCoupleLogout(setting.text)
+                                  }
+                                >
+                                  <Typography sx={typographyLinkSX}>
+                                    {setting.text}
+                                  </Typography>
+                                </Link>
+                              </MenuItem>
+                            ))
                         }
 
                         {/* {Adam's}  */}
-                        {!isLoading && currentUser &&  (supplierData || coupleData) && (
-                          <MenuItem onClick={handleChat} sx={menuItemSX}>
-                            <Link
-                              onClick={(e) => e.preventDefault()}
-                              style={menuLinkStyle}
-                            >
-                              {isSeen ? (
-                                <Typography sx={typographyLinkSX}>
-                                  צ'אט
-                                </Typography>
-                              ) : (
-                                <Typography sx={typographyLinkSX}>
-                                  צ'אט <span style={{ color: "red" }}>*</span>
-                                </Typography>
-                              )}
-                            </Link>
-                          </MenuItem>
-                        )}
+                        {!isLoading &&
+                          currentUser &&
+                          (supplierData || coupleData) && (
+                            <MenuItem onClick={handleChat} sx={menuItemSX}>
+                              <Link
+                                onClick={(e) => e.preventDefault()}
+                                style={menuLinkStyle}
+                              >
+                                {isSeen ? (
+                                  <Typography sx={typographyLinkSX}>
+                                    צ'אט
+                                  </Typography>
+                                ) : (
+                                  <Typography sx={typographyLinkSX}>
+                                    צ'אט <span style={{ color: "red" }}>*</span>
+                                  </Typography>
+                                )}
+                              </Link>
+                            </MenuItem>
+                          )}
                       </Menu>
                     </Box>
                   </Menu>
@@ -447,59 +448,59 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                 {
                   // when current user is a supplier but he hasn't logged in yet show this menu
                   isSupplier &&
-                  !supplierData &&
-                  supplierPages.map((page) => (
-                    <NavLink
-                      key={page.text}
-                      to={page.route}
-                      style={
-                        isLayout ? navLinkLayoutStyles : navLinkHomeStyles
-                      }
-                      onClick={handleCloseNavMenu}
-                    >
-                      {page.text}
-                    </NavLink>
-                  ))
+                    !supplierData &&
+                    supplierPages.map((page) => (
+                      <NavLink
+                        key={page.text}
+                        to={page.route}
+                        style={
+                          isLayout ? navLinkLayoutStyles : navLinkHomeStyles
+                        }
+                        onClick={handleCloseNavMenu}
+                      >
+                        {page.text}
+                      </NavLink>
+                    ))
                 }
                 {
                   // when current user is a supplier and he has logged in show this menu
                   isSupplier &&
-                  supplierData &&
-                  connectedSupplierPages.map((page) => (
-                    <NavLink
-                      key={page.text}
-                      to={page.route}
-                      style={
-                        isLayout ? navLinkLayoutStyles : navLinkHomeStyles
-                      }
-                      onClick={handleSupplierNavigate}
-                    >
-                      {page.text}
-                    </NavLink>
-                  ))
+                    supplierData &&
+                    connectedSupplierPages.map((page) => (
+                      <NavLink
+                        key={page.text}
+                        to={page.route}
+                        style={
+                          isLayout ? navLinkLayoutStyles : navLinkHomeStyles
+                        }
+                        onClick={handleSupplierNavigate}
+                      >
+                        {page.text}
+                      </NavLink>
+                    ))
                 }
                 {
                   // when current user is a couple but he hasn't logged in yet show this menu
                   !isSupplier &&
-                  !coupleData &&
-                  couplePages.map((page) => (
-                    <NavLink
-                      key={page.text}
-                      to={page.route}
-                      style={
-                        isLayout ? navLinkLayoutStyles : navLinkHomeStyles
-                      }
-                      onClick={handleCloseNavMenu}
-                    >
-                      {page.text}
-                    </NavLink>
-                  ))
+                    !coupleData &&
+                    couplePages.map((page) => (
+                      <NavLink
+                        key={page.text}
+                        to={page.route}
+                        style={
+                          isLayout ? navLinkLayoutStyles : navLinkHomeStyles
+                        }
+                        onClick={handleCloseNavMenu}
+                      >
+                        {page.text}
+                      </NavLink>
+                    ))
                 }
                 {
                   // when current user is a couple and he is logged in show this menu
                   !isSupplier &&
-                  coupleData &&
-                  connectedCouplePages.map((page) => renderMenuPages(page))
+                    coupleData &&
+                    connectedCouplePages.map((page) => renderMenuPages(page))
                 }
               </Stack>
 
@@ -579,106 +580,106 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                   {
                     // when current user is a supplier but he hasn't logged in yet show this menu
                     isSupplier &&
-                    !supplierData &&
-                    supplierPages.map((page) => (
-                      <MenuItem
-                        key={page.text}
-                        onClick={handleCloseNavMenu}
-                        sx={menuItemSX}
-                      >
-                        <Link to={page.route} style={menuLinkStyle}>
-                          <Typography
-                            sx={{
-                              textAlign: "center",
-                              fontWeight: "bold",
-                              fontSize: 16,
-                              color: "#000",
-                              lineHeight: 2.5,
-                            }}
-                          >
-                            {page.text}
-                          </Typography>
-                        </Link>
-                      </MenuItem>
-                    ))
+                      !supplierData &&
+                      supplierPages.map((page) => (
+                        <MenuItem
+                          key={page.text}
+                          onClick={handleCloseNavMenu}
+                          sx={menuItemSX}
+                        >
+                          <Link to={page.route} style={menuLinkStyle}>
+                            <Typography
+                              sx={{
+                                textAlign: "center",
+                                fontWeight: "bold",
+                                fontSize: 16,
+                                color: "#000",
+                                lineHeight: 2.5,
+                              }}
+                            >
+                              {page.text}
+                            </Typography>
+                          </Link>
+                        </MenuItem>
+                      ))
                   }
                   {
                     // when current user is a supplier and he has logged in show this menu
                     isSupplier &&
-                    supplierData &&
-                    connectedSupplierPages.map((page) => (
-                      <MenuItem
-                        key={page.text}
-                        onClick={handleSupplierNavigate}
-                        sx={menuItemSX}
-                      >
-                        <Link to={page.route} style={menuLinkStyle}>
-                          <Typography
-                            sx={{
-                              textAlign: "center",
-                              fontWeight: "bold",
-                              fontSize: 16,
-                              color: "#000",
-                              lineHeight: 2.5,
-                            }}
-                          >
-                            {page.text}
-                          </Typography>
-                        </Link>
-                      </MenuItem>
-                    ))
+                      supplierData &&
+                      connectedSupplierPages.map((page) => (
+                        <MenuItem
+                          key={page.text}
+                          onClick={handleSupplierNavigate}
+                          sx={menuItemSX}
+                        >
+                          <Link to={page.route} style={menuLinkStyle}>
+                            <Typography
+                              sx={{
+                                textAlign: "center",
+                                fontWeight: "bold",
+                                fontSize: 16,
+                                color: "#000",
+                                lineHeight: 2.5,
+                              }}
+                            >
+                              {page.text}
+                            </Typography>
+                          </Link>
+                        </MenuItem>
+                      ))
                   }
                   {
                     // when current user is a couple but he hasn't logged in yet show this menu
                     !isSupplier &&
-                    !coupleData &&
-                    couplePages.map((page) => (
-                      <MenuItem
-                        key={page.text}
-                        onClick={handleCloseNavMenu}
-                        sx={menuItemSX}
-                      >
-                        <Link to={page.route} style={menuLinkStyle}>
-                          <Typography
-                            sx={{
-                              textAlign: "center",
-                              fontWeight: "bold",
-                              fontSize: 16,
-                              color: "#000",
-                              lineHeight: 2.5,
-                            }}
-                          >
-                            {page.text}
-                          </Typography>
-                        </Link>
-                      </MenuItem>
-                    ))
+                      !coupleData &&
+                      couplePages.map((page) => (
+                        <MenuItem
+                          key={page.text}
+                          onClick={handleCloseNavMenu}
+                          sx={menuItemSX}
+                        >
+                          <Link to={page.route} style={menuLinkStyle}>
+                            <Typography
+                              sx={{
+                                textAlign: "center",
+                                fontWeight: "bold",
+                                fontSize: 16,
+                                color: "#000",
+                                lineHeight: 2.5,
+                              }}
+                            >
+                              {page.text}
+                            </Typography>
+                          </Link>
+                        </MenuItem>
+                      ))
                   }
                   {
                     // when current user is a couple and he is logged in show this menu
                     !isSupplier &&
-                    coupleData &&
-                    connectedCouplePagesSmall.map((page) => (
-                      <MenuItem
-                        key={page.text}
-                        onClick={handleCloseNavMenu}
-                        sx={menuItemSX}
-                      >
-                        <Link to={page.route} style={menuLinkStyle}>
-                          <Typography
-                            sx={{
-                              textAlign: "center",
-                              fontWeight: "bold",
-                              fontSize: 16,
-                              color: "#000",
-                              lineHeight: 2.5,
-                            }}
-                          >
-                            {page.text}
-                          </Typography>
-                        </Link>
-                      </MenuItem>
-                    ))
+                      coupleData &&
+                      connectedCouplePagesSmall.map((page) => (
+                        <MenuItem
+                          key={page.text}
+                          onClick={handleCloseNavMenu}
+                          sx={menuItemSX}
+                        >
+                          <Link to={page.route} style={menuLinkStyle}>
+                            <Typography
+                              sx={{
+                                textAlign: "center",
+                                fontWeight: "bold",
+                                fontSize: 16,
+                                color: "#000",
+                                lineHeight: 2.5,
+                              }}
+                            >
+                              {page.text}
+                            </Typography>
+                          </Link>
+                        </MenuItem>
+                      ))
                   }
                 </Menu>
               </Box>
@@ -743,100 +744,102 @@ function Navbar({ isLayout = true, isSupplier = false }) {
                   {
                     // when current user is a supplier but he isn't logged in yet show this menu
                     isSupplier &&
-                    !supplierData &&
-                    supplierSettings.map((setting) => (
-                      <MenuItem
-                        key={setting.text}
-                        onClick={handleCloseUserMenu}
-                        sx={menuItemSX}
-                      >
-                        <Link to={setting.route} style={menuLinkStyle}>
-                          <Typography sx={typographyLinkSX}>
-                            {setting.text}
-                          </Typography>
-                        </Link>
-                      </MenuItem>
-                    ))
+                      !supplierData &&
+                      supplierSettings.map((setting) => (
+                        <MenuItem
+                          key={setting.text}
+                          onClick={handleCloseUserMenu}
+                          sx={menuItemSX}
+                        >
+                          <Link to={setting.route} style={menuLinkStyle}>
+                            <Typography sx={typographyLinkSX}>
+                              {setting.text}
+                            </Typography>
+                          </Link>
+                        </MenuItem>
+                      ))
                   }
                   {
                     // when current user is a supplier and he is logged in show this menu
                     isSupplier &&
-                    supplierData &&
-                    connectedSupplierSettings.map((setting) => (
-                      <MenuItem
-                        key={setting.text}
-                        onClick={handleCloseUserMenu}
-                        sx={menuItemSX}
-                      >
-                        <Link
-                          to={setting.route}
-                          style={menuLinkStyle}
-                          onClick={() => handleSupplierLogout(setting.text)}
+                      supplierData &&
+                      connectedSupplierSettings.map((setting) => (
+                        <MenuItem
+                          key={setting.text}
+                          onClick={handleCloseUserMenu}
+                          sx={menuItemSX}
                         >
-                          <Typography sx={typographyLinkSX}>
-                            {setting.text}
-                          </Typography>
-                        </Link>
-                      </MenuItem>
-                    ))
+                          <Link
+                            to={setting.route}
+                            style={menuLinkStyle}
+                            onClick={() => handleSupplierLogout(setting.text)}
+                          >
+                            <Typography sx={typographyLinkSX}>
+                              {setting.text}
+                            </Typography>
+                          </Link>
+                        </MenuItem>
+                      ))
                   }
                   {
                     // when current user is a couple but he isn't logged in yet show this menu
                     !isSupplier &&
-                    !coupleData &&
-                    coupleSettings.map((setting) => (
-                      <MenuItem
-                        key={setting.text}
-                        onClick={handleCloseUserMenu}
-                        sx={menuItemSX}
-                      >
-                        <Link to={setting.route} style={menuLinkStyle}>
-                          <Typography sx={typographyLinkSX}>
-                            {setting.text}
-                          </Typography>
-                        </Link>
-                      </MenuItem>
-                    ))
+                      !coupleData &&
+                      coupleSettings.map((setting) => (
+                        <MenuItem
+                          key={setting.text}
+                          onClick={handleCloseUserMenu}
+                          sx={menuItemSX}
+                        >
+                          <Link to={setting.route} style={menuLinkStyle}>
+                            <Typography sx={typographyLinkSX}>
+                              {setting.text}
+                            </Typography>
+                          </Link>
+                        </MenuItem>
+                      ))
                   }
                   {
                     // when current user is a couple and he is logged in show this menu
                     !isSupplier &&
-                    coupleData &&
-                    connectedCoupleSettings.map((setting) => (
-                      <MenuItem
-                        key={setting.text}
-                        onClick={handleCloseUserMenu}
-                        sx={menuItemSX}
-                      >
-                        <Link
-                          to={setting.route}
-                          style={menuLinkStyle}
-                          onClick={() => handleCoupleLogout(setting.text)}
+                      coupleData &&
+                      connectedCoupleSettings.map((setting) => (
+                        <MenuItem
+                          key={setting.text}
+                          onClick={handleCloseUserMenu}
+                          sx={menuItemSX}
                         >
-                          <Typography sx={typographyLinkSX}>
-                            {setting.text}
-                          </Typography>
-                        </Link>
-                      </MenuItem>
-                    ))
+                          <Link
+                            to={setting.route}
+                            style={menuLinkStyle}
+                            onClick={() => handleCoupleLogout(setting.text)}
+                          >
+                            <Typography sx={typographyLinkSX}>
+                              {setting.text}
+                            </Typography>
+                          </Link>
+                        </MenuItem>
+                      ))
                   }
                   {/* {Adam's}  */}
-                  {!isLoading && currentUser && (supplierData || coupleData) && (
-                    <MenuItem onClick={handleChat} sx={menuItemSX}>
-                      <Link
-                        onClick={(e) => e.preventDefault()}
-                        style={menuLinkStyle}
-                      >
-                        {isSeen ? (
-                          <Typography sx={typographyLinkSX}>צ'אט</Typography>
-                        ) : (
-                          <Typography sx={typographyLinkSX}>
-                            צ'אט <span style={{ color: "red" }}>*</span>
-                          </Typography>
-                        )}
-                      </Link>
-                    </MenuItem>
-                  )}
+                  {!isLoading &&
+                    currentUser &&
+                    (supplierData || coupleData) && (
+                      <MenuItem onClick={handleChat} sx={menuItemSX}>
+                        <Link
+                          onClick={(e) => e.preventDefault()}
+                          style={menuLinkStyle}
+                        >
+                          {isSeen ? (
+                            <Typography sx={typographyLinkSX}>צ'אט</Typography>
+                          ) : (
+                            <Typography sx={typographyLinkSX}>
+                              צ'אט <span style={{ color: "red" }}>*</span>
+                            </Typography>
+                          )}
+                        </Link>
+                      </MenuItem>
+                    )}
                 </Menu>
               </Box>
             </Stack>
@@ -896,7 +899,7 @@ const settingMenuSX = {
   },
   "& .MuiMenu-paper": {
     py: 2,
-    visibility: "unset"
+    visibility: "unset",
   },
 };
 

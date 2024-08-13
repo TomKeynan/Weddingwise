@@ -6,7 +6,10 @@ import OutlinedButton from "../buttons/OutlinedButton";
 import SupplierCard from "../SupplierCard";
 import { customTheme } from "../../store/Theme";
 import useFetch from "../../utilities/useFetch";
-import { buildTypeWeightsCard } from "../../utilities/functions";
+import {
+  addCommasToNumber,
+  buildTypeWeightsCard,
+} from "../../utilities/functions";
 import MessageDialog from "../Dialogs/MessageDialog";
 import { AppContext } from "../../store/AppContext";
 import Loading from "../Loading";
@@ -30,10 +33,11 @@ import { db } from "../../fireBase/firebase";
 import { useUserStore } from "../../fireBase/userStore";
 import { useGlobalStore } from "../../fireBase/globalLoading";
 import KpiPaper from "../KpiPaper";
+import { useChatStore } from "../../fireBase/chatStore";
 
 function UserPackage() {
   const navigate = useNavigate();
-
+  const { changeChatStatus } = useChatStore();
   const { sendData, loading, resData, setResData, error, setError } =
     useFetch();
 
@@ -487,6 +491,12 @@ function UserPackage() {
     }
   }
 
+  function handleCloseSuccessMessage() {
+    setOpenMessage(false);
+    setError(undefined);
+    setResData(undefined);
+    changeChatStatus();
+  }
   function showSuccessMessage(status) {
     if (status === 200) {
       return (
@@ -494,8 +504,8 @@ function UserPackage() {
           title="בסימן טוב ומזל טוב!!"
           open={openMessage}
           btnValue="הבנתי!"
-          onClose={handleCloseMessage}
-          xBtn={handleCloseMessage}
+          onClose={handleCloseSuccessMessage}
+          xBtn={handleCloseSuccessMessage}
           mode="success"
         >
           <Typography
@@ -512,8 +522,8 @@ function UserPackage() {
           title="כל הכבוד👏🏼👏🏼👏🏼"
           open={openMessage}
           btnValue="יש!"
-          onClose={handleCloseMessage}
-          xBtn={handleCloseMessage}
+          onClose={handleCloseSuccessMessage}
+          xBtn={handleCloseSuccessMessage}
           mode="success"
         >
           <Typography
@@ -554,7 +564,7 @@ function UserPackage() {
           direction="row"
           justifyContent="center"
           alignItems="center"
-          sx={{ width: "100%", mb: 4 }}
+          sx={{ width: "100%", mb: { xs: 1, sm: 4 } }}
         >
           <Typography sx={titleSX}>
             חבילת נותני השירות המתאימים במיוחד אליכם
@@ -591,9 +601,10 @@ function UserPackage() {
             px: { xs: 1, sm: 5 },
             pb: 5,
             fontFamily: customTheme.font.main,
+            fontSize: { xs: 26, sm: 34, md: 42 },
           }}
         >
-          ועכשיו לחלק האומנותי... נבחרת הספקים המומולצים ביותר בשבילכם!
+          ועכשיו לחלק האומנותי... נבחרת הספקים המומלצים ביותר בשבילכם!
         </Typography>
 
         <Stack
@@ -603,7 +614,7 @@ function UserPackage() {
           flexWrap="wrap"
           rowGap={5}
           columnGap={5}
-          sx={{ width: { xs: "80%", sm: "70%", lg: "80%" } }}
+          sx={{ width: { xs: "100%", sm: "70%", lg: "80%" } }}
         >
           {offeredPackage["selectedSuppliers"].map((supplier, index) => (
             <SupplierCard
@@ -617,12 +628,13 @@ function UserPackage() {
           ))}
         </Stack>
         <Grid
+          id="package-approval"
           container
           sx={{ gap: { xs: 2, sm: 5 }, justifyContent: "center", py: 3 }}
         >
           <Grid item xs={12} sm={3}>
             <KpiPaper
-              title="אחוזי התאמה "
+              title="ציון ההתאמה "
               data={offeredPackage.totalScore.toFixed(2)}
               icon="%"
             />
@@ -630,14 +642,16 @@ function UserPackage() {
           <Grid item xs={12} sm={3}>
             <KpiPaper
               title="עלות כוללת "
-              data={offeredPackage.totalCost}
+              data={addCommasToNumber(offeredPackage.totalCost)}
               icon="₪"
             />
           </Grid>
           <Grid item xs={12} sm={3}>
             <KpiPaper
               title="חיסכון "
-              data={coupleData.budget - offeredPackage.totalCost}
+              data={addCommasToNumber(
+                coupleData.budget - offeredPackage.totalCost
+              )}
               icon="₪"
             />
           </Grid>
@@ -716,5 +730,5 @@ const titleSX = {
   fontWeight: "bold",
   color: customTheme.palette.primary.main,
   WebkitTextStrokeWidth: { xs: 1.5, sm: 1 },
-  textShadow: " 1px 2px 3px #282828",
+  textShadow: { xs: "none", sm: "1px 2px 3px #282828" },
 };

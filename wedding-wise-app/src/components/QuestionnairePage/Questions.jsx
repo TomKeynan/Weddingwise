@@ -13,10 +13,12 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Loading from "../Loading";
 import ConfirmDialog from "../Dialogs/ConfirmDialog";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "../../store/AppContext";
 
 export default function Questions() {
-  const { isLoading, coupleAnswers, handleCreateNewPackage, error, setError } =
+  const { isLoading, handleCreateNewPackage, error, setError } =
     useContext(QuestionsContext);
+  const { coupleAnswers } = useContext(AppContext);
 
   const navigate = useNavigate();
   const screenAboveSM = useMediaQuery("(min-width: 500px)");
@@ -55,7 +57,12 @@ export default function Questions() {
   }
 
   return (
-    <Stack spacing={4} justifyContent="center" alignItems="center" px={4}>
+    <Stack
+      spacing={4}
+      justifyContent="center"
+      alignItems="center"
+      sx={{ width: "95%" }}
+    >
       {isLoading && <Loading />}
       {error && (
         <ConfirmDialog
@@ -65,10 +72,14 @@ export default function Questions() {
           onCancel={() => setOpen(false)}
           onApproval={handleApprovalUpdateDetails}
         >
-          <Typography  sx={{ textAlign: "center", fontSize: {xs: 18, sm: 20} }}>
+          <Typography
+            sx={{ textAlign: "center", fontSize: { xs: 18, sm: 20 } }}
+          >
             נראה שהפרטים שמסרתם לא הניבו חבילת נותני שירות מתאימה.{" "}
           </Typography>
-          <Typography  sx={{ textAlign: "center", fontSize: {xs: 18, sm: 20} }}>
+          <Typography
+            sx={{ textAlign: "center", fontSize: { xs: 18, sm: 20 } }}
+          >
             כדי שנוכל לסייע לכם בצורה הטובה ביותר, יש לנסות לעדכן את הפרטים שלכם
           </Typography>
         </ConfirmDialog>
@@ -114,7 +125,12 @@ export default function Questions() {
         <Button
           variant="contained"
           onClick={handleCreateNewPackage}
-          sx={{ width: "90%", fontSize: 24, fontWeight: "bold" }}
+          sx={{
+            width: "100%",
+            maxWidth: "800px",
+            fontSize: 24,
+            fontWeight: "bold",
+          }}
         >
           צור חבילה
         </Button>

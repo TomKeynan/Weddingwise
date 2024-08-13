@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import RandomPackage from "../components/PackagePage/RandomPackage";
 import UserWithoutPackage from "../components/PackagePage/UserWithoutPackage";
 import UserPackage from "../components/PackagePage/UserPackage";

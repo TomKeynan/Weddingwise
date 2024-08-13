@@ -42,6 +42,7 @@ function DropDownNavItem({ isLayout }) {
               display: "block",
               transform: "translateY(0px)",
               p: 1.25,
+              cursor: "default",
             }
       }
       onMouseEnter={handleMouseEnter}

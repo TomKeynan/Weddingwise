@@ -39,7 +39,8 @@ function EditCouple() {
     isEditFormValid,
   } = useContext(RegisterContext);
 
-  const { coupleData, updateCoupleData } = useContext(AppContext);
+  const { coupleData, updateCoupleData, offeredPackage, setCoupleAnswers } =
+    useContext(AppContext);
 
   const {
     handleCreateNewPackage,
@@ -129,38 +130,60 @@ function EditCouple() {
   }
 
   function handleQuestionsApproval() {
+    setCoupleAnswers(Array.from({ length: 15 }, () => 0))
     navigate("/questionnaire");
     setOpenQuestionsConfirm(false);
   }
 
   function handleQuestionsCancel() {
-    handleCreateNewPackage();
-    setOpenQuestionsConfirm(false);
-    setOpenSuccessMessage(false);
+    if (offeredPackage) {
+      handleCreateNewPackage();
+      setOpenQuestionsConfirm(false);
+      setOpenSuccessMessage(false);
+    } else {
+      navigate("/package");
+    }
   }
 
   function showQuestionsConfirm() {
-    return (
-      <ConfirmDialog
-        title="שימו לב..."
-        open={openQuestionsConfirm}
-        onCancel={handleQuestionsCancel}
-        onApproval={handleQuestionsApproval}
-        approvalBtn="נמלא שאלון"
-        cancelBtn="נבחרת חדשה"
-      >
-        <Typography variant="h5" sx={{ textAlign: "center", mb: 1 }}>
-          שנייה לפני שנמליץ לכם על נבחרת ספקים חדשה , באפשרותכם למלא את השאלון
-          מחדש
-        </Typography>
-        <Typography variant="h5" sx={{ textAlign: "center", mb: 1 }}>
-          ------
-        </Typography>
-        <Typography variant="h6" sx={{ textAlign: "center" }}>
-          לתשובות שלכם יש משקל חשוב בהרכבת החבילה המתאימה ביותר עבורכם
-        </Typography>
-      </ConfirmDialog>
-    );
+    if (offeredPackage) {
+      return (
+        <ConfirmDialog
+          title="שימו לב..."
+          open={openQuestionsConfirm}
+          onCancel={handleQuestionsCancel}
+          onApproval={handleQuestionsApproval}
+          approvalBtn="נמלא שאלון"
+          cancelBtn="נבחרת חדשה"
+        >
+          <Typography variant="h5" sx={{ textAlign: "center", mb: 1 }}>
+            שנייה לפני שנמליץ לכם על נבחרת ספקים חדשה , באפשרותכם למלא את השאלון
+            מחדש
+          </Typography>
+          <Typography variant="h5" sx={{ textAlign: "center", mb: 1 }}>
+            ------
+          </Typography>
+          <Typography variant="h6" sx={{ textAlign: "center" }}>
+            לתשובות שלכם יש משקל חשוב בהרכבת החבילה המתאימה ביותר עבורכם
+          </Typography>
+        </ConfirmDialog>
+      );
+    } else {
+      return (
+        <ConfirmDialog
+          title="שימו לב..."
+          open={openQuestionsConfirm}
+          onCancel={handleQuestionsCancel}
+          onApproval={handleQuestionsApproval}
+          approvalBtn="מילוי שאלון"
+          cancelBtn="חזרה להוראות"
+        >
+          <Typography variant="h5" sx={{ textAlign: "center", mb: 1 }}>
+            באפשרותכם לחזור לדף הוראות השאלון או להתחיל למלא אותו
+          </Typography>
+        </ConfirmDialog>
+      );
+    }
   }
 
   // ======================= Message Dialog =======================

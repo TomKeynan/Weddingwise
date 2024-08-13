@@ -7,10 +7,12 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import { QuestionsContext } from "../../store/QuestionsContext";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { AppContext } from "../../store/AppContext";
 
 const Question = ({ activePage, onUserSelection }) => {
   const screenAboveSM = useMediaQuery("(min-width: 500px)");
-  const { coupleAnswers, onSelectOption } = useContext(QuestionsContext);
+  // const { coupleAnswers, onSelectOption } = useContext(QuestionsContext);
+  const { coupleAnswers, onSelectOption } = useContext(AppContext);
 
   useEffect(() => {
     setSelectedOption(coupleAnswers[activePage]);
@@ -104,10 +106,10 @@ const Question = ({ activePage, onUserSelection }) => {
 export default Question;
 
 const paperSX = {
-  width: { xs: "95%", md: "100%" },
+  width:"100%" ,
   maxWidth: "800px",
   minHeight: "350px",
   backgroundColor: "transparent",
   textAlign: "center",
-  p: { xs: 1, sm: 5 },
+  p: { xs: 1, sm: 3 },
 };

@@ -194,21 +194,7 @@ export default function ExpensesTable({ expensesList, onExpensesChanged }) {
                     </Alert>
                   )}
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                  <FormControl sx={textFieldSX}>
-                    <TextField
-                      label="שם המשלם"
-                      name="sponsorName"
-                      value={newRow.sponsorName}
-                      onChange={handleInputChange}
-                    />
-                  </FormControl>
-                  {errors.sponsorName && (
-                    <Alert severity="error" sx={errorAlertSX}>
-                      {errors.sponsorName}
-                    </Alert>
-                  )}
-                </Grid>
+
                 <Grid item xs={12} sm={6} md={3}>
                   <FormControl sx={textFieldSX}>
                     <TextField
@@ -236,6 +222,21 @@ export default function ExpensesTable({ expensesList, onExpensesChanged }) {
                   {errors.downPayment && (
                     <Alert severity="error" sx={errorAlertSX}>
                       {errors.downPayment}
+                    </Alert>
+                  )}
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <FormControl sx={textFieldSX}>
+                    <TextField
+                      label="משלם המקדמה"
+                      name="sponsorName"
+                      value={newRow.sponsorName}
+                      onChange={handleInputChange}
+                    />
+                  </FormControl>
+                  {errors.sponsorName && (
+                    <Alert severity="error" sx={errorAlertSX}>
+                      {errors.sponsorName}
                     </Alert>
                   )}
                 </Grid>
@@ -309,15 +310,6 @@ export default function ExpensesTable({ expensesList, onExpensesChanged }) {
                     <SwapVertIcon />
                   </IconButton>
                 </TableCell>
-                <TableCell
-                  align="center"
-                  onClick={() => sorting("sponsorName")}
-                >
-                  <IconButton sx={tableHeadersSX} disableRipple>
-                    שם המשלם
-                    <SwapVertIcon />
-                  </IconButton>
-                </TableCell>
                 <TableCell align="center" onClick={() => sorting("totalCost")}>
                   <IconButton sx={tableHeadersSX} disableRipple>
                     עלות
@@ -330,6 +322,15 @@ export default function ExpensesTable({ expensesList, onExpensesChanged }) {
                 >
                   <IconButton sx={tableHeadersSX} disableRipple>
                     מקדמה
+                    <SwapVertIcon />
+                  </IconButton>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  onClick={() => sorting("sponsorName")}
+                >
+                  <IconButton sx={tableHeadersSX} disableRipple>
+                    משלם המקדמה
                     <SwapVertIcon />
                   </IconButton>
                 </TableCell>
@@ -349,13 +350,13 @@ export default function ExpensesTable({ expensesList, onExpensesChanged }) {
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell align="center"> {item.serviceName}</TableCell>
-                    <TableCell align="center">{item.sponsorName}</TableCell>
                     <TableCell align="center">
                       {addCommasToNumber(item.totalCost)}
                     </TableCell>
                     <TableCell align="center">
                       {addCommasToNumber(item.downPayment)}
                     </TableCell>
+                    <TableCell align="center">{item.sponsorName}</TableCell>
                     <TableCell align="center">
                       {addCommasToNumber(item.totalCost - item.downPayment)}
                     </TableCell>
@@ -382,15 +383,15 @@ export default function ExpensesTable({ expensesList, onExpensesChanged }) {
                   סיכום
                 </TableCell>
                 <TableCell align="center" sx={sumRowSX}>
-                  -
-                </TableCell>
-                <TableCell align="center" sx={sumRowSX}>
                   {" "}
                   {sumTotalCost()} ₪
                 </TableCell>
                 <TableCell align="center" sx={sumRowSX}>
                   {" "}
                   {sumDownPayment()} ₪
+                </TableCell>
+                <TableCell align="center" sx={sumRowSX}>
+                  -
                 </TableCell>
                 <TableCell align="center" sx={sumRowSX}>
                   {" "}

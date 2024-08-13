@@ -5,20 +5,19 @@ import { customTheme } from "../store/Theme";
 function KpiPaper({ title, data, icon, extraSX }) {
   return (
     <Paper variant="elevation" elevation={10} sx={kpiWrapperSX}>
-      <Stack spacing={2}>
+      <Stack spacing={{ xs: 1, sm: 2 }}>
         <Typography sx={titleSX}>{title}</Typography>
         <Stack
           direction="row"
           justifyContent="center"
           alignItems="center"
-          sx={{ textAlign: "center",...extraSX, }}
+          sx={{ textAlign: "center", ...extraSX }}
         >
           <Typography
             sx={{
               fontSize: { xs: 18, md: 28 },
               fontFamily: customTheme.font.main,
               mr: 2,
-              
             }}
           >
             {data}

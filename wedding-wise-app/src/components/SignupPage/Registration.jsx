@@ -9,7 +9,6 @@ import {
   StepButton,
   Button,
   Typography,
-  Dialog,
 } from "@mui/material";
 import ListIcon from "@mui/icons-material/List";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
@@ -73,11 +72,6 @@ export default function Registration() {
     setActiveStep(step);
   };
 
-  const handleClickOpen = () => {
-    if (error) {
-      setOpen(true);
-    }
-  };
 
   const { globalLoading } = useGlobalStore();
 
