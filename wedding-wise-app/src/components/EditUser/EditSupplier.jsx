@@ -24,7 +24,7 @@ import SupplierOutlineBtn from "../buttons/SupplierOutlineBtn";
 import useFetch from "../../utilities/useFetch";
 import Loading from "../Loading";
 import MessageDialog from "../Dialogs/MessageDialog";
-import {  db } from "../../fireBase/firebase";
+import { db } from "../../fireBase/firebase";
 import { doc } from "firebase/firestore";
 import upload from "../../fireBase/upload";
 import { AppContext } from "../../store/AppContext";
@@ -57,6 +57,7 @@ const EditSupplier = ({ supplierFirebase }) => {
   const [YouTubeLink, setYouTubeLink] = useState("");
   const [LinkedInLink, setLinkedInLink] = useState("");
 
+
   useEffect(() => {
     if (supplierFirebase) {
       setInstagramLink(supplierFirebase.socialLinks?.Instagram || "");
@@ -86,7 +87,7 @@ const EditSupplier = ({ supplierFirebase }) => {
     };
 
     updateUser();
-   
+
   }, [resData, currentSupplierData]);
 
 
@@ -98,25 +99,26 @@ const EditSupplier = ({ supplierFirebase }) => {
   const updateUserFirebase = async () => {
     const username = currentSupplierData.businessName;
     const description = currentDescription;
-  
+
+   
     const socialLinksWithDefaults = {
       Instagram: InstagramLink || "",
       Facebook: FacebookLink || "",
       YouTube: YouTubeLink || "",
       LinkedIn: LinkedInLink || "",
     };
-  
+
     try {
       let imgUrl = null;
-  
+
       if (avatar && avatar.file) {
         imgUrl = await upload(avatar.file);
       }
-  
+
       const userRef = doc(db, "users", supplierFirebase.id);
       await updateDoc(userRef, {
         username: username || supplierFirebase.username,
-        description: description || supplierFirebase?.description,
+        description: description || "",
         avatar: imgUrl || supplierFirebase.avatar,
         socialLinks: socialLinksWithDefaults,
       });
@@ -181,7 +183,7 @@ const EditSupplier = ({ supplierFirebase }) => {
     }
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-     
+
       return;
     } else {
       setCurrentSupplierData({ ...editSupplier, ...data });
@@ -286,11 +288,11 @@ const EditSupplier = ({ supplierFirebase }) => {
     );
   }
 
- 
+
 
   return (
     <RegisterContextProvider>
-      {globalLoading && <Loading/>}
+      {globalLoading && <Loading />}
       {error && showErrorMessage(error)}
       {openUpdateConfirm && showUpdateConfirmDialog()}
       {openUpdateSuccess && showSuccessMessage()}

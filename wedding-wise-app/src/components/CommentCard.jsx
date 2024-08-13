@@ -10,7 +10,6 @@ export default function CommentCard({
   rating,
 }) {
 
-console.log(giverAvatar);
   return (
     <Stack sx={commentWrapperSX}>
       {/* card-header */}

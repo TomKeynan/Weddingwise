@@ -118,6 +118,8 @@ function SupplierPublicProfile() {
     }
   }, [relevantSupplier]);
 
+  console.log(supplierFirebase);
+
   function renderDescriptionSection() {
     if (supplierFirebase?.description) {
       return (

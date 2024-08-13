@@ -5,7 +5,7 @@ import {getStorage} from "firebase/storage"
 
 
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  apiKey: "AIzaSyDlcdTfTQn9aatH1g1qcMHelXm8TykR5Jc",
   authDomain: "weddingwisetest-ecd19.firebaseapp.com",
   projectId: "weddingwisetest-ecd19",
   storageBucket: "weddingwisetest-ecd19.appspot.com",
@@ -13,6 +13,7 @@ const firebaseConfig = {
   appId: "1:560977532088:web:71a9b0f07659fa9e6cd04d",
   measurementId: "G-QRFPDTG4LD"
 };
+
 
 const app = initializeApp(firebaseConfig);
 
