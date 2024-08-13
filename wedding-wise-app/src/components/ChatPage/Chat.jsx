@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Window from "./window/Window";
 import { useUserStore } from "../../fireBase/userStore";
 import { useChatStore } from "../../fireBase/chatStore";
@@ -11,7 +11,7 @@ import Loading from "../Loading";
 import { getAuth } from "firebase/auth";
 import { AppContext } from "../../store/AppContext";
 import { Navigate } from "react-router-dom";
-import { Box, Button, Stack, useMediaQuery } from "@mui/material";
+import { Box, Stack, useMediaQuery } from "@mui/material";
 function Chat() {
   const screenUnderMD = useMediaQuery("(max-width: 900px)");
   const { currentUser} = useUserStore();
@@ -89,7 +89,6 @@ function Chat() {
             <>
               {!chatId && <ChatList />}
               {chatId && <Window />}
-              {/* {chatId && <Detail />} */}
             </>
           ) : coupleData ? (
             <div>

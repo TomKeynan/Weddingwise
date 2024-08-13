@@ -20,7 +20,6 @@ function Description() {
     return (
       <Stack
         alignItems="center"
-        // justifyContent="space-around"
         sx={{
           width: "95%",
           margin: "0 auto",
@@ -128,7 +127,7 @@ const paperSX = {
   width: "80%",
   px: { xs: 2, sm: 4, md: 5 },
   py: 6,
-  backgroundColor: "rgba(255,255,255, 0.2)",
+  backgroundColor: "rgba(255,255,255, 0.6)",
   borderTopLeftRadius: 50,
   borderBottomRightRadius: 50,
   position: "relative",

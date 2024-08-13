@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext, useMemo } from "react";
-import { Box, Stack, Typography, useMediaQuery } from "@mui/material";
+import { Stack, Typography, useMediaQuery } from "@mui/material";
 import { customTheme } from "../store/Theme";
 import ExpensesTable from "../components/Planner/ExpenseTracking/ExpensesTable";
-import ExpensesPeiChart from "../components/ExpensesPeiChart";
+import ExpensesPeiChart from "../components/Planner/ExpenseTracking/ExpensesPeiChart";
 import useFetch from "../utilities/useFetch";
 import { AppContext } from "../store/AppContext";
 import Loading from "../components/Loading";
@@ -100,7 +100,6 @@ function ExpenseTracking() {
 export default ExpenseTracking;
 
 const loginStackSX = {
-  // minHeight: "inherit",
   pb: 10,
   width: { xs: "95%", sm: "80%" },
   margin: "0 auto",
@@ -113,7 +112,4 @@ const titleSX = {
   fontWeight: "bold",
   color: customTheme.palette.primary.main,
   WebkitTextStrokeWidth: { xs: 1.5, sm: 0.7 },
-
-  // textDecoration: "underline",
-  // WebkitTextStrokeColor: "black",
 };

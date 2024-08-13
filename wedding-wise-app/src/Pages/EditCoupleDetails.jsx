@@ -11,7 +11,6 @@ function EditCoupleDetails() {
       <QuestionsContextProvider>
         <Stack
           maxWidth="xl"
-          // justifyContent="space-around"
           alignItems="center"
           spacing={3}
           sx={{ margin: "auto 0", minHeight: "100vh" }}

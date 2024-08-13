@@ -13,7 +13,6 @@ const StepOne = () => {
   const handleChange = (event) => {
     updateUserDetails({ [event.target.name]: event.target.value });
   };
-  // console.log(userDetails);
 
   return (
     <FormControl>

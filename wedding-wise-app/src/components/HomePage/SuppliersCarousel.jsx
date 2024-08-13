@@ -23,42 +23,6 @@ function SuppliersCarousel() {
     }
   }, [resData]);
 
-  // const settings = {
-  //   dots: true,
-  //   infinite: false,
-  //   speed: 500,
-  //   slidesToShow: 3,
-  //   slidesToScroll: 3,
-  //   initialSlide: 0,
-  //   responsive: [
-  //     {
-  //       breakpoint: 1200,
-  //       settings: {
-  //         slidesToShow: 2,
-  //         slidesToScroll: 2,
-  //         infinite: true,
-  //       },
-  //     },
-  //     {
-  //       breakpoint: 800,
-  //       settings: {
-  //         slidesToShow: 1,
-  //         slidesToScroll: 1,
-  //         initialSlide: 1,
-  //       },
-  //     },
-  //     {
-  //       breakpoint: 480,
-  //       settings: {
-  //         slidesToShow: 1,
-  //         slidesToScroll: 1,
-  //       },
-  //     },
-  //   ],
-  //   nextArrow: <SampleNextArrow />,
-  //   prevArrow: <SamplePrevArrow />,
-  // };
-
   var settings = {
     dots: false,
     infinite: true,
@@ -106,7 +70,6 @@ function SuppliersCarousel() {
         style={{
           ...style,
           display: "block",
-          // background: "#9DD2B9",
           background: "grey",
           borderRadius: "50%",
           boxShadow: customTheme.shadow.strong,
@@ -124,7 +87,6 @@ function SuppliersCarousel() {
         style={{
           ...style,
           display: "block",
-          // background: "#9DD2B9",
           background: "grey",
           borderRadius: "50%",
           boxShadow: customTheme.shadow.strong,
@@ -172,7 +134,6 @@ const paperSX = {
   },
   px: { xs: 2, sm: 4, md: 5 },
   py: 5,
-  // p: 10,
   backgroundColor: "rgba(255,255,255, 0.6)",
   borderTopLeftRadius: 50,
   borderBottomRightRadius: 50,
@@ -192,11 +153,3 @@ const carouselTextSX = {
   textShadow: " 0px 1px 1px #282828",
   mb: 3,
 };
-// const carouselTextSX = {
-//   fontSize: { xs: 22, sm: 24, md: 35 },
-//   fontFamily: "Varela Round",
-//   fontWeight: "bold",
-//   color: customTheme.palette.primary.main,
-//   textShadow: " 0px 1px 1px #282828",
-//   mb:5,
-// };

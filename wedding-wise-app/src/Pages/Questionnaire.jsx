@@ -1,6 +1,6 @@
 import React from "react";
 import Questions from "../components/QuestionnairePage/Questions";
-import { Box, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import QuestionsContextProvider from "../store/QuestionsContext";
 
 const Questionnaire = () => {

@@ -1,5 +1,5 @@
 import { Button, Grid, Stack, Typography } from "@mui/material";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { stickers, insertPackageResponse } from "../../utilities/collections";
 import TypeWeightCard from "./TypeWeightCard";
 import OutlinedButton from "../buttons/OutlinedButton";
@@ -12,7 +12,6 @@ import { AppContext } from "../../store/AppContext";
 import Loading from "../Loading";
 import ConfirmDialog from "../Dialogs/ConfirmDialog";
 import { useNavigate } from "react-router-dom";
-
 import {
   arrayUnion,
   collection,
@@ -50,11 +49,7 @@ function UserPackage() {
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  // const [openUpdateDetails, setOpenUpdateDetails] = useState(false);
-
   const [openUpdateConfirm, setOpenUpdateConfirm] = useState(false);
-
-  // const [isUpdateDetailsValid, setIsUpdateDetailsValid] = useState(false);
 
   const [currentType, setCurrentType] = useState("");
 
@@ -62,9 +57,7 @@ function UserPackage() {
 
   const [altSupplierEmail, setAltSupplierEmail] = useState("");
 
-  // const formRef = useRef(null);
-
-  const { currentUser, isLoading } = useUserStore();
+  const { currentUser } = useUserStore();
 
   const { setGlobalLoading, globalLoading } = useGlobalStore();
 
@@ -86,7 +79,6 @@ function UserPackage() {
   }, [coupleData]);
 
   useEffect(() => {
-    // console.log(resData)
     const updateCoupleData = async () => {
       if (resData) {
         try {
@@ -98,15 +90,11 @@ function UserPackage() {
               package: { ...rest },
             };
           });
-        }
-
-        catch (err) {
+        } catch (err) {
           setGlobalLoading(false);
           console.log(err);
-        }
-        finally {
+        } finally {
           setGlobalLoading(false);
-        
         }
       }
     };
@@ -224,56 +212,7 @@ function UserPackage() {
     }
   };
 
-  // =============== UPDATE DETAILS =====================
-
-  // function startUpdateCoupleDetails() {
-  //   setOpenUpdateConfirm(true);
-  //   formRef.current.click();
-  // }
-
-  // function handleCancelUpdateDetails() {
-  //   setOpenUpdateDetails(false);
-  // }
-
-  // function changeIsUpdateDetailValid(flag) {
-  //   setIsUpdateDetailsValid(flag);
-  // }
-
-  // function showUpdateDetailsDialog() {
-  //   return (
-  //     <MessageDialog
-  //       title="עדכון פרטים"
-  //       text="אנא שנו אחד או יותר מהפרטים הקיימים. יש לוודא שבחירת הפרטים החדשים הגיונית! "
-  //       open={openUpdateDetails}
-  //       btnValue="עדכן פרטים"
-  //       onClose={startUpdateCoupleDetails}
-  //       xBtn={handleCancelUpdateDetails}
-  //       mode="info"
-  //       disabledBtn={!isUpdateDetailsValid}
-  //     >
-  //       {
-  //         <Stack
-  //           direction="row"
-  //           justifyContent="center"
-  //           alignContent="space-around"
-  //           flexWrap="wrap"
-  //           rowGap={3}
-  //           columnGap={2}
-  //         >
-  //           <RegisterContextProvider>
-  //             <EditCouple
-  //               formRef={formRef}
-  //               isValidAndComplete={changeIsUpdateDetailValid}
-  //             />
-  //           </RegisterContextProvider>
-  //         </Stack>
-  //       }
-  //     </MessageDialog>
-  //   );
-  // }
-
   // =============== CONFIRM UPDATE =====================
-
 
   function handleCancelUpdateConfirm() {
     setOpenUpdateConfirm(false);
@@ -285,7 +224,6 @@ function UserPackage() {
         title="שימו לב..."
         open={openUpdateConfirm}
         onCancel={handleCancelUpdateConfirm}
-      // disabledBtn={isUpdateDetailsValid}
       >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
           לחיצה על אישור תוביל להמלצה על חבילה חדשה לגמרי.
@@ -318,7 +256,6 @@ function UserPackage() {
       typeWeights,
     };
     if (coupleData.package) {
-
       sendData("/Packages/updatePackage", "PUT", {
         couple: coupleWithPackage,
         typeReplacements,
@@ -593,7 +530,6 @@ function UserPackage() {
   return (
     <Stack
       justifyContent="space-around"
-      spacing={5}
       alignItems="center"
       sx={{
         minHeight: "100vh",
@@ -603,28 +539,35 @@ function UserPackage() {
         margin: "0 auto",
       }}
     >
-      {/* {(isLoading || loading) && <Loading />} */}
       {globalLoading && <Loading />}
       {error && !globalLoading && showErrorMessage(error)}
       {resData && !globalLoading && showSuccessMessage(resData)}
       {openAltSuppliers && showAltSuppliersDialog()}
       {openConfirm && showConfirmDialog()}
-      {/* {openUpdateDetails && showUpdateDetailsDialog()} */}
       {openUpdateConfirm && showUpdateConfirmDialog()}
       <Stack
-        spacing={5}
         justifyContent="space-around"
         alignItems="center"
         sx={{ width: "80%" }}
       >
-        <Typography variant="h3" sx={{ fontWeight: "bold" }}>
-          העדפות שלכם (%)
+        <Stack
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ width: "100%", mb: 4 }}
+        >
+          <Typography sx={titleSX}>
+            חבילת נותני השירות המתאימים במיוחד אליכם
+          </Typography>
+        </Stack>
+        <Typography sx={{ ...typographySX, py: 2 }}>
+          סרגל ההעדפות שלכם על פי התשובות שמילאתם בשאלון :{" "}
         </Typography>
         <Stack
           direction="row"
           justifyContent="space-around"
           alignItems="center"
-          sx={{ width: "100%" }}
+          sx={{ width: "100%", mb: 10 }}
         >
           <Grid container sx={cardsContainer}>
             {buildTypeWeightsCard(offeredPackage.typeWeights, stickers).map(
@@ -645,20 +588,22 @@ function UserPackage() {
           variant="h4"
           sx={{
             fontWeight: "bold",
-            // width: "90%",
             px: { xs: 1, sm: 5 },
+            pb: 5,
+            fontFamily: customTheme.font.main,
           }}
         >
-          חבילת נותני השירות המתאימים במיוחד אליכם
+          ועכשיו לחלק האומנותי... נבחרת הספקים המומולצים ביותר בשבילכם!
         </Typography>
+
         <Stack
           direction="row"
           justifyContent="center"
           alignContent="space-around"
           flexWrap="wrap"
-          rowGap={3}
-          columnGap={3}
-          sx={{ width: { xs: "80%", sm: "70%", lg: "60%" } }}
+          rowGap={5}
+          columnGap={5}
+          sx={{ width: { xs: "80%", sm: "70%", lg: "80%" } }}
         >
           {offeredPackage["selectedSuppliers"].map((supplier, index) => (
             <SupplierCard
@@ -671,45 +616,56 @@ function UserPackage() {
             />
           ))}
         </Stack>
+        <Grid
+          container
+          sx={{ gap: { xs: 2, sm: 5 }, justifyContent: "center", py: 3 }}
+        >
+          <Grid item xs={12} sm={3}>
+            <KpiPaper
+              title="אחוזי התאמה "
+              data={offeredPackage.totalScore.toFixed(2)}
+              icon="%"
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <KpiPaper
+              title="עלות כוללת "
+              data={offeredPackage.totalCost}
+              icon="₪"
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <KpiPaper
+              title="חיסכון "
+              data={coupleData.budget - offeredPackage.totalCost}
+              icon="₪"
+            />
+          </Grid>
+        </Grid>
         <Stack
-          direction="row"
-          flexWrap="wrap"
-          sx={{
-            justifyContent: { xs: "center", md: "space-between" },
-            width: { xs: "80%", sm: "70%", lg: "60%" },
-            pt: 3,
-            rowGap: 5,
-            columnGap: 5,
-          }}
+          alignItems="center"
+          sx={{ width: "90%", px: { xs: 1, sm: 5 }, pt: 5, pb: 5 }}
         >
-          <KpiPaper
-            title="אחוזי התאמה "
-            data={offeredPackage.totalScore.toFixed(2)}
-            icon="%"
-            // icon={<DoneIcon />}
-          />
-          <KpiPaper
-            title="חיסכון "
-            data={coupleData.budget - offeredPackage.totalCost}
-            icon="₪"
-          />
+          <Typography sx={typographySX}>
+            מעוניינים לשמוע עוד פרטים מאחד הספקים שהומלצו עבורכם?
+          </Typography>
+          <Typography sx={typographySX}>
+            אשרו את החבילה ותוכלו לפנות אליהם בצ'אט!
+          </Typography>
+          <Button
+            variant="contained"
+            sx={heroActionBtn}
+            onClick={handlePackageApproval}
+          >
+            אשר חבילה
+          </Button>
         </Stack>
-        <Button
-          variant="contained"
-          sx={heroActionBtn}
-          onClick={handlePackageApproval}
-        >
-          אשר חבילה
-        </Button>
       </Stack>
-      <Stack
-        alignItems="center"
-        sx={{ width: "90%", px: { xs: 1, sm: 5 } }}
-      >
-        <Typography sx={{ typography: { xs: "body1", sm: "h5", md: "h4" }, mb:2 }}>
+      <Stack alignItems="center" sx={{ width: "90%", px: { xs: 1, sm: 5 } }}>
+        <Typography sx={typographySX}>
           לא התחברתם לחבילה המומלצת? מעדיפים תאריך אחר ליום שלכם?
         </Typography>
-        <Typography sx={{ typography: { xs: "body1", sm: "h5", md: "h4" }, mb:2 }}>
+        <Typography sx={typographySX}>
           לא לדאוג... ניתן לקבל חבילה חדשה לגמרי.{" "}
         </Typography>
         <OutlinedButton
@@ -723,18 +679,8 @@ function UserPackage() {
 
 export default UserPackage;
 
-{
-  /* <Typography sx={{ typography: { xs: "body1", sm: "h5", md: "h4" } }}>
-  ציון התאמה עבורכם : {offeredPackage.totalScore.toFixed(2)} מתוך 100
-</Typography>
-<Typography sx={{ typography: { xs: "body1", sm: "h5", md: "h4" } }}>
-  חיסכון מהתקציב : {coupleData.budget - offeredPackage.totalCost} ש"ח
-</Typography> */
-}
-
 const cardsContainer = {
   gridTemplateRows: "repeat( auto-fill, minmax(200px, 1fr) );",
-  // gridTemplateRows: 'repeat(3, 1fr)',
   margin: "0 auto",
   width: "100%",
   p: 1,
@@ -743,8 +689,6 @@ const cardsContainer = {
 
 const heroActionBtn = {
   width: { xs: "80%", sm: "70%", lg: "60%" },
-  // width: { xs: "70%", sm: "50%" },
-  // width: "100%",
   border: 2,
   py: 1,
   px: { xs: 1, sm: 3 },
@@ -757,4 +701,20 @@ const heroActionBtn = {
     borderColor: customTheme.palette.secondary.main,
     border: 2,
   },
+};
+
+const typographySX = {
+  fontSize: { xs: 16, sm: 24, md: 30 },
+  mb: 1,
+  fontFamily: customTheme.font.main,
+};
+
+const titleSX = {
+  textAlign: "center",
+  fontSize: { xs: 26, sm: 34, md: 42 },
+  fontFamily: customTheme.font.main,
+  fontWeight: "bold",
+  color: customTheme.palette.primary.main,
+  WebkitTextStrokeWidth: { xs: 1.5, sm: 1 },
+  textShadow: " 1px 2px 3px #282828",
 };

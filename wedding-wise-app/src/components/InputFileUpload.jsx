@@ -26,7 +26,6 @@ export default function InputFileUpload({ isUpload }) {
         fontSize: { xs: 16, sm: 18 },
       }}
       component="label"
-    //   role={undefined}
       variant="contained"
       tabIndex={-1}
       endIcon={isUpload ? <CheckIcon /> : <CloudUploadIcon />}

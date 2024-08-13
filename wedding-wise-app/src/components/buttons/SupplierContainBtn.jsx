@@ -13,7 +13,6 @@ function SupplierContainBtn({ onClick, value, width, fontSize }) {
       "&:hover": {
         bgcolor: customTheme.supplier.colors.primary.dark,
         borderColor: customTheme.supplier.colors.primary.main,
-        // color: customTheme.supplier.colors.primary.main,
       },
     };
   

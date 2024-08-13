@@ -5,8 +5,6 @@ import {
   Button,
   FormControl,
   Grid,
-  IconButton,
-  InputAdornment,
   Paper,
   Stack,
   TextField,
@@ -21,15 +19,13 @@ import {
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { addCommasToNumber, getFullDate } from "../../utilities/functions";
+import { getFullDate } from "../../utilities/functions";
 import { AppContext } from "../../store/AppContext";
 import ConfirmDialog from "../Dialogs/ConfirmDialog";
 import useFetch from "../../utilities/useFetch";
 import Loading from "../Loading";
 import MessageDialog from "../Dialogs/MessageDialog";
 import { useNavigate } from "react-router-dom";
-import { QuestionsContext } from "../../store/QuestionsContext";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
 import InputFileUpload from "../InputFileUpload";
 import { useUserStore } from "../../fireBase/userStore";
 import { db } from "../../fireBase/firebase";
@@ -47,8 +43,7 @@ function EditCoupleForm() {
     isEditFormValid,
   } = useContext(RegisterContext);
 
-  const { coupleData, updateCoupleData, editCoupleComeFrom } =
-    useContext(AppContext);
+  const { updateCoupleData, editCoupleComeFrom } = useContext(AppContext);
 
   const { resData, loading, error, sendData, setResData, setError } =
     useFetch();
@@ -57,20 +52,15 @@ function EditCoupleForm() {
 
   const [openUpdateConfirm, setOpenUpdateConfirm] = useState(false);
 
-  const [openQuestionsConfirm, setOpenQuestionsConfirm] = useState(false);
-
   const [openSuccessMessage, setOpenSuccessMessage] = useState(false);
 
   const [openErrorMessage, setOpenErrorMessage] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const [avatar, setAvatar] = useState({
     file: null,
     url: "",
   });
 
-
-  const { currentUser,  setLoading, fetchUserInfo } =
-    useUserStore();
+  const { currentUser, setLoading, fetchUserInfo } = useUserStore();
 
   useEffect(() => {
     if (isFormCompleted(editValue, true) && isEditFormValid(editValue)) {
@@ -111,10 +101,9 @@ function EditCoupleForm() {
   }, [resData, error]);
 
   const updateUserFirebase = async () => {
-    const username = editValue.partner1Name + " ו" + editValue.partner2Name; 
+    const username = editValue.partner1Name + " ו" + editValue.partner2Name;
 
     try {
-    
       let imgUrl = null;
       if (avatar && avatar.file) {
         imgUrl = await upload(avatar.file);
@@ -129,8 +118,6 @@ function EditCoupleForm() {
       console.log(err);
     }
   };
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   function handleWeddingDateChange(dateInput) {
     let weddingDateObject = getFullDate(dateInput);
@@ -172,7 +159,6 @@ function EditCoupleForm() {
         open={openUpdateConfirm}
         onCancel={handleCancelUpdateConfirm}
         onApproval={handleUpdateApproval}
-        // disabledBtn={isUpdateDetailsValid}
       >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
           לחיצה על אישור תוביל לשינוי פרטי החתונה הקיימים באלו שעכשיו בחרתם.
@@ -224,7 +210,6 @@ function EditCoupleForm() {
 
   function handleCloseSuccessMsg() {
     setOpenSuccessMessage(false);
-    setOpenQuestionsConfirm(true);
     if (editCoupleComeFrom === "navbar") navigate("/profile");
     else {
       navigate("/questionnaire");
@@ -258,7 +243,6 @@ function EditCoupleForm() {
         {loading && <Loading />}
         {error && showErrorMessage(error)}
         {openSuccessMessage && showSuccessMessage(resData)}
-        {/* {openQuestionsConfirm && showQuestionsConfirm()} */}
         <Grid item xs={12} md={6}>
           <TextInput
             variant="standard"
@@ -361,7 +345,6 @@ function EditCoupleForm() {
             variant="outlined"
             type="button"
             sx={submitBtnSX}
-            // ref={formRef}
             onClick={startUpdateCoupleDetails}
             disabled={!isUpdateDetailsValid}
           >
@@ -413,7 +396,5 @@ const paperSX = {
   mx: "auto",
   p: { xs: 2, sm: 5 },
   mt: 2,
-  // py: 3,
-  // px: { xs: 1, sm: 3 },
   backgroundColor: "rgba(255,255,255,0.8)",
 };

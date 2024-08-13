@@ -3,10 +3,7 @@ import { RegisterContext } from "../../store/RegisterContext";
 import {
   Autocomplete,
   Button,
-  FormControl,
   Grid,
-  IconButton,
-  InputAdornment,
   Paper,
   Stack,
   TextField,
@@ -29,8 +26,6 @@ import Loading from "../Loading";
 import MessageDialog from "../Dialogs/MessageDialog";
 import { useNavigate } from "react-router-dom";
 import { QuestionsContext } from "../../store/QuestionsContext";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import InputFileUpload from "../InputFileUpload";
 import { Navigate } from "react-router-dom";
 
 function EditCouple() {
@@ -122,7 +117,6 @@ function EditCouple() {
         open={openUpdateConfirm}
         onCancel={handleCancelUpdateConfirm}
         onApproval={handleUpdateApproval}
-        // disabledBtn={isUpdateDetailsValid}
       >
         <Typography variant="h6" sx={{ textAlign: "center" }}>
           לחיצה על אישור תוביל לשינוי פרטי החתונה הקיימים באלו שעכשיו בחרתם.
@@ -143,7 +137,6 @@ function EditCouple() {
     handleCreateNewPackage();
     setOpenQuestionsConfirm(false);
     setOpenSuccessMessage(false);
-    // setError(undefined);
   }
 
   function showQuestionsConfirm() {
@@ -241,39 +234,14 @@ function EditCouple() {
 
   return (
     <Paper variant="elevation" elevation={6} sx={paperSX}>
-      <Grid
-        container
-        // sx={{ maxWidth: { xs: "80%", sm: "60%" }, margin: "0 auto" }}
-        spacing={2}
-      >
+      <Grid container spacing={2}>
         {isLoading && <Loading />}
         {openUpdateConfirm && showUpdateConfirmDialog()}
         {error && showErrorMessage(error)}
         {newPackageError && showErrorMessage(newPackageError)}
         {resData && showSuccessMessage(resData)}
         {openQuestionsConfirm && showQuestionsConfirm()}
-        {/* <Grid item xs={12} md={6}>
-          <TextInput
-            variant="standard"
-            type="text"
-            value={editValue.partner1Name}
-            name="partner1Name"
-            label="שם הכלה"
-            textFieldSX={textFieldSX}
-            editMode={true}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <TextInput
-            variant="standard"
-            type="text"
-            value={editValue.partner2Name}
-            name="partner2Name"
-            label="שם החתן"
-            textFieldSX={textFieldSX}
-            editMode={true}
-          />
-        </Grid> */}
+
         <Grid item xs={12} md={6}>
           <TextInput
             variant="standard"
@@ -341,44 +309,7 @@ function EditCouple() {
             />
           </LocalizationProvider>
         </Grid>
-        {/* <Grid item xs={12} md={6}>
-          <FormControl color="primary" sx={textFieldSX}>
-            <TextInput
-              variant="standard"
-              name="password"
-              label="סיסמא"
-              type={showPassword ? "text" : "password"}
-              editMode={true}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                      sx={{
-                        "& .MuiSvgIcon-root": {
-                          fill: customTheme.palette.primary.main,
-                        },
-                      }}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <FormControl
-            name="userImage"
-            sx={textFieldSX}
-            onChange={handleAvatar}
-          >
-            <InputFileUpload isUpload={avatar.file} />
-          </FormControl>
-        </Grid> */}
+
         <Grid item xs={12} sx={{ margin: "0 auto" }}>
           <Button
             variant="outlined"

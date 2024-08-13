@@ -165,7 +165,6 @@ export default function CommentForm({ supplierFirebase }) {
         <Stack
           direction={{ xs: "column", sm: "row" }}
           alignItems="center"
-          // justifyContent={"space-between"}
           spacing={{ xs: 1, sm: 3 }}
           flexWrap="wrap"
           sx={{ width: "100%", pb: 3 }}
@@ -247,7 +246,6 @@ export default function CommentForm({ supplierFirebase }) {
 const commentWrapperSX = {
   direction: "ltr",
   bgcolor: "white",
-  // bgcolor: customTheme.supplier.colors.primary.light,
   p: { xs: 3, sm: 5 },
   boxShadow: customTheme.shadow.strong,
   borderRadius: 3,

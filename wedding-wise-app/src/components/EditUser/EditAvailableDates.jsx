@@ -254,8 +254,6 @@ const paperSX = {
   py: 3,
   px: { xs: 1, sm: 3 },
   backgroundColor: "rgba(255,255,255,0.8)",
-  // width: "100%",
-  // margin: "0 auto"
 };
 
 const textFieldSX = {

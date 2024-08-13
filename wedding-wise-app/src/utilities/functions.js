@@ -24,7 +24,9 @@ export async function reverseGeocoding(lat, lng) {
 export async function geocodeAddress(address) {
   try {
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&addressdetails=1&accept-language=he`
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+        address
+      )}&addressdetails=1&accept-language=he`
     );
 
     if (!response.ok) {
@@ -41,10 +43,13 @@ export async function geocodeAddress(address) {
     }
   } catch (error) {
     console.error("Error fetching coordinates:", error);
-    return { latitude: null, longitude: null, message: "Error fetching coordinates" };
+    return {
+      latitude: null,
+      longitude: null,
+      message: "Error fetching coordinates",
+    };
   }
 }
-
 
 //generic validation function
 export function validationCheck(event) {
@@ -128,7 +133,8 @@ export function buildTypeWeightsCard(typeWeightsObj, stickersArray) {
     });
     return { ...item };
   });
-  return typeWeightCardsArray;
+  const sortedData = typeWeightCardsArray.sort((a, b) => b.weight - a.weight);
+  return sortedData;
 }
 
 export function getRandomSupplierImage(arr, type) {
@@ -209,9 +215,9 @@ export function getTodayDate() {
 export function addCommasToNumber(number) {
   // Convert the number to a string
   let numberString = number.toString();
-  
+
   // Use a regular expression to add commas
-  let formattedNumber = numberString.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  
+  let formattedNumber = numberString.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
   return formattedNumber;
 }

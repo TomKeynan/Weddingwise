@@ -1,4 +1,4 @@
-import { Box, Fade, Stack, Typography, useMediaQuery } from "@mui/material";
+import { Box, Stack, Typography, useMediaQuery } from "@mui/material";
 import React from "react";
 import SupplierOutlineBtn from "../components/buttons/SupplierOutlineBtn";
 import SupplierContainBtn from "../components/buttons/SupplierContainBtn";

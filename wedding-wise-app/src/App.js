@@ -11,8 +11,6 @@ import CustomThemeProvider from "./store/Theme";
 import RtlProvider from "./store/RtlProvider";
 import Questionnaire from "./Pages/Questionnaire";
 import Package from "./Pages/Package";
-import Finance from "./Pages/ExpenseTracking";
-import EditDetails from "./Pages/EditDetailsOnReplace";
 import { LoadScript } from "@react-google-maps/api";
 import Invitees from "./Pages/Invitees";
 import SupplierLogin from "./Pages/SupplierLogin";

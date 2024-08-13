@@ -151,7 +151,6 @@ export default function Registration() {
             <Button
               variant="outlined"
               onClick={() => {
-                // handleClickOpen();
                 handleSubmit();
               }}
               sx={submitBtnSX}

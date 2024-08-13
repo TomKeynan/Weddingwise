@@ -4,7 +4,6 @@ import { customTheme } from "../../store/Theme";
 import { useNavigate } from "react-router-dom";
 import OutlinedButton from "../buttons/OutlinedButton";
 import { AppContext } from "../../store/AppContext";
-import { Update } from "@mui/icons-material";
 function UserWithoutPackage() {
   const navigate = useNavigate();
 

@@ -2,24 +2,23 @@ import { Box, Paper, Stack, Typography } from "@mui/material";
 import React from "react";
 import { customTheme } from "../store/Theme";
 
-function KpiPaper({ title, data, icon }) {
+function KpiPaper({ title, data, icon, extraSX }) {
   return (
     <Paper variant="elevation" elevation={10} sx={kpiWrapperSX}>
       <Stack spacing={2}>
-        <Typography variant="h5" sx={titleSX}>
-          {title}
-        </Typography>
+        <Typography sx={titleSX}>{title}</Typography>
         <Stack
           direction="row"
           justifyContent="center"
           alignItems="center"
-          sx={{ textAlign: "center" }}
+          sx={{ textAlign: "center",...extraSX, }}
         >
           <Typography
             sx={{
-              fontSize: { xs: 22, sm: 28 },
+              fontSize: { xs: 18, md: 28 },
               fontFamily: customTheme.font.main,
               mr: 2,
+              
             }}
           >
             {data}
@@ -27,7 +26,7 @@ function KpiPaper({ title, data, icon }) {
           <Box
             sx={{
               color: customTheme.supplier.colors.primary.dark,
-              fontSize: 22,
+              fontSize: { xs: 20, md: 22 },
             }}
           >
             {icon}
@@ -41,14 +40,13 @@ function KpiPaper({ title, data, icon }) {
 export default KpiPaper;
 
 const kpiWrapperSX = {
-  px: { xs: 3, sm: 4 },
-  py: { xs: 1, sm: 2 },
+  p: { xs: 1, sm: 1.5 },
   textAlign: "center",
-  minWidth: 180,
   borderRadius: 3,
 };
 
 const titleSX = {
+  fontSize: { xs: 18, md: 28 },
   textDecoration: "underline",
   color: customTheme.supplier.colors.primary.main,
 };

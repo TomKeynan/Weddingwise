@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
 import { QuestionsContext } from "../../store/QuestionsContext";
-import { AppContext } from "../../store/AppContext";
 import {
   Button,
   Typography,
@@ -11,9 +10,7 @@ import {
 import Question from "./Question";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import useFetch from "../../utilities/useFetch";
 import Loading from "../Loading";
-import MessageDialog from "../Dialogs/MessageDialog";
 import ConfirmDialog from "../Dialogs/ConfirmDialog";
 import { useNavigate } from "react-router-dom";
 
@@ -106,7 +103,6 @@ export default function Questions() {
           </Button>
           <Typography variant="body1">
             <span style={{ fontSize: "22px" }}>{page}</span> מתוך 15
-            {/* <Typography variant="h6">5</Typography> */}
           </Typography>
           <Button variant="text" onClick={handleNext} disabled={page === 15}>
             הבא

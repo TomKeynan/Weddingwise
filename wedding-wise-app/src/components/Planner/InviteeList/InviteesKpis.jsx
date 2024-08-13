@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { AppContext } from "../../../store/AppContext";
 import { Grid, Stack, Paper, Typography } from "@mui/material";
 
-function InviteesKpis() {
+function InviteesKpis({ bgColor }) {
   const { invitees } = useContext(AppContext);
 
   const totalInvitees = invitees
@@ -35,6 +35,13 @@ function InviteesKpis() {
           0
         )
     : 0;
+
+  const kpiPaperSX = {
+    py: 2,
+    px: 3,
+    borderRadius: 3,
+    bgcolor: bgColor,
+  };
 
   return (
     <Stack justifyContent="center" sx={kpiContainer}>
@@ -69,11 +76,4 @@ export default InviteesKpis;
 const kpiContainer = { px: 1, width: "95%", margin: "auto" };
 const kpiWrapper = {};
 
-const kpiPaperSX = {
-  py: 2,
-  px: 3,
-  borderRadius: 3,
-  bgcolor: "secondary.light",
-};
-
-const kpiText = { textAlign: "center",  };
+const kpiText = { textAlign: "center" };
