@@ -57,7 +57,6 @@ const EditSupplier = ({ supplierFirebase }) => {
   const [YouTubeLink, setYouTubeLink] = useState("");
   const [LinkedInLink, setLinkedInLink] = useState("");
 
-
   useEffect(() => {
     if (supplierFirebase) {
       setInstagramLink(supplierFirebase.socialLinks?.Instagram || "");
@@ -74,7 +73,6 @@ const EditSupplier = ({ supplierFirebase }) => {
         try {
           setSupplierData(rest);
           await updateUserFirebase();
-          window.scrollTo({ top: 0, behavior: "smooth" });
           setOpenUpdateSuccess(true);
         } catch (error) {
           setGlobalLoading(false);
@@ -87,9 +85,7 @@ const EditSupplier = ({ supplierFirebase }) => {
     };
 
     updateUser();
-
   }, [resData, currentSupplierData]);
-
 
   useEffect(() => {
     setCurrentDescription(supplierFirebase?.description);
@@ -100,7 +96,6 @@ const EditSupplier = ({ supplierFirebase }) => {
     const username = currentSupplierData.businessName;
     const description = currentDescription;
 
-   
     const socialLinksWithDefaults = {
       Instagram: InstagramLink || "",
       Facebook: FacebookLink || "",
@@ -140,7 +135,6 @@ const EditSupplier = ({ supplierFirebase }) => {
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   async function handleFormSubmit(e) {
-
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
@@ -157,13 +151,11 @@ const EditSupplier = ({ supplierFirebase }) => {
         if (latitude == null || longitude == null) {
           setOpenAddressError(true);
           return;
-        }
-        else {
+        } else {
           data.latitude = latitude;
           data.longitude = longitude;
         }
-      }
-      catch (err) {
+      } catch (err) {
         console.log(err);
       }
     }
@@ -287,8 +279,6 @@ const EditSupplier = ({ supplierFirebase }) => {
       </MessageDialog>
     );
   }
-
-
 
   return (
     <RegisterContextProvider>

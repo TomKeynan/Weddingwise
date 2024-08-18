@@ -47,16 +47,13 @@ export default function BasicTabs({ supplierFirebase }) {
   const [supplierPackages, setSupplierPackages] = useState([]);
   const { getData, resData } = useFetch();
 
-
   useEffect(() => {
     getData(`/Suppliers/getSupplierEvents/email/${supplierFirebase?.email}`);
   }, []);
 
-
   useEffect(() => {
     const handlePackages = async () => {
       if (resData) {
-
         const packages = resData?.map((item, index) => {
           item.id = index;
           return item;
@@ -68,10 +65,7 @@ export default function BasicTabs({ supplierFirebase }) {
     handlePackages();
   }, [resData]);
 
-
-
   const addAddresses = async (data) => {
-
     const updatedData = await Promise.all(
       data?.map(async (item) => {
         const address = await reverseGeocoding(item.latitude, item.longitude);
@@ -131,7 +125,8 @@ export default function BasicTabs({ supplierFirebase }) {
         )}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        {supplierFirebase?.comments && supplierFirebase?.comments?.length > 0 ? (
+        {supplierFirebase?.comments &&
+        supplierFirebase?.comments?.length > 0 ? (
           <Stack
             sx={{
               maxHeight: 500,
@@ -145,8 +140,8 @@ export default function BasicTabs({ supplierFirebase }) {
             {supplierFirebase?.comments?.map((comment, index) => (
               <CommentCard
                 key={index}
-                coupleAvatar={comment.coupleAvatar}
-                coupleNames={comment.coupleNames}
+                giverAvatar={comment.giverAvatar}
+                giverName={comment.giverName}
                 text={comment.text}
                 commentDate={comment.commentDate}
                 rating={comment.rating}
@@ -154,9 +149,7 @@ export default function BasicTabs({ supplierFirebase }) {
             ))}
           </Stack>
         ) : (
-          <Alert severity="warning">
-            עדיין אין לכם תגובות!{" "}
-          </Alert>
+          <Alert severity="warning">עדיין אין לכם תגובות! </Alert>
         )}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>

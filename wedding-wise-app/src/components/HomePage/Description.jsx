@@ -96,7 +96,7 @@ function Description() {
               </Box>
             </Typography>
             <Typography sx={StackTextSX}>
-              האתר שמתכנן עבורכם את החתונה בלחיצת כפתור זה{" "}
+              אתר שמתכנן עבורכם את החתונה בלחיצת כפתור זה{" "}
               <Box component="span" sx={titleSX}>
                 WeddingWise
               </Box>
