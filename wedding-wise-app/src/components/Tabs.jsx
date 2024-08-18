@@ -9,7 +9,7 @@ import CommentCard from "./CommentCard";
 import { Alert, Paper, Stack, Typography } from "@mui/material";
 import useFetch from "../utilities/useFetch";
 import { customTheme } from "../store/Theme";
-import { reverseGeocoding } from "../utilities/functions";
+import { isDateOver, reverseGeocoding } from "../utilities/functions";
 import EditAvailableDates from "./EditUser/EditAvailableDates";
 import EditSupplier from "./EditUser/EditSupplier";
 
@@ -59,7 +59,10 @@ export default function BasicTabs({ supplierFirebase }) {
           return item;
         });
         const updatedPackages = await addAddresses(packages);
-        setSupplierPackages(updatedPackages);
+        const filteredPackages = updatedPackages.filter((couplePackage) => {
+          if (!isDateOver(couplePackage.date)) return couplePackage;
+        });
+        setSupplierPackages(filteredPackages);
       }
     };
     handlePackages();

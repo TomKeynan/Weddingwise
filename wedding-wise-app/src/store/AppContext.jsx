@@ -29,7 +29,7 @@ const initialStateSupplierData = JSON.parse(
   sessionStorage.getItem("currentSupplier")
 );
 
-const initialArray = Array.from({ length: 15 }, () => 1);
+const initialArray = Array.from({ length: 15 }, () => 0);
 
 export default function AppContextProvider({ children }) {
   const [coupleData, setCoupleData] = useState(initialStateCoupleData);

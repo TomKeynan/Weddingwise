@@ -20,13 +20,9 @@ import Tooltip from "@mui/material/Tooltip";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import DeleteIcon from "@mui/icons-material/Delete";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
-import useFetch from "../utilities/useFetch";
-import { AppContext } from "../store/AppContext";
 import { convertDateToClientFormat } from "../utilities/functions";
 import { Stack } from "@mui/material";
-import { customTheme } from "../store/Theme";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -197,23 +193,6 @@ function EnhancedTableToolbar(props) {
           פרטי הלקוחות הפוטנאליים שאישרו חבילה שאתם נמצאים בה
         </Typography>
       )}
-
-      {
-        numSelected > 0 && (
-          <Tooltip title="Delete">
-            <IconButton>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        )
-        // ) : (
-        //   <Tooltip title="Filter list">
-        //     <IconButton>
-        //       <FilterListIcon />
-        //     </IconButton>
-        //   </Tooltip>
-        // )}
-      }
     </Toolbar>
   );
 }
@@ -222,17 +201,13 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-
-function CoupleTable({supplierPackages}) {
-
-
+function CoupleTable({ supplierPackages }) {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("calories");
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -307,7 +282,7 @@ function CoupleTable({supplierPackages}) {
             fontSize: { xs: 16, sm: 20, md: 24 },
           }}
         >
-          בטבלה תוכלו לראות את פרטי הזוגות שעבורם נמצאתם כמתאימים ביותר  
+          בטבלה תוכלו לראות את פרטי הזוגות שעבורם נמצאתם כמתאימים ביותר
         </Typography>
       </Stack>
       <Paper sx={{ width: "100%", mb: 2 }}>

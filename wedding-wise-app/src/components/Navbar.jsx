@@ -864,6 +864,7 @@ const appBarForHomeSX = {
   position: "relative",
   bgcolor: "transparent",
   color: "white",
+  mb: 5,
   "&.MuiAppBar-root": {
     boxShadow: "none",
   },

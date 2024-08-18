@@ -9,7 +9,6 @@ function EditDetailsOnReplace() {
   return (
     <RegisterContextProvider>
       <QuestionsContextProvider>
-
         <Stack
           alignItems="center"
           spacing={3}
@@ -28,14 +27,14 @@ function EditDetailsOnReplace() {
                 margin: "0 auto",
               }}
             >
-              על מנת לקבל המלצה לחבילה עליכם לשנות לפחות אחד מפרטי החתונה שהזנתם.
-              בנוסף תוכלו למלא את השאלון מחדש לאחר מכן. יש לוודא שבחירת הפרטים
-              החדשים הגיונית
+              על מנת לקבל המלצה לחבילה עליכם לשנות לפחות אחד מפרטי החתונה
+              שהזנתם. בנוסף תוכלו למלא את השאלון מחדש לאחר מכן. יש לוודא שבחירת
+              הפרטים החדשים הגיונית
             </Typography>
           </Stack>
           <Stack
             alignItems="center"
-            sx={{ width: { xs: "90%", sm: "80%", lg: "60%" } }}
+            sx={{ width: { xs: "90%", sm: "80%", lg: "60%" }, pb: 8 }}
           >
             <EditCouple />
           </Stack>

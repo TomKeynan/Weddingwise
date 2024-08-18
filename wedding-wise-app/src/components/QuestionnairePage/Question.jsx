@@ -13,12 +13,12 @@ const Question = ({ activePage, onUserSelection }) => {
   const screenAboveSM = useMediaQuery("(min-width: 500px)");
   // const { coupleAnswers, onSelectOption } = useContext(QuestionsContext);
   const { coupleAnswers, onSelectOption } = useContext(AppContext);
+  const [selectedOption, setSelectedOption] = useState(0);
 
   useEffect(() => {
     setSelectedOption(coupleAnswers[activePage]);
   }, []);
 
-  const [selectedOption, setSelectedOption] = useState(0);
 
   function handleChange(e) {
     setSelectedOption(e.target.value);

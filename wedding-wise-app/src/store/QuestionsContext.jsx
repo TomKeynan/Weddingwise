@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext, useEffect } from "react";
+import React, { createContext, useContext, useEffect } from "react";
 import useFetch from "../utilities/useFetch";
 import { AppContext } from "./AppContext";
 import { capitalizeKeys } from "../utilities/functions";
@@ -13,13 +13,12 @@ export const QuestionsContext = createContext({
 
 export default function QuestionsContextProvider({ children }) {
   const { resData, loading, sendData, error, setError } = useFetch();
-  const { coupleData, updateOfferedPackage, coupleAnswers, setCoupleAnswers } =
+  const { coupleData, updateOfferedPackage, coupleAnswers } =
     useContext(AppContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (resData) {
-      setCoupleAnswers(Array.from({ length: 15 }, () => 0));
       updateOfferedPackage(resData);
       navigate("/package");
     }

@@ -71,13 +71,11 @@ const router = createHashRouter([
 function App() {
   const { fetchUserInfo } = useUserStore();
 
-
   useEffect(() => {
     const handleAuthStateChanged = async (user) => {
       if (user?.uid) {
         await fetchUserInfo(user.uid);
       } else {
-
       }
     };
     const unSubAuth = onAuthStateChanged(auth, handleAuthStateChanged);
@@ -85,11 +83,9 @@ function App() {
     return () => {
       if (unSubAuth) {
         unSubAuth();
-
       }
     };
   }, [fetchUserInfo]);
-
 
   return (
     <LoadScript

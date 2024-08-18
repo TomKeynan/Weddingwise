@@ -35,7 +35,11 @@ function Hero() {
                 mb: 5,
               }}
             >
-              <Button variant="contained" sx={heroActionBtn} onClick={() => navigate("/package")}>
+              <Button
+                variant="contained"
+                sx={heroActionBtn}
+                onClick={() => navigate("/package")}
+              >
                 מידע נוסף
                 <ArrowForwardIosIcon />
               </Button>
@@ -63,7 +67,11 @@ function Hero() {
                 columnGap: { xs: 5, sm: 15, md: 10 },
               }}
             >
-              <Button variant="contained" sx={heroActionBtn}>
+              <Button
+                variant="contained"
+                sx={heroActionBtn}
+                onClick={() => navigate("/package")}
+              >
                 מידע נוסף
                 <ArrowForwardIosIcon />
               </Button>
@@ -130,7 +138,7 @@ const heroContent = {
   flexDirection: { xs: "column", md: "row" },
   width: "85%",
   zIndex: 1,
-  margin: "auto",
+  margin: "0 auto",
 };
 
 const heroRightSide = {

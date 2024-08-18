@@ -387,7 +387,7 @@ function SupplierPublicProfile() {
         />
         <KpiPaper
           title="דירוג:"
-          data={relevantSupplier?.rating === 0 ? "–" : relevantSupplier?.rating}
+          data={relevantSupplier?.rating === 0 ? "–" : relevantSupplier?.rating.toFixed(2)}
           icon={<StarOutlineIcon />}
           extraSX={{ minWidth: 180 }}
         />

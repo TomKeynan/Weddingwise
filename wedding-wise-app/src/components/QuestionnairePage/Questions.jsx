@@ -16,12 +16,16 @@ import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../store/AppContext";
 
 export default function Questions() {
-  const { isLoading, handleCreateNewPackage, error, setError } =
-    useContext(QuestionsContext);
-  const { coupleAnswers } = useContext(AppContext);
-
   const navigate = useNavigate();
   const screenAboveSM = useMediaQuery("(min-width: 500px)");
+
+  const { isLoading, handleCreateNewPackage, error, setError } =
+    useContext(QuestionsContext);
+  const { coupleAnswers, setCoupleAnswers } = useContext(AppContext);
+
+  useEffect(() => {
+    setCoupleAnswers(Array.from({ length: 15 }, () => 0));
+  }, []);
 
   const [page, setPage] = useState(1);
 

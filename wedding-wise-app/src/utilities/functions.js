@@ -221,3 +221,10 @@ export function addCommasToNumber(number) {
 
   return formattedNumber;
 }
+
+export function isDateOver(dateString) {
+  const currentDate = new Date();
+  const inputDate = new Date(dateString);
+
+  return inputDate < currentDate;
+}

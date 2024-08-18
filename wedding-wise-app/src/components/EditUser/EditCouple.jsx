@@ -39,7 +39,7 @@ function EditCouple() {
     isEditFormValid,
   } = useContext(RegisterContext);
 
-  const { coupleData, updateCoupleData, offeredPackage, setCoupleAnswers } =
+  const { coupleData, updateCoupleData, offeredPackage, setCoupleAnswers, coupleAnswers } =
     useContext(AppContext);
 
   const {
